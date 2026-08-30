@@ -1,10 +1,62 @@
-import React, { Suspense, useMemo } from 'react';
+import React, { Suspense, useMemo, useState, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { useGLTF, Center, ContactShadows } from '@react-three/drei';
+import { useGLTF, Center, ContactShadows, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { FULL_BODY_FLOOR_Y, FULL_BODY_SCALE, FULL_BODY_SHADOW_Y } from './bodySceneGeometry';
 import { AccessibleOrbitControls, SceneControlPad } from './AccessibleOrbitControls';
 import { Axes } from './AnatomyCanvas';
+
+function checkWebGLSupport(): boolean {
+  try {
+    const canvas = document.createElement('canvas');
+    return !!(
+      window.WebGLRenderingContext &&
+      (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
+    );
+  } catch {
+    return false;
+  }
+}
+
+function ModelLoader() {
+  return (
+    <Html center>
+      <div
+        style={{
+          background: 'rgba(255, 255, 255, 0.94)',
+          backdropFilter: 'blur(8px)',
+          border: '1px solid #d4c7b0',
+          borderRadius: '12px',
+          padding: '1.2rem 1.6rem',
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+          textAlign: 'center',
+          fontFamily: 'system-ui, -apple-system, sans-serif',
+          minWidth: '220px',
+          pointerEvents: 'none',
+        }}
+      >
+        <div
+          style={{
+            width: '26px',
+            height: '26px',
+            border: '3px solid #e0d7c7',
+            borderTopColor: '#0d6e64',
+            borderRadius: '50%',
+            animation: 'spin 0.8s linear infinite',
+            margin: '0 auto 0.6rem',
+          }}
+        />
+        <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+        <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#232c36' }}>
+          Cargando Esqueleto 3D...
+        </div>
+        <div style={{ fontSize: '0.72rem', color: '#6b7885', marginTop: '0.25rem' }}>
+          Atlas Anatómico de 131 Huesos
+        </div>
+      </div>
+    </Html>
+  );
+}
 
 const BONE_BASE = new THREE.Color('#e8dcc4'); // marfil cálido
 const HIGHLIGHT = new THREE.Color('#067a6b'); // teal regional
@@ -396,12 +448,60 @@ export default function BodyScene({
   mobility?: MobilityRange | null;
 }) {
   const controlsRef = React.useRef<any>(null);
+  const [webglSupported, setWebglSupported] = useState<boolean>(true);
+
+  useEffect(() => {
+    setWebglSupported(checkWebGLSupport());
+  }, []);
 
   React.useEffect(() => {
     if (controlsRef.current) {
       controlsRef.current.reset();
     }
   }, [resetSignal]);
+
+  if (!webglSupported) {
+    return (
+      <div
+        id={id}
+        className="three-container"
+        style={{
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'radial-gradient(circle at 50% 40%, #ffffff 0%, #faf6ee 55%, #eee4d2 100%)',
+          padding: '2rem',
+          textAlign: 'center',
+        }}
+      >
+        <div
+          style={{
+            maxWidth: '380px',
+            background: '#ffffff',
+            border: '1px solid #d4c7b0',
+            borderRadius: '14px',
+            padding: '1.8rem',
+            boxShadow: '0 6px 24px rgba(0,0,0,0.06)',
+          }}
+        >
+          <div style={{ fontSize: '2.2rem', marginBottom: '0.8rem' }}>⚠️</div>
+          <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#232c36', marginBottom: '0.6rem' }}>
+            Aceleración Gráfica Desactivada
+          </h3>
+          <p style={{ fontSize: '0.82rem', color: '#43505c', lineHeight: 1.5, marginBottom: '1rem' }}>
+            Tu navegador o sistema no tiene habilitado <strong>WebGL</strong>. Para interactuar con el esqueleto 3D:
+          </p>
+          <ol style={{ fontSize: '0.78rem', color: '#6b7885', textAlign: 'left', lineHeight: 1.6, paddingLeft: '1.2rem', margin: 0 }}>
+            <li>Abre los Ajustes de tu navegador.</li>
+            <li>En <em>Sistema</em>, activa <strong>"Usar aceleración por hardware"</strong>.</li>
+            <li>O abre la plataforma desde Chrome o Firefox actualizado.</li>
+          </ol>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div id={id} className="three-container" style={{ width: '100%', height: '100%' }}>
@@ -421,7 +521,7 @@ export default function BodyScene({
         <directionalLight position={[-10, 8, -6]} intensity={0.6} color="#e8f4f8" />
         <directionalLight position={[0, -5, 5]} intensity={0.2} color="#faf0e6" />
         <gridHelper args={[8, 16, '#c6bca6', '#ded6c5']} position={[0, FULL_BODY_FLOOR_Y, 0]} />
-        <Suspense fallback={null}>
+        <Suspense fallback={<ModelLoader />}>
           <Center position={[0, 0, 0]}>
             <AnatomyModel
               mode={mode}
