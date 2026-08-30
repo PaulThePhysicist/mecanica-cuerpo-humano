@@ -1,8 +1,10 @@
 import React, { useState, Suspense, lazy } from 'react';
 import './App.css';
 
-// Lazy loading de todos los 13 capítulos para rendimiento y modularidad óptima
-const Capitulo1 = lazy(() => import('./chapters/Capitulo1'));
+// Importación directa del Capítulo 1 para carga instantánea sin lazy-loading
+import Capitulo1 from './chapters/cap1/Capitulo1';
+
+// Lazy loading para capítulos futuros en preparación
 const Capitulo2 = lazy(() => import('./chapters/cap2/Capitulo2'));
 const Capitulo3 = lazy(() => import('./chapters/cap3/Capitulo3'));
 const Capitulo4 = lazy(() => import('./chapters/cap4/Capitulo4'));
@@ -163,41 +165,12 @@ const CHAPTERS: ChapterMeta[] = [
 export default function App() {
   const [chapter, setChapter] = useState<number | null>(null);
 
-  const renderActiveChapter = () => {
-    const onBack = () => setChapter(null);
-    switch (chapter) {
-      case 1:
-        return <Capitulo1 onBack={onBack} />;
-      case 2:
-        return <Capitulo2 onBack={onBack} />;
-      case 3:
-        return <Capitulo3 onBack={onBack} />;
-      case 4:
-        return <Capitulo4 onBack={onBack} />;
-      case 5:
-        return <Capitulo5 onBack={onBack} />;
-      case 6:
-        return <Capitulo6 onBack={onBack} />;
-      case 7:
-        return <Capitulo7 onBack={onBack} />;
-      case 8:
-        return <Capitulo8 onBack={onBack} />;
-      case 9:
-        return <Capitulo9 onBack={onBack} />;
-      case 10:
-        return <Capitulo10 onBack={onBack} />;
-      case 11:
-        return <Capitulo11 onBack={onBack} />;
-      case 12:
-        return <Capitulo12 onBack={onBack} />;
-      case 13:
-        return <Capitulo13 onBack={onBack} />;
-      default:
-        return null;
-    }
-  };
+  if (chapter === 1) {
+    return <Capitulo1 onBack={() => setChapter(null)} />;
+  }
 
   if (chapter !== null) {
+    const onBack = () => setChapter(null);
     return (
       <Suspense
         fallback={
@@ -206,7 +179,18 @@ export default function App() {
           </div>
         }
       >
-        {renderActiveChapter()}
+        {chapter === 2 && <Capitulo2 onBack={onBack} />}
+        {chapter === 3 && <Capitulo3 onBack={onBack} />}
+        {chapter === 4 && <Capitulo4 onBack={onBack} />}
+        {chapter === 5 && <Capitulo5 onBack={onBack} />}
+        {chapter === 6 && <Capitulo6 onBack={onBack} />}
+        {chapter === 7 && <Capitulo7 onBack={onBack} />}
+        {chapter === 8 && <Capitulo8 onBack={onBack} />}
+        {chapter === 9 && <Capitulo9 onBack={onBack} />}
+        {chapter === 10 && <Capitulo10 onBack={onBack} />}
+        {chapter === 11 && <Capitulo11 onBack={onBack} />}
+        {chapter === 12 && <Capitulo12 onBack={onBack} />}
+        {chapter === 13 && <Capitulo13 onBack={onBack} />}
       </Suspense>
     );
   }

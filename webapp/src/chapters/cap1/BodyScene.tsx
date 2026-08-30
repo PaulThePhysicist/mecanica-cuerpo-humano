@@ -6,13 +6,40 @@ import { FULL_BODY_FLOOR_Y, FULL_BODY_SCALE, FULL_BODY_SHADOW_Y } from './bodySc
 import { AccessibleOrbitControls, SceneControlPad } from './AccessibleOrbitControls';
 import { Axes } from './AnatomyCanvas';
 
+class ThreeErrorBoundary extends React.Component<
+  { fallback: React.ReactNode; children: React.ReactNode },
+  { hasError: boolean }
+> {
+  constructor(props: any) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: any) {
+    console.warn('[ThreeErrorBoundary] Falló inicialización WebGL/3D:', error);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback;
+    }
+    return this.props.children;
+  }
+}
+
 function checkWebGLSupport(): boolean {
+  if (typeof window === 'undefined') return true;
   try {
     const canvas = document.createElement('canvas');
-    return !!(
-      window.WebGLRenderingContext &&
-      (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
-    );
+    const gl =
+      canvas.getContext('webgl') ||
+      canvas.getContext('experimental-webgl') ||
+      canvas.getContext('webgl2');
+    return !!(window.WebGLRenderingContext && gl);
   } catch {
     return false;
   }
@@ -460,95 +487,105 @@ export default function BodyScene({
     }
   }, [resetSignal]);
 
-  if (!webglSupported) {
-    return (
+  const errorFallback = (
+    <div
+      id={id}
+      className="three-container"
+      style={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'radial-gradient(circle at 50% 40%, #ffffff 0%, #faf6ee 55%, #eee4d2 100%)',
+        padding: '2rem',
+        textAlign: 'center',
+      }}
+    >
       <div
-        id={id}
-        className="three-container"
         style={{
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: 'radial-gradient(circle at 50% 40%, #ffffff 0%, #faf6ee 55%, #eee4d2 100%)',
-          padding: '2rem',
-          textAlign: 'center',
+          maxWidth: '380px',
+          background: '#ffffff',
+          border: '1px solid #d4c7b0',
+          borderRadius: '14px',
+          padding: '1.8rem',
+          boxShadow: '0 6px 24px rgba(0,0,0,0.06)',
         }}
       >
-        <div
-          style={{
-            maxWidth: '380px',
-            background: '#ffffff',
-            border: '1px solid #d4c7b0',
-            borderRadius: '14px',
-            padding: '1.8rem',
-            boxShadow: '0 6px 24px rgba(0,0,0,0.06)',
-          }}
-        >
-          <div style={{ fontSize: '2.2rem', marginBottom: '0.8rem' }}>⚠️</div>
-          <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#232c36', marginBottom: '0.6rem' }}>
-            Aceleración Gráfica Desactivada
-          </h3>
-          <p style={{ fontSize: '0.82rem', color: '#43505c', lineHeight: 1.5, marginBottom: '1rem' }}>
-            Tu navegador o sistema no tiene habilitado <strong>WebGL</strong>. Para interactuar con el esqueleto 3D:
-          </p>
-          <ol style={{ fontSize: '0.78rem', color: '#6b7885', textAlign: 'left', lineHeight: 1.6, paddingLeft: '1.2rem', margin: 0 }}>
-            <li>Abre los Ajustes de tu navegador.</li>
-            <li>En <em>Sistema</em>, activa <strong>"Usar aceleración por hardware"</strong>.</li>
-            <li>O abre la plataforma desde Chrome o Firefox actualizado.</li>
-          </ol>
-        </div>
+        <div style={{ fontSize: '2.2rem', marginBottom: '0.8rem' }}>⚠️</div>
+        <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#232c36', marginBottom: '0.6rem' }}>
+          Aceleración Gráfica Desactivada
+        </h3>
+        <p style={{ fontSize: '0.82rem', color: '#43505c', lineHeight: 1.5, marginBottom: '1rem' }}>
+          Tu navegador o sistema no tiene habilitado <strong>WebGL</strong>. Para interactuar con el esqueleto 3D:
+        </p>
+        <ol style={{ fontSize: '0.78rem', color: '#6b7885', textAlign: 'left', lineHeight: 1.6, paddingLeft: '1.2rem', margin: 0 }}>
+          <li>Abre los Ajustes de tu navegador.</li>
+          <li>En <em>Sistema</em>, activa <strong>"Usar aceleración por hardware"</strong>.</li>
+          <li>O abre la plataforma desde Chrome o Firefox actualizado.</li>
+        </ol>
       </div>
-    );
+    </div>
+  );
+
+  if (!webglSupported) {
+    return errorFallback;
   }
 
   return (
     <div id={id} className="three-container" style={{ width: '100%', height: '100%' }}>
-      <Canvas
-        camera={{ position: [3.6, 1.8, 12.5], fov: 45 }}
-        style={{
-          width: '100%',
-          height: '100%',
-          display: 'block',
-          background: 'radial-gradient(circle at 50% 40%, #ffffff 0%, #faf6ee 55%, #eee4d2 100%)',
-        }}
-      >
-        <CameraRig resetSignal={resetSignal} />
-        <ZoomHandler zoomSignal={zoomSignal} controlsRef={controlsRef} />
-        <ambientLight intensity={0.8} color="#fffcf5" />
-        <directionalLight position={[10, 15, 8]} intensity={1.3} color="#fff8eb" />
-        <directionalLight position={[-10, 8, -6]} intensity={0.6} color="#e8f4f8" />
-        <directionalLight position={[0, -5, 5]} intensity={0.2} color="#faf0e6" />
-        <gridHelper args={[8, 16, '#c6bca6', '#ded6c5']} position={[0, FULL_BODY_FLOOR_Y, 0]} />
-        <Suspense fallback={<ModelLoader />}>
-          <Center position={[0, 0, 0]}>
-            <AnatomyModel
-              mode={mode}
-              selected={selected}
-              jointMotion={mobility?.joint === 'hombro-flex' ? 'flexion' : mobility?.joint === 'hombro-abd' ? 'abduction' : mobility?.joint === 'hombro-rot' ? 'rotation' : mobility?.joint === 'codo' ? 'elbow-flexion' : mobility?.joint === 'antebrazo' ? 'forearm-rotation' : mobility?.joint === 'muneca' ? 'wrist-flexion' : mobility?.joint === 'cadera' ? 'hip-flexion' : mobility?.joint === 'rodilla' ? 'knee-flexion' : mobility?.joint === 'tobillo' ? 'ankle-flexion' : null}
+      <ThreeErrorBoundary fallback={errorFallback}>
+        <Canvas
+          camera={{ position: [3.6, 1.8, 12.5], fov: 45 }}
+          gl={{
+            antialias: true,
+            powerPreference: 'default',
+            failIfMajorPerformanceCaveat: false,
+            alpha: true,
+          }}
+          style={{
+            width: '100%',
+            height: '100%',
+            display: 'block',
+            background: 'radial-gradient(circle at 50% 40%, #ffffff 0%, #faf6ee 55%, #eee4d2 100%)',
+          }}
+        >
+          <CameraRig resetSignal={resetSignal} />
+          <ZoomHandler zoomSignal={zoomSignal} controlsRef={controlsRef} />
+          <ambientLight intensity={0.8} color="#fffcf5" />
+          <directionalLight position={[10, 15, 8]} intensity={1.3} color="#fff8eb" />
+          <directionalLight position={[-10, 8, -6]} intensity={0.6} color="#e8f4f8" />
+          <directionalLight position={[0, -5, 5]} intensity={0.2} color="#faf0e6" />
+          <gridHelper args={[8, 16, '#c6bca6', '#ded6c5']} position={[0, FULL_BODY_FLOOR_Y, 0]} />
+          <Suspense fallback={<ModelLoader />}>
+            <Center position={[0, 0, 0]}>
+              <AnatomyModel
+                mode={mode}
+                selected={selected}
+                jointMotion={mobility?.joint === 'hombro-flex' ? 'flexion' : mobility?.joint === 'hombro-abd' ? 'abduction' : mobility?.joint === 'hombro-rot' ? 'rotation' : mobility?.joint === 'codo' ? 'elbow-flexion' : mobility?.joint === 'antebrazo' ? 'forearm-rotation' : mobility?.joint === 'muneca' ? 'wrist-flexion' : mobility?.joint === 'cadera' ? 'hip-flexion' : mobility?.joint === 'rodilla' ? 'knee-flexion' : mobility?.joint === 'tobillo' ? 'ankle-flexion' : null}
+              />
+              <MobilityRangeOverlay range={mobility} />
+              {mode === 'regions' && <Axes hoveredTerm={null} showLabels showGrid={false} />}
+              {mode === 'planes' && <Planes selected={selected} />}
+            </Center>
+            {/* Sombra de contacto difusa bajo el esqueleto */}
+            <ContactShadows
+              position={[0, FULL_BODY_SHADOW_Y, 0]}
+              opacity={0.45}
+              scale={8}
+              blur={2.4}
+              far={5}
+              color="#232c36"
             />
-            <MobilityRangeOverlay range={mobility} />
-            {mode === 'regions' && <Axes hoveredTerm={null} showLabels showGrid={false} />}
-            {mode === 'planes' && <Planes selected={selected} />}
-          </Center>
-          {/* Sombra de contacto difusa bajo el esqueleto */}
-          <ContactShadows
-            position={[0, FULL_BODY_SHADOW_Y, 0]}
-            opacity={0.45}
-            scale={8}
-            blur={2.4}
-            far={5}
-            color="#232c36"
+          </Suspense>
+          <AccessibleOrbitControls
+            controlsRef={controlsRef}
+            minDistance={3.5}
+            maxDistance={32}
+            target={[0, 0.1, 0]}
           />
-        </Suspense>
-        <AccessibleOrbitControls
-          controlsRef={controlsRef}
-          minDistance={3.5}
-          maxDistance={32}
-          target={[0, 0.1, 0]}
-        />
-      </Canvas>
+        </Canvas>
+      </ThreeErrorBoundary>
       <SceneControlPad controlsRef={controlsRef} />
     </div>
   );
