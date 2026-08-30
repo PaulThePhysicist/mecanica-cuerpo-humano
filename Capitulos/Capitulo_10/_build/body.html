@@ -1,0 +1,1089 @@
+<nav class="module-bar" id="moduleBar">
+  <div class="brand-mark">
+    <span class="treatise">El cuerpo humano · capítulo 10</span>
+    <span class="book">Física del Cuerpo Humano — I. P. Herman</span>
+  </div>
+  <nav class="module-tabs" id="moduleTabs" aria-label="Módulos"></nav>
+</nav>
+
+<!-- ═══════════ PORTADA ═══════════ -->
+<div class="slide-full active" data-slide="0" data-module="0">
+  <h1>
+    <span class="chapno">Capítulo 10</span>
+    Sonido, habla y audición
+  </h1>
+  <p class="subtitle">De la onda sonora que vibra el tímpano a la palabra que articula la laringe: qué produce el sonido en el cuerpo, cómo lo filtra la boca y cómo lo lee la cóclea. La onda (v, λ, dB), la impedancia y la reflexión, los resonadores (canal auditivo y formantes), la producción del habla con su fuente-filtro y su modelo de dos tubos, la energética de la voz, el campo auditivo, la pérdida por edad y ruido, la percepción (fones, mels, enmascaramiento), los sonidos del cuerpo y el Doppler.</p>
+  <div class="rule"></div>
+  <div class="module-preview" id="modulePreview">
+    <span class="mpill" onclick="goModule(1)"><span class="ico">🌊</span> Ondas sonoras</span>
+    <span class="mpill" onclick="goModule(2)"><span class="ico">🎵</span> Resonadores</span>
+    <span class="mpill" onclick="goModule(3)"><span class="ico">🗣️</span> El habla</span>
+    <span class="mpill" onclick="goModule(4)"><span class="ico">🧩</span> Modelo de dos tubos</span>
+    <span class="mpill" onclick="goModule(5)"><span class="ico">👂</span> Audición · sensibilidad</span>
+    <span class="mpill" onclick="goModule(6)"><span class="ico">🩺</span> Audición · pérdida</span>
+    <span class="mpill" onclick="goModule(7)"><span class="ico">🧠</span> Audición · percepción</span>
+    <span class="mpill" onclick="goModule(8)"><span class="ico">❤️</span> Vibraciones del cuerpo</span>
+    <span class="mpill" onclick="goModule(9)"><span class="ico">🩻</span> Diagnóstico</span>
+  </div>
+  <button class="start-btn" onclick="goModule(1)">Comenzar la cátedra →</button>
+  <p class="book-ref">Physics of the Human Body — Irving P. Herman · Springer (2016)</p>
+</div>
+
+<!-- ═══════════ SLIDE 1 · M1 Ondas sonoras ═══════════ -->
+<div class="slide" data-slide="1" data-module="1">
+  <div class="module-header">
+    <span class="mnum">10 · 1</span>
+    <span class="mtitle">Ondas sonoras: origen y velocidad</span>
+    <span class="msub">\(v = \sqrt{C/\rho} \;|\; v = \lambda f\)</span>
+    <span class="mslide-count">1 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🌊</span> El sonido es una onda de presión</div>
+        <div class="card-body">
+          <p>Una vibración mecánica comprime y rarefacta el medio: la onda sonora transporta energía sin transportar materia. En el aire a 20 °C la velocidad depende del módulo de compresibilidad \(C\) y la densidad \(\rho\):</p>
+          <div class="eq-block"><span class="eqno">(10.1)</span>\[ v = \sqrt{\dfrac{C}{\rho}} \]</div>
+          <p>En un gas ideal, \(v = \sqrt{\gamma P/\rho}\): a 20 °C y 1 atm, \(v_\mathrm{aire} \approx 343\ \mathrm{m/s}\). En los tejidos el sonido viaja mucho más rápido: <span class="tag">≈ 1\,540 m/s en tejido blando</span> y <span class="tag">≈ 3\,500 m/s en hueso</span>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📏</span> Frecuencia, longitud de onda y tono</div>
+        <div class="card-body">
+          <p>La relación entre velocidad \(v\), frecuencia \(f\) y longitud de onda \(\lambda\) es</p>
+          <div class="eq-block"><span class="eqno">(10.3)</span>\[ v = \lambda\, f \]</div>
+          <p>Un tono de 3\,430 Hz en el aire tiene \(\lambda \approx 10\) cm; en hueso, \(\lambda \approx 1\) m. El oído humano percibe tonos entre 20 Hz y 20 kHz.</p>
+          <table class="data-mini">
+            <tr><th>Medio</th><th>v (m/s)</th></tr>
+            <tr><td>Aire (20 °C)</td><td>≈ 343</td></tr>
+            <tr><td>Tejido blando</td><td>≈ 1\,540</td></tr>
+            <tr><td>Hueso</td><td>≈ 3\,500</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-1">Mueve la frecuencia y cambia el medio con el selector: la misma onda se estira o comprime según la velocidad de propagación. En hueso una nota audible de 1 kHz mide 3,5 m de longitud de onda.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-wave" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">onda</span>
+        <label>Frecuencia <input type="range" id="wv_f" min="200" max="1600" value="600" step="10"> <span id="wv_fv">600 Hz</span></label>
+        <label>Medio <select id="wv_med"><option value="0">Aire (343 m/s)</option><option value="1">Tejido blando (1\,540 m/s)</option><option value="2">Hueso (3\,500 m/s)</option></select></label>
+        <span class="readout" id="wv_out">λ (aire, 600 Hz) = 57 cm</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 2 · M1 Intensidad y dB ═══════════ -->
+<div class="slide" data-slide="2" data-module="1">
+  <div class="module-header">
+    <span class="mnum">10 · 1</span>
+    <span class="mtitle">Intensidad sonora y escala en decibelios</span>
+    <span class="msub">\(\beta = 10 \log_{10}(I/I_0),\quad I_0 = 10^{-12}\ \mathrm{W/m^2}\)</span>
+    <span class="mslide-count">2 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🔊</span> Potencia repartida sobre una esfera</div>
+        <div class="card-body">
+          <p>Una fuente con potencia acústica \(P\) reparte su energía sobre la superficie de una esfera de radio \(R\). La intensidad \(I\) (W/m²) decae con el cuadrado de la distancia:</p>
+          <div class="eq-block"><span class="eqno">(10.4)</span>\[ I = \frac{P}{4\pi R^2} \]</div>
+          <p>La intensidad también se escribe con la amplitud de desplazamiento \(u\) o con la amplitud de presión \(P\) y la impedancia \(Z\):</p>
+          <div class="eq-block"><span class="eqno">(10.7)</span>\[ I = \tfrac{1}{2}\,\rho\, u^{2}\, v \qquad\qquad I = \frac{P^{2}}{2Z} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📈</span> Escala logarítmica: el decibelio</div>
+        <div class="card-body">
+          <p>El oído abarca 12 órdenes de magnitud, así que se usa una escala logarítmica con referencia \(I_0 = 10^{-12}\ \mathrm{W/m^2}\) (umbral de audición):</p>
+          <div class="eq-block"><span class="eqno">(10.10)</span>\[ \beta = 10 \log_{10} \frac{I}{I_0} \]</div>
+          <p>Cada +10 dB multiplica la intensidad por 10; cada +3 dB la duplica. El habla normal ronda los <span class="tag">40–60 dB</span> y el umbral de dolor los <span class="tag">120–140 dB</span>.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-2">Cambia el ruido con el selector y mira el salto en la barra: pasar de 70 a 80 dB no «suma 10», multiplica la intensidad por 10. La escala comprime millones de veces en una regla de 0 a 180.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-db" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">dB</span>
+        <label>Ruido <select id="db_sel"><option value="0">Umbral de audición — 0 dB</option><option value="1">Susurro — 20 dB</option><option value="2">Habla normal — 60 dB</option><option value="3">Tráfico — 80 dB</option><option value="4">Concierto / moto — 110 dB</option><option value="5">Umbral de dolor — 130 dB</option><option value="6">Turborreactor — 160 dB</option><option value="7">Ruptura del tímpano — 190 dB</option></select></label>
+        <span class="readout" id="db_out">0 dB → I = 1×10⁻¹² W/m²</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 3 · M1 Impedancia y transmisión ═══════════ -->
+<div class="slide" data-slide="3" data-module="1">
+  <div class="module-header">
+    <span class="mnum">10 · 2</span>
+    <span class="mtitle">Impedancia acústica y reflexión en interfaces</span>
+    <span class="msub">\(Z = \rho v,\quad R = \big((Z_2 - Z_1)/(Z_1 + Z_2)\big)^{2}\)</span>
+    <span class="mslide-count">3 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🧭</span> La impedancia gobierna la entrega de energía</div>
+        <div class="card-body">
+          <p>La impedancia acústica \(Z = \rho v\) (rayl = kg·m⁻²·s⁻¹) mide la «resistencia» al paso de la onda. El aire tiene <span class="tag">Z ≈ 413 rayl</span>; los tejidos, <span class="tag">Z ≈ 1{,}5×10⁶ rayl</span>. En una interfaz, la fracción de intensidad reflejada es</p>
+          <div class="eq-block"><span class="eqno">(10.31)</span>\[ R = \left(\frac{Z_2 - Z_1}{Z_1 + Z_2}\right)^{2} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">👂</span> El oído «derrota» la gran reflexión</div>
+        <div class="card-body">
+          <p>Sin el oído medio, el 99,9 % de la energía se reflejaría en la interfaz aire–líquido de la cóclea. Los huesecillos y la membrana timpánica son un <strong>adaptador de impedancias</strong> entre el aire y el líquido del oído interno.</p>
+          <table class="data-mini">
+            <tr><th>Tabla 10.5 · interfaz</th><th>R (%)</th></tr>
+            <tr><td>Aire → músculo</td><td>98,01</td></tr>
+            <tr><td>Hueso → músculo</td><td>41,23</td></tr>
+            <tr><td>Tejido blando → pulmón</td><td>63,64</td></tr>
+            <tr><td>Grasa → músculo</td><td>1,08</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-3">La reflexión entre músculo y hueso es grande (41 %); la del aire a músculo es enorme (98 %). Por eso el ultrasonido diagnóstico necesita gel y por eso la cóclea necesita el adaptador del oído medio.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-impedance" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">Z</span>
+        <label>Interfaz <select id="im_sel"><option value="0">Agua → tejido blando</option><option value="1">Grasa → músculo</option><option value="2">Hueso → músculo</option><option value="3">Tejido blando → hueso</option><option value="4">Tejido blando → pulmón</option><option value="5">Aire → músculo</option><option value="6">Aire → agua</option></select></label>
+        <span class="readout" id="im_out">Agua→tejido blando: R = 0,23 %</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 4 · M2 Resonadores ═══════════ -->
+<div class="slide" data-slide="4" data-module="2">
+  <div class="module-header">
+    <span class="mnum">10 · 3</span>
+    <span class="mtitle">Resonadores: tubos abiertos y cerrados</span>
+    <span class="msub">\(f_n = nv/2L \;|\; f_m = (m+\tfrac{1}{2})v/2L\)</span>
+    <span class="mslide-count">4 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🎵</span> Modos normales en un tubo</div>
+        <div class="card-body">
+          <p>Un tubo abierto en ambos extremos (dos vientres) admite todos los armónicos; uno cerrado en un extremo (un vientre y un nodo) solo los impares:</p>
+          <div class="eq-block"><span class="eqno">(10.36)</span>\[ f_n = \frac{n\,v}{2L},\quad n = 1,2,3,\dots \]</div>
+          <div class="eq-block"><span class="eqno">(10.38)</span>\[ f_m = \frac{(m+\tfrac{1}{2})\,v}{2L},\quad m = 0,1,2,\dots \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🗣️</span> El tracto vocal como tubo resonante</div>
+        <div class="card-body">
+          <p>La boca y la faringe son un tubo de \(L \approx 17\) cm (hombres) abierto en los labios. Sus picos de transmisión son los <strong>formantes</strong>: para el tubo abierto, \(f_n = nv/2L\) con \(n=1,2,3\)</p>
+          <div class="eq-block">\[ f_1 = \frac{v}{2L} \approx 1\,000\ \mathrm{Hz} \quad (L \approx 17\ \mathrm{cm}) \]</div>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-4">Cambia la longitud del tubo y mira cómo baja la fundamental: una boca «más larga» (labios redondeados, /u/) produce formantes más graves. El tubo cerrado solo emite armónicos impares: su espectro es «hueco».</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-cavity" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">tubo</span>
+        <label>Tubo <select id="cv_typ"><option value="0">Abierto (dos extremos)</option><option value="1">Cerrado (un extremo)</option></select></label>
+        <label>Longitud <input type="range" id="cv_L" min="8" max="34" value="17" step="0.5"> <span id="cv_Lv">17,0 cm</span></label>
+        <span class="readout" id="cv_out">Abierto, L=17 cm: f₁ = 1009 Hz</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 5 · M2 Canal auditivo ═══════════ -->
+<div class="slide" data-slide="5" data-module="2">
+  <div class="module-header">
+    <span class="mnum">10 · 3</span>
+    <span class="mtitle">Resonancia del canal auditivo</span>
+    <span class="msub">\(f_1 = v/4L\ \text{(tubo cerrado)}\)</span>
+    <span class="mslide-count">5 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">👂</span> Un amplificador de ~3 kHz en tu oído</div>
+        <div class="card-body">
+          <p>El conducto auditivo externo es un tubo de unos 2,5–3,5 cm cerrado por el tímpano. Como resonador de cuarto de onda amplifica la presión en la banda de máxima sensibilidad:</p>
+          <div class="eq-block"><span class="eqno">(10.39)</span>\[ f_1 = \frac{v}{4L} = \frac{343}{4\times 0{,}025} \approx 3\,430\ \mathrm{Hz} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🎈</span> Resonador de Helmholtz</div>
+        <div class="card-body">
+          <p>El canal también actúa como resonador de Helmholtz (masa de aire del cuello + volumen de aire), con área \(A\), largo \(l\) del cuello y volumen \(V\):</p>
+          <div class="eq-block">\[ f_0 = \frac{v}{2\pi}\sqrt{\frac{A}{V\,l}} \]</div>
+          <p>La combinación de ambos efectos da picos de presión de 5–10 dB cerca de 2,5–4 kHz: justo la banda donde el habla concentra su energía.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-5">El pico de la curva aparece en la banda crítica 2–4 kHz. Alarga el canal en el control y el pico baja: un canal «más largo» sintoniza más grave.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-earcanal" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">canal</span>
+        <label>Longitud canal <input type="range" id="ea_L" min="18" max="40" value="25" step="0.5"> <span id="ea_Lv">25,0 mm</span></label>
+        <span class="readout" id="ea_out">f₁ = 3430 Hz · ganancia ≈ +7 dB</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 6 · M3 El habla ═══════════ -->
+<div class="slide" data-slide="6" data-module="3">
+  <div class="module-header">
+    <span class="mnum">10 · 4</span>
+    <span class="mtitle">Producción del habla: sonidos y articuladores</span>
+    <span class="msub">\(14\ \text{vocales} + 24\ \text{consonantes}\)</span>
+    <span class="mslide-count">6 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🗣️</span> Tipos de sonidos del habla</div>
+        <div class="card-body">
+          <p><strong>Sonoros</strong> (las cuerdas vocales vibran: vocales y consonantes sonoras), <strong>sordos</strong> (flujo turbulento sin vibración: /s/, /f/) y <strong>nasales</strong> (el velo baja y el aire sale por la nariz: /m/, /n/). El sistema fonético del español tiene 14 vocales y 24 consonantes.</p>
+          <table class="data-mini">
+            <tr><th>Vocal</th><th>F₁ (Hz)</th><th>F₂ (Hz)</th></tr>
+            <tr><td>/i/</td><td>300</td><td>2\,300</td></tr>
+            <tr><td>/a/</td><td>800</td><td>1\,200</td></tr>
+            <tr><td>/u/</td><td>350</td><td>800</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📍</span> Puntos de articulación</div>
+        <div class="card-body">
+          <p>Los articuladores (lengua, labios, velo, cuerdas vocales) modulan el tracto vocal. El punto de articulación es dónde se estrecha: bilabial /p b m/, labiodental /f/, dental /t d/, alveolar /s n/, palatal /ɲ j/, velar /k g/.</p>
+          <div class="eq-block">\[ f_0 \approx 128\ \mathrm{Hz}\ (\text{hombre}),\quad 260\ \mathrm{Hz}\ (\text{mujer}) \]</div>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-6">Elige la vocal y observa cómo se mueve la lengua en el esquema: el punto más oscuro marca la constricción. F₂ separa la «oscuridad» de la «claridad» de cada vocal.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-vocab" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">fonema</span>
+        <label>Fonema <select id="vt_fon"><option value="0">/i/</option><option value="1">/e/</option><option value="2">/a/</option><option value="3">/o/</option><option value="4">/u/</option><option value="5">/s/</option><option value="6">/m/</option></select></label>
+        <span class="readout" id="vt_out">/i/ → vocal anterior, cerrada</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 7 · M3 Glotis (animada) ═══════════ -->
+<div class="slide" data-slide="7" data-module="3">
+  <div class="module-header">
+    <span class="mnum">10 · 4</span>
+    <span class="mtitle">La glotis: fuente de voz</span>
+    <span class="msub">\(f_0 \approx 128\ \mathrm{Hz}\ (M)\ \sim\ 260\ \mathrm{Hz}\ (F)\)</span>
+    <span class="mslide-count">7 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🌀</span> Vibración de las cuerdas vocales</div>
+        <div class="card-body">
+          <p>El aire pulmonar pasa entre las cuerdas vocales. Por el <strong>efecto Bernoulli</strong>, la presión cae donde la velocidad sube, y las cuerdas se cierran y abren a la frecuencia fundamental \(f_0\):</p>
+          <div class="eq-block"><span class="eqno">(10.40)</span>\[ P + \tfrac{1}{2}\rho v^{2} = \text{const} \]</div>
+          <p>El pulso glotal es una onda casi «en diente de sierra»: rica en armónicos, con energía que decae ~12 dB/octava. En voz modal: <span class="tag">bajo 98 · barítono 123 · tenor 165 Hz</span> y <span class="tag">contralto 175 · mezzo 196 · soprano 247 Hz</span>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">⚡</span> Eficiencia energética del habla</div>
+        <div class="card-body">
+          <p>El habla emite solo ~\(10^{-3}\) W acústicos sobre ~\(10^{-2}\) W aerodinámicos: eficiencia de alrededor del 1 %.</p>
+          <div class="eq-block"><span class="eqno">(10.52)</span>\[ \eta \approx 10^{-3} \times 100 = 0{,}1\text{–}1\,\% \]</div>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-7">Pulsa ▶ para ver el ciclo glotal animado: al abrirse, el aire se acelera y la presión cae (Bernoulli), y las cuerdas vuelven a cerrarse. Cada cierre es un «golpe» del pulso glotal.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-glottis" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">glotis</span>
+        <button id="gl_play" onclick="toggleGlottis()">▶</button>
+        <label>f₀ <input type="range" id="gl_f" min="80" max="300" value="128" step="1"> <span id="gl_fv">128 Hz</span></label>
+        <span class="readout" id="gl_out">Ciclo glotal · f₀ = 128 Hz (voz masculina)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 8 · M3 Fuente-filtro (animada) ═══════════ -->
+<div class="slide" data-slide="8" data-module="3">
+  <div class="module-header">
+    <span class="mnum">10 · 4</span>
+    <span class="mtitle">Teoría fuente-filtro y formantes</span>
+    <span class="msub">\(I_{out}(f) = T(f)\, I_{in}(f)\)</span>
+    <span class="mslide-count">8 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🎛️</span> El tracto vocal como filtro</div>
+        <div class="card-body">
+          <p>El espectro de la voz = el <strong>espectro de la fuente</strong> (pulsos glotales) multiplicado por la <strong>función de transferencia</strong> \(T(f)\) del tracto, que tiene picos en los formantes:</p>
+          <div class="eq-block"><span class="eqno">(10.44)</span>\[ I_\mathrm{out}(f) = T(f)\; I_\mathrm{in}(f) \]</div>
+          <div class="eq-block"><span class="eqno">(10.45)</span>\[ \log I_\mathrm{out} = \log T + \log I_\mathrm{in} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🎼</span> Tres formantes describen las vocales</div>
+        <div class="card-body">
+          <p>El tracto vocal es un tubo casi uniforme: sus resonancias son armónicos de ~500 Hz. Sus picos se desplazan con la boca y la lengua:</p>
+          <div class="eq-block"><span class="eqno">(10.46)</span>\[ F_1 \approx 500,\; F_2 \approx 1\,700,\; F_3 \approx 2\,500\ \mathrm{Hz} \]</div>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-8">▶ anima el espectro: los armónicos de la fuente (líneas) atraviesan el filtro (curva) y quedan «pintados» con los picos de los formantes. Cambia de vocal y mira cómo se mueven F₁ y F₂.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-sourcefilter" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">fuente-filtro</span>
+        <button id="sf_play" onclick="toggleSourceFilter()">▶</button>
+        <label>Vocal <select id="sf_vowel"><option value="0">/a/</option><option value="1">/e/</option><option value="2">/i/</option><option value="3">/o/</option><option value="4">/u/</option></select></label>
+        <span class="readout" id="sf_out">/a/ → F₁≈800 Hz · F₂≈1200 Hz</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 9 · M4 Dos tubos ═══════════ -->
+<div class="slide" data-slide="9" data-module="4">
+  <div class="module-header">
+    <span class="mnum">10 · 4</span>
+    <span class="mtitle">Modelo de dos tubos: vocales y consonantes</span>
+    <span class="msub">\(P_r/P_i = (A_1 - A_2)/(A_1 + A_2)\)</span>
+    <span class="mslide-count">9 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🧩</span> Un cambio de área refleja presión</div>
+        <div class="card-body">
+          <p>Si el tracto se aproxima como dos tubos de áreas \(A_1\) y \(A_2\), el cociente de presiones reflejada e incidente en el cambio de sección es</p>
+          <div class="eq-block"><span class="eqno">(10.47)</span>\[ \frac{P_r}{P_i} = \frac{A_1 - A_2}{A_1 + A_2} \]</div>
+          <p>La reflexión en el cambio de área define cuánta energía vuelve y cuánta sigue: el mismo mecanismo de las interfaces de impedancia, pero «geométrico».</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🔤</span> De los tubos a las vocales</div>
+        <div class="card-body">
+          <p>Una vocal alta anterior (/i/) tiene dos constricciones; una abierta (/a/) es casi un tubo único. La diferencia de áreas entre la faringe y la boca genera los formantes.</p>
+          <table class="data-mini">
+            <tr><th>Vocal</th><th>A₁/A₂</th><th>F₁ (Hz)</th></tr>
+            <tr><td>/a/</td><td>≈ 1</td><td>800</td></tr>
+            <tr><td>/i/</td><td>≈ 3</td><td>300</td></tr>
+            <tr><td>/u/</td><td>≈ 2</td><td>350</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-9">Cambia el cociente de áreas: cuando el tubo 2 es mucho más estrecho que el tubo 1, la reflexión crece y la onda transmitida se achica, igual que en la reflexión por impedancia de la slide 3.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-twotube" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">2 tubos</span>
+        <label>A₂/A₁ <select id="tt_sel"><option value="0">A₂ = A₁ (tubo único)</option><option value="1">A₂ = 0,50 A₁</option><option value="2">A₂ = 0,25 A₁</option><option value="3">A₂ = 0,10 A₁</option><option value="4">A₂ = 0,03 A₁</option></select></label>
+        <span class="readout" id="tt_out">P_r/P_i = 0 · sin reflexión</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 10 · M4 Timbre ═══════════ -->
+<div class="slide" data-slide="10" data-module="4">
+  <div class="module-header">
+    <span class="mnum">10 · 4</span>
+    <span class="mtitle">Síntesis de Fourier y timbre</span>
+    <span class="msub">\(x(t) = \sum_n a_n \cos(2\pi n f_0 t + \varphi_n)\)</span>
+    <span class="mslide-count">10 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">📐</span> Toda onda periódica es una suma de senos</div>
+        <div class="card-body">
+          <p>La voz no es un seno puro: es una onda periódica con forma de diente de sierra, es decir, una suma de armónicos \(n f_0\). El <strong>timbre</strong> es el reparto de amplitudes \(a_n\):</p>
+          <div class="eq-block"><span class="eqno">(10.50)</span>\[ x(t) = \sum_{n} a_n \cos\!\big(2\pi n f_0\, t + \varphi_n\big) \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">👂</span> Del espectro al oído</div>
+        <div class="card-body">
+          <p>La cóclea hace «análisis de Fourier» en tiempo real: separa la onda compleja en sus frecuencias. Cuantos más armónicos se añaden, más «brillante» es el timbre. Para el diente de sierra:</p>
+          <div class="eq-block"><span class="eqno">(10.51)</span>\[ a_n \propto \frac{1}{n}\ \text{(diente de sierra)} \]</div>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-10">Añade armónicos uno a uno y observa cómo la suma se aproxima a la forma de diente de sierra de la glotis. Cada «diente» es energía en un múltiplo de f₀.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-timbre" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">Fourier</span>
+        <label>Forma <select id="tm_sel"><option value="0">Diente de sierra (voz)</option><option value="1">Cuadrada (clarinete)</option><option value="2">Triangular (flauta)</option></select></label>
+        <label>Armónicos <input type="range" id="tm_n" min="1" max="12" value="6" step="1"> <span id="tm_nv">6</span></label>
+        <span class="readout" id="tm_out">6 armónicos · f₀ = 128 Hz</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 11 · M4 Energética ═══════════ -->
+<div class="slide" data-slide="11" data-module="4">
+  <div class="module-header">
+    <span class="mnum">10 · 4</span>
+    <span class="mtitle">Energética del habla</span>
+    <span class="msub">\(P_{acro} \approx 10^{-2}\ \mathrm{W}\ \to\ P_{son} \approx 10^{-3}\ \mathrm{W}\)</span>
+    <span class="mslide-count">11 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">⚖️</span> ¿Cuánta energía tiene la voz?</div>
+        <div class="card-body">
+          <p>El flujo de aire pulmonar (~\(10^{-1}\) L/s a ~5 cm H₂O) entrega ~\(10^{-2}\) W de potencia aerodinámica; de esa potencia solo ~\(10^{-3}\) W sale como sonido. El resto se disipa en fricción y turbulencia.</p>
+          <div class="eq-block"><span class="eqno">(10.52)</span>\[ P_\mathrm{acro} \approx 10^{-2}\ \mathrm{W} \qquad P_\mathrm{son} \approx 10^{-3}\ \mathrm{W} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📢</span> El grito no escala como el habla</div>
+        <div class="card-body">
+          <p>Gritar sube la potencia acústica hasta ~\(5\times10^{-3}\) W (un salto de ~7 dB) y desplaza el tono hacia frecuencias más agudas, donde el oído es más sensible.</p>
+          <table class="data-mini">
+            <tr><th>Vocalización</th><th>P (W)</th></tr>
+            <tr><td>Susurro</td><td>10⁻⁶</td></tr>
+            <tr><td>Habla</td><td>10⁻³</td></tr>
+            <tr><td>Grito</td><td>5×10⁻³</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-11">La barra logarítmica lo dice todo: la energía acústica del habla es una milésima de la aerodinámica. La voz es un subproducto barato de la respiración.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-energy" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">energía</span>
+        <label>Escenario <select id="en_sel"><option value="0">Habla normal</option><option value="1">Susurro</option><option value="2">Grito</option><option value="3">Canto lírico</option></select></label>
+        <span class="readout" id="en_out">Habla: 10⁻² W aerod. → 10⁻³ W son.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 12 · M5 Campo auditivo ═══════════ -->
+<div class="slide" data-slide="12" data-module="5">
+  <div class="module-header">
+    <span class="mnum">10 · 5</span>
+    <span class="mtitle">El campo auditivo</span>
+    <span class="msub">\(20\ \mathrm{Hz} - 20\ \mathrm{kHz}\ \cdot\ 0\ \mathrm{dB} - 130\ \mathrm{dB}\)</span>
+    <span class="mslide-count">12 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">👂</span> Los límites del oído</div>
+        <div class="card-body">
+          <p>El <strong>campo auditivo</strong> es la región entre el umbral de audición (abajo) y el de dolor (arriba), sobre 20 Hz–20 kHz. El oído es más sensible entre 2–4 kHz: la banda de los formantes y del habla.</p>
+          <div class="eq-block">\[ \text{frecuencia: } 20\text{–}20\,000\ \mathrm{Hz} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📉</span> Curvas de igual sonoridad</div>
+        <div class="card-body">
+          <p>A baja frecuencia hace falta mucha más intensidad para percibir igual: el oído «sube los graves». Las curvas fónicas conectan los tonos que suenan igual de fuertes, ancladas a 1 kHz.</p>
+          <table class="data-mini">
+            <tr><th>Frecuencia</th><th>Umbral (dB)</th></tr>
+            <tr><td>100 Hz</td><td>≈ 35</td></tr>
+            <tr><td>1 kHz</td><td>0</td></tr>
+            <tr><td>3,4 kHz</td><td>≈ −3 (máx. sens.)</td></tr>
+            <tr><td>10 kHz</td><td>≈ 10</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-12">Recorre el rango de frecuencias: el punto del tono sube y baja contra la curva del umbral. El «fondo» del campo auditivo no es plano: tiene forma de U con el mínimo cerca de 3 kHz.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-audfield" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">campo</span>
+        <label>Tono <input type="range" id="af_f" min="20" max="20000" value="1000" step="10"> <span id="af_fv">1000 Hz</span></label>
+        <span class="readout" id="af_out">1000 Hz · umbral 0 dB · audible</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 13 · M5 Oído medio ═══════════ -->
+<div class="slide" data-slide="13" data-module="5">
+  <div class="module-header">
+    <span class="mnum">10 · 5</span>
+    <span class="mtitle">El oído medio: adaptador de impedancias</span>
+    <span class="msub">\(17\times\ \text{área} \cdot 1{,}3\times\ \text{palanca} \approx 22\times\ (27\ \mathrm{dB})\)</span>
+    <span class="mslide-count">13 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🔧</span> Amplificación por área y palanca</div>
+        <div class="card-body">
+          <p>La membrana timpánica (~55 mm² efectiva) concentra la fuerza sobre el estribo (~3,2 mm²): ganancia por área de ~17×. A eso se suma la palanca de los huesecillos (~1,3×). Total ≈ 22× en fuerza, es decir,</p>
+          <div class="eq-block"><span class="eqno">(10.53)</span>\[ \frac{F_\mathrm{estribo}}{F_\mathrm{tímpano}} \approx 17 \times 1{,}3 \approx 22 \]</div>
+          <div class="eq-block"><span class="eqno">(10.54)</span>\[ 20 \log_{10}(22) \approx 27\ \mathrm{dB} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📊</span> Ganancia selectiva</div>
+        <div class="card-body">
+          <p>La ganancia del oído medio no es plana: es máxima (~27 dB) en 0,8–3 kHz y cae hacia los extremos. Esta selectividad contribuye a la forma de U del campo auditivo.</p>
+          <table class="data-mini">
+            <tr><th>Mecanismo</th><th>Factor</th></tr>
+            <tr><td>Área tímpano/estribo</td><td>17×</td></tr>
+            <tr><td>Palanca de huesecillos</td><td>1,3×</td></tr>
+            <tr><td>Ganancia total</td><td>22× (27 dB)</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-13">Mueve los dos controles: la ganancia por área es la que domina. Con valores reales (17× y 1,3×) llegas a los 27 dB: eso compensa la reflexión del 99,9 % en la ventana oval.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-middleear" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">oído medio</span>
+        <label>Ganancia área <input type="range" id="me_ae" min="1" max="25" value="17" step="0.5"> <span id="me_aev">17,0×</span></label>
+        <label>Ganancia palanca <input type="range" id="me_l" min="1" max="3" value="1.3" step="0.05"> <span id="me_lv">1,30×</span></label>
+        <span class="readout" id="me_out">Total 22,1× → 26,9 dB</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 14 · M5 Cóclea (animada) ═══════════ -->
+<div class="slide" data-slide="14" data-module="5">
+  <div class="module-header">
+    <span class="mnum">10 · 5</span>
+    <span class="mtitle">La cóclea: análisis de frecuencias</span>
+    <span class="msub">\(\text{tonotopía}: f \propto \text{posición en la basilar}\)</span>
+    <span class="mslide-count">14 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🌀</span> La membrana basilar separa frecuencias</div>
+        <div class="card-body">
+          <p>La onda de presión del líquido coclear recorre la membrana basilar. Cerca de la ventana oval es rígida y resuena agudo; hacia el ápex es laxa y resuena grave. Cada lugar responde a su frecuencia: una <strong>tonotopía</strong>.</p>
+          <div class="eq-block">\[ f(x) \approx f_0\ 10^{-a x} \quad (\text{mapa logarítmico}) \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🔬</span> Células ciliadas: transducción</div>
+        <div class="card-body">
+          <p>Las células ciliadas internas (~3,5 mil en humanos) convierten el desplazamiento de la basilar en potenciales de acción. Las externas amplifican activamente el movimiento: el «amplificador coclear».</p>
+          <div class="eq-block"><span class="eqno">(10.57)</span>\[ V_\mathrm{cilio} \propto \text{deflexión de la basilar} \]</div>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-14">▶ anima el viaje de la onda por la basilar: el máximo se desplaza según la frecuencia del tono. Un grave (100 Hz) pica al fondo; un agudo (5 kHz), cerca de la ventana oval.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-cochlea" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">cóclea</span>
+        <button id="co_play" onclick="toggleCochlea()">▶</button>
+        <label>Tono <input type="range" id="co_f" min="20" max="10000" value="1000" step="10"> <span id="co_fv">1000 Hz</span></label>
+        <span class="readout" id="co_out">1000 Hz → máx. en x ≈ 60 % de la basilar</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 15 · M6 Audiogramas ═══════════ -->
+<div class="slide" data-slide="15" data-module="6">
+  <div class="module-header">
+    <span class="mnum">10 · 5</span>
+    <span class="mtitle">Audiogramas y tipos de pérdida auditiva</span>
+    <span class="msub">\(0{-}15\) normal · \(26{-}40\) leve · \(71{-}90\) grave</span>
+    <span class="mslide-count">15 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🩺</span> Leer un audiograma</div>
+        <div class="card-body">
+          <p>El audiograma traza el umbral en dB HL frente a la frecuencia. Clases de pérdida (dB HL): <span class="tag">normal 0–15</span>, <span class="tag">ligera 16–25</span>, <span class="tag">leve 26–40</span>, <span class="tag">moderada 41–55</span>, <span class="tag">moderada-grave 56–70</span>, <span class="tag">grave 71–90</span>, <span class="tag">profunda &gt;90</span>.</p>
+          <div class="eq-block">\[ \text{dB HL} = \text{pérdida respecto al umbral normal} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🔀</span> Conductiva vs. neurosensorial</div>
+        <div class="card-body">
+          <p><strong>Conductiva</strong>: el sonido no llega a la cóclea (cerumen, otitis, otosclerosis) — curva plana, a menudo tratable. <strong>Neurosensorial</strong>: falla la cóclea o el nervio (ruido, edad, ototóxicos) — caída en agudos, irreversible. El test de Rinne distingue ambas por conducción ósea.</p>
+          <table class="data-mini">
+            <tr><th>Pérdida</th><th>Curva típica</th></tr>
+            <tr><td>Conductiva</td><td>plana</td></tr>
+            <tr><td>Neurosensorial</td><td>caída en agudos</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-15">Elige cada caso clínico y lee la curva: la presbiacusia y la exposición a ruido caen en agudos; la conductiva es plana en todo el rango.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-audiogram" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">audiograma</span>
+        <label>Caso <select id="au_sel"><option value="0">Normal (0–15)</option><option value="1">Ligera (16–25)</option><option value="2">Leve (26–40)</option><option value="3">Moderada (41–55)</option><option value="4">Conductiva plana</option><option value="5">Neurosensorial por ruido</option><option value="6">Profunda (&gt;90)</option></select></label>
+        <span class="readout" id="au_out">Normal · umbral 0–15 dB HL</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 16 · M6 Daño por ruido ═══════════ -->
+<div class="slide" data-slide="16" data-module="6">
+  <div class="module-header">
+    <span class="mnum">10 · 5</span>
+    <span class="mtitle">Presbiacusia y daño por ruido</span>
+    <span class="msub">\(85\text{–}90\ \mathrm{dB/8\,h}\) límite laboral · \(190\ \mathrm{dB}\) ruptura</span>
+    <span class="mslide-count">16 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">👵</span> La edad cobra peaje en los agudos</div>
+        <div class="card-body">
+          <p>La <strong>presbiacusia</strong> (pérdida por edad) empieza en las frecuencias altas y se extiende lentamente. La «notch» típica de 3–6 kHz del trauma por ruido es la firma del daño coclear por sobreestimulación.</p>
+          <div class="eq-block">\[ \text{umbral (dB HL)} \uparrow \text{con la edad en } 3\text{–}8\ \mathrm{kHz} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">⏱️</span> Regla práctica de la dosis de ruido</div>
+        <div class="card-body">
+          <p>Por cada +3 dB el tiempo seguro se divide a la mitad (intercambio de 3 dB): 85 dB → 8 h, 88 dB → 4 h, 91 dB → 2 h… El umbral de dolor está en 120–140 dB y la ruptura del tímpano en ~190 dB.</p>
+          <table class="data-mini">
+            <tr><th>Nivel</th><th>Tiempo seguro</th></tr>
+            <tr><td>85 dB</td><td>8 h</td></tr>
+            <tr><td>91 dB</td><td>2 h</td></tr>
+            <tr><td>97 dB</td><td>30 min</td></tr>
+            <tr><td>103 dB</td><td>7,5 min</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-16">Sube la edad del control: la curva de umbral se eleva primero en agudos. Un joven de 20 años oye 16 kHz; a los 60, ese tono quedó fuera del campo auditivo.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-damage" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">edad</span>
+        <label>Edad <input type="range" id="pr_age" min="20" max="80" value="30" step="1"> <span id="pr_agev">30 años</span></label>
+        <span class="readout" id="pr_out">30 años · 16 kHz: aún audible</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 17 · M7 Fon y sonio ═══════════ -->
+<div class="slide" data-slide="17" data-module="7">
+  <div class="module-header">
+    <span class="mnum">10 · 6</span>
+    <span class="mtitle">Sonoridad: fones y sonios</span>
+    <span class="msub">\(L_p = 10\log_{10}(I/10^{-12})\ \mathrm{ph}\quad S = (I/10^{-8})^{0{,}3}\ \mathrm{sone}\)</span>
+    <span class="mslide-count">17 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🔊</span> Sonoridad: la percepción del nivel</div>
+        <div class="card-body">
+          <p>El nivel de sonoridad en <strong>fones</strong> es el nivel (en dB) de un tono de 1 kHz que suena igual de fuerte. A 1 kHz, fones ≈ dB; a otras frecuencias, la curva fónica lo corrige.</p>
+          <div class="eq-block"><span class="eqno">(10.64)</span>\[ L_p = 10 \log_{10}\frac{I}{10^{-12}}\ \mathrm{ph} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📈</span> El sonio: sonoridad lineal</div>
+        <div class="card-body">
+          <p>El <strong>sonio</strong> es la escala lineal de sonoridad: 1 sone = 40 ph; cada vez que la sonoridad se duplica, los fones suben 10. Relación experimental con exponente 0,3:</p>
+          <div class="eq-block"><span class="eqno">(10.65)</span>\[ S = \left(\frac{I}{10^{-8}}\right)^{0{,}3}\ \mathrm{sone} \]</div>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-17">Sube el nivel y observa el salto: duplicar la intensidad (+3 dB) apenas añade ~1 sone; multiplicarla por 10 (+10 dB) la duplica. El oído comprime el mundo físico.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-phonsone" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">fone/sonio</span>
+        <label>Nivel <input type="range" id="ps_ph" min="0" max="120" value="40" step="1"> <span id="ps_phv">40 ph</span></label>
+        <span class="readout" id="ps_out">40 ph → 1 sone</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 18 · M7 Tono y melodía ═══════════ -->
+<div class="slide" data-slide="18" data-module="7">
+  <div class="module-header">
+    <span class="mnum">10 · 6</span>
+    <span class="mtitle">Percepción del tono: mels y fundamental ausente</span>
+    <span class="msub">\(\text{mel} = f\ \text{percibido en escala musical}\)</span>
+    <span class="mslide-count">18 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🎼</span> La escala de mels</div>
+        <div class="card-body">
+          <p>La percepción del tono no es lineal en hercios: el oído resuelve mejor los cambios en bajas frecuencias. La escala de <strong>mels</strong> comprime los hercios en una escala perceptual con 1000 mels ≈ 1000 Hz.</p>
+          <div class="eq-block">\[ \text{mel} \approx 1000 \cdot \log_2\!\Big(1 + \frac{f}{1000}\Big) \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📵</span> La fundamental ausente</div>
+        <div class="card-body">
+          <p>Un teléfono o un altavoz pequeño no emiten la fundamental de una voz grave; emiten sus armónicos. Aun así percibimos el tono correcto: el cerebro <strong>reconstruye</strong> la fundamental ausente a partir del espaciado de los armónicos.</p>
+          <div class="eq-block">\[ f_0 = \text{mcd de los armónicos presentes} \]</div>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-18">Elige cada caso: la voz de bajo sin fundamental y la del clarinete. La melodía que escuchas es la frecuencia que falta, no la que suena.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-pitch" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">tono</span>
+        <label>Caso <select id="pt_sel"><option value="0">Voz completa (f₀ presente)</option><option value="1">Sin fundamental (teléfono)</option><option value="2">Clarinete (solo impares)</option></select></label>
+        <span class="readout" id="pt_out">Voz completa · percibes f₀ = 128 Hz</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 19 · M7 Enmascaramiento ═══════════ -->
+<div class="slide" data-slide="19" data-module="7">
+  <div class="module-header">
+    <span class="mnum">10 · 6</span>
+    <span class="mtitle">Enmascaramiento y localización</span>
+    <span class="msub">\(\text{ITD} \approx 10\ \mu s/^\circ\)</span>
+    <span class="mslide-count">19 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🔕</span> Un sonido puede esconder a otro</div>
+        <div class="card-body">
+          <p>El <strong>enmascaramiento</strong>: un sonido intenso eleva el umbral de uno más débil cercano en frecuencia (los graves enmascaran más a los agudos que al revés). La banda crítica de la cóclea determina cuánto.</p>
+          <div class="eq-block">\[ \text{máscara} \approx 3{,}5\ \mathrm{kHz} \text{ para } f \approx 1\ \mathrm{kHz} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🎯</span> Localización espacial del sonido</div>
+        <div class="card-body">
+          <p>Localizamos una fuente por la <strong>diferencia interaural de tiempo</strong> (ITD) y de intensidad (ILD). En el plano horizontal el cerebro resuelve diferencias de menos de 10 µs y ángulos de 1–2°. La cabeza produce «sombra acústica» en agudos.</p>
+          <div class="eq-block">\[ \text{ángulo} \approx \frac{c\ \cdot\ \mathrm{ITD}}{d_\mathrm{orejas}} \]</div>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-19">Mueve el tono de la sonda y el ángulo de la fuente: el enmascarador pinta una «montaña» sobre el espectro y el sonido débil cae bajo ella. Cambia el ángulo y mira cómo crece la ITD.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-masking" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">enmascaramiento</span>
+        <label>Sonda <input type="range" id="ms_f" min="200" max="8000" value="2000" step="50"> <span id="ms_fv">2000 Hz</span></label>
+        <label>Azimut <input type="range" id="ms_th" min="-60" max="60" value="0" step="1"> <span id="ms_tv">0°</span></label>
+        <span class="readout" id="ms_out">ITD = 0 µs (centro) · sin enmascarar</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 20 · M8 Vibraciones del cuerpo ═══════════ -->
+<div class="slide" data-slide="20" data-module="8">
+  <div class="module-header">
+    <span class="mnum">10 · 7</span>
+    <span class="mtitle">El cuerpo como fuente de sonido</span>
+    <span class="msub">\(\text{correr}: 2{,}0\ \mathrm{atm @ 4\,Hz}\ \cdot\ \text{gritar}: 0{,}05\ \mathrm{@ 1\,kHz}\)</span>
+    <span class="mslide-count">20 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">❤️</span> Sonidos corporales y sus niveles</div>
+        <div class="card-body">
+          <p>El cuerpo vibra y suena en todas las actividades: caminar, correr, masticar, respirar, el corazón y la voz. Cada fuente tiene su nivel típico y su banda de frecuencia (Tabla 10.6 del libro).</p>
+          <table class="data-mini">
+            <tr><th>Fuente</th><th>Nivel (dB @ 1 m)</th></tr>
+            <tr><td>Respiración</td><td>≈ 10</td></tr>
+            <tr><td>Corazón</td><td>≈ 20</td></tr>
+            <tr><td>Caminar</td><td>≈ 25</td></tr>
+            <tr><td>Correr</td><td>≈ 35</td></tr>
+            <tr><td>Voz</td><td>≈ 60–70</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🌊</span> Presiones del cuerpo en el movimiento</div>
+        <div class="card-body">
+          <p>Al correr el cuerpo genera sobresaltos de presión de hasta <strong>2,0 atm a ~4 Hz</strong> (cada zancada); al gritar, <strong>0,05 atm a ~1 kHz</strong>. Son las ondas de presión que la medicina aprovecha para auscultar y diagnosticar.</p>
+          <div class="eq-block">\[ \text{correr: } \Delta P \approx 2{,}0\ \mathrm{atm},\ 4\ \mathrm{Hz} \]</div>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-20">Recorre las fuentes: cada una suma su «firma» de frecuencia y nivel al sonido del cuerpo. La escala empieza en el silencio de la consulta (10 dB) y llega a la voz del paciente (70 dB).</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-bodysources" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">fuentes</span>
+        <label>Fuente <select id="bo_sel"><option value="0">Respiración</option><option value="1">Corazón</option><option value="2">Caminar</option><option value="3">Correr</option><option value="4">Voz</option><option value="5">Grito</option></select></label>
+        <span class="readout" id="bo_out">Respiración · ≈ 10 dB @ 1 m</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 21 · M8 Ruidos cardíacos (animada) ═══════════ -->
+<div class="slide" data-slide="21" data-module="8">
+  <div class="module-header">
+    <span class="mnum">10 · 7</span>
+    <span class="mtitle">Ruidos cardíacos y auscultación</span>
+    <span class="msub">\(S_1\ (\text{lub}) \cdot S_2\ (\text{dub}) \cdot S_3 \cdot S_4\)</span>
+    <span class="mslide-count">21 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🫀</span> Los sonidos que «filtra» el corazón</div>
+        <div class="card-body">
+          <p>El corazón produce ondas de presión audibles: <strong>S₁</strong> (cierre de las válvulas AV, el «lub»), <strong>S₂</strong> (cierre de las semilunares, el «dub»), y los ruidos <strong>S₃</strong> y <strong>S₄</strong> (llenado ventricular, fisiológicos en jóvenes, patológicos en adultos).</p>
+          <div class="eq-block">\[ \text{S}_1: \text{válvulas AV} \quad \text{S}_2: \text{semilunares} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🩸</span> Soplos y el método de Korotkoff</div>
+        <div class="card-body">
+          <p>Los <strong>soplos</strong> son flujos turbulentos a través de válvulas estenóticas o insuficientes. Los <strong>sonidos de Korotkoff</strong> aparecen cuando el flujo se vuelve turbulento bajo el manguito: el mismo mecanismo de Bernoulli y turbulencia que genera la voz.</p>
+          <div class="eq-block">\[ \text{Re} \approx \frac{\rho v D}{\eta} > 2\,000\ \Rightarrow\ \text{turbulencia} \]</div>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-21">▶ reproduce el fonocardiograma: mira el «lub-dub» en su momento del ciclo. Cambia a un soplo y verás el soplido entre S₁ y S₂. La auscultación es espectroscopia de bajo coste.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-heartsounds" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">fonocardio</span>
+        <button id="hs_play" onclick="toggleHeartSounds()">▶</button>
+        <label>Estado <select id="hs_sel"><option value="0">Normal (S₁–S₂)</option><option value="1">Con S₃ (joven)</option><option value="2">Soplo sistólico</option></select></label>
+        <span class="readout" id="hs_out">Fonocardiograma · S₁ (lub) + S₂ (dub)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 22 · M9 Doppler (animada) ═══════════ -->
+<div class="slide" data-slide="22" data-module="9">
+  <div class="module-header">
+    <span class="mnum">10 · 8</span>
+    <span class="mtitle">El efecto Doppler en diagnóstico</span>
+    <span class="msub">\(v = \dfrac{\delta f\ v_s}{2 f \cos\theta}\)</span>
+    <span class="mslide-count">22 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🩻</span> Medir el flujo con ultrasonido</div>
+        <div class="card-body">
+          <p>Un haz ultrasónico de frecuencia \(f\) rebota en los glóbulos rojos en movimiento. El desplazamiento Doppler \(\delta f\) es proporcional a la velocidad del flujo \(v\), a la velocidad del sonido \(v_s\) y al coseno del ángulo \(\theta\):</p>
+          <div class="eq-block"><span class="eqno">(10.66)</span>\[ v = \frac{\delta f\ v_s}{2\, f \cos\theta} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📐</span> Cuándo el ángulo importa</div>
+        <div class="card-body">
+          <p>Si el haz es perpendicular al vaso (\(\theta=90°\)), \(\cos\theta=0\) y no se detecta flujo. Los ecógrafos corrigen el ángulo automáticamente. La fórmula también rige para el radar y para la astronomía… y para el oído de un murciélago.</p>
+          <div class="eq-block">\[ f' = f\, \frac{v_s}{v_s \pm v_\mathrm{fuente}} \]</div>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-22">▶ anima los glóbulos rojos: la frecuencia del eco sube cuando el flujo se acerca y baja cuando se aleja. Aumenta el ángulo y el desplazamiento cae: a 90° el Doppler se anula.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-doppler" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">Doppler</span>
+        <button id="do_play" onclick="toggleDoppler()">▶</button>
+        <label>Velocidad flujo <input type="range" id="do_u" min="5" max="200" value="80" step="5"> <span id="do_uv">80 cm/s</span></label>
+        <label>Ángulo <input type="range" id="do_th" min="0" max="80" value="45" step="1"> <span id="do_tv">45°</span></label>
+        <span class="readout" id="do_out">δf = 1240 Hz @ 8 MHz · θ=45°</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 23 · M9 Mapa del capítulo ═══════════ -->
+<div class="slide" data-slide="23" data-module="9">
+  <div class="module-header">
+    <span class="mnum">10 · 9</span>
+    <span class="mtitle">Mapa del capítulo: del sonido a la escucha</span>
+    <span class="msub">\(v = \lambda f \to I \to \beta \to Z \to f_n \to f_0 \to F_1,F_2 \to \mathrm{dB\,HL}\)</span>
+    <span class="mslide-count">23 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🗺️</span> El hilo conductor</div>
+        <div class="card-body">
+          <p><strong>Producir</strong> (glotis → fuente) · <strong>filtrar</strong> (tracto vocal → formantes) · <strong>transmitir</strong> (oído medio → impedancias) · <strong>analizar</strong> (cóclea → tonotopía) · <strong>percibir</strong> (fones, mels, enmascaramiento) · <strong>diagnosticar</strong> (Doppler, fonocardiograma).</p>
+          <div class="eq-block"><span class="eqno">(10.1)</span>\[ \text{onda} \to \text{resonancia} \to \text{filtro} \to \text{tonotopía} \to \text{sonoridad} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🧮</span> Datos que conviene recordar</div>
+        <div class="card-body">
+          <table class="data-mini">
+            <tr><th>Concepto</th><th>Valor</th></tr>
+            <tr><td>v aire / tejido / hueso</td><td>343 / 1540 / 3500 m/s</td></tr>
+            <tr><td>Campo auditivo</td><td>20 Hz – 20 kHz</td></tr>
+            <tr><td>Resonancia del canal</td><td>≈ 3,4 kHz</td></tr>
+            <tr><td>Oído medio</td><td>22× (27 dB)</td></tr>
+            <tr><td>f₀ habla</td><td>128 (M) / 260 Hz (F)</td></tr>
+            <tr><td>Eficiencia de la voz</td><td>~0,1–1 %</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-23">Recorre las etapas del diagrama con el selector. Es el mismo mapa mental que usaremos para resolver problemas: fuente → filtro → transmisor → analizador → percepción → aplicación clínica.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-map" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">mapa</span>
+        <label>Etapa <select id="mp_sel"><option value="0">1 · Fuente (glotis)</option><option value="1">2 · Filtro (tracto)</option><option value="2">3 · Transmisión (oído medio)</option><option value="3">4 · Análisis (cóclea)</option><option value="4">5 · Percepción (fones/mels)</option><option value="5">6 · Diagnóstico (Doppler)</option></select></label>
+        <span class="readout" id="mp_out">Etapa 1 · la glotis crea el pulso</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ NAVEGACIÓN ═══════════ -->
+<nav class="nav-bar">
+  <button class="nav-btn" onclick="prevSlide()" aria-label="Anterior">‹</button>
+  <div class="nav-dots" id="navDots"></div>
+  <button class="nav-btn" onclick="nextSlide()" aria-label="Siguiente">›</button>
+  <span class="slide-counter" id="slideCounter">1 / 24</span>
+  <span class="nav-module-label" id="navModuleLabel">Inicio</span>
+</nav>

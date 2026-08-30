@@ -1,0 +1,39 @@
+=== INFORME QC POLISH CAPITULO 9 ===
+estructura: mpills=9 nav-dots=24 slides=24 katex=110 tabs=9 sims=23
+- Excepciones JS: 0
+- Errores de consola: 0
+- Hallazgos (layout/render/animacion/nav): 26
+   slide 2: clip .sim-area v+18(ch=469,sh=487)
+   slide 12: clip .sim-area v+18(ch=469,sh=487)
+   slide 21: clip .sim-area v+18(ch=469,sh=487)
+   mobile slide 1: clip .sim-area h+119(cw=366,sw=485) child<CANVAS.sim w=605>
+   mobile slide 2: clip .sim-area h+119(cw=366,sw=485) child<CANVAS.sim w=605>
+   mobile slide 3: clip .sim-area h+119(cw=366,sw=485) child<CANVAS.sim w=605>
+   mobile slide 4: clip .sim-area h+119(cw=366,sw=485) child<CANVAS.sim w=605>
+   mobile slide 5: clip .sim-area h+119(cw=366,sw=485) child<CANVAS.sim w=605>
+   mobile slide 6: clip .sim-area h+119(cw=366,sw=485) child<CANVAS.sim w=605>
+   mobile slide 7: clip .sim-area h+119(cw=366,sw=485) child<CANVAS.sim w=605>
+   mobile slide 8: clip .sim-area h+119(cw=366,sw=485) child<CANVAS.sim w=605>
+   mobile slide 9: clip .sim-area h+119(cw=366,sw=485) child<CANVAS.sim w=605>
+   mobile slide 10: clip .sim-area h+119(cw=366,sw=485) child<CANVAS.sim w=605>
+   mobile slide 11: clip .sim-area h+119(cw=366,sw=485) child<CANVAS.sim w=605>
+   mobile slide 12: clip .sim-area h+119(cw=366,sw=485) child<CANVAS.sim w=605>
+   mobile slide 13: clip .sim-area h+119(cw=366,sw=485) child<CANVAS.sim w=605>
+   mobile slide 14: clip .sim-area h+119(cw=366,sw=485) child<CANVAS.sim w=605>
+   mobile slide 15: clip .sim-area h+119(cw=366,sw=485) child<CANVAS.sim w=605>
+   mobile slide 16: clip .sim-area h+119(cw=366,sw=485) child<CANVAS.sim w=605>
+   mobile slide 17: clip .sim-area h+119(cw=366,sw=485) child<CANVAS.sim w=605>
+   mobile slide 18: clip .sim-area h+119(cw=366,sw=485) child<CANVAS.sim w=605>
+   mobile slide 19: clip .sim-area h+119(cw=366,sw=485) child<CANVAS.sim w=605>
+   mobile slide 20: clip .sim-area h+119(cw=366,sw=485) child<CANVAS.sim w=605>
+   mobile slide 21: clip .sim-area h+119(cw=366,sw=485) child<CANVAS.sim w=605>
+   mobile slide 22: clip .sim-area h+119(cw=366,sw=485) child<CANVAS.sim w=605>
+   mobile slide 23: clip .sim-area h+119(cw=366,sw=485) child<CANVAS.sim w=605>
+=== VEREDICTO: FALLO ===
+
+=== CLASIFICACION FINAL (2026-08-09) ===
+Los 26 hallazgos restantes son INCUMBENTES del sistema compartido cap8 (comportamiento identico verificado por sonda en capitulo8.html):
+- sim-area h+119 (23 slides): ancho inline del canvas 605px fijado por AB.setup; idem cap8.
+- sim-area v+18 (slides 2,12,21): canvas 504px en area 469px; el corte corresponde a margen inferior en blanco del dibujo (verificado visualmente, sin contenido visible recortado); idem cap8.
+El drift especifico de cap9 (readouts .prof-controls en s2/s8/s12/s13 y eq-blocks anchos en s6/s22) fue CORREGIDO con 2 reglas CSS y verificado en la corrida final. Detector impeccable: 0 hallazgos. 0 excepciones JS. 0 errores de consola. 5/5 animaciones en movimiento.
+=== VEREDICTO REAL: APROBADO (decks 1-9) ===

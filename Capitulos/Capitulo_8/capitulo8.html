@@ -1,0 +1,3399 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Capítulo 8 — Sistema Cardiovascular. Física del Cuerpo Humano, I. P. Herman (2016). Presentación universitaria interactiva en español.">
+<title>Capítulo 8 · Sistema Cardiovascular — Física del Cuerpo Humano</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,600&family=Karla:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   SISTEMA CARDIOVASCULAR — design system (continuidad con caps. 1–7)
+   Papel marfil · tinta · tinta fisiológica (teal / sangre / ámbar)
+   Serif académica (Source Serif 4) + grotesca (Karla) + mono técnica
+   ═══════════════════════════════════════════════════════════════ */
+:root{
+  --paper:#f5f0e4;
+  --paper-2:#eee7d6;
+  --paper-3:#e8dfc9;
+  --card:#fbf8f0;
+  --ink:#232c36;
+  --ink-2:#43505c;
+  --ink-3:#6b7885;
+  --line:#cfc3a9;
+  --line-soft:#e2d9c4;
+  --teal:#0d6e64;
+  --teal-deep:#0a5a52;
+  --teal-tint:rgba(13,110,100,.10);
+  --blood:#a92a1e;
+  --blood-deep:#8c1f16;
+  --blood-tint:rgba(169,42,30,.10);
+  --amber:#9a5b00;
+  --amber-deep:#7c4900;
+  --amber-tint:#fbf2dc;
+  --sagittal:#5d4fa8;
+  --coronal:#2d7d4f;
+  --transverse:#b86a1e;
+  --bone:#b6a67f;
+  --serif:'Source Serif 4',Georgia,'Times New Roman',serif;
+  --sans:'Karla',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,'Cascadia Mono',monospace;
+  --radius:12px;
+  --radius-sm:8px;
+  --shadow:0 1px 2px rgba(35,44,54,.05),0 8px 22px rgba(35,44,54,.07);
+  /* ── curvas de movimiento ── */
+  --ease-out:cubic-bezier(.23,1,.32,1);
+  --ease-in-out:cubic-bezier(.77,0,.175,1);
+  --ease-drawer:cubic-bezier(.32,.72,0,1);
+  --press:160ms var(--ease-out);
+  --fade:200ms var(--ease-out);
+  --slide:250ms var(--ease-out);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:clamp(16px,1.32vw,21px)}
+body{
+  font-family:var(--sans);color:var(--ink);background-color:var(--paper);
+  background-image:linear-gradient(rgba(35,44,54,.028) 1px,transparent 1px);
+  background-size:100% 44px;
+  overflow:hidden;height:100dvh;user-select:none;line-height:1.5;
+}
+::selection{background:rgba(13,110,100,.18)}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+
+/* ─── BRAND STRIP + MODULE TABS ─── */
+.module-bar{
+  position:fixed;top:0;left:0;right:0;z-index:30;
+  background:linear-gradient(180deg,rgba(245,240,228,.97) 68%,rgba(245,240,228,0));
+  padding:0 1.6rem;display:flex;gap:.4rem;align-items:flex-end;
+  pointer-events:none;
+}
+.module-bar>*{pointer-events:auto}
+.brand-mark{
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:0 1.2rem .55rem 0;margin-right:auto;flex-shrink:0;
+}
+.brand-mark .treatise{font-family:var(--serif);font-weight:600;font-size:.74rem;letter-spacing:.01em;color:var(--ink)}
+.brand-mark .book{font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.module-tab{
+  background:var(--paper-2);border:1px solid var(--line);border-bottom:none;
+  color:var(--ink-3);padding:.42rem 1.05rem .5rem;border-radius:9px 9px 0 0;
+  font-size:.64rem;font-weight:600;cursor:pointer;
+  transition:color var(--fade),background-color var(--fade),border-color var(--fade),box-shadow var(--slide);
+  letter-spacing:.02em;
+  display:flex;align-items:center;gap:.42rem;margin-bottom:1px;
+}
+.module-tab:active{transform:scale(.97)}
+.module-tab.active{
+  background:var(--card);border-color:var(--line);color:var(--teal-deep);
+  box-shadow:0 -1px 0 var(--card),0 -3px 0 var(--teal);
+  margin-bottom:0;padding-bottom:.55rem;
+}
+.module-tab .mod-badge{
+  font-size:.55rem;background:var(--card);border:1px solid var(--line);
+  padding:.06rem .4rem;border-radius:4px;color:var(--ink-3);font-weight:700;
+}
+.module-tab.active .mod-badge{background:var(--teal);border-color:var(--teal);color:var(--paper)}
+
+/* ─── SLIDES ─── */
+.slides{position:relative;z-index:1;height:100dvh}
+.slide,.slide-full{
+  display:none;width:100%;height:100dvh;
+  padding:3.4rem 2rem 4.6rem;overflow-y:auto;position:relative;
+}
+.slide.active,.slide-full.active{display:flex;flex-direction:column}
+.slide::-webkit-scrollbar-track{background:transparent}
+
+/* ─── PORTADA ─── */
+.slide-full{align-items:center;justify-content:center;text-align:center}
+.slide-full::before{
+  content:"";position:absolute;top:0;left:0;right:0;
+  height:5px;
+  background:linear-gradient(90deg,var(--teal) 0 25%,var(--blood) 25% 50%,var(--amber) 50% 75%,var(--sagittal) 75% 100%);
+}
+.slide-full h1{
+  font-family:var(--serif);font-size:clamp(2.1rem,4.6vw,3.9rem);font-weight:700;
+  letter-spacing:-.035em;line-height:1.06;max-width:18ch;
+  margin:1.4rem auto 1.1rem;
+}
+.slide-full h1 .chapno{
+  display:block;font-family:var(--sans);font-size:clamp(.72rem,1.1vw,1rem);
+  font-weight:700;letter-spacing:.42em;text-transform:uppercase;
+  color:var(--teal-deep);margin-bottom:1.15rem;
+}
+.slide-full h1 .vol{
+  font-style:italic;font-weight:600;color:var(--ink-2);
+}
+.slide-full .subtitle{
+  font-size:clamp(.86rem,1.3vw,1.05rem);color:var(--ink-2);max-width:62ch;
+  line-height:1.65;margin:0 auto;
+}
+.slide-full .rule{width:88px;height:1px;background:var(--line);margin:1.6rem auto}
+.module-preview{display:flex;gap:.55rem;flex-wrap:wrap;justify-content:center}
+.module-preview .mpill{
+  background:var(--card);border:1px solid var(--line);border-radius:999px;
+  padding:.42rem 1.05rem;font-size:.72rem;color:var(--ink-2);
+  transition:color var(--fade),border-color var(--fade),background-color var(--fade),transform var(--press);
+  cursor:pointer;display:flex;align-items:center;gap:.4rem;font-weight:600;
+}
+.module-preview .mpill:active{transform:translateY(-1px) scale(.96)}
+.module-preview .mpill.active{background:var(--teal);border-color:var(--teal-deep);color:var(--paper)}
+.module-preview .mpill .ico{font-size:.9rem}
+.slide-full .start-btn{
+  margin-top:1.9rem;background:var(--teal);color:var(--paper);
+  border:1px solid var(--teal-deep);padding:.78rem 2.4rem;border-radius:8px;
+  font-size:.95rem;font-weight:700;cursor:pointer;
+  transition:background-color var(--fade),box-shadow var(--slide),transform var(--press);
+  letter-spacing:.02em;
+}
+.slide-full .start-btn:active{transform:scale(.97)}
+.slide-full .book-ref{margin-top:2.2rem;font-size:.66rem;color:var(--ink-3);font-style:italic}
+
+/* ─── MODULE HEADER ─── */
+.module-header{
+  display:flex;align-items:baseline;gap:.7rem;margin-bottom:.8rem;flex-shrink:0;
+  padding-bottom:.6rem;border-bottom:1px solid var(--line);
+}
+.module-header .mnum{
+  font-family:var(--mono);font-size:.66rem;font-weight:700;letter-spacing:.08em;
+  color:var(--teal-deep);background:var(--teal-tint);padding:.24rem .7rem;border-radius:6px;
+  border:1px solid rgba(13,110,100,.22);
+}
+.module-header .mtitle{
+  font-family:var(--serif);font-size:1.42rem;font-weight:700;letter-spacing:-.01em;color:var(--ink);
+}
+.module-header .msub{font-size:.68rem;color:var(--ink-3);margin-left:auto;font-style:italic}
+.module-header .mslide-count{
+  font-size:.6rem;color:var(--ink-3);font-family:var(--mono);background:var(--paper-2);
+  padding:.16rem .5rem;border-radius:4px;border:1px solid var(--line-soft);
+}
+
+/* ─── CONTENT GRID ─── */
+.content-grid{
+  display:grid;grid-template-columns:1.12fr .88fr;
+  grid-template-rows:1fr auto;gap:.8rem;flex:1;min-height:0;
+}
+.content-grid.single-col{grid-template-columns:1fr}
+
+/* ─── TEORÍA ─── */
+.theory{
+  overflow-y:auto;line-height:1.5;display:flex;flex-direction:column;gap:.6rem;
+  padding-right:.2rem;
+}
+.theory .card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:.7rem .85rem;box-shadow:var(--shadow);transition:border-color var(--slide),box-shadow var(--slide);cursor:default;
+}
+.theory .card.active{border-color:rgba(13,110,100,.5);box-shadow:var(--shadow)}
+.theory .card .card-hdr{
+  display:flex;align-items:center;gap:.5rem;font-size:.7rem;
+  font-weight:700;color:var(--teal-deep);text-transform:uppercase;letter-spacing:.09em;
+  margin-bottom:.4rem;
+}
+.theory .card .card-hdr .icon{font-size:.92rem}
+.theory .card .card-body{font-size:.78rem;color:var(--ink-2);line-height:1.58;max-width:72ch}
+.theory .card .card-body p{margin-bottom:.3rem}
+.theory .card .card-body p:last-child{margin-bottom:0}
+.theory .card .card-body strong{color:var(--ink);font-weight:700}
+.theory .card .card-body .tag{
+  display:inline-block;font-size:.64rem;font-weight:700;font-family:var(--mono);
+  padding:.06rem .45rem;border-radius:4px;background:var(--teal-tint);color:var(--teal-deep);
+  border:1px solid rgba(13,110,100,.22);margin:0 .08rem;line-height:1.4;
+}
+.theory .card .card-body .row{
+  display:flex;gap:.35rem;flex-wrap:wrap;margin:.3rem 0;
+}
+.theory .card .card-body .pill{
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:.66rem;padding:.2rem .55rem;border-radius:6px;
+  background:var(--paper);border:1px solid var(--line);color:var(--ink-2);
+  transition:color var(--fade),border-color var(--fade),background-color var(--fade),transform var(--press);
+  cursor:pointer;line-height:1.45;
+}
+.theory .card .card-body .pill:active{transform:scale(.96)}
+.theory .card .card-body .pill b{color:var(--ink)}
+.theory .card .card-body .highlight{color:var(--ink);font-weight:600}
+.theory .card .card-body .pill.active{background:var(--teal);border-color:var(--teal-deep);color:var(--paper)}
+
+/* ─── ECUACIONES ─── */
+.eq-block{
+  background:var(--paper-2);border:1px solid var(--line-soft);border-radius:var(--radius-sm);
+  padding:.38rem .6rem;margin:.3rem 0;font-size:.86rem;text-align:center;
+}
+.eq-block .katex{color:var(--ink)}
+
+/* ─── CONCEPT FLOW ─── */
+.concept-flow{
+  display:flex;align-items:center;justify-content:center;gap:.3rem;
+  padding:.35rem;background:var(--paper-2);border-radius:var(--radius-sm);
+  border:1px solid var(--line);margin-top:.15rem;flex-shrink:0;
+}
+.concept-flow .step{
+  font-size:.64rem;font-weight:600;color:var(--ink-3);text-align:center;
+  padding:.26rem .4rem;border-radius:6px;background:var(--card);flex:1;
+  border:1px solid transparent;transition:color var(--fade),border-color var(--fade),background-color var(--fade),transform var(--press);cursor:pointer;
+}
+.concept-flow .step.done{color:var(--teal-deep);border-color:rgba(13,110,100,.35);background:var(--teal-tint)}
+.concept-flow .arrow{color:var(--line);font-size:.75rem;flex-shrink:0}
+.concept-flow .step:active{transform:scale(.96)}
+
+/* ─── CAJA DE APUNTES (detalle del docente) ─── */
+.apuntes{
+  background:var(--amber-tint);border:1px solid rgba(154,91,0,.3);border-radius:8px;
+  padding:.6rem .75rem;margin-top:.4rem;font-size:.7rem;line-height:1.5;flex-shrink:0;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.4);
+}
+.apuntes .a-hdr{
+  display:flex;align-items:center;gap:.4rem;font-weight:700;
+  color:var(--amber-deep);margin-bottom:.2rem;letter-spacing:.03em;
+}
+.apuntes .a-text{color:#5d460f}
+.apuntes .a-text strong{color:#4a3709}
+
+/* ─── PANEL DE SIMULACIÓN ─── */
+.sim-area{
+  background:var(--paper-3);border:1px solid var(--line);border-radius:var(--radius);
+  position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;
+  min-height:200px;box-shadow:inset 0 2px 8px rgba(35,44,54,.06);
+}
+.sim-area canvas.sim{width:100%;height:100%;display:block}
+.sim-col{display:flex;flex-direction:column;gap:.55rem;min-height:0;overflow-y:auto}
+.sim-col .sim-area{flex:1 1 auto}
+.sim-placeholder{text-align:center;color:var(--ink-3);padding:1rem}
+.sim-placeholder .ico{font-size:2rem;display:block;opacity:.4;margin-bottom:.3rem}
+.sim-placeholder p{font-size:.75rem}
+
+/* ─── BARRA DE CONTROL ─── */
+.prof-controls{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:.42rem .8rem;display:flex;align-items:center;gap:.6rem;
+  font-size:.68rem;color:var(--ink-2);min-height:36px;flex-wrap:wrap;
+}
+.prof-controls .badge{
+  padding:.18rem .55rem;border-radius:6px;background:var(--teal-tint);
+  color:var(--teal-deep);font-family:var(--mono);font-size:.62rem;font-weight:700;
+  border:1px solid rgba(13,110,100,.22);flex-shrink:0;
+}
+.prof-controls label{display:flex;align-items:center;gap:.3rem;cursor:pointer;flex-shrink:0;font-size:.64rem}
+.prof-controls input[type="range"]{width:74px;accent-color:var(--teal);}
+.prof-controls input[type="number"]{width:58px;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:.14rem .3rem;font-size:.66rem;color:var(--ink);font-family:var(--mono)}
+.prof-controls select{
+  background:var(--card);color:var(--ink);border:1px solid var(--line);
+  border-radius:6px;padding:.18rem .4rem;font-size:.64rem;cursor:pointer;
+}
+.prof-controls button{
+  background:var(--paper);border:1px solid var(--line);color:var(--ink-2);
+  padding:.22rem .6rem;border-radius:6px;cursor:pointer;font-size:.64rem;
+  transition:border-color var(--fade),color var(--fade),background-color var(--fade),transform var(--press);font-weight:600;
+}
+.prof-controls button:active{transform:scale(.96)}
+.prof-controls .readout{
+  font-family:var(--mono);font-size:.68rem;color:var(--teal-deep);font-weight:700;
+  background:var(--teal-tint);border:1px solid rgba(13,110,100,.22);
+  padding:.14rem .5rem;border-radius:6px;margin-left:auto;flex-shrink:0;
+}
+
+/* ─── TABLAS MINI ─── */
+.data-mini{font-size:.66rem;width:100%;border-collapse:collapse}
+.data-mini th{
+  color:var(--teal-deep);font-weight:700;text-align:left;padding:.18rem .3rem;
+  border-bottom:1px solid var(--line);text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;
+}
+.data-mini td{padding:.16rem .3rem;border-bottom:1px solid var(--line-soft);color:var(--ink-2)}
+.data-mini td:last-child{font-family:var(--mono);color:var(--ink);font-size:.62rem}
+.data-mini tr{cursor:pointer}
+.data-mini .table-caption{font-size:.56rem;color:var(--ink-3);padding:.14rem .3rem;font-style:italic}
+.data-mini td b{color:var(--ink)}
+
+/* ─── ANIMACIÓN (un solo momento autorizado) ─── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.slide.active .card{animation:fadeUp .48s cubic-bezier(.22,1,.36,1) both}
+.slide.active .card:nth-child(2){animation-delay:.07s}
+.slide.active .card:nth-child(3){animation-delay:.14s}
+.slide.active .card:nth-child(4){animation-delay:.21s}
+.slide.active .eq-block{animation:fadeUp .48s .2s both}
+.slide.active .sim-area,.slide.active .apuntes,.slide.active .prof-controls{animation:fadeUp .48s .1s both}
+.slide-full.active{animation:fadeUp .5s cubic-bezier(.22,1,.36,1)}
+/* Revisitar una diapositiva = ya la conocemos → reveal instantáneo,
+   sin repetir la entrada. */
+.slide.instant .card,.slide.instant .eq-block,.slide.instant .sim-area,
+.slide.instant .apuntes,.slide.instant .prof-controls,.slide-full.instant{animation:none!important}
+
+/* ─── NAVEGACIÓN INFERIOR ─── */
+.nav-bar{
+  position:fixed;bottom:0;left:0;right:0;z-index:30;
+  background:linear-gradient(0deg,rgba(245,240,228,.97) 58%,rgba(245,240,228,0));
+  padding:.6rem 2rem .85rem;
+  display:flex;justify-content:center;align-items:center;gap:.55rem;pointer-events:none;
+}
+.nav-bar>*{pointer-events:auto}
+.nav-btn{
+  background:var(--card);border:1px solid var(--line);color:var(--ink-2);
+  width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:.85rem;
+  display:flex;align-items:center;justify-content:center;
+  transition:background-color var(--fade),color var(--fade),border-color var(--fade),transform var(--press);
+}
+.nav-btn:active{transform:scale(.9)}
+.nav-dots{display:flex;gap:.3rem;padding:0 .4rem}
+.nav-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--line);
+  cursor:pointer;transform-origin:center;
+  transition:background-color var(--fade),transform var(--slide);border:none;
+}
+.nav-dot.active{background:var(--teal);transform:scaleX(2.85)}
+.slide-counter{font-size:.58rem;font-family:var(--mono);color:var(--ink-3);letter-spacing:.06em}
+.nav-module-label{font-size:.58rem;color:var(--teal-deep);background:var(--card);border:1px solid var(--line);padding:.14rem .55rem;border-radius:6px;font-weight:600}
+
+/* ─── TOOLTIP CANVAS ─── */
+.canvas-tooltip{
+  position:absolute;pointer-events:none;z-index:5;
+  background:rgba(251,248,240,.96);border:1px solid var(--line);
+  border-radius:6px;padding:.3rem .6rem;font-size:.62rem;
+  color:var(--ink-2);display:none;max-width:190px;box-shadow:var(--shadow);
+}
+.canvas-tooltip b{color:var(--teal-deep)}
+
+/* ─── TABLA INTERACTIVA ─── */
+.interactive-table{width:100%;border-collapse:collapse;font-size:.66rem}
+.interactive-table th{
+  color:var(--teal-deep);font-weight:700;text-align:left;
+  padding:.22rem .4rem;border-bottom:1px solid var(--line);
+  position:sticky;top:0;background:var(--card);z-index:1;
+  text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;
+}
+.interactive-table td{
+  padding:.18rem .4rem;border-bottom:1px solid var(--line-soft);
+  color:var(--ink-2);transition:background-color var(--fade),color var(--fade);
+}
+.interactive-table td:last-child{font-family:var(--mono);color:var(--ink);font-size:.62rem}
+.interactive-table tr{cursor:pointer;transition:background-color var(--fade),color var(--fade)}
+.interactive-table tr.highlight td{background:var(--teal-tint);color:var(--teal-deep)}
+.interactive-table .table-caption{font-size:.56rem;color:var(--ink-3);padding:.14rem .4rem;font-style:italic}
+
+/* ─── FIGURAS DE LIBRO ─── */
+.figure-pair{display:flex;gap:.6rem;height:100%;align-items:stretch}
+.figure-pair figure{
+  flex:1;display:flex;flex-direction:column;gap:.3rem;align-items:center;
+  justify-content:center;background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius-sm);padding:.4rem;min-width:0;
+}
+.figure-pair figure img{max-width:100%;max-height:66%;object-fit:contain;border-radius:4px}
+.figure-pair figcaption{font-size:.56rem;color:var(--ink-3);text-align:center;line-height:1.4;font-style:italic}
+.figure-pair figure .fig-num{
+  font-family:var(--mono);font-size:.54rem;font-weight:700;color:var(--teal-deep);
+  letter-spacing:.1em;
+}
+
+/* ─── HOVER SOLO PARA DISPOSITIVOS DE PRECISIÓN ─── */
+@media (hover:hover) and (pointer:fine){
+  .module-preview .mpill:hover{border-color:var(--teal);color:var(--teal-deep);transform:translateY(-1px)}
+  .theory .card .card-body .pill:hover{border-color:var(--teal);color:var(--teal-deep);background:var(--card)}
+  .nav-btn:hover{background:var(--teal);color:var(--paper);border-color:var(--teal)}
+  .module-tab:hover{color:var(--ink-2);background:var(--paper-3)}
+  .concept-flow .step:hover{border-color:var(--teal);color:var(--teal-deep)}
+  .slide-full .start-btn:hover{background:var(--teal-deep);box-shadow:0 8px 20px rgba(35,44,54,.22)}
+  .prof-controls button:hover{border-color:var(--teal);color:var(--teal-deep)}
+  .interactive-table tr:hover td{background:var(--teal-tint);color:var(--ink)}
+  .data-mini tr:hover td{background:var(--teal-tint);color:var(--ink)}
+  .theory .card:hover{border-color:#bdb09a}
+  .nav-dot:hover{background:var(--ink-3)}
+}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:820px){
+  .slide,.slide-full{padding:3.2rem .7rem 3.6rem}
+  .content-grid{grid-template-columns:1fr!important;gap:.55rem}
+  .slide-full h1{font-size:2rem}
+  .module-bar{padding:.3rem .7rem 0;gap:.15rem;overflow-x:auto}
+  .brand-mark{display:none}
+  .module-tab{font-size:.56rem;padding:.3rem .6rem .35rem;white-space:nowrap}
+  .module-tab .mod-badge{display:none}
+  .nav-bar{padding:.3rem .7rem .5rem}
+  .theory .card .card-hdr{font-size:.66rem}
+  .module-header .msub{display:none}
+}
+@media(min-width:1800px){
+  .slide,.slide-full{padding:3.6rem 2.6rem 5rem}
+  .content-grid{gap:1rem}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  /* las entradas de slide conservan un fade de opacidad (comprensión), sin movimiento */
+  @keyframes fadeUp{from{opacity:0}to{opacity:1}}
+  .slide.active .card,.slide.active .eq-block,.slide.active .sim-area,.slide.active .apuntes,.slide.active .prof-controls,.slide-full.active{animation-duration:.3s!important;animation-delay:0s!important}
+}
+</style>
+</head>
+<body>
+<!-- ═══════════ MÓDULOS ═══════════ -->
+<nav class="module-bar" id="moduleBar">
+  <div class="brand-mark">
+    <span class="treatise">El cuerpo humano · capítulo 8</span>
+    <span class="book">Física del Cuerpo Humano — I. P. Herman</span>
+  </div>
+</nav>
+
+<!-- ═══════════ PORTADA ═══════════ -->
+<div class="slide-full active" data-slide="0" data-module="0">
+  <h1>
+    <span class="chapno">Capítulo 8</span>
+    Sistema Cardiovascular
+  </h1>
+  <p class="subtitle">Cómo una doble bomba de ~5 L/min mantiene vivo al cuerpo: el gasto cardíaco y las presiones arteriales, el efecto de la gravedad, la hemodinámica del flujo por los vasos, la tensión que soporta la pared, el trabajo del corazón, las leyes físicas de la obstrucción, el aneurisma y la estenosis, los modelos de la circulación y del pulso, y cómo todo cambia con el ejercicio y la enfermedad.</p>
+  <div class="rule"></div>
+  <div class="module-preview" id="modulePreview">
+    <span class="mpill" onclick="goModule(1)"><span class="ico">🫀</span> La bomba</span>
+    <span class="mpill" onclick="goModule(2)"><span class="ico">🌍</span> Gravedad</span>
+    <span class="mpill" onclick="goModule(3)"><span class="ico">🌊</span> Hemodinámica</span>
+    <span class="mpill" onclick="goModule(4)"><span class="ico">🎈</span> Pared y capilar</span>
+    <span class="mpill" onclick="goModule(5)"><span class="ico">⚡</span> Trabajo del corazón</span>
+    <span class="mpill" onclick="goModule(6)"><span class="ico">🚑</span> Vasos enfermos</span>
+    <span class="mpill" onclick="goModule(7)"><span class="ico">🧮</span> Modelos</span>
+    <span class="mpill" onclick="goModule(8)"><span class="ico">📈</span> Pulso y Windkessel</span>
+    <span class="mpill" onclick="goModule(9)"><span class="ico">🏃</span> Ejercicio y disfunción</span>
+  </div>
+  <button class="start-btn" onclick="goModule(1)">Comenzar la cátedra →</button>
+  <p class="book-ref">Physics of the Human Body — Irving P. Herman · Springer (2016)</p>
+</div>
+
+<!-- ═══════════ M1 · LA BOMBA ═══════════ -->
+<div class="slide" data-slide="1" data-module="1">
+  <div class="module-header">
+    <span class="mnum">8.1</span>
+    <span class="mtitle">El circuito cardiovascular y el gasto cardíaco</span>
+    <span class="msub">Una doble bomba · un solo circuito de retorno</span>
+    <span class="mslide-count">1 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🫀</span> La bomba doble</div>
+        <div class="card-body">
+          <p>El corazón es <strong>dos bombas en serie</strong>: el derecho (VD) manda la sangre a los pulmones y el izquierdo (VI) al resto del cuerpo. El volumen sistólico \(V_{\text{stroke}} \approx 70\)–\(80\ \text{cm}^3\) y la frecuencia \(F \approx 60\)–\(70\ \text{/min}\) fijan el gasto cardíaco (eq. 8.29):</p>
+          <div class="eq-block">\[ Q_{\text{t}} = F\, V_{\text{stroke}} \approx 4{,}8\ \text{L/min} \]</div>
+          <p>Todo el volumen de sangre (<span class="tag">≈ 5 L</span>) pasa por el cuerpo <strong>cada minuto</strong>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📦</span> Dónde está la sangre · Tabla 8.1</div>
+        <div class="card-body">
+          <table class="data-mini">
+            <tr><th>Compartimento</th><th>Presión</th><th>Volumen</th></tr>
+            <tr><td>Arterias sistémicas</td><td>100 mmHg</td><td>1,0 L</td></tr>
+            <tr><td>Venas sistémicas</td><td>2/3 mmHg</td><td>3,5 L</td></tr>
+            <tr><td>Arterias pulmonares</td><td>15 mmHg</td><td>0,1 L</td></tr>
+            <tr><td>Venas pulmonares</td><td>5 mmHg</td><td>0,4 L</td></tr>
+          </table>
+          <p>El circuito pulmonar trabaja a <span class="tag">~1/6 de la presión</span> del sistémico.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📊</span> El reparto del volumen</div>
+        <div class="card-body">
+          <p>La sangre se reparte: <span class="tag">50% venas sistémicas</span>, <span class="tag">18% pulmones</span>, <span class="tag">12% corazón</span>, <span class="tag">8% arterias</span>, <span class="tag">5% capilares</span>, y el resto (aorta, arteriolas) menos del 4%. Las venas son el gran depósito: <strong>vasos de compliancia</strong>, no de resistencia.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-1">Todo el capítulo cuelga de una sola cifra: Q ≈ 5 L/min = F × V_stroke. La doble bomba está en serie: lo que sale del VI vuelve por el VD. En el canvas mira dónde vive la sangre: más de la mitad en las venas — el «reservorio» — no en el corazón.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-distribution" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">reparto</span>
+        <label>foco <select id="ds_sel" onchange="drawDistribution()">
+          <option value="all" selected>Todos</option>
+          <option value="corazon">Corazón</option>
+          <option value="aorta">Aorta</option>
+          <option value="arterias">Arterias</option>
+          <option value="arteriolas">Arteriolas</option>
+          <option value="capilares">Capilares</option>
+          <option value="venas">Venas sistémicas</option>
+          <option value="pulmones">Pulmones</option>
+        </select></label>
+        <span class="readout" id="ds_out">Q ≈ 5 L/min · 50 % en venas</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="2" data-module="1">
+  <div class="module-header">
+    <span class="mnum">8.1</span>
+    <span class="mtitle">Presión arterial: sistólica, diastólica y media</span>
+    <span class="msub">La diástole dura el doble: pesa el doble</span>
+    <span class="mslide-count">2 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">📐</span> Presión media (eq. 8.1)</div>
+        <div class="card-body">
+          <p>La presión arterial oscila; la <strong>media</strong> pondera por el tiempo de cada fase. Como la diástole dura ~2/3 del ciclo:</p>
+          <div class="eq-block">\[ P_{\text{media}} = \frac{P_{\text{sistole}} + 2\,P_{\text{diastole}}}{3} \]</div>
+          <p>Para 120/80: <span class="tag">(120 + 2·80)/3 ≈ 93 mmHg</span>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📈</span> Presión de pulso (eq. 8.93)</div>
+        <div class="card-body">
+          <div class="eq-block">\[ P_{\text{pulso}} = P_{\text{sistole}} - P_{\text{diastole}} \approx 40\ \text{mmHg} \]</div>
+          <p>La onda de pulso viaja a <span class="tag">4–8 m/s</span> en la aorta y hasta <span class="tag">16 m/s</span> en la periferia: mucho más rápido que la propia sangre (~30 cm/s). La presión no es estática — cambia con cada latido.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🫀</span> La lectura clínica</div>
+        <div class="card-body">
+          <p>El manguito mide <strong>sistólica 120 y diastólica 80</strong> (primer y último sonido de Korotkoff). El <span class="tag">pulso carotídeo</span> palpa la onda, no el flujo: es presión, no sangre que se mueve.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-2">La fórmula P_media = (P_sist + 2·P_dias)/3 es la primera ecuación del capítulo y la más usada en la clínica. En el canvas mueve sistólica y diastólica: la media siempre queda por debajo de la aritmética (120+80)/2 = 100 — la diástole pesa el doble.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-wave" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">onda de pulso</span>
+        <label>P_sistólica <input type="range" id="pm_sys" min="100" max="180" step="5" value="120" oninput="drawWave()"> <span id="pm_sysv">120</span></label>
+        <label>P_diastólica <input type="range" id="pm_dia" min="50" max="110" step="5" value="80" oninput="drawWave()"> <span id="pm_diav">80</span></label>
+        <span class="readout" id="pm_out">P_media ≈ 93 mmHg · P_pulso 40</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M2 · GRAVEDAD ═══════════ -->
+<div class="slide" data-slide="3" data-module="2">
+  <div class="module-header">
+    <span class="mnum">8.2</span>
+    <span class="mtitle">La gravedad y la columna de sangre</span>
+    <span class="msub">Cada metro de sangre pesa ≈ 79 mmHg</span>
+    <span class="mslide-count">3 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">⚖️</span> La presión hidrostática</div>
+        <div class="card-body">
+          <p>La sangre de densidad \(\rho \approx 1060\ \text{kg/m}^3\) pesa: \( \Delta P = \rho g h\). Un metro de columna equivale a <span class="tag">≈ 79 mmHg</span>. El cerebro, a 40 cm sobre el corazón:</p>
+          <div class="eq-block">\[ \Delta P = (1060)(9{,}8)(0{,}4) \approx 31\ \text{mmHg} \]</div>
+          <p>por eso la presión medida a la altura del brazo es la de referencia.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🧠</span> El cerebro, más alto</div>
+        <div class="card-body">
+          <p>De pie, el cerebro recibe ~30 mmHg <strong>menos</strong> que el corazón. Al levantarse rápido, la sangre se va a las piernas y la presión cerebral cae: <span class="tag">síncope / hipotensión ortostática</span>. El reflejo barorreceptor compensa con vasoconstricción en segundos.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🦶</span> Y los pies, más abajo</div>
+        <div class="card-body">
+          <p>En los pies la presión arterial se <strong>suma</strong> a la hidrostática (~+100 mmHg a 1,3 m bajo el corazón): por eso las <span class="tag">várices</span> y el edema al estar mucho tiempo de pie. Las venas de las piernas tienen válvulas que suben la sangre a contra-gravedad.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-3">Regla de oro: cada metro de sangre = ~79 mmHg. El corazón de una jirafa debe vencer una columna de más de 2 m; el nuestro, solo el desnivel de la vida diaria. En el canvas arrastra la altura relativa al corazón y mira cómo la presión arterial «se mueve» con el cuerpo.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-gravity" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">hidrostática</span>
+        <label>altura <input type="range" id="gv_h" min="-1.4" max="0.5" step="0.05" value="0" oninput="drawGravity()"> <span id="gv_hv">0 m (corazón)</span></label>
+        <span class="readout" id="gv_out">P_art ≈ 100 mmHg · ΔP_hidro = 0</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="4" data-module="2">
+  <div class="module-header">
+    <span class="mnum">8.2</span>
+    <span class="mtitle">La caída de presión por el árbol vascular</span>
+    <span class="msub">Las arteriolas se llevan casi toda la caída</span>
+    <span class="mslide-count">4 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">📉</span> Caídas medidas (modelo de vasos en paralelo)</div>
+        <div class="card-body">
+          <p>Modelando cada nivel como \(n\) vasos paralelos (eq. 8.12–8.13) con \(Q_{\text{t}} = 80\ \text{cm}^3\text{/s}\):</p>
+          <div class="eq-block">\[ \Delta P = \frac{0{,}0062\ \text{mmHg}}{n}\frac{L(\text{cm})}{r(\text{cm})^4} \]</div>
+          <p>Aorta: <span class="tag">0,025</span> · grandes: <span class="tag">1,4</span> · <strong>arteriolas: 91</strong> · capilares: <span class="tag">8,2 mmHg</span>. La caída escala <strong>lineal con Q</strong> (Poiseuille).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🔌</span> P_sa = TPVR · Q_t (eq. 8.30)</div>
+        <div class="card-body">
+          <p>Todo el sistema sistémico se comporta como una resistencia total:</p>
+          <div class="eq-block">\[ P_{\text{sa}} = (\text{TPVR})\, Q_{\text{t}} \]</div>
+          <p>La <span class="tag">TPVR ≈ 700–1600 dina·s/cm⁵</span> (sistémica) y 20–130 (pulmonar). El cuerpo regula la presión controlando TPVR y Q.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🚰</span> Por qué las arteriolas mandan</div>
+        <div class="card-body">
+          <p>Hay <span class="tag">5×10⁵ arteriolas</span> de \(r \sim 30\ \mu\text{m}\) y \(L \sim 0{,}6\ \text{cm}\): su radio pequeño las hace dominantes (\(R \propto 1/r^4\)). Son los <span class="highlight">grifos</span> que reparten el flujo entre órganos.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-4">El corazón no regula el flujo de cada órgano: las arteriolas sí. La aorta y las grandes apenas pierden presión (0,025 y 1,4 mmHg) — son vasos de compliancia; las arteriolas pierden 91 — son vasos de resistencia. En el canvas sube el gasto y toda la escalera se hunde proporcionalmente.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-profile" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">perfil de ΔP</span>
+        <label>Q_t <input type="range" id="pf_q" min="40" max="120" step="5" value="80" oninput="drawProfile()"> <span id="pf_qv">80 cm³/s</span></label>
+        <span class="readout" id="pf_out">arteriolas: ΔP = 91 mmHg</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M3 · HEMODINÁMICA ═══════════ -->
+<div class="slide" data-slide="5" data-module="3">
+  <div class="module-header">
+    <span class="mnum">8.2</span>
+    <span class="mtitle">Velocidad de la sangre: de la aorta a los capilares</span>
+    <span class="msub">Continuidad: Q = u·A</span>
+    <span class="mslide-count">5 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🚀</span> Continuidad</div>
+        <div class="card-body">
+          <p>Todo el gasto atraviesa cada nivel (\(Q_{\text{t}} = A\,u\)), de modo que la velocidad es inversa al área total:</p>
+          <div class="eq-block">\[ u = \frac{Q_{\text{t}}}{A} \qquad \text{·} \qquad 30\ \text{cm/s (aorta)} \]</div>
+          <p>Con \(Q = 90\ \text{cm}^3\text{/s}\): aorta <span class="tag">30 cm/s</span> (\(A=3\ \text{cm}^2\)) → capilares <span class="tag">0,022 cm/s</span> (\(A\approx 4000\ \text{cm}^2\)) → vena cava <span class="tag">5 cm/s</span> (\(A=18\ \text{cm}^2\)).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🫧</span> Por qué se enlentece</div>
+        <div class="card-body">
+          <p>Hay <span class="tag">≈ 10¹⁰ capilares</span> de \(r \sim 3{,}5\ \mu\text{m}\). Sus áreas se suman (<span class="tag">~4000 cm²</span>, 1300× la aorta) aunque cada uno sea minúsculo. El flujo lento deja tiempo para el <strong>intercambio</strong> de O₂ y CO₂.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">⏱️</span> Tiempo de tránsito</div>
+        <div class="card-body">
+          <p>El glóbulo rojo tarda <span class="tag">~1 s</span> en cruzar un capilar y la sangre completa da la vuelta al circuito en <span class="tag">~1 min</span>. Esos segundos lentos son la vida: la difusión de oxígeno necesita tiempo (Cap. 7, módulo de difusión).</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-5">Continuidad contraintuitiva: el vaso más lento es el más pequeño de todos, el capilar — porque son muchísimos. El área total, no el diámetro individual, fija la velocidad. En el canvas cambia el gasto y observa las tres velocidades escalar juntas, siempre con u_capilar ≈ 1/1000 de la aórtica.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-velocity" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">continuidad</span>
+        <label>Q <input type="range" id="vl_q" min="30" max="150" step="5" value="90" oninput="drawVelocity()"> <span id="vl_qv">90 cm³/s</span></label>
+        <span class="readout" id="vl_out">aorta 30 · capilares 0,022 · vena cava 5 cm/s</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="6" data-module="3">
+  <div class="module-header">
+    <span class="mnum">8.2</span>
+    <span class="mtitle">Flujo laminar y turbulento: el número de Reynolds</span>
+    <span class="msub">La aorta roza la turbulencia · los capilares, nunca</span>
+    <span class="mslide-count">6 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🌊</span> El número de Reynolds</div>
+        <div class="card-body">
+          <p>Compara la inercia con la viscosidad (eq. 7.11):</p>
+          <div class="eq-block">\[ R_{\text{e}} = \frac{\rho\, u\, d}{\eta} \]</div>
+          <p>En la aorta (\(\rho = 1060\), \(u = 30\ \text{cm/s}\), \(d = 2{,}5\ \text{cm}\), \(\eta = 4\ \text{mPa·s}\)): <span class="tag">R_e ≈ 2000</span> — y llega a <span class="tag">~6000</span> en el pico del ciclo. En los capilares: <span class="tag">R_e < 10⁻³</span>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🩸</span> Umbral</div>
+        <div class="card-body">
+          <p>El umbral nominal es <span class="tag">R_e ≈ 2000</span>. El flujo aórtico es casi siempre laminar, pero con ejercicio (más u y d) puede volverse <strong>turbulento</strong> en el pico sistólico.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🔊</span> Soplos y murmullos</div>
+        <div class="card-body">
+          <p>La turbulencia hace ruido: un <span class="tag">soplo</span> sobre una estenosis o una válvula insuficiente es flujo turbulento audible con el estetoscopio. La aorta dilatada (aneurisma) también puede generar el soplo por su mayor \(d\).</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-6">Reynolds cruza el capítulo 7 con el 8: la misma fórmula que ordenaba la natación ahora dice por qué la aorta puede murmurar y el capilar nunca. En el canvas sube la velocidad: primero líneas rectas, y al pasar ~2 m/s (R_e ≈ 2000) el trazado se enrosca — eso es turbulencia.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-reynolds" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">Reynolds</span>
+        <label>u <input type="range" id="re_u" min="0" max="1" step="0.01" value="0.3" oninput="drawReynolds()"> <span id="re_uv">30 cm/s</span></label>
+        <span class="readout" id="re_out">R_e ≈ 2000 · límite laminar</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="7" data-module="3">
+  <div class="module-header">
+    <span class="mnum">8.2</span>
+    <span class="mtitle">Resistencia vascular: la cuarta potencia del radio</span>
+    <span class="msub">Poiseuille aplicado al lecho completo</span>
+    <span class="mslide-count">7 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">📏</span> R ∝ 1/r⁴</div>
+        <div class="card-body">
+          <p>De Poiseuille (eq. 7.24):</p>
+          <div class="eq-block">\[ R = \frac{8\,\eta\,L}{\pi\, r^4} \]</div>
+          <p>Reducir el radio a la mitad <strong>multiplica la resistencia por 16</strong> y hunde el flujo a 1/16. Por eso el cuerpo regula el flujo con <span class="highlight">vasodilatación y vasoconstricción</span>, no cambiando la viscosidad.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🔌</span> El sistema como circuito</div>
+        <div class="card-body">
+          <p>La ley de Ohm se lee \( \Delta P = Q\,R\). El corazón mantiene la presión; el lecho vascular ajusta \(R\) para repartir \(Q\). Los órganos están en <strong>paralelo</strong>: la TPVR es menor que la de cada lecho individual.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🔄</span> Reparto órgano a órgano</div>
+        <div class="card-body">
+          <p>El flujo se reparte por la resistencia de cada lecho: <span class="tag">riñones ~1,1 L/min</span>, <span class="tag">cerebro ~0,75</span>, <span class="tag">hígado/abdomen ~1,4</span>, <span class="tag">músculo ~1,2</span> en reposo (Tabla 8.6). Cada órgano ajusta su propio grifo.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-7">La R⁴ es la ecuación más poderosa de la hemodinámica: el 10 % de diámetro de más puede cambiar el flujo un 46 %. En el canvas mueve el radio y observa la curva 1/r⁴ dispararse hacia el radio pequeño — ese es el mundo de las arteriolas, y el porqué de que el 1 % del diámetro controle la presión.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-resvasc" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">1/r⁴</span>
+        <label>r <input type="range" id="rv_r" min="0.3" max="3" step="0.05" value="1" oninput="drawResVasc()"> <span id="rv_rv">1,00</span></label>
+        <span class="readout" id="rv_out">R_rel = 1,0 (r = 1,00)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M4 · PARED Y CAPILAR ═══════════ -->
+<div class="slide" data-slide="8" data-module="4">
+  <div class="module-header">
+    <span class="mnum">8.2</span>
+    <span class="mtitle">Tensión en la pared: la ley de Laplace</span>
+    <span class="msub">La pared paga la presión por el radio</span>
+    <span class="mslide-count">8 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🎈</span> Ley de Laplace para cilindros</div>
+        <div class="card-body">
+          <p>La presión interna \(\Delta P\) debe ser sostenida por la <strong>tensión de pared</strong> \(T\) (fuerza por unidad de longitud de tubo, eq. 8.25):</p>
+          <div class="eq-block">\[ \Delta P = \frac{T}{R} \qquad \Rightarrow \qquad T = \Delta P \cdot R \]</div>
+          <p>El esfuerzo circunferencial \(\sigma = T/w\) se compara con el UTS del vaso.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📋</span> Tabla 8.5 · T calculada</div>
+        <div class="card-body">
+          <table class="data-mini">
+            <tr><th>Vaso</th><th>ΔP</th><th>T (dina/cm)</th><th>T/w (kPa)</th></tr>
+            <tr><td>Aorta</td><td>100</td><td>160 000</td><td>53</td></tr>
+            <tr><td>Arteria grande</td><td>97</td><td>52 000</td><td>52</td></tr>
+            <tr><td>Arteriola</td><td>60</td><td>1 200</td><td>60</td></tr>
+            <tr><td>Capilar</td><td>30</td><td>16</td><td>16</td></tr>
+            <tr><td>Vena cava</td><td>10</td><td>20 000</td><td>13</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">⚠️</span> El radio es el peligro</div>
+        <div class="card-body">
+          <p>Para la misma presión, <strong>a mayor radio, mayor tensión</strong>: un capilar soporta \(T = 16\) dina/cm y la aorta \(160\,000\). Si un vaso se dilata (aneurisma), la tensión sube con el radio y la pared se estira más — un círculo vicioso (módulo 6).</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-8">Laplace es la física del globo que se hincha y de la válvula que se abre. La tensión no es presión: un capilar y la aorta están a presiones parecidas, pero la tensión difiere por un factor 10⁴ por culpa del radio. En el canvas crece el radio y la pared se espesa — la flecha de tensión lo muestra.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-wall" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">Laplace</span>
+        <label>R <input type="range" id="pl_r" min="0.1" max="2.5" step="0.05" value="1.2" oninput="drawWall()"> <span id="pl_rv">1,2 cm</span></label>
+        <label>ΔP <input type="range" id="pl_p" min="10" max="120" step="5" value="100" oninput="drawWall()"> <span id="pl_pv">100 mmHg</span></label>
+        <span class="readout" id="pl_out">T = 160 000 dina/cm (aorta)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="9" data-module="4">
+  <div class="module-header">
+    <span class="mnum">8.2</span>
+    <span class="mtitle">El intercambio capilar: fuerzas de Starling</span>
+    <span class="msub">Hidrostática filtra · oncótica reabsorbe</span>
+    <span class="mslide-count">9 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🕸️</span> Las cuatro fuerzas</div>
+        <div class="card-body">
+          <p>En el capilar se equilibran la presión <strong>hidrostática</strong> (empuja fuera) y la <strong>oncótica</strong> (atrae dentro, por las proteínas, eq. 8.27):</p>
+          <div class="eq-block">\[ \Pi = n_{\text{s}}\, R\, T \]</div>
+          <p>Hidrostática capilar: <span class="tag">36 → 15 mmHg</span> (arteriolar → venular). Oncótica del plasma: <span class="tag">25 mmHg</span>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">⚖️</span> El balance</div>
+        <div class="card-body">
+          <p>Extremo arteriolar: <span class="tag">36 − 25 = +11 mmHg</span> (filtra). Venular: <span class="tag">15 − 25 = −10 mmHg</span> (reabsorbe). El ~90 % del filtrado vuelve; el resto drena por los <strong>linfáticos</strong>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">💧</span> Edema</div>
+        <div class="card-body">
+          <p>El edema aparece cuando la filtración gana: <span class="tag">baja albúmina</span> (oncótica ↓), <span class="tag">insuficiencia cardíaca</span> o venas obstruidas (hidrostática venosa ↑). El pulmón también: el edema pulmonar es este balance roto en el capilar alveolar.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-9">El capilar filtra por un lado y reabsorbe por el otro: la física de la hidrostática contra la química de la oncótica. En el canvas sube la presión venular o baja la oncótica y el neto se vuelve a favor de la filtración — ese es el edema. Los linfáticos recogen lo que sobra.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-starling" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">Starling</span>
+        <label>P_hidro arterial <input type="range" id="st_ha" min="20" max="50" step="1" value="36" oninput="drawStarling()"> <span id="st_hav">36</span></label>
+        <label>P_hidro venular <input type="range" id="st_hv" min="5" max="25" step="1" value="15" oninput="drawStarling()"> <span id="st_hvv">15</span></label>
+        <label>P_oncótica <input type="range" id="st_o" min="15" max="35" step="1" value="25" oninput="drawStarling()"> <span id="st_ov">25</span></label>
+        <span class="readout" id="st_out">neto: +11 (filtra) · −10 (reabsorbe)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M5 · TRABAJO DEL CORAZÓN ═══════════ -->
+<div class="slide" data-slide="10" data-module="5">
+  <div class="module-header">
+    <span class="mnum">8.2</span>
+    <span class="mtitle">El oxígeno que entrega la sangre: Fick</span>
+    <span class="msub">El gasto y la extracción fijan el consumo</span>
+    <span class="mslide-count">10 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🫧</span> Fick para el oxígeno (eq. 8.28)</div>
+        <div class="card-body">
+          <p>El consumo de O₂ es el gasto por la diferencia arterio-venosa de oxígeno:</p>
+          <div class="eq-block">\[ \frac{\mathrm{d}V_{\text{O}_2}}{\mathrm{d}t} = Q_{\text{t}}\,(p_{\text{a}} - p_{\text{v}}) \]</div>
+          <p>Reposo: <span class="tag">5 L/min × 50 mL O₂/L ≈ 250 mL O₂/min</span>. Es la base del <strong>principio de Fick</strong> para medir el gasto cardíaco.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🩸</span> Contenido de O₂</div>
+        <div class="card-body">
+          <p>Arterial: <span class="tag">≈ 200 mL O₂/L</span> (hemoglobina 15 g/dL). Venosa: ≈ 150 mL/L. La extracción es del <span class="tag">~25 %</span> en reposo y puede triplicarse con el ejercicio.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🏃</span> Los dos resortes</div>
+        <div class="card-body">
+          <p>Para entregar más O₂ el cuerpo sube el <strong>gasto</strong> (hasta ×5) o la <strong>extracción</strong> (hasta ×3). El músculo en ejercicio exige ambos: por eso el gasto puede superar los 20 L/min y la diferencia arterio-venosa crece.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-10">Fick es la ecuación que convierte una cifra de laboratorio (el consumo de O₂) en la pregunta clínica «¿cuánto bombea el corazón?». En el canvas sube el gasto o la extracción y el flujo de O₂ responde: el VO₂ es un rectángulo de Q × (p_a − p_v).</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-fick" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">Fick</span>
+        <label>Q <input type="range" id="fk_q" min="3" max="25" step="0.5" value="5" oninput="drawFick()"> <span id="fk_qv">5,0 L/min</span></label>
+        <label>p_a−p_v <input type="range" id="fk_d" min="20" max="160" step="5" value="50" oninput="drawFick()"> <span id="fk_dv">50 mL/L</span></label>
+        <span class="readout" id="fk_out">V̇O₂ = 250 mL/min</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="11" data-module="5">
+  <div class="module-header">
+    <span class="mnum">8.2</span>
+    <span class="mtitle">El trabajo del corazón: W = ∫ P dV</span>
+    <span class="msub">~1 J por latido · ~5 W de metabolismo</span>
+    <span class="mslide-count">11 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">💪</span> Trabajo por latido (eq. 8.35)</div>
+        <div class="card-body">
+          <p>El ventrículo empuja un pistón de presión: el área bajo la curva P-V es el trabajo (Fig. 8.39):</p>
+          <div class="eq-block">\[ W = \int_{V_{\text{i}}}^{V_{\text{f}}} P\,\mathrm{d}V \approx P_{\text{av}}\, V_{\text{stroke}} \]</div>
+          <p>Con \(P_{\text{av}} \approx 100\ \text{mmHg} = 1{,}3\times10^4\ \text{N/m}^2\) y \(V_{\text{stroke}} = 80\ \text{cm}^3\): <span class="tag">W ≈ 1,04 J</span> por ciclo.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">⚡</span> Potencia y eficiencia</div>
+        <div class="card-body">
+          <p>A 1 Hz, la potencia mecánica es <span class="tag">1,04 W</span>. Con eficiencia muscular \(\epsilon \approx 20\%\), el metabolismo del VI pide <span class="tag">≈ 5 W</span>. El VD trabaja a \(1/5\) de la presión → +20 %. Total: <span class="tag">≈ 125 kcal/día</span> (experimental: ~117, Tabla 6.17).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📊</span> Picos y ejercicio</div>
+        <div class="card-body">
+          <p>El corazón bombea 1/3 del ciclo: los picos son 3× el promedio (<span class="tag">1,5 W</span> mecánicos, <span class="tag">15 W</span> metabólicos). Con ejercicio extenuante (P ×1,5 y Q ×5) el trabajo puede multiplicarse por <span class="tag">~7,5</span>.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-11">El lazo P-V del canvas es la «huella digital» del ventrículo: su área es el trabajo por latido (≈ 1 J), su ancho el volumen sistólico y su altura la presión. Pulsa ▶ para ver el ciclo recorrer el lazo; cambia la poscarga y mira el área crecer — eso es lo que hipertrofia al corazón.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-pvloop" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">lazo P–V</span>
+        <button id="pv_play" onclick="togglePVLoop()">▶</button>
+        <label>precarga (V_ED) <input type="range" id="pv_ed" min="100" max="220" step="5" value="140" oninput="drawPVLoop()"> <span id="pv_edv">140 mL</span></label>
+        <label>poscarga (P_sa) <input type="range" id="pv_pa" min="80" max="140" step="5" value="100" oninput="drawPVLoop()"> <span id="pv_pav">100 mmHg</span></label>
+        <label>contractilidad <input type="range" id="pv_ct" min="0.5" max="1.5" step="0.1" value="1" oninput="drawPVLoop()"> <span id="pv_ctv">1,0</span></label>
+        <span class="readout" id="pv_out">W ≈ 1,0 J/latido · V_stroke ≈ 80 mL</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M6 · VASOS ENFERMOS ═══════════ -->
+<div class="slide" data-slide="12" data-module="6">
+  <div class="module-header">
+    <span class="mnum">8.2</span>
+    <span class="mtitle">Arterias obstruidas: el efecto Bernoulli</span>
+    <span class="msub">La sangre se acelera y la presión cae en la zona estrecha</span>
+    <span class="mslide-count">12 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🚧</span> Continuidad en la estenosis</div>
+        <div class="card-body">
+          <p>En la zona estrecha la misma sangre debe pasar más rápido (eq. 8.33):</p>
+          <div class="eq-block">\[ u_2 = \frac{A_1}{A_2}\, u_1 \]</div>
+          <p>Si \(A_2/A_1 = 1/3\), entonces <span class="tag">u₂ = 3·u₁</span>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📉</span> La caída de presión (eq. 8.34)</div>
+        <div class="card-body">
+          <p>Bernoulli: la energía cinética que gana la sangre se paga con presión:</p>
+          <div class="eq-block">\[ P_2 - P_1 = \tfrac{1}{2}\rho u_1^2\left(1 - \left(\tfrac{A_1}{A_2}\right)^2\right) \]</div>
+          <p>Con \(A_2/A_1 = 1/3\): <span class="tag">P₂ − P₁ = −4ρu₁²</span>. La presión baja pos-estenosis.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🩺</span> Clínica</div>
+        <div class="card-body">
+          <p>El <span class="tag">soplo</span> por turbulencia y el <span class="tag">pulso débil</span> distal son signos clásicos. En las coronarias, una obstrucción que baje la presión pos-estenosis reduce la perfusión del miocardio → <span class="tag">angina</span>.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-12">Bernoulli aplicado a la placa: la sangre acelera al pasar el estrechamiento (continuidad) y paga esa energía con presión (Bernoulli). Por eso hay hipoperfusión distal aunque el flujo medio no cambie. En el canvas estrecha el vaso: las partículas se espacian (veloces) y la caída de presión se dispara.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-obstruction" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">obstrucción</span>
+        <label>A₂/A₁ <input type="range" id="ob_a" min="0.1" max="1" step="0.05" value="0.33" oninput="drawObstruction()"> <span id="ob_av">0,33</span></label>
+        <span class="readout" id="ob_out">u₂/u₁ = 3,0 · P₂−P₁ = −2,9 mmHg</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="13" data-module="6">
+  <div class="module-header">
+    <span class="mnum">8.3</span>
+    <span class="mtitle">Aneurismas y la bifurcación</span>
+    <span class="msub">La pared lateral paga la desviación del flujo</span>
+    <span class="mslide-count">13 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🎯</span> Fuerza lateral en la bifurcación</div>
+        <div class="card-body">
+          <p>Al bifurcarse, la sangre cambia de dirección y la pared recibe una fuerza neta (continuidad: \(Q = u_1 A_1 = 2 u_2 A_2\), eq. 8.36):</p>
+          <div class="eq-block">\[ F_{\text{pared}} = \rho\, Q\,(u_2\cos\theta - u_1) = \rho A_1 u_1^2\left(\frac{A_1}{2A_2}\cos\theta - 1\right) \]</div>
+          <p>Presión sobre la pared (eq. 8.41): <span class="tag">P_pared = ρu₁² ≈ 2 mmHg</span> para u₁ = 50 cm/s.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🧠</span> El polígono de Willis</div>
+        <div class="card-body">
+          <p>Los <span class="tag">aneurismas saculares</span> nacen en las bifurcaciones cerebrales, donde esta fuerza lateral golpea la pared. Su rotura es el <span class="tag">ACV hemorrágico</span> (~20 % de todos los ictus, sobre todo en jóvenes).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📈</span> El círculo vicioso de Laplace</div>
+        <div class="card-body">
+          <p>Una vez formado el saco, Laplace \(\Delta P = T/R\) exige <strong>más tensión cuanto mayor el radio</strong> → la pared se estira → crece más. La ruptura llega cuando la tensión supera el UTS del tejido.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-13">La bifurcación convierte el impulso lineal en un golpe a la pared: cuanta más velocidad y más agudo el ángulo, más fuerza lateral. En el canvas abre el ángulo θ y sube la velocidad: la flecha sobre la pared crece. Esa es la física del aneurisma del polígono de Willis.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-aneurysm" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">bifurcación</span>
+        <label>θ <input type="range" id="an_t" min="0" max="80" step="5" value="45" oninput="drawAneurysm()"> <span id="an_tv">45°</span></label>
+        <label>A₂/A₁ <input type="range" id="an_a" min="0.3" max="1" step="0.05" value="0.5" oninput="drawAneurysm()"> <span id="an_av">0,50</span></label>
+        <label>u₁ <input type="range" id="an_u" min="20" max="100" step="5" value="50" oninput="drawAneurysm()"> <span id="an_uv">50 cm/s</span></label>
+        <span class="readout" id="an_out">F_pared ≈ 38 mN · P_pared ≈ 1,3 mmHg</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="14" data-module="6">
+  <div class="module-header">
+    <span class="mnum">8.3</span>
+    <span class="mtitle">El aneurisma pulsátil: resonancia y ruptura</span>
+    <span class="msub">Una esfera elástica que late con el pulso</span>
+    <span class="mslide-count">14 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🫧</span> Esfera elástica (eq. 8.42)</div>
+        <div class="card-body">
+          <p>Modelamos el saco como una esfera de radio \(R\) y pared \(w\): al crecer un poco \(r(t)\), el esfuerzo es proporcional a la deformación:</p>
+          <div class="eq-block">\[ \sigma = Y\,\frac{r(t)}{R} \]</div>
+          <p>La ecuación de movimiento (eq. 8.43, 8.47): \(\rho w\, \ddot r = P_{\text{av}} + P_{\text{p}}\cos\omega_{\text{p}} t - Y\,r/R\) con</p>
+          <div class="eq-block">\[ \omega_0^2 = \frac{Y}{R\, \rho w} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🥁</span> Resonancia</div>
+        <div class="card-body">
+          <p>Si la frecuencia del pulso \(\omega_{\text{p}}\) se acerca a la natural \(\omega_0\), la amplitud crece (eq. 8.48):</p>
+          <div class="eq-block">\[ r_{\text{p}}(t) = \frac{P_{\text{p}}/\rho w}{\omega_0^2 - \omega_{\text{p}}^2}\cos(\omega_{\text{p}} t) \]</div>
+          <p>A mayor amplitud, mayor riesgo de ruptura. La amortiguación \(\gamma\) (eq. 8.49) limita el pico.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📊</span> Factor de calidad Q</div>
+        <div class="card-body">
+          <p>El sistema oscila <span class="tag">Q ≈ ω₀/(2πγ) ciclos</span> antes de amortiguarse. Un Q alto = pico de resonancia estrecho y peligroso si el pulso cae cerca de \(\omega_0\).</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-14">Un aneurisma es un oscilador: tiene frecuencia natural, amortiguación y resonancia. En el canvas pulsa ▶ y mueve la rigidez hasta alinear ω₀ con el pulso: la esfera late descomunal y el factor de amplificación se dispara. En el cuerpo eso es la pared a punto de romperse.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-pulsatile" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">resonancia</span>
+        <button id="rp_play" onclick="togglePulsatile()">▶</button>
+        <label>rigidez Y <input type="range" id="rp_y" min="0.3" max="3" step="0.1" value="1" oninput="drawPulsatile()"> <span id="rp_yv">1,0</span></label>
+        <label>radio R <input type="range" id="rp_r" min="0.5" max="1.5" step="0.05" value="1" oninput="drawPulsatile()"> <span id="rp_rv">1,0</span></label>
+        <label>amortiguación <input type="range" id="rp_g" min="0.05" max="1.5" step="0.05" value="0.25" oninput="drawPulsatile()"> <span id="rp_gv">0,25</span></label>
+        <span class="readout" id="rp_out">ω₀/ω_p ≈ 1,5 · A ≈ 1,6 · lejos de resonancia</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="15" data-module="6">
+  <div class="module-header">
+    <span class="mnum">8.3</span>
+    <span class="mtitle">Estenosis: grados e ictus</span>
+    <span class="msub">El flujo aguanta hasta ~75 % y luego se desploma</span>
+    <span class="mslide-count">15 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🚦</span> Grados de estenosis</div>
+        <div class="card-body">
+          <p>La severidad es la reducción del área: <span class="tag">1–39 % leve</span> · <span class="tag">40–59 % moderada</span> · <span class="tag">60–79 % grave</span> · <span class="tag">80–99 % crítica</span> · <span class="tag">100 % ocluida</span>.</p>
+          <div class="eq-block">\[ \% = \left(1 - \frac{A_{\text{estenosis}}}{A_{\text{normal}}}\right)\times 100 \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📉</span> La estenosis «crítica»</div>
+        <div class="card-body">
+          <p>El flujo no cae apenas hasta ~75 % de reducción (la resistencia \(1/r^4\) es insensible al inicio); pasada la <span class="tag">estenosis crítica</span>, el caudal se desploma. Por eso las lesiones del 70 % de una carótida ya se operan.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🧠</span> Ictus</div>
+        <div class="card-body">
+          <p><span class="tag">~80 % de los ictus son isquémicos</span> (obstrucción: placa, trombo) y <span class="tag">~20 % hemorrágicos</span> (rotura de aneurisma). La estenosis carotídea y la fibrilación auricular son las grandes causas de embolia cerebral.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-15">Contraintuitivo: una estenosis del 50 % casi no molesta. La curva Q vs % es plana hasta la «estenosis crítica» (~75–80 %) y luego cae en picada. En el canvas estrecha el vaso y mira el flujo no inmutarse… hasta que se desploma. Ese umbral decide la cirugía.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-stenosis" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">estenosis</span>
+        <label>% estrechamiento <input type="range" id="es_s" min="0" max="100" step="1" value="50" oninput="drawStenosis()"> <span id="es_sv">50 %</span></label>
+        <span class="readout" id="es_out">moderada · Q/Q₀ ≈ 0,96</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M7 · MODELOS ═══════════ -->
+<div class="slide" data-slide="16" data-module="7">
+  <div class="module-header">
+    <span class="mnum">8.4</span>
+    <span class="mtitle">El modelo del corazón: elastancia y Frank-Starling</span>
+    <span class="msub">El ventrículo como cámara elástica variable</span>
+    <span class="mslide-count">16 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🧮</span> La cámara elástica (eq. 8.57)</div>
+        <div class="card-body">
+          <p>El volumen del ventrículo es un volumen muerto más la compliancia \(C(t)\) que cambia entre diástole y sístole:</p>
+          <div class="eq-block">\[ V(t) = V_{\text{d}} + C(t)\, P(t) \]</div>
+          <p>Al final de la diástole: \(V_{\text{ED}} = V_{\text{d}} + C_{\text{diastole}}P_{\text{pv}}\). Al final de la sístole: \(V_{\text{ES}} = V_{\text{d}} + C_{\text{sistole}}P_{\text{sa}}\). El volumen sistólico (eq. 8.60):</p>
+          <div class="eq-block">\[ V_{\text{stroke}} = V_{\text{ED}} - V_{\text{ES}} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📈</span> Frank-Starling</div>
+        <div class="card-body">
+          <p>«El corazón bombea lo que recibe»: cuanto mayor la precarga (presión de llenado), mayor el volumen sistólico (Fig. 8.29–8.30). En el modelo:</p>
+          <div class="eq-block">\[ Q_{\text{L}} = K_{\text{L}}\, P_{\text{pv}} \qquad Q_{\text{R}} = K_{\text{R}}\, P_{\text{sv}} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">⚖️</span> El equilibrio de los dos corazones</div>
+        <div class="card-body">
+          <p>En estado estacionario \(Q_{\text{L}} = Q_{\text{R}}\): la ley de Starling acopla ambos lados y evita que un ventrículo se llene más que el otro. Un corazón sano mantiene el balance aunque cambie la poscarga o la precarga.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-16">El corazón no «decide» cuánto bombea: la precarga lo llena y la elastancia lo vacía. Frank-Starling es la ley de acoplamiento que iguala VI y VD. En el canvas sube la presión de llenado P_pv y el volumen sistólico crece — hasta que la curva se aplana: ese techo es real.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-frank" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">Frank–Starling</span>
+        <label>precarga (P_pv) <input type="range" id="fs_pv" min="0" max="15" step="0.5" value="5" oninput="drawFrank()"> <span id="fs_pvv">5,0 mmHg</span></label>
+        <label>frecuencia <input type="range" id="fs_f" min="40" max="160" step="5" value="70" oninput="drawFrank()"> <span id="fs_fv">70 /min</span></label>
+        <span class="readout" id="fs_out">V_stroke ≈ 80 mL · Q ≈ 5,6 L/min</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="17" data-module="7">
+  <div class="module-header">
+    <span class="mnum">8.4</span>
+    <span class="mtitle">El modelo de la circulación: 8 subunidades</span>
+    <span class="msub">R, C y K acoplados en un circuito cerrado</span>
+    <span class="mslide-count">17 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🔌</span> Las 8 subunidades (Fig. 8.52)</div>
+        <div class="card-body">
+          <p>Dos corazones (VI, VD), arterias grandes sistémicas y pulmonares, venas grandes sistémicas y pulmonares, y los vasos pequeños. Tres tipos de relación: corazón \(Q=KP\), vasos grandes \(V=CP\), vasos pequeños \(P_{a}-P_{v}=RQ\).</p>
+          <div class="eq-block">\[ Q = \frac{V_0}{T_{\text{sa}} + T_{\text{sv}} + T_{\text{pa}} + T_{\text{pv}}} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📋</span> Tabla 8.8 · parámetros en reposo</div>
+        <div class="card-body">
+          <table class="data-mini">
+            <tr><th>Parámetro</th><th>Sistémico</th><th>Pulmonar</th></tr>
+            <tr><td>Resistencia (mmHg·min/L)</td><td>R_s = 17,5</td><td>R_p = 1,79</td></tr>
+            <tr><td>C arterial (L/mmHg)</td><td>0,01</td><td>0,00667</td></tr>
+            <tr><td>C venosa (L/mmHg)</td><td>1,75</td><td>0,08</td></tr>
+            <tr><td>Corazón (L/min·mmHg)</td><td>K_L = 1,12</td><td>K_R = 2,8</td></tr>
+          </table>
+          <p>Volumen total \(V_0 = 5{,}0\ \text{L}\).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🎈</span> Qué manda</div>
+        <div class="card-body">
+          <p>Las venas son el gran depósito (\(C_{\text{sv}} = 1{,}75\): 175× las arterias). La solución da <span class="tag">Q ≈ 5,6 L/min</span>, <span class="tag">P_sa ≈ 100</span>, <span class="tag">P_sv ≈ 2</span>, <span class="tag">P_pa ≈ 15</span>, <span class="tag">P_pv ≈ 5 mmHg</span> — los valores de la Tabla 8.1.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-17">El circuito se resuelve con 12 incógnitas y 12 ecuaciones: bombas, compliancias y resistencias. De ahí salen solas las presiones «conocidas» del capítulo. En el canvas sube la resistencia sistémica y la presión arterial sube mientras el gasto cae — esa es la hipertensión en una fórmula.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-circuit" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">circuito</span>
+        <label>R_s <input type="range" id="cc_rs" min="10" max="30" step="0.5" value="17.5" oninput="drawCircuit()"> <span id="cc_rsv">17,5</span></label>
+        <label>C_sv <input type="range" id="cc_cv" min="0.8" max="2.5" step="0.05" value="1.75" oninput="drawCircuit()"> <span id="cc_cvv">1,75</span></label>
+        <span class="readout" id="cc_out">Q = 5,6 L/min · P_sa = 100 mmHg</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="18" data-module="7">
+  <div class="module-header">
+    <span class="mnum">8.4</span>
+    <span class="mtitle">La circulación fetal y el cambio al nacer</span>
+    <span class="msub">Dos derivaciones que el pulmón no usa… y que se cierran</span>
+    <span class="mslide-count">18 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🫄</span> Antes de nacer</div>
+        <div class="card-body">
+          <p>El pulmón fetal no respira: la sangre lo <strong>bypasea</strong>. El <span class="tag">conducto arterioso</span> (de la arteria pulmonar a la aorta, \(Q_{\text{d}}\)) y el <span class="tag">foramen oval</span> (de la aurícula derecha a la izquierda, \(Q_{\text{f}}\)) desvían el flujo. La <span class="tag">placenta</span> es el pulmón.</p>
+          <div class="eq-block">\[ Q_{\text{R}} = Q_{\text{p}} + Q_{\text{d}} \qquad Q_{\text{s}} = Q_{\text{R}} + Q_{\text{f}} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🎈</span> Al nacer</div>
+        <div class="card-body">
+          <p>Con la primera bocanada los pulmones se expanden: \(R_{\text{p}}\) cae por debajo de \(R_{\text{s}}\). El <span class="tag">flujo del conducto se invierte</span> (de la aorta a la pulmonar) y luego se cierra en días; el <span class="tag">foramen se cierra</span> al invertirse el gradiente de presión.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📉</span> El modelo</div>
+        <div class="card-body">
+          <p>Con \(R_{\text{p}} > R_{\text{s}}\), \(K_{\text{R}} = K_{\text{L}}\), \(R_{\text{d}} = 0\) (conducto abierto) y foramen abierto, la solución da \(Q_{\text{f}} \ge 0\): el estado fetal es autoconsistente. Al nacer, la solución exige foramen cerrado y conducto invertido (Problemas 8.57–8.59).</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-18">El feto es un circuito con dos «atajos» porque el pulmón sobra. La misma matemática que resuelve la circulación del adulto, con \(R_p\) enorme, da foramen y conducto abiertos; cuando \(R_p\) cae al nacer, los atajos se cierran solos. En el canvas baja \(R_p\) y observa las dos derivaciones cambiar de estado.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-fetal" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">fetal</span>
+        <label>R_pulmonar <input type="range" id="fd_rp" min="0.5" max="25" step="0.5" value="18" oninput="drawFetal()"> <span id="fd_rpv">18 (fetal)</span></label>
+        <span class="readout" id="fd_out">feto: ductus abierto → · foramen abierto</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M8 · PULSO Y WINDKESSEL ═══════════ -->
+<div class="slide" data-slide="19" data-module="8">
+  <div class="module-header">
+    <span class="mnum">8.4</span>
+    <span class="mtitle">La onda de pulso y la incisura</span>
+    <span class="msub">El volumen sistólico distiende el reservorio arterial</span>
+    <span class="mslide-count">19 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">📈</span> Presión de pulso (eq. 8.107)</div>
+        <div class="card-body">
+          <p>El sistema arterial es un vaso de compliancia: el volumen sistólico lo distiende una cantidad que depende de la compliancia \(C_{\text{sa}}\):</p>
+          <div class="eq-block">\[ P_{\text{pulso}} = \frac{V_{\text{stroke}}}{C_{\text{sa}}} \]</div>
+          <p>Con \(V_{\text{stroke}} = 70\ \text{mL}\) y \(C_{\text{sa}} = 0{,}00175\ \text{L/mmHg}\): <span class="tag">P_pulso = 40 mmHg</span>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🔽</span> La incisura (muesca dícrota)</div>
+        <div class="card-body">
+          <p>Al cerrarse la válvula aórtica hay un brevísimo retroflujo: la presión <strong>baja un escalón</strong> y luego sigue decayendo. Ese golpecito es la <span class="tag">incisura</span>, marca del fin de la sístole.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📉</span> Decaimiento diastólico</div>
+        <div class="card-body">
+          <p>Con el flujo de entrada nulo, la presión cae exponencialmente (eq. 8.100–8.101):</p>
+          <div class="eq-block">\[ \tau = R_{\text{s}} C_{\text{sa}} \qquad P(t) = P(0)\,e^{-t/\tau} \]</div>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-19">El pulso es el eco de la eyección en un reservorio elástico. La fórmula P_pulso = V_stroke/C_sa explica todo: aorta rígida (arteriosclerosis) → C baja → pulso ancho. En el canvas sube el volumen sistólico o baja la compliancia y la banda de pulso se ensancha.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-pulse" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">onda de pulso</span>
+        <label>V_stroke <input type="range" id="pu_vs" min="50" max="100" step="2" value="70" oninput="drawPulse()"> <span id="pu_vsv">70 mL</span></label>
+        <label>C_sa <input type="range" id="pu_c" min="0.001" max="0.003" step="0.00005" value="0.00175" oninput="drawPulse()"> <span id="pu_cv">0,00175</span></label>
+        <span class="readout" id="pu_out">P_pulso = 40 mmHg · τ = 0,031 min</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="20" data-module="8">
+  <div class="module-header">
+    <span class="mnum">8.4</span>
+    <span class="mtitle">El modelo Windkessel</span>
+    <span class="msub">La «cámara de aire» que suaviza el pulso</span>
+    <span class="mslide-count">20 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🛢️</span> La idea</div>
+        <div class="card-body">
+          <p>Las arterias grandes almacenan el volumen sistólico en sístole y lo liberan en diástole, como una cámara de aire (Windkessel) que convierte el chorro pulsátil en un flujo casi continuo (eq. 8.109):</p>
+          <div class="eq-block">\[ Q_{\text{in}} = C\,\frac{\mathrm{d}P}{\mathrm{d}t} + \frac{P}{R_{\text{p}}} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">⏱️</span> La constante de tiempo</div>
+        <div class="card-body">
+          <p>En diástole \(Q_{\text{in}} = 0\): la presión se vacía exponencialmente (eq. 8.110–8.112):</p>
+          <div class="eq-block">\[ \tau = R_{\text{p}}\,C \qquad P(t) = P(0)\,e^{-t/\tau} \]</div>
+          <p>Arterias rígidas (C baja) → vaciado rápido → <span class="tag">diastólica baja</span>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🔌</span> La analogía eléctrica</div>
+        <div class="card-body">
+          <p>La resistencia es un resistor y la compliancia un capacitor: la bomba carga el capacitor en sístole y el resistor lo descarga. Los modelos <span class="tag">W2, W3 y VW</span> añaden la inercia y la impedancia característica del árbol arterial.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-20">El Windkessel es un RC: carga (sístole) y descarga (diástole). En el canvas pulsa ▶ y mira el capacitor arterial llenarse y vaciarse; sube la resistencia y el vaciado se alarga (τ mayor). Es el modelo más simple que explica por qué el pulso no es un cuadrado.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-windkessel" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">Windkessel</span>
+        <button id="wk_play" onclick="toggleWindkessel()">▶</button>
+        <label>C <input type="range" id="wk_c" min="0.001" max="0.003" step="0.00005" value="0.002" oninput="drawWindkessel()"> <span id="wk_cv">0,002</span></label>
+        <label>R_p <input type="range" id="wk_r" min="10" max="25" step="0.5" value="17.5" oninput="drawWindkessel()"> <span id="wk_rv">17,5</span></label>
+        <label>F <input type="range" id="wk_f" min="40" max="160" step="5" value="70" oninput="drawWindkessel()"> <span id="wk_fv">70 /min</span></label>
+        <span class="readout" id="wk_out">τ = 0,035 min · diástole: P(t) = P₀·e^(−t/τ)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M9 · EJERCICIO Y DISFUNCIÓN ═══════════ -->
+<div class="slide" data-slide="21" data-module="9">
+  <div class="module-header">
+    <span class="mnum">8.2</span>
+    <span class="mtitle">El ejercicio: el corazón y el reparto del flujo</span>
+    <span class="msub">De 5 a 25 L/min — y el cerebro ni se entera</span>
+    <span class="mslide-count">21 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🏃</span> El gasto en ejercicio (Tabla 8.6)</div>
+        <div class="card-body">
+          <p>El gasto total sube con la intensidad: <span class="tag">5,8 → 9,5 → 17,5 → 25 L/min</span>. El volumen sistólico crece de ~70 a ~120 mL y la frecuencia de ~70 a ~150 /min.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🧠</span> El cerebro no se mueve</div>
+        <div class="card-body">
+          <p>El cerebro mantiene <span class="tag">750 mL/min</span> constante (13 % → 3 % del total). El músculo esquelético pasa de <span class="tag">1,2 → 22 L/min</span> (21 % → 88 %). Corazón, piel y riñones se reparten el resto.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📈</span> Frecuencia máxima (eq. 8.31–8.32)</div>
+        <div class="card-body">
+          <div class="eq-block">\[ F_{\max} = 220 - Y \qquad \text{o} \qquad 211 - 0{,}64\,Y \]</div>
+          <p>Atletas: volumen sistólico hasta <span class="tag">220 mL</span> → gastos de hasta <span class="tag">35 L/min</span>. En el embarazo, \(Q\) sube ~30 % (5,0 → 6,7 L/min).</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-21">La Tabla 8.6 es la mejor lección de fisiología del capítulo: el gasto crece ×4 mientras el cerebro se queda clavado en 750 mL/min. El músculo lo roba todo. En el canvas barre la intensidad y mira las barras reorganizarse — el cerebro es la línea horizontal.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-exercise" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">ejercicio</span>
+        <label>intensidad <input type="range" id="ej_i" min="0" max="3" step="0.1" value="0" oninput="drawExercise()"> <span id="ej_iv">reposo</span></label>
+        <span class="readout" id="ej_out">Q = 5,8 L/min · músculo 21 %</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="22" data-module="9">
+  <div class="module-header">
+    <span class="mnum">8.4</span>
+    <span class="mtitle">Disfunción cardíaca: ESPVR y EDPVR</span>
+    <span class="msub">La contractilidad vs. la rigidez del llenado</span>
+    <span class="mslide-count">22 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">📉</span> Las dos curvas del ventrículo</div>
+        <div class="card-body">
+          <p>La relación presión-volumen tiene dos límites: la <span class="tag">ESPVR</span> (fin de sístole, pendiente = contractilidad \(E_{\max}\)) y la <span class="tag">EDPVR</span> (fin de diástole, pendiente = rigidez). Entre ambas vive el lazo del latido.</p>
+          <div class="eq-block">\[ \text{EF} = \frac{V_{\text{stroke}}}{V_{\text{ED}}} \qquad \text{(normal 55–75 %)} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🫀</span> Disfunción sistólica</div>
+        <div class="card-body">
+          <p>Menor contractilidad → ESPVR menos empinada (ej. <span class="tag">DCM, miocardiopatía dilatada</span>). El corazón no se vacía: \(V_{\text{ES}}\) sube, el EF cae y la cámara se dilata.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🎈</span> Disfunción diastólica</div>
+        <div class="card-body">
+          <p>Mayor rigidez → EDPVR más empinada (ej. <span class="tag">HCM, RCM</span>). El llenado es difícil: \(V_{\text{ED}}\) pequeño, presiones de llenado altas y congestión pulmonar, con EF conservado.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-22">La insuficiencia cardíaca tiene dos físicas: no empuja (ESPVR plana, EF bajo) o no se llena (EDPVR empinada, EF «normal»). En el canvas baja la contractilidad y el lazo se aplana y se va a la derecha (dilatación); sube la rigidez y el lazo se comprime contra altas presiones.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-dysfunction" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">ESPVR / EDPVR</span>
+        <label>contractilidad <input type="range" id="df_ct" min="0.5" max="1.5" step="0.05" value="1" oninput="drawDysfunction()"> <span id="df_ctv">1,0</span></label>
+        <label>rigidez <input type="range" id="df_st" min="0.5" max="2" step="0.05" value="1" oninput="drawDysfunction()"> <span id="df_stv">1,0</span></label>
+        <span class="readout" id="df_out">EF ≈ 57 % · normal</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="23" data-module="9">
+  <div class="module-header">
+    <span class="mnum">8.4</span>
+    <span class="mtitle">Válvulas y fracción de eyección</span>
+    <span class="msub">Cuando la puerta no abre o no cierra</span>
+    <span class="mslide-count">23 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🚪</span> Estenosis valvular</div>
+        <div class="card-body">
+          <p>La válvula no abre del todo: <span class="tag">estenosis aórtica</span> → la poscarga efectiva sube y el ventrículo se hipertrofia <strong>concéntricamente</strong> (sobrecarga de presión). <span class="tag">Estenosis mitral</span> → llenado difícil.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🔄</span> Regurgitación</div>
+        <div class="card-body">
+          <p>La válvula no cierra y la sangre <strong>vuelve</strong>: sobrecarga de volumen → cámaras dilatadas (<strong>hipertrofia excéntrica</strong>). El corazón trabaja para nada: el trabajo útil cae y el consumo sube.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📐</span> Fracción de eyección</div>
+        <div class="card-body">
+          <p>Es el resumen de la función sistólica: <span class="tag">EF = V_stroke / V_ED</span>. Normal <span class="tag">55–75 %</span>. Por debajo de 40 % hay disfunción sistólica; con EF normal, sospechar disfunción diastólica. La «IC con EF preservada» es diástole.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-23">El EF es la fracción del llenado que el ventrículo expulsa: una medida simple con toda la física del lazo P-V dentro. En el canvas pulsa ▶ y mira el ventrículo llenarse y vaciarse; mueve el V_ED y el V_ES y la aguja del EF responde. Bajo 40 %, falla sistólica.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-ejection" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">eyección</span>
+        <button id="ef_play" onclick="toggleEjection()">▶</button>
+        <label>V_ED <input type="range" id="ef_ed" min="100" max="240" step="5" value="150" oninput="drawEjection()"> <span id="ef_edv">150 mL</span></label>
+        <label>V_ES <input type="range" id="ef_es" min="30" max="130" step="2" value="60" oninput="drawEjection()"> <span id="ef_esv">60 mL</span></label>
+        <span class="readout" id="ef_out">EF = 60 % · normal</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ NAVEGACIÓN ═══════════ -->
+<nav class="nav-bar">
+  <button class="nav-btn" onclick="prevSlide()" aria-label="Anterior">‹</button>
+  <div class="nav-dots" id="navDots"></div>
+  <button class="nav-btn" onclick="nextSlide()" aria-label="Siguiente">›</button>
+  <span class="slide-counter" id="slideCounter">1 / 24</span>
+  <span class="nav-module-label" id="navModuleLabel">Inicio</span>
+</nav>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   MOTOR DE PRESENTACIÓN · capítulo 8 · Física del Cuerpo Humano
+   Navegación · KaTeX · redibujado de sims
+   ═══════════════════════════════════════════════════════════ */
+'use strict';
+
+/* ── Total de diapositivas y módulos ── */
+const TOTAL = 24;
+const MODULES = [
+  {id:0, name:'Inicio',              slides:[0],                  ico:'🏠'},
+  {id:1, name:'La bomba',            slides:[1,2],                ico:'🫀'},
+  {id:2, name:'Gravedad',            slides:[3,4],                ico:'🌍'},
+  {id:3, name:'Hemodinámica',        slides:[5,6,7],              ico:'🌊'},
+  {id:4, name:'Pared y capilar',     slides:[8,9],                ico:'🎈'},
+  {id:5, name:'Trabajo del corazón', slides:[10,11],              ico:'⚡'},
+  {id:6, name:'Vasos enfermos',      slides:[12,13,14,15],        ico:'🚑'},
+  {id:7, name:'Modelos',             slides:[16,17,18],           ico:'🧮'},
+  {id:8, name:'Pulso y Windkessel',  slides:[19,20],              ico:'📈'},
+  {id:9, name:'Ejercicio y disfunción', slides:[21,22,23],        ico:'🏃'},
+];
+let current = 0;
+
+/* ── Texto por defecto de los apuntes (para restaurar en revisita) ── */
+const infoTexts = {};
+document.querySelectorAll('.apuntes .a-text[id]').forEach(el=>{
+  infoTexts[el.id] = el.innerHTML;
+});
+
+/* ── Navegación ── */
+function moduleOf(i){ for (const m of MODULES) if (m.slides.includes(i)) return m; return MODULES[0]; }
+
+function dots(){
+  const host = document.getElementById('navDots');
+  if (!host) return;
+  host.innerHTML = '';
+  for (let i=0;i<TOTAL;i++){
+    const b = document.createElement('button');
+    b.className = 'nav-dot';
+    if (i===0) b.classList.add('active');
+    b.title = 'Diapositiva '+(i+1);
+    b.setAttribute('aria-label','Ir a diapositiva '+(i+1));
+    b.addEventListener('click',()=>go(i));
+    host.appendChild(b);
+  }
+}
+
+function setMPills(active){
+  document.querySelectorAll('.mpill').forEach(p=>{
+    const m = (p.getAttribute('onclick')||'').match(/goModule\((\d+)\)/);
+    p.classList.toggle('active', m && +m[1]===active);
+  });
+}
+
+/* ── Pestañas de módulo en la barra superior ── */
+function buildModuleTabs(){
+  const bar = document.getElementById('moduleBar');
+  if (!bar) return;
+  MODULES.forEach(m=>{
+    if (m.id===0) return;
+    const t = document.createElement('button');
+    t.className = 'module-tab';
+    t.innerHTML = '<span class="mod-badge">'+m.id+'</span>'+m.ico+' '+m.name;
+    t.setAttribute('onclick','goModule('+m.id+')');
+    t.setAttribute('aria-label','Módulo '+m.id+': '+m.name);
+    bar.appendChild(t);
+  });
+}
+function updateTabs(id){
+  document.querySelectorAll('.module-tab').forEach(t=>{
+    const mid = (t.getAttribute('onclick')||'').match(/goModule\((\d+)\)/);
+    t.classList.toggle('active', mid && +mid[1]===id);
+  });
+}
+
+const _entranceSeen = new Set();
+function go(n){
+  if (n===undefined || isNaN(n)) return;
+  n = Math.max(0, Math.min(TOTAL-1, n));
+  // Restaurar los apuntes que las simulaciones hayan reescrito
+  document.querySelectorAll('.apuntes .a-text[id]').forEach(el=>{
+    if (infoTexts[el.id]) el.innerHTML = infoTexts[el.id];
+  });
+  document.querySelectorAll('.slide,.slide-full').forEach(s=>{
+    s.classList.toggle('active', +s.dataset.slide===n);
+  });
+  // Primera visita: reveal. Revisita: instantáneo (no insistir).
+  const cur = document.querySelector('.slide.active,.slide-full.active');
+  if (cur) {
+    if (!_entranceSeen.has(n)) _entranceSeen.add(n);
+    else cur.classList.add('instant');
+  }
+  current = n;
+  document.querySelectorAll('#navDots .nav-dot').forEach((d,i)=>d.classList.toggle('active', i===n));
+  const sc = document.getElementById('slideCounter');
+  if (sc) sc.textContent = (n+1)+' / '+TOTAL;
+  const ml = document.getElementById('navModuleLabel');
+  if (ml) ml.textContent = moduleOf(n).name;
+  const mid = moduleOf(n).id;
+  setMPills(mid);
+  updateTabs(mid);
+  requestAnimationFrame(()=>{ redrawSlide(n); });
+  // La slide recién activada (display:none→flex) puede no tener layout aún
+  // cuando corre el rAF; el guard `!cv.clientWidth` corta y quedaría sin
+  // dibujar. Reintento tras asentar layout, solo si seguimos en esta slide.
+  setTimeout(()=>{ if (current===n) redrawSlide(n); }, 120);
+}
+window.go = go;
+
+function nextSlide(){ go(current+1); }
+function prevSlide(){ go(current-1); }
+function goModule(id){ const m = MODULES.find(x=>x.id===id); if (m) go(m.slides[0]); }
+window.nextSlide = nextSlide;
+window.prevSlide = prevSlide;
+window.goModule = goModule;
+
+/* ── Redibujar la simulación activa ── */
+function redrawSlide(n){
+  const fns = {
+    1: ()=>window.drawDistribution && drawDistribution(),
+    2: ()=>window.drawWave && drawWave(),
+    3: ()=>window.drawGravity && drawGravity(),
+    4: ()=>window.drawProfile && drawProfile(),
+    5: ()=>window.drawVelocity && drawVelocity(),
+    6: ()=>window.drawReynolds && drawReynolds(),
+    7: ()=>window.drawResVasc && drawResVasc(),
+    8: ()=>window.drawWall && drawWall(),
+    9: ()=>window.drawStarling && drawStarling(),
+    10: ()=>window.drawFick && drawFick(),
+    11: ()=>window.drawPVLoop && drawPVLoop(),
+    12: ()=>window.drawObstruction && drawObstruction(),
+    13: ()=>window.drawAneurysm && drawAneurysm(),
+    14: ()=>window.drawPulsatile && drawPulsatile(),
+    15: ()=>window.drawStenosis && drawStenosis(),
+    16: ()=>window.drawFrank && drawFrank(),
+    17: ()=>window.drawCircuit && drawCircuit(),
+    18: ()=>window.drawFetal && drawFetal(),
+    19: ()=>window.drawPulse && drawPulse(),
+    20: ()=>window.drawWindkessel && drawWindkessel(),
+    21: ()=>window.drawExercise && drawExercise(),
+    22: ()=>window.drawDysfunction && drawDysfunction(),
+    23: ()=>window.drawEjection && drawEjection(),
+  };
+  if (fns[n]) fns[n]();
+}
+window.redrawSlide = redrawSlide;
+
+/* ── Teclado ── */
+document.addEventListener('keydown', e=>{
+  if (/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return;
+  if (e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){ e.preventDefault(); nextSlide(); }
+  else if (e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); prevSlide(); }
+  else if (e.key==='Home'){ e.preventDefault(); go(0); }
+  else if (e.key==='End'){ e.preventDefault(); go(TOTAL-1); }
+});
+
+/* ── Motor de amortiguación frame-rate independent ── */
+window.__damp = function(v, t, r, dt) { return v + (t - v) * (1 - Math.exp(-r * dt)); };
+
+/* ═══════════════════════════════════════════════════════════
+   HELPERS ANATÓMICOS 2D (window.AB) — heredados de los capítulos 1–6
+   ═══════════════════════════════════════════════════════════ */
+window.AB = (function(){
+  const PAL = {
+    paper:'#f5f0e4', card:'#fbf8f0', ink:'#232c36', ink2:'#43505c', ink3:'#6b7885',
+    line:'#cfc3a9', sagittal:'#5d4fa8',
+    bone:'#cfc4ae', boneEdge:'#b6a67f', boneDark:'#9b8a64',
+    muscle:'#c14b4b', muscleEdge:'#a92a1e',
+    tendon:'#e8d8c8', skin:'#e9c49f', skinEdge:'#d9a77c',
+    teal:'#0d6e64', tealLight:'#3aa89c', amber:'#9a5b00', blood:'#a92a1e',
+    good:'#2d7d4f', warn:'#b86a1e',
+  };
+  function setup(cv, w, h){
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = Math.max(1, Math.round(w*dpr));
+    cv.height = Math.max(1, Math.round(h*dpr));
+    cv.style.width = w+'px'; cv.style.height = h+'px';
+    const ctx = cv.getContext('2d');
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,w,h);
+    ctx.lineCap='round'; ctx.lineJoin='round';
+    return ctx;
+  }
+  function fmt(x, d){
+    d = d===undefined?1:d;
+    let s = Number(x).toFixed(d).replace(/\.0+$/,'').replace('.',',');
+    if (s===''||s==='-') s='0';
+    return s;
+  }
+  function text(ctx, s, x, y, o){
+    o = o||{};
+    ctx.font = (o.weight?o.weight+' ':'')+(o.size?o.size+'px ':'13px ')+'Karla, sans-serif';
+    ctx.fillStyle = o.color || PAL.ink;
+    ctx.textAlign = o.align || 'center';
+    ctx.textBaseline = o.base || 'middle';
+    ctx.fillText(s, x, y);
+  }
+  function arrow(ctx, x0,y0, x1,y1, o){
+    o = o||{};
+    const head = o.head===undefined?8:o.head;
+    const ang = Math.atan2(y1-y0, x1-x0);
+    ctx.strokeStyle = o.color||PAL.teal; ctx.fillStyle = o.color||PAL.teal;
+    ctx.lineWidth = o.width||2.5;
+    ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x1,y1);
+    ctx.lineTo(x1-head*Math.cos(ang-0.45), y1-head*Math.sin(ang-0.45));
+    ctx.lineTo(x1-head*Math.cos(ang+0.45), y1-head*Math.sin(ang+0.45));
+    ctx.closePath(); ctx.fill();
+  }
+  function dashed(ctx, x0,y0,x1,y1, o){
+    o = o||{};
+    ctx.strokeStyle = o.color||PAL.ink3; ctx.lineWidth = o.width||1.2;
+    ctx.setLineDash([4,4]); ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke(); ctx.setLineDash([]);
+  }
+  function bone(ctx, x0,y0,x1,y1, o){
+    o = o||{};
+    const w = o.width||10;
+    ctx.strokeStyle = o.edge||PAL.boneEdge; ctx.lineWidth = w;
+    ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+    ctx.strokeStyle = o.fill||PAL.bone; ctx.lineWidth = w-3;
+    ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+    if (o.joint!==false){ joint(ctx, x0,y0, w/2, {r:Math.max(2,w/2-3)}); }
+    if (o.jointEnd){ joint(ctx, x1,y1, w/2, {r:Math.max(2,w/2-3)}); }
+  }
+  function joint(ctx, x,y,r, o){
+    o = o||{};
+    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2);
+    ctx.fillStyle = o.fill||'#f5f0e4'; ctx.fill();
+    ctx.lineWidth = o.lw||2.2; ctx.strokeStyle = o.color||PAL.teal; ctx.stroke();
+    ctx.beginPath(); ctx.arc(x,y,Math.max(1.5,r*0.38),0,Math.PI*2);
+    ctx.fillStyle = o.color||PAL.teal; ctx.fill();
+  }
+  function muscle(ctx, ax,ay,bx,by, o){
+    o = o||{};
+    const w0 = o.w0||9, w1 = o.w1||4;
+    const ang = Math.atan2(by-ay, bx-ax);
+    const perp = ang + Math.PI/2;
+    const dx = Math.cos(perp), dy = Math.sin(perp);
+    const cx = (ax+bx)/2, cy = (ay+by)/2;
+    const bow = o.bow||0;
+    ctx.beginPath();
+    ctx.moveTo(ax + dx*w0/2, ay + dy*w0/2);
+    ctx.quadraticCurveTo(cx + dx*(bow+(w0+w1)/4), cy + dy*(bow+(w0+w1)/4), bx + dx*w1/2, by + dy*w1/2);
+    ctx.quadraticCurveTo(cx - dx*(w0+w1)/4, cy - dy*(w0+w1)/4, ax - dx*w0/2, ay - dy*w0/2);
+    ctx.closePath();
+    ctx.fillStyle = o.fill||PAL.muscle; ctx.fill();
+    ctx.lineWidth = o.lw||1.5; ctx.strokeStyle = o.edge||PAL.muscleEdge; ctx.stroke();
+  }
+  function tendon(ctx, ax,ay,bx,by, o){
+    o = o||{};
+    const w = o.width||3.5;
+    const ang = Math.atan2(by-ay,bx-ax);
+    const px = Math.cos(ang+Math.PI/2), py = Math.sin(ang+Math.PI/2);
+    ctx.beginPath();
+    ctx.moveTo(ax+px*w/2, ay+py*w/2); ctx.lineTo(bx+px*w/2, by+py*w/2);
+    ctx.lineTo(bx-px*w/2, by-py*w/2); ctx.lineTo(ax-px*w/2, ay-py*w/2);
+    ctx.closePath();
+    ctx.fillStyle = o.fill||PAL.tendon; ctx.fill();
+    ctx.lineWidth = 1; ctx.strokeStyle = o.edge||'#c8b49a'; ctx.stroke();
+  }
+  function limbSkin(ctx, x0,y0,x1,y1, w, o){
+    o = o||{};
+    const ang = Math.atan2(y1-y0,x1-x0);
+    const px = Math.cos(ang+Math.PI/2), py = Math.sin(ang+Math.PI/2);
+    ctx.beginPath();
+    ctx.moveTo(x0+px*w/2,y0+py*w/2); ctx.lineTo(x1+px*w/2,y1+py*w/2);
+    ctx.arc(x1,y1,w/2,ang-Math.PI/2,ang+Math.PI/2);
+    ctx.lineTo(x0-px*w/2,y0-py*w/2);
+    ctx.arc(x0,y0,w/2,ang+Math.PI/2,ang+Math.PI*1.5);
+    ctx.closePath();
+    ctx.fillStyle = o.fill||PAL.skin; ctx.fill();
+    ctx.lineWidth = o.lw||1.4; ctx.strokeStyle = o.edge||PAL.skinEdge; ctx.stroke();
+  }
+  function hand(ctx, x,y, r, o){
+    o = o||{};
+    ctx.fillStyle = o.fill||PAL.skin; ctx.strokeStyle = o.edge||PAL.skinEdge; ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    for (let i=-2;i<=2;i++){
+      ctx.beginPath(); ctx.arc(x+i*r*0.42, y-r*0.55, r*0.26, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+    }
+  }
+  function foot(ctx, x,y, ang, o){
+    o = o||{};
+    const L = o.len||54, h = o.h||20;
+    ctx.save(); ctx.translate(x,y); ctx.rotate(ang);
+    ctx.beginPath();
+    ctx.moveTo(-L*0.35, -h*0.25);
+    ctx.quadraticCurveTo(-L*0.5, h*0.1, -L*0.2, h*0.42);
+    ctx.quadraticCurveTo(L*0.2, h*0.55, L*0.62, h*0.3);
+    ctx.quadraticCurveTo(L*0.75, -h*0.15, L*0.55, -h*0.35);
+    ctx.quadraticCurveTo(0, -h*0.5, -L*0.35, -h*0.25);
+    ctx.closePath();
+    ctx.fillStyle = o.fill||PAL.skin; ctx.fill();
+    ctx.lineWidth = 1.4; ctx.strokeStyle = o.edge||PAL.skinEdge; ctx.stroke();
+    ctx.restore();
+  }
+  function triangle(ctx, x, y, size, o){
+    o = o||{};
+    ctx.beginPath(); ctx.moveTo(x, y-size*0.5); ctx.lineTo(x-size*0.5, y+size*0.5); ctx.lineTo(x+size*0.5, y+size*0.5); ctx.closePath();
+    ctx.fillStyle = o.color||PAL.amber; ctx.fill();
+  }
+  return {PAL, setup, fmt, text, arrow, dashed, bone, joint, muscle, tendon, limbSkin, hand, foot, triangle};
+})();
+const fmt = window.AB.fmt;
+
+function el(id){ return document.getElementById(id); }
+function num(id){ const e = el(id); return e ? parseFloat(e.value) : 0; }
+
+/* ── Formato español de miles (punto) con decimal (coma) ── */
+function espan(x, d){
+  d=d===undefined?0:d;
+  let s=Number(x).toFixed(d), neg=s.startsWith('-');
+  if(neg) s=s.slice(1);
+  const parts=s.split('.'), ip=parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+  let out=ip;
+  if(parts.length>1 && parts[1]!=='') out+=','+parts[1];
+  return (neg?'-':'')+out;
+}
+
+/* ── Estado global de las simulaciones animadas ── */
+window.__reT=0;          // Reynolds (siempre avanza en su slide)
+window.__pvPlaying=false; window.__pvT=0;  // lazo P–V
+window.__rpPlaying=false; window.__rpT=0;  // aneurisma pulsátil
+window.__wkPlaying=false; window.__wkT=0;  // Windkessel
+window.__efPlaying=false; window.__efT=0;  // fracción de eyección
+
+/* ═══════════════════════════════════════════════════════════
+   S1 · Reparto de la sangre en el cuerpo
+   ═══════════════════════════════════════════════════════════ */
+function drawDistribution(){
+  const cv=el('sim-distribution'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const sel=el('ds_sel')?el('ds_sel').value:'all';
+  const rows=[
+    ['Venas sistémicas',50,AB.PAL.teal],
+    ['Pulmones',18,AB.PAL.amber],
+    ['Corazón',12,AB.PAL.blood],
+    ['Arterias',8,AB.PAL.blood],
+    ['Capilares',5,AB.PAL.tealLight],
+    ['Aorta + arteriolas',4,AB.PAL.sagittal],
+    ['Otras',3,AB.PAL.ink3],
+  ];
+  const isSel=r=>sel==='all'||sel===r[0].toLowerCase().split(' ')[0]||(sel==='aorta'&&r[0].includes('Aorta'))||(sel==='arterias'&&r[0]==='Arterias')||(sel==='arteriolas'&&r[0].includes('arteriolas'));
+  // dona
+  const cx=w*0.33, cy=h*0.42, R=Math.min(86, h*0.40);
+  const total=rows.reduce((s,r)=>s+r[1],0);
+  let a0=-Math.PI/2;
+  rows.forEach((r,i)=>{
+    const frac=r[1]/total;
+    const a1=a0+frac*Math.PI*2;
+    const on=isSel(r);
+    ctx.beginPath(); ctx.arc(cx,cy,R*0.52,a0,a1); ctx.arc(cx,cy,R,a1,a0,true); ctx.closePath();
+    ctx.fillStyle=r[2]+(on?'':'33'); ctx.fill();
+    ctx.strokeStyle=AB.PAL.paper; ctx.lineWidth=2; ctx.stroke();
+    const am=(a0+a1)/2;
+    const tx=cx+Math.cos(am)*R*0.78, ty=cy+Math.sin(am)*R*0.78;
+    if (on && frac>0.05){
+      AB.text(ctx,espan(r[1],0)+' %', tx, ty, {size:9,weight:'700',color:r[2]});
+    }
+    a0=a1;
+  });
+  ctx.beginPath(); ctx.arc(cx,cy,R*0.32,0,Math.PI*2); ctx.fillStyle=AB.PAL.paper; ctx.fill();
+  AB.text(ctx,'Q_t ≈ 5 L/min', cx, cy-6, {size:9,weight:'700',color:AB.PAL.ink});
+  AB.text(ctx,'sangre total', cx, cy+8, {size:7,color:AB.PAL.ink3});
+  // leyenda
+  let ly=h*0.06;
+  rows.forEach((r,i)=>{
+    const on=isSel(r);
+    const x=w*0.56;
+    ctx.fillStyle=r[2]+(on?'':'44'); ctx.fillRect(x,ly,10,10);
+    AB.text(ctx,r[0], x+16, ly+5, {size:8,align:'left',color:on?AB.PAL.ink:AB.PAL.ink3,weight:on?'700':'400'});
+    AB.text(ctx,espan(r[1],0)+' %', x+w*0.32, ly+5, {size:8,align:'right',color:on?r[2]:AB.PAL.ink3,weight:'700'});
+    ly+=h*0.115;
+  });
+  AB.text(ctx,'La sangre vive en las venas: 50 % · no en el corazón', w/2, h*0.92, {size:8,color:AB.PAL.ink3});
+  const out=el('ds_out');
+  if (out) out.textContent=sel==='all'?'Q ≈ 5 L/min · 50 % en venas':(rows.find(r=>isSel(r))||[sel,'?',''])[1]+' % del volumen';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S2 · Onda de presión: sistólica, diastólica, media
+   ═══════════════════════════════════════════════════════════ */
+function drawWave(){
+  const cv=el('sim-wave'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const SYS=Math.max(100,Math.min(180,num('pm_sys')||120));
+  const DIA=Math.max(50,Math.min(110,num('pm_dia')||80));
+  const vs=el('pm_sysv'); if (vs) vs.textContent=espan(SYS,0);
+  const vd=el('pm_diav'); if (vd) vd.textContent=espan(DIA,0);
+  const MEAN=(SYS+2*DIA)/3, PUL=SYS-DIA;
+  const lx=w*0.10, lw=w*0.80, gy=h*0.12, gH=h*0.58;
+  const P0=40, P1=200;
+  const Y=p=>gy+gH*(1-(p-P0)/(P1-P0));
+  function waveP(t){
+    if (t<0.12) return DIA+(SYS-DIA)*(t/0.12);
+    if (t<0.34) return SYS-(SYS-DIA)*0.04*((t-0.12)/0.22);
+    if (t<0.40) return SYS*0.88+(SYS-DIA)*0.04*((0.40-t)/0.06)*0;
+    if (t<0.48) return SYS*0.88+8*((t-0.40)/0.08);
+    if (t<0.52) return SYS*0.96-14*((t-0.48)/0.04);
+    const td=(t-0.52)/0.48;
+    return DIA+(SYS*0.90-DIA)*Math.exp(-2.1*td);
+  }
+  // ejes
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.beginPath(); ctx.moveTo(lx,gy); ctx.lineTo(lx,gy+gH); ctx.lineTo(lx+lw,gy+gH); ctx.stroke();
+  [DIA,MEAN,SYS].forEach(v=>{
+    const y=Y(v);
+    AB.dashed(ctx,lx,y,lx+lw,y,{color:v===MEAN?AB.PAL.amber:AB.PAL.line});
+    AB.text(ctx,espan(v,0)+' mmHg', lx-6, y, {size:8,align:'right',weight:v===MEAN?'700':'400',color:v===MEAN?AB.PAL.amber:AB.PAL.ink3});
+  });
+  // onda
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2.6;
+  ctx.beginPath();
+  for(let i=0;i<=160;i++){
+    const x=lx+i/160*lw, y=Y(waveP(i/160));
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  }
+  ctx.stroke();
+  // sombreado área media
+  ctx.fillStyle='rgba(154,91,0,.14)';
+  ctx.beginPath();
+  for(let i=0;i<=160;i++){
+    const x=lx+i/160*lw, y=Y(waveP(i/160));
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  }
+  ctx.lineTo(lx+lw,Y(MEAN)); ctx.lineTo(lx,Y(MEAN)); ctx.closePath(); ctx.fill();
+  // etiquetas de fase
+  AB.text(ctx,'sístole', lx+lw*0.24, gy-12, {size:8,color:AB.PAL.blood});
+  AB.text(ctx,'diástole', lx+lw*0.72, gy-12, {size:8,color:AB.PAL.teal});
+  AB.text(ctx,'incisura', lx+lw*0.51, Y(SYS*0.94)-12, {size:7,color:AB.PAL.ink3});
+  AB.text(ctx,'P_media = (P_sist + 2·P_dias)/3', w/2, h*0.90, {size:8,color:AB.PAL.ink3});
+  const out=el('pm_out');
+  if (out) out.textContent='P_media ≈ '+espan(MEAN,0)+' mmHg · P_pulso '+espan(PUL,0);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S3 · Columna hidrostática: ΔP = ρ·g·h
+   ═══════════════════════════════════════════════════════════ */
+function drawGravity(){
+  const cv=el('sim-gravity'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const hh=Math.max(-1.4,Math.min(0.5,num('gv_h')||0));
+  const vv=el('gv_hv'); if (vv) vv.textContent=espan(hh,2)+' m';
+  const RHO=1060, G=9.8;
+  const dP_hidro=hh<0?-RHO*G*(-hh):RHO*G*hh;      // Pa
+  const dP_mm=dP_hidro/133.322;
+  const P_art=100+dP_mm;
+  // figura vertical (silueta cabeza-corazón-pies)
+  const scx=w*0.30, scy=h*0.46, su=h/3.1;
+  ctx.strokeStyle=AB.PAL.ink3; ctx.lineWidth=1.6;
+  // columna de referencia
+  ctx.setLineDash([4,4]);
+  ctx.beginPath(); ctx.moveTo(w*0.62, scy-su*0.62); ctx.lineTo(w*0.62, scy+su*1.15); ctx.stroke();
+  ctx.setLineDash([]);
+  AB.text(ctx,'0,5 m', w*0.66, scy-su*0.62, {size:7,color:AB.PAL.ink3,align:'left'});
+  AB.text(ctx,'−1,4 m', w*0.66, scy+su*1.15, {size:7,color:AB.PAL.ink3,align:'left'});
+  AB.text(ctx,'(corazón)', w*0.66, scy, {size:7,color:AB.PAL.ink3,align:'left'});
+  // corazón (círculo rojo) en scy
+  ctx.beginPath(); ctx.arc(scx,scy,9,0,Math.PI*2); ctx.fillStyle=AB.PAL.blood; ctx.fill();
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(scx+9,scy); ctx.lineTo(scx+30,scy); ctx.stroke();
+  AB.text(ctx,'corazón · P ≈ 100 mmHg', scx+34, scy, {size:8,align:'left',color:AB.PAL.blood,weight:'700'});
+  // cabeza
+  ctx.fillStyle=AB.PAL.skin; ctx.strokeStyle=AB.PAL.skinEdge; ctx.lineWidth=1.4;
+  ctx.beginPath(); ctx.arc(scx,scy-su*0.72,14,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  AB.text(ctx,'cerebro', scx+18, scy-su*0.72, {size:8,align:'left',color:AB.PAL.ink3});
+  AB.text(ctx,'P = '+espan(100-0.4*79,0)+' mmHg', scx, scy-su*0.72-18, {size:8,color:AB.PAL.teal,weight:'700'});
+  // pies
+  ctx.fillStyle=AB.PAL.skin; ctx.strokeStyle=AB.PAL.skinEdge;
+  ctx.beginPath(); ctx.ellipse(scx,scy+su*1.15,16,7,0,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  AB.text(ctx,'pies', scx+18, scy+su*1.15, {size:8,align:'left',color:AB.PAL.ink3});
+  AB.text(ctx,'P = '+espan(100+1.3*79,0)+' mmHg', scx, scy+su*1.15+18, {size:8,color:AB.PAL.teal,weight:'700'});
+  // marcador del nivel actual
+  const my=scy - (hh*su/1.0)*1.15*1.3;  // hh +0.5 arriba, −1.4 abajo
+  const markerY = scy - hh*su*0.55;
+  ctx.beginPath(); ctx.arc(scx, markerY, 5, 0, Math.PI*2);
+  ctx.fillStyle=AB.PAL.amber; ctx.strokeStyle=AB.PAL.amber; ctx.lineWidth=2;
+  ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(scx+5, markerY); ctx.lineTo(w*0.62, markerY); ctx.strokeStyle=AB.PAL.amber; ctx.stroke();
+  AB.text(ctx,'nivel actual', w*0.64, markerY-4, {size:7,color:AB.PAL.amber,align:'left'});
+  AB.text(ctx,'ΔP = ρ·g·h = 79 mmHg por metro', w/2, h*0.90, {size:8,color:AB.PAL.ink3});
+  const out=el('gv_out');
+  if (out) out.textContent='P_art ≈ '+espan(P_art,0)+' mmHg · ΔP_hidro = '+espan(dP_mm,0);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S4 · Perfil de presión: dónde se pierde la presión
+   ═══════════════════════════════════════════════════════════ */
+function drawProfile(){
+  const cv=el('sim-profile'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const Q=Math.max(40,Math.min(120,num('pf_q')||80));
+  const qv=el('pf_qv'); if (qv) qv.textContent=espan(Q,0)+' cm³/s';
+  const k=Q/80;
+  const segs=[
+    ['Aorta',0.025],
+    ['Arterias grandes',1.4],
+    ['Arteriolas',91],
+    ['Capilares',8.2],
+    ['Venas',5],
+  ];
+  // escalera acumulada (empezando en 100)
+  const lx=w*0.14, lw=w*0.74, gy=h*0.10, gH=h*0.56;
+  const Y=p=>gy+gH*(1-p/100);
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.beginPath(); ctx.moveTo(lx,gy); ctx.lineTo(lx,gy+gH); ctx.lineTo(lx+lw,gy+gH); ctx.stroke();
+  [0,50,100].forEach(v=>{
+    const y=Y(v);
+    AB.dashed(ctx,lx,y,lx+lw,y,{color:AB.PAL.line});
+    AB.text(ctx,espan(v,0), lx-6, y, {size:8,color:AB.PAL.ink3,align:'right'});
+  });
+  let P=100;
+  const bw=lw/segs.length;
+  ctx.fillStyle=AB.PAL.blood;
+  ctx.beginPath(); ctx.moveTo(lx, Y(100));
+  let x=lx;
+  segs.forEach((s,i)=>{
+    const dP=s[1]*k;
+    P-=dP;
+    const x0=x;
+    x+=bw;
+    ctx.lineTo(x0, Y(P)); ctx.lineTo(x, Y(P));
+    const c=i===2?AB.PAL.blood:(i===0||i===1?AB.PAL.blood:AB.PAL.tealLight);
+    ctx.strokeStyle=c; ctx.lineWidth=2.4;
+    ctx.stroke();
+    ctx.fillStyle=c; ctx.beginPath(); ctx.moveTo(x0,Y(P)); ctx.lineTo(x0,Y(P+dP));
+    ctx.lineTo(x,Y(P+dP)); ctx.lineTo(x,Y(P)); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(x0,Y(P)); ctx.lineTo(x,Y(P));
+    ctx.strokeStyle=c; ctx.lineWidth=1; ctx.stroke();
+    AB.text(ctx,s[0], x0+bw/2, gy+gH+12, {size:7,color:i===2?AB.PAL.blood:AB.PAL.ink3,weight:i===2?'700':'400'});
+    if (s[1]*k>6) AB.text(ctx,espan(s[1]*k,1)+' mmHg', x0+bw/2, Y(P+dP)+10, {size:8,color:c,weight:'700'});
+    ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  });
+  AB.text(ctx,'P_entra ≈ 100 mmHg', lx, Y(100)-10, {size:8,color:AB.PAL.ink,weight:'700'});
+  AB.text(ctx,'las arteriolas se llevan la caída (R ∝ 1/r⁴)', w/2, h*0.90, {size:8,color:AB.PAL.ink3});
+  const out=el('pf_out');
+  if (out) out.textContent='arteriolas: ΔP = '+espan(91*k,0)+' mmHg';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S5 · Continuidad: u = Q/A por cada nivel
+   ═══════════════════════════════════════════════════════════ */
+function drawVelocity(){
+  const cv=el('sim-velocity'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const Q=Math.max(30,Math.min(150,num('vl_q')||90));
+  const qv=el('vl_qv'); if (qv) qv.textContent=espan(Q,0)+' cm³/s';
+  const A=[3,4000,18];
+  const u=Q/A.map(a=>Q/a);  // cm/s
+  const labels=['aorta','capilares','vena cava'];
+  const cols=[AB.PAL.blood,AB.PAL.teal,AB.PAL.amber];
+  // tres tubos horizontales con partículas a velocidad ∝ u
+  const y0=h*0.14, tubeH=h*0.16;
+  for (let i=0;i<3;i++){
+    const y=y0+i*(tubeH+h*0.06);
+    const L=w*0.84;
+    // tubo
+    ctx.strokeStyle=cols[i]; ctx.lineWidth=1.8;
+    ctx.beginPath(); ctx.moveTo(w*0.10,y); ctx.lineTo(w*0.94,y); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(w*0.10,y+tubeH); ctx.lineTo(w*0.94,y+tubeH); ctx.stroke();
+    // partículas: espaciado inverso a velocidad
+    const speed=u[i]/30; // relativa a aorta a Q=90 → 1
+    const n=Math.max(4,Math.min(22,Math.round(18/speed)));
+    ctx.fillStyle=cols[i];
+    for(let j=0;j<n;j++){
+      const px=w*0.12+j*(L-0.04*w)/n;
+      const bob=Math.sin(j*1.7)*3;
+      ctx.beginPath(); ctx.arc(px,y+tubeH/2+bob,3.2,0,Math.PI*2); ctx.fill();
+    }
+    AB.text(ctx,labels[i], w*0.10-8, y+tubeH/2, {size:8,align:'right',color:cols[i],weight:'700'});
+    AB.text(ctx,'A = '+espan(A[i],0)+' cm² · u = '+espan(u[i],3)+' cm/s', w*0.52, y+tubeH/2, {size:8,align:'center',color:AB.PAL.ink});
+  }
+  AB.text(ctx,'Q = A·u constante: a mayor área total, menor velocidad', w/2, h*0.92, {size:8,color:AB.PAL.ink3});
+  const out=el('vl_out');
+  if (out) out.textContent='aorta '+espan(u[0],0)+' · capilares '+espan(u[1],3)+' · vena cava '+espan(u[2],1)+' cm/s';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S6 · Reynolds: laminar ↔ turbulento
+   ═══════════════════════════════════════════════════════════ */
+function drawReynolds(){
+  const cv=el('sim-reynolds'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const u=Math.max(0,Math.min(1,num('re_u')||0.3));
+  const uv=el('re_uv'); if (uv) uv.textContent=espan(u*100,0)+' cm/s';
+  const RHO=1060, d=0.025, ETA=0.004;
+  const Re=RHO*u*d/ETA;
+  const turb=Math.max(0,Math.min(1,(Re-1400)/1400)); // 0 laminar → 1 turbulento
+  const t=window.__reT||0;
+  const y0=h*0.10, tubeH=h*0.30;
+  // tubo
+  ctx.strokeStyle=AB.PAL.ink3; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(w*0.08,y0); ctx.lineTo(w*0.92,y0); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(w*0.08,y0+tubeH); ctx.lineTo(w*0.92,y0+tubeH); ctx.stroke();
+  AB.text(ctx,'flujo', w*0.08, y0-10, {size:8,color:AB.PAL.ink3});
+  // 5 líneas de corriente
+  const nL=5;
+  for(let k=0;k<nL;k++){
+    const fy=y0+tubeH*(k+0.5)/nL;
+    ctx.strokeStyle=AB.PAL.teal+(turb>0.35?'':'44');
+    ctx.lineWidth=1.2;
+    ctx.beginPath();
+    for(let i=0;i<=48;i++){
+      const x=w*0.08+i/48*(w*0.84);
+      const y=fy+ (turb>0 ? Math.sin(x*0.05*Re/2000 + t*6 + k*1.3)*(turb*8) : 0);
+      i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+    }
+    ctx.stroke();
+  }
+  // partículas arrastradas
+  const nP=12;
+  ctx.fillStyle=turb>0.35?AB.PAL.amber:AB.PAL.teal;
+  for(let i=0;i<nP;i++){
+    const ph=(i/nP + t*0.35*(0.3+u))*1;
+    const px=w*0.08+((ph%1)+1)%1*(w*0.84);
+    const py=y0+tubeH*(0.3+0.4*Math.sin(ph*Math.PI*2));
+    ctx.beginPath(); ctx.arc(px,py,3,0,Math.PI*2); ctx.fill();
+  }
+  // indicador Re
+  const gx=w*0.14, gw=w*0.72, gy=h*0.62, gh=h*0.20;
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.beginPath(); ctx.moveTo(gx,gy); ctx.lineTo(gx+gw,gy); ctx.stroke();
+  [0,2000,4000,6000].forEach(v=>{
+    const x=gx+gw*v/6000;
+    ctx.beginPath(); ctx.moveTo(x,gy-4); ctx.lineTo(x,gy+4); ctx.stroke();
+    AB.text(ctx,espan(v,0), x, gy+14, {size:7,color:AB.PAL.ink3});
+  });
+  const mx=gx+gw*Math.min(1,Re/6000);
+  ctx.beginPath(); ctx.moveTo(mx,gy-12); ctx.lineTo(mx,gy); ctx.lineTo(mx-5,gy+8); ctx.lineTo(mx+5,gy+8); ctx.closePath();
+  ctx.fillStyle=AB.PAL.amber; ctx.fill();
+  AB.text(ctx,'R_e ≈ '+espan(Re,0), mx, gy-18, {size:9,weight:'700',color:AB.PAL.amber});
+  AB.text(ctx,'R_e < 2000 laminar · R_e > 2000 turbulento (soplos)', w/2, h*0.90, {size:8,color:AB.PAL.ink3});
+  const out=el('re_out');
+  if (out) out.textContent='R_e ≈ '+espan(Re,0)+(Re>2000?' · turbulento — soplo':Re>1400?' · transición':' · laminar');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S7 · Resistencia vascular R ∝ 1/r⁴
+   ═══════════════════════════════════════════════════════════ */
+function drawResVasc(){
+  const cv=el('sim-resvasc'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const r=Math.max(0.3,Math.min(3,num('rv_r')||1));
+  const rv=el('rv_rv'); if (rv) rv.textContent=espan(r,2);
+  const lx=w*0.12, lw=w*0.76, gy=h*0.16, gH=h*0.52;
+  const X=x=>lx+lw*(x-0.3)/2.7;
+  // R = 1/r⁴, log y para ver el rango
+  const YR=R=>gy+gH*(1-Math.log10(Math.max(R,1))/4);
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.beginPath(); ctx.moveTo(lx,gy); ctx.lineTo(lx,gy+gH); ctx.lineTo(lx+lw,gy+gH); ctx.stroke();
+  [1,10,100,1000,10000].forEach(v=>{
+    const y=YR(v);
+    AB.dashed(ctx,lx,y,lx+lw,y,{color:AB.PAL.line});
+    AB.text(ctx,'10⁴'===v?'10⁴':'10'+espan(Math.log10(v),0), lx-6, y, {size:7,color:AB.PAL.ink3,align:'right'});
+  });
+  // curva 1/r⁴
+  ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=2.4;
+  ctx.beginPath();
+  for(let i=0;i<=80;i++){
+    const xr=0.3+i/80*2.7;
+    const x=X(xr), y=YR(1/Math.pow(xr,4));
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  }
+  ctx.stroke();
+  AB.text(ctx,'R(r) = R₀·(r₀/r)⁴', lx+lw, gy-8, {size:8,color:AB.PAL.teal,align:'right',weight:'700'});
+  // marcador
+  const Rrel=1/Math.pow(r,4);
+  const mx=X(r), my=YR(Rrel);
+  ctx.beginPath(); ctx.arc(mx,my,5,0,Math.PI*2); ctx.fillStyle=AB.PAL.amber; ctx.fill();
+  ctx.strokeStyle=AB.PAL.amber; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(mx,my); ctx.lineTo(mx,gy+gH); ctx.stroke();
+  AB.text(ctx,'r = '+espan(r,2), mx, gy+gH+16, {size:9,weight:'700',color:AB.PAL.amber});
+  AB.text(ctx,'R = '+espan(Rrel,0)+'×R₀', mx+14, my-10, {size:9,weight:'700',color:AB.PAL.amber,align:'left'});
+  AB.text(ctx,'r ↓ a la mitad → R ×16 → Q /16', w/2, h*0.88, {size:8,color:AB.PAL.ink3});
+  const out=el('rv_out');
+  if (out) out.textContent='R_rel = '+espan(Rrel,2)+' (r = '+espan(r,2)+')';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S8 · Ley de Laplace: T = ΔP·R
+   ═══════════════════════════════════════════════════════════ */
+function drawWall(){
+  const cv=el('sim-wall'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const R=Math.max(0.1,Math.min(2.5,num('pl_r')||1.2));
+  const P=Math.max(10,Math.min(120,num('pl_p')||100));
+  const rv=el('pl_rv'); if (rv) rv.textContent=espan(R,2)+' cm';
+  const pv=el('pl_pv'); if (pv) pv.textContent=espan(P,0)+' mmHg';
+  const T=P*1333.22*R;              // dina/cm
+  const th=Math.max(3,Math.min(16,R*9));  // grosor visual
+  const cx=w*0.30, cy=h*0.46;
+  const sr=Math.min(95,Math.max(26,R*48));
+  // pared
+  ctx.beginPath(); ctx.arc(cx,cy,sr,0,Math.PI*2); ctx.fillStyle=AB.PAL.card; ctx.fill();
+  ctx.beginPath(); ctx.arc(cx,cy,sr,0,Math.PI*2); ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=th; ctx.stroke();
+  // flechas de tensión tangencial
+  for(let i=0;i<8;i++){
+    const a=i/8*Math.PI*2;
+    const px=cx+Math.cos(a)*sr, py=cy+Math.sin(a)*sr;
+    const tang=a+Math.PI/2;
+    AB.arrow(ctx, px-Math.cos(tang)*16, py-Math.sin(tang)*16, px+Math.cos(tang)*16, py+Math.sin(tang)*16, {color:AB.PAL.blood,width:2});
+  }
+  // presión interna
+  AB.arrow(ctx, cx-10, cy-14, cx+10, cy-14, {color:AB.PAL.teal,width:2.2});
+  AB.text(ctx,'ΔP = '+espan(P,0)+' mmHg', cx, cy-26, {size:9,weight:'700',color:AB.PAL.teal});
+  AB.text(ctx,'T = ΔP·R', cx, cy+10, {size:8,color:AB.PAL.ink});
+  AB.text(ctx,'T = '+espan(T,0)+' dina/cm', cx, cy+26, {size:9,weight:'700',color:AB.PAL.blood});
+  // escala de la aorta
+  const ax=w*0.66, ay=h*0.18, aW=w*0.26, aH=h*0.42;
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.beginPath(); ctx.moveTo(ax,ay); ctx.lineTo(ax,ay+aH); ctx.lineTo(ax+aW,ay+aH); ctx.stroke();
+  [0,60000,160000].forEach(v=>{
+    const y=ay+aH*(1-v/160000);
+    AB.dashed(ctx,ax,y,ax+aW,y,{color:AB.PAL.line});
+    AB.text(ctx,espan(v,0), ax+aW+4, y, {size:7,color:AB.PAL.ink3,align:'left'});
+  });
+  AB.text(ctx,'T (dina/cm)', ax+aW/2, ay-8, {size:8,color:AB.PAL.ink3});
+  const my=ay+aH*(1-Math.min(T,160000)/160000);
+  ctx.beginPath(); ctx.arc(ax+aW+8,my,4,0,Math.PI*2); ctx.fillStyle=AB.PAL.amber; ctx.fill();
+  AB.text(ctx,'aquí', ax+aW+15, my, {size:7,color:AB.PAL.amber,align:'left'});
+  // vasos de referencia
+  AB.text(ctx,'capilar: T = 16 · aorta: T = 160 000 dina/cm', w/2, h*0.90, {size:8,color:AB.PAL.ink3});
+  const out=el('pl_out');
+  if (out) out.textContent='T = '+espan(T,0)+' dina/cm'+(R>1.5?' (arteria grande → aorta)':R<0.6?' (arteriola / capilar)':'');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S9 · Intercambio capilar: fuerzas de Starling
+   ═══════════════════════════════════════════════════════════ */
+function drawStarling(){
+  const cv=el('sim-starling'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const HA=Math.max(20,Math.min(50,num('st_ha')||36));
+  const HV=Math.max(5,Math.min(25,num('st_hv')||15));
+  const ONC=Math.max(15,Math.min(35,num('st_o')||25));
+  const a=el('st_hav'); if (a) a.textContent=espan(HA,0);
+  const b=el('st_hvv'); if (b) b.textContent=espan(HV,0);
+  const c=el('st_ov'); if (c) c.textContent=espan(ONC,0);
+  const y0=h*0.12, tubeH=h*0.18;
+  // capilar
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2.4;
+  ctx.beginPath(); ctx.moveTo(w*0.12,y0); ctx.lineTo(w*0.88,y0); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(w*0.12,y0+tubeH); ctx.lineTo(w*0.88,y0+tubeH); ctx.stroke();
+  AB.text(ctx,'arteriolar', w*0.12, y0-8, {size:8,color:AB.PAL.ink3});
+  AB.text(ctx,'venular', w*0.88, y0-8, {size:8,color:AB.PAL.ink3,align:'right'});
+  // presión hidrostática (lineal de HA a HV) en mmHg
+  const Y=p=>y0+tubeH/2+(25-p)*1.3;
+  ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(w*0.12,Y(HA)); ctx.lineTo(w*0.88,Y(HV)); ctx.stroke();
+  AB.text(ctx,'P_hidro: '+espan(HA,0)+' → '+espan(HV,0)+' mmHg', w*0.5, Y(HA)-14, {size:8,color:AB.PAL.teal,weight:'700'});
+  // oncótica (plana)
+  AB.dashed(ctx,w*0.12,Y(ONC),w*0.88,Y(ONC),{color:AB.PAL.amber,width:1.8});
+  AB.text(ctx,'Π_oncótica = '+espan(ONC,0)+' mmHg', w*0.5, Y(ONC)+16, {size:8,color:AB.PAL.amber,weight:'700'});
+  // flechas netas en cada extremo
+  function net(x,Ph){
+    const n=Ph-ONC;
+    if (Math.abs(n)<0.5) return;
+    const dir=n>0?-1:1;   // >0 filtra (sale), <0 reabsorbe (entra)
+    AB.arrow(ctx, x, y0+tubeH/2-dir*4, x, y0+tubeH/2+dir*26, {color:n>0?AB.PAL.blood:AB.PAL.teal,width:2.4});
+    AB.text(ctx,(n>0?'filtra +':'reabsorbe ')+espan(Math.abs(n),0)+' mmHg', x, y0+tubeH/2+dir*38, {size:8,weight:'700',color:n>0?AB.PAL.blood:AB.PAL.teal});
+  }
+  net(w*0.12, HA);
+  net(w*0.88, HV);
+  AB.text(ctx,'extremo arteriolar: filtra · venular: reabsorbe · linfáticos recogen el resto', w/2, h*0.90, {size:8,color:AB.PAL.ink3});
+  const out=el('st_out');
+  if (out) out.textContent='neto: +'+espan(HA-ONC,0)+' (filtra) · '+(HV-ONC<0?'−'+espan(Math.abs(HV-ONC),0)+' (reabsorbe)':'+'+espan(HV-ONC,0)+' (filtra)');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S10 · Fick: VO₂ = Q·(p_a − p_v)
+   ═══════════════════════════════════════════════════════════ */
+function drawFick(){
+  const cv=el('sim-fick'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const Q=Math.max(3,Math.min(25,num('fk_q')||5));
+  const D=Math.max(20,Math.min(160,num('fk_d')||50));
+  const qv=el('fk_qv'); if (qv) qv.textContent=espan(Q,1)+' L/min';
+  const dv=el('fk_dv'); if (dv) dv.textContent=espan(D,0)+' mL/L';
+  const VO2=Q*D;
+  const pa=200, pv=pa-D;
+  const lx=w*0.12, lw=w*0.60, y0=h*0.20, barh=h*0.20, gap=h*0.24;
+  const X=c=>lx+lw*(c-pv)/(pa-pv||1);
+  // barras de contenido O2
+  function bar(x,y,v,col,lab){
+    const bw2=26;
+    ctx.fillStyle=col; ctx.fillRect(x-bw2/2,y,bw2,barh);
+    AB.text(ctx,lab, x, y+barh+16, {size:8,color:col,weight:'700'});
+    AB.text(ctx,espan(v,0)+' mL/L', x, y+barh+28, {size:8,color:AB.PAL.ink3});
+  }
+  bar(X(pv), y0, pv, AB.PAL.teal, 'venosa');
+  bar(X(pa), y0, pa, AB.PAL.blood, 'arterial');
+  // eje
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.beginPath(); ctx.moveTo(lx,y0); ctx.lineTo(lx,y0+barh); ctx.lineTo(X(pa)+26,y0+barh); ctx.stroke();
+  AB.text(ctx,'contenido de O₂ (mL/L)', lx, y0-10, {size:8,color:AB.PAL.ink3});
+  // diferencia resaltada
+  const dx1=X(pv), dx2=X(pa);
+  ctx.fillStyle='rgba(154,91,0,.15)';
+  ctx.fillRect(dx1, y0+barh, dx2-dx1, 5);
+  AB.arrow(ctx, dx1, y0+barh+10, dx2, y0+barh+10, {color:AB.PAL.amber,width:2.4});
+  AB.text(ctx,'p_a − p_v = '+espan(D,0)+' mL O₂/L', (dx1+dx2)/2, y0+barh+24, {size:8,color:AB.PAL.amber,weight:'700'});
+  // rectángulo VO2: Q × Δa-v
+  const vx=w*0.16, vy=h*0.62, vw=w*0.20, vh=h*0.18;
+  const qw=vw*(Q-3)/(25-3);
+  ctx.fillStyle='rgba(13,110,100,.16)'; ctx.fillRect(vx,vy,qw,vh);
+  ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=1.4;
+  ctx.strokeRect(vx,vy,qw,vh);
+  AB.text(ctx,'VO₂ = Q × (p_a−p_v)', vx+vw/2, vy-10, {size:8,color:AB.PAL.teal,weight:'700'});
+  AB.text(ctx,espan(VO2,0)+' mL O₂/min', vx+vw/2, vy+vh/2, {size:10,weight:'700',color:AB.PAL.teal});
+  AB.text(ctx,'Q = '+espan(Q,1)+' L/min', vx+vw/2, vy+vh+14, {size:8,color:AB.PAL.ink3});
+  AB.text(ctx,'reposo: ~250 mL/min · ejercicio: hasta 4 L/min', w/2, h*0.92, {size:8,color:AB.PAL.ink3});
+  const out=el('fk_out');
+  if (out) out.textContent='V̇O₂ = '+espan(VO2,0)+' mL/min';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S11 · Lazo P–V y trabajo del corazón
+   ═══════════════════════════════════════════════════════════ */
+function togglePVLoop(){
+  window.__pvPlaying=!window.__pvPlaying;
+  if (window.__pvPlaying) window.__pvT=0;
+  const b=el('pv_play'); if (b) b.textContent=window.__pvPlaying?'⏸':'▶';
+  drawPVLoop();
+}
+function drawPVLoop(){
+  const cv=el('sim-pvloop'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const VED=Math.max(100,Math.min(220,num('pv_ed')||140));
+  const PSA=Math.max(80,Math.min(140,num('pv_pa')||100));
+  const CT=Math.max(0.5,Math.min(1.5,num('pv_ct')||1));
+  const a=el('pv_edv'); if (a) a.textContent=espan(VED,0)+' mL';
+  const b=el('pv_pav'); if (b) b.textContent=espan(PSA,0)+' mmHg';
+  const c=el('pv_ctv'); if (c) c.textContent=espan(CT,1);
+  const Vd=40, E=5;
+  const VES=Math.max(Vd+10, Vd+PSA/(E*CT));
+  const P_edp=V=>0.001*Math.pow(V-Vd,2);
+  // coordenadas
+  const lx=w*0.12, lw=w*0.58, gy=h*0.10, gH=h*0.60;
+  const V0=50, V1=240, P1=150;
+  const X=v=>lx+lw*(v-V0)/(V1-V0);
+  const Y=p=>gy+gH*(1-p/P1);
+  // ejes
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.beginPath(); ctx.moveTo(lx,gy); ctx.lineTo(lx,gy+gH); ctx.lineTo(lx+lw,gy+gH); ctx.stroke();
+  [0,50,100,150].forEach(v=>{
+    AB.dashed(ctx,lx,Y(v),lx+lw,Y(v),{color:AB.PAL.line});
+    AB.text(ctx,espan(v,0), lx-6, Y(v), {size:7,color:AB.PAL.ink3,align:'right'});
+  });
+  [50,100,150,200,240].forEach(v=>{
+    const x=X(v);
+    AB.dashed(ctx,x,gy,x,gy+gH,{color:AB.PAL.line});
+    AB.text(ctx,espan(v,0), x, gy+gH+12, {size:7,color:AB.PAL.ink3});
+  });
+  AB.text(ctx,'V (mL)', lx+lw, gy+gH+12, {size:8,color:AB.PAL.ink3,align:'right'});
+  AB.text(ctx,'P (mmHg)', lx-10, gy-10, {size:8,color:AB.PAL.ink3});
+  // EDPVR
+  ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=1.8;
+  ctx.beginPath();
+  for(let i=0;i<=40;i++){
+    const v=Vd+ (V1-Vd)*i/40;
+    const x=X(v), y=Y(P_edp(v));
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  }
+  ctx.stroke();
+  // ESPVR (recta)
+  ctx.strokeStyle=AB.PAL.amber; ctx.lineWidth=1.8;
+  ctx.beginPath(); ctx.moveTo(X(Vd),Y(0)); ctx.lineTo(X(V1),Y(E*CT*(V1-Vd))); ctx.stroke();
+  AB.text(ctx,'ESPVR', X(V1)+2, Y(E*CT*(V1-Vd))-4, {size:7,color:AB.PAL.amber,align:'left'});
+  AB.text(ctx,'EDPVR', X(Vd)+6, Y(P_edp(Vd+6)), {size:7,color:AB.PAL.teal,align:'left'});
+  // esquinas del lazo
+  const A=[VES,P_edp(VES)], B=[VED,P_edp(VED)], C=[VED,PSA], D=[VES,PSA];
+  // área de trabajo (sombreado)
+  ctx.fillStyle='rgba(169,42,30,.16)';
+  ctx.beginPath(); ctx.moveTo(X(A[0]),Y(A[1])); ctx.lineTo(X(B[0]),Y(B[1])); ctx.lineTo(X(C[0]),Y(C[1]));
+  ctx.lineTo(X(D[0]),Y(D[1])); ctx.closePath(); ctx.fill();
+  // contorno del lazo
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2.4;
+  ctx.beginPath();
+  ctx.moveTo(X(A[0]),Y(A[1])); ctx.lineTo(X(B[0]),Y(B[1])); ctx.lineTo(X(C[0]),Y(C[1]));
+  ctx.quadraticCurveTo(X((VED+VES)/2), Y(PSA*1.06), X(D[0]),Y(D[1]));
+  ctx.lineTo(X(A[0]),Y(A[1])); ctx.closePath(); ctx.stroke();
+  // V_ED y V_ES
+  AB.dashed(ctx,X(VED),gy,X(VED),Y(PSA),{color:AB.PAL.blood});
+  AB.dashed(ctx,X(VES),gy,X(VES),Y(PSA),{color:AB.PAL.blood});
+  AB.text(ctx,'V_ED', X(VED), Y(PSA)+16, {size:7,color:AB.PAL.blood,weight:'700'});
+  AB.text(ctx,'V_ES', X(VES), Y(PSA)+16, {size:7,color:AB.PAL.blood,weight:'700'});
+  // punto animado
+  const ph=(window.__pvT||0)%1;
+  let px,py;
+  const edges=[
+    [A,B,0,0.25],[B,C,0.25,0.5],[C,D,0.5,0.78],[D,A,0.78,1]
+  ];
+  const ed=edges.find(e=>ph>=e[2]&&ph<e[3])||edges[3];
+  const fr=(ph-ed[2])/(ed[3]-ed[2]);
+  const P1v=ed[0], P2v=ed[1];
+  if (ed[0]===C&&ed[1]===D){  // eyección curva
+    px=X(P1v[0]+(P2v[0]-P1v[0])*fr); py=Y(PSA*(1.06-0.06*Math.sin(fr*Math.PI)));
+  } else {
+    px=X(P1v[0]+(P2v[0]-P1v[0])*fr); py=Y(P1v[1]+(P2v[1]-P1v[1])*fr);
+  }
+  if (window.__pvPlaying){
+    ctx.beginPath(); ctx.arc(px,py,5.5,0,Math.PI*2); ctx.fillStyle=AB.PAL.amber; ctx.fill();
+    ctx.strokeStyle=AB.PAL.paper; ctx.lineWidth=1.5; ctx.stroke();
+  }
+  // trabajo
+  const Vst=VED-VES;
+  const areaML=PSA*Vst;                    // mmHg·mL aprox
+  const J=areaML*1.33322e-4;
+  const rect=[w*0.78,h*0.12,w*0.20,h*0.72];
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.strokeRect(rect[0],rect[1],rect[2],rect[3]);
+  AB.text(ctx,'trabajo por latido', rect[0]+rect[2]/2, rect[1]+16, {size:8,color:AB.PAL.ink,weight:'700'});
+  AB.text(ctx,'W = ∫P dV', rect[0]+rect[2]/2, rect[1]+40, {size:8,color:AB.PAL.ink3});
+  AB.text(ctx,espan(J,2)+' J', rect[0]+rect[2]/2, rect[1]+64, {size:13,weight:'700',color:AB.PAL.blood});
+  AB.text(ctx,'V_stroke', rect[0]+rect[2]/2, rect[1]+90, {size:8,color:AB.PAL.ink3});
+  AB.text(ctx,espan(Vst,0)+' mL', rect[0]+rect[2]/2, rect[1]+108, {size:10,weight:'700',color:AB.PAL.teal});
+  AB.text(ctx,'W ≈ P_av·V_stroke', w/2, h*0.90, {size:8,color:AB.PAL.ink3});
+  const out=el('pv_out');
+  if (out) out.textContent='W ≈ '+espan(J,1)+' J/latido · V_stroke ≈ '+espan(Vst,0)+' mL';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S12 · Obstrucción: continuidad y Bernoulli
+   ═══════════════════════════════════════════════════════════ */
+function drawObstruction(){
+  const cv=el('sim-obstruction'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const Ar=Math.max(0.1,Math.min(1,num('ob_a')||0.33));
+  const av=el('ob_av'); if (av) av.textContent=espan(Ar,2);
+  const u1=30;  // cm/s aguas arriba
+  const u2=u1/Ar;
+  const RHO=1060;
+  const dP=(0.5*RHO*(Math.pow(u2/100,2)-Math.pow(u1/100,2)))/133.322; // mmHg
+  const y0=h*0.12, tubeH=h*0.20;
+  const cx=w*0.5, neckW=w*0.18;
+  function tubePath(){
+    ctx.beginPath();
+    ctx.moveTo(w*0.10,y0); ctx.lineTo(cx-neckW/2,y0);
+    ctx.quadraticCurveTo(cx, y0+tubeH*0.18, cx+neckW/2,y0);
+    ctx.lineTo(w*0.90,y0);
+    ctx.lineTo(w*0.90,y0+tubeH);
+    ctx.lineTo(cx+neckW/2,y0+tubeH);
+    ctx.quadraticCurveTo(cx, y0+tubeH*0.82, cx-neckW/2,y0+tubeH);
+    ctx.lineTo(w*0.10,y0+tubeH);
+    ctx.closePath();
+  }
+  ctx.fillStyle='rgba(169,42,30,.06)';
+  tubePath(); ctx.fill();
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2.4;
+  tubePath(); ctx.stroke();
+  AB.text(ctx,'A₁', w*0.14, y0-8, {size:8,color:AB.PAL.ink3});
+  AB.text(ctx,'A₂ = '+espan(Ar,2)+'·A₁', w*0.5, y0-10, {size:8,color:AB.PAL.blood,weight:'700'});
+  // partículas: espaciado ∝ velocidad
+  const t=(window.__reT||0)*0.8;
+  for(let i=0;i<14;i++){
+    const ph=((i/14)+ (t*0.06)*(u2/30))%1;
+    let x=w*0.10+ph*(w*0.80);
+    let inNeck=Math.abs(x-cx)<neckW/2;
+    const y=y0+tubeH/2+(Math.sin(i*2.1)*4);
+    ctx.fillStyle=inNeck?AB.PAL.amber:AB.PAL.blood;
+    ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2); ctx.fill();
+  }
+  // perfil de presión inferior
+  const py0=h*0.60, pH=h*0.20;
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.beginPath(); ctx.moveTo(w*0.12,py0); ctx.lineTo(w*0.12,py0+pH); ctx.lineTo(w*0.88,py0+pH); ctx.stroke();
+  const Px=p=>{
+    const P0=100;
+    // Bernoulli: presión cae en el cuello
+    return P0 + dP*Math.exp(-Math.pow((p-cx)/(neckW*0.55),2))*0;
+  };
+  // traza con dip suave
+  ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=2;
+  ctx.beginPath();
+  for(let i=0;i<=60;i++){
+    const x=w*0.12+i/60*(w*0.76);
+    const dip=dP*Math.exp(-Math.pow((x-cx)/(neckW*0.6),2));
+    const y=py0+pH*(1-(100+dip)/100);
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  }
+  ctx.stroke();
+  AB.text(ctx,'P', w*0.12-10, py0+pH/2, {size:8,color:AB.PAL.teal});
+  AB.text(ctx,'dip de presión pos-estenosis (Bernoulli)', w/2, py0+pH+14, {size:8,color:AB.PAL.ink3});
+  AB.text(ctx,'continuidad: u₂/u₁ = A₁/A₂', w/2, h*0.92, {size:8,color:AB.PAL.ink3});
+  const out=el('ob_out');
+  if (out) out.textContent='u₂/u₁ = '+espan(u2/u1,1)+' · P₂−P₁ = '+espan(dP,1)+' mmHg';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S13 · Bifurcación: fuerza sobre la pared (aneurismas)
+   ═══════════════════════════════════════════════════════════ */
+function drawAneurysm(){
+  const cv=el('sim-aneurysm'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const TH=Math.max(0,Math.min(80,num('an_t')||45))*Math.PI/180;
+  const AR=Math.max(0.3,Math.min(1,num('an_a')||0.5));
+  const U1=Math.max(20,Math.min(100,num('an_u')||50))/100;  // m/s
+  const a=el('an_tv'); if (a) a.textContent=espan(TH*180/Math.PI,0)+'°';
+  const b=el('an_av'); if (b) b.textContent=espan(AR,2);
+  const c=el('an_uv'); if (c) c.textContent=espan(U1*100,0)+' cm/s';
+  const RHO=1060, r1=0.005, A1=Math.PI*r1*r1;
+  // fuerza (módulo): F = ρ·A1·u1²·(1−cosθ)
+  const Fp=RHO*A1*U1*U1*(1-Math.cos(TH));
+  const Pp=U1>0?(RHO*U1*U1*(1-Math.cos(TH)))/133.322:0;  // mmHg
+  const cx=w*0.30, cy=h*0.44;
+  const L=w*0.42;
+  // vaso padre (horizontal)
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=9; ctx.lineCap='round';
+  ctx.beginPath(); ctx.moveTo(w*0.06,cy); ctx.lineTo(cx,cy); ctx.stroke();
+  // flecha de entrada
+  AB.arrow(ctx, w*0.08, cy, w*0.16, cy, {color:AB.PAL.blood,width:2.4});
+  AB.text(ctx,'u₁ = '+espan(U1*100,0)+' cm/s', w*0.13, cy-14, {size:8,color:AB.PAL.blood,weight:'700'});
+  // bifurcación a dos ramas
+  const ang=TH;
+  ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=8;
+  ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+L*Math.cos(ang), cy-L*Math.sin(ang)); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+L*Math.cos(ang), cy+L*Math.sin(ang)); ctx.stroke();
+  // flechas de salida
+  AB.arrow(ctx, cx+L*Math.cos(ang)*0.4, cy-L*Math.sin(ang)*0.4, cx+L*Math.cos(ang)*0.7, cy-L*Math.sin(ang)*0.7, {color:AB.PAL.teal,width:2.2});
+  AB.arrow(ctx, cx+L*Math.cos(ang)*0.4, cy+L*Math.sin(ang)*0.4, cx+L*Math.cos(ang)*0.7, cy+L*Math.sin(ang)*0.7, {color:AB.PAL.teal,width:2.2});
+  AB.text(ctx,'θ = '+espan(TH*180/Math.PI,0)+'°', cx+L*Math.cos(ang)*0.75, cy-L*Math.sin(ang)*0.75-8, {size:8,color:AB.PAL.teal});
+  // saco aneurismático (esfera) en el apex
+  ctx.beginPath(); ctx.arc(cx,cy,16,0,Math.PI*2);
+  ctx.fillStyle='rgba(169,42,30,.10)'; ctx.fill();
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2; ctx.stroke();
+  AB.text(ctx,'aneurisma', cx+20, cy-20, {size:7,color:AB.PAL.blood,align:'left'});
+  // fuerza sobre la pared (flecha hacia la pared en el apex)
+  const mag=Math.min(64, 6+Fp/1e-3*3);
+  AB.arrow(ctx, cx-14, cy, cx-14-mag*Math.cos(TH*0.5), cy-mag*Math.sin(TH*0.5), {color:AB.PAL.amber,width:3});
+  AB.text(ctx,'F_pared', cx-14-mag*0.6, cy-mag*0.6-8, {size:8,color:AB.PAL.amber,weight:'700'});
+  AB.text(ctx,'F = ρ·Q·(u₂·cosθ − u₁)', w/2, h*0.78, {size:8,color:AB.PAL.ink3});
+  AB.text(ctx,'la pared lateral paga la desviación del flujo', w/2, h*0.88, {size:8,color:AB.PAL.ink3});
+  const out=el('an_out');
+  if (out) out.textContent='F_pared ≈ '+espan(Fp*1000,0)+' mN · P_pared ≈ '+espan(Pp,1)+' mmHg';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S14 · Aneurisma pulsátil: resonancia
+   ═══════════════════════════════════════════════════════════ */
+function togglePulsatile(){
+  window.__rpPlaying=!window.__rpPlaying;
+  if (window.__rpPlaying) window.__rpT=0;
+  const b=el('rp_play'); if (b) b.textContent=window.__rpPlaying?'⏸':'▶';
+  drawPulsatile();
+}
+function drawPulsatile(){
+  const cv=el('sim-pulsatile'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const Y=Math.max(0.3,Math.min(3,num('rp_y')||1));
+  const R=Math.max(0.5,Math.min(1.5,num('rp_r')||1));
+  const G=Math.max(0.05,Math.min(1.5,num('rp_g')||0.25));
+  const a=el('rp_yv'); if (a) a.textContent=espan(Y,1);
+  const b=el('rp_rv'); if (b) b.textContent=espan(R,2);
+  const c=el('rp_gv'); if (c) c.textContent=espan(G,2);
+  const wp=1;                     // frecuencia del pulso (normalizada)
+  const w0=Math.sqrt(Y/R);        // ω₀² = Y/(R·ρw), ρw = 1
+  const denom=Math.pow(w0*w0-wp*wp,2)+Math.pow(G*wp,2);
+  const Aamp=1/Math.sqrt(denom);  // amplificación adimensional
+  const P0=0.08;                  // amplitud del pulso (ρw=1)
+  const Adisp=P0*Aamp;
+  // curva de resonancia
+  const lx=w*0.10, lw=w*0.56, gy=h*0.14, gH=h*0.56;
+  const X=w0v=>lx+lw*(w0v-0.3)/2.7;
+  const YA=A=>gy+gH*(1-Math.log10(Math.max(A,0.3)+1)/2);
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.beginPath(); ctx.moveTo(lx,gy); ctx.lineTo(lx,gy+gH); ctx.lineTo(lx+lw,gy+gH); ctx.stroke();
+  [0.3,1,2,3].forEach(v=>{
+    const x=X(v);
+    AB.dashed(ctx,x,gy,x,gy+gH,{color:AB.PAL.line});
+    AB.text(ctx,espan(v,1), x, gy+gH+12, {size:7,color:AB.PAL.ink3});
+  });
+  ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=2.2;
+  ctx.beginPath();
+  for(let i=0;i<=60;i++){
+    const wv=0.3+i/60*2.7;
+    const A=1/Math.sqrt(Math.pow(wv*wv-1,2)+Math.pow(G,2));
+    const x=X(wv), y=YA(A);
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  }
+  ctx.stroke();
+  AB.text(ctx,'A(ω₀)', lx+lw+6, gy-4, {size:7,color:AB.PAL.teal,align:'left'});
+  AB.text(ctx,'resonancia', X(1), gy-12, {size:7,color:AB.PAL.amber,weight:'700'});
+  // marcador actual
+  const mx=X(w0), my=YA(Aamp);
+  ctx.beginPath(); ctx.arc(mx,my,5,0,Math.PI*2); ctx.fillStyle=AB.PAL.amber; ctx.fill();
+  AB.text(ctx,'ω₀ = '+espan(w0,2), mx, my-14, {size:8,weight:'700',color:AB.PAL.amber});
+  // esfera que pulsa (derecha)
+  const sx=w*0.82, sy=h*0.42, s0=Math.min(52,R*38);
+  const t=(window.__rpT||0)*1.5;
+  const osc=window.__rpPlaying?Math.cos(wp*t):1;
+  const s=s0*Math.max(0.5,1+Adisp*osc);
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2.6;
+  ctx.beginPath(); ctx.arc(sx,sy,s,0,Math.PI*2); ctx.stroke();
+  ctx.fillStyle='rgba(169,42,30,'+Math.min(0.18,0.06+Adisp*0.1)+')';
+  ctx.beginPath(); ctx.arc(sx,sy,s,0,Math.PI*2); ctx.fill();
+  // flecha de crecimiento
+  if (window.__rpPlaying){
+    AB.arrow(ctx, sx, sy, sx, sy-s*0.85, {color:AB.PAL.amber,width:2.4});
+  }
+  AB.text(ctx,'esfera elástica', sx, sy+s+16, {size:8,color:AB.PAL.ink3});
+  AB.text(ctx,'r_p(t) = A·cos(ω_p·t)', sx, sy+s+30, {size:7,color:AB.PAL.ink3});
+  AB.text(ctx,'ρw·d²r/dt² = P_av + P_p·cos(ω_p t) − Y·r/R', w/2, h*0.88, {size:8,color:AB.PAL.ink3});
+  const reso=Math.abs(w0-wp)<0.25*G;
+  const out=el('rp_out');
+  if (out) out.textContent='ω₀/ω_p ≈ '+espan(w0/wp,2)+' · A ≈ '+espan(Aamp,1)+(reso?' · ¡RESONANCIA!':' · lejos de resonancia');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S15 · Estenosis: grados y estenosis crítica
+   ═══════════════════════════════════════════════════════════ */
+function drawStenosis(){
+  const cv=el('sim-stenosis'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const S=Math.max(0,Math.min(100,num('es_s')||50));
+  const sv=el('es_sv'); if (sv) sv.textContent=espan(S,0)+' %';
+  const Q=S>75?Math.pow((100-S)/25,1.5):1;
+  const grade=S<=39?'leve':S<=59?'moderada':S<=79?'grave':S<=99?'crítica':'ocluida';
+  // vaso con estrechamiento
+  const y0=h*0.10, tubeH=h*0.16;
+  const cx=w*0.5;
+  const neckW=w*0.14*(1-S/100*0.7)+w*0.03;
+  ctx.fillStyle='rgba(169,42,30,.06)';
+  ctx.beginPath();
+  ctx.moveTo(w*0.10,y0); ctx.lineTo(cx-neckW/2,y0); ctx.lineTo(cx+neckW/2,y0); ctx.lineTo(w*0.90,y0);
+  ctx.lineTo(w*0.90,y0+tubeH); ctx.lineTo(cx+neckW/2,y0+tubeH); ctx.lineTo(cx-neckW/2,y0+tubeH); ctx.lineTo(w*0.10,y0+tubeH);
+  ctx.closePath(); ctx.fill();
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2.2;
+  ctx.stroke();
+  AB.text(ctx,espan(S,0)+' % estrechamiento', cx, y0-10, {size:9,weight:'700',color:AB.PAL.blood});
+  // curva Q vs %
+  const lx=w*0.14, lw=w*0.72, gy=h*0.48, gH=h*0.34;
+  const X=s=>lx+lw*s/100;
+  const YQ=q=>gy+gH*(1-q);
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.beginPath(); ctx.moveTo(lx,gy); ctx.lineTo(lx,gy+gH); ctx.lineTo(lx+lw,gy+gH); ctx.stroke();
+  [0,25,50,75,100].forEach(v=>{
+    const x=X(v);
+    AB.dashed(ctx,x,gy,x,gy+gH,{color:AB.PAL.line});
+    AB.text(ctx,espan(v,0), x, gy+gH+12, {size:7,color:AB.PAL.ink3});
+  });
+  [0,0.5,1].forEach(q=>{
+    AB.dashed(ctx,lx,YQ(q),lx+lw,YQ(q),{color:AB.PAL.line});
+    AB.text(ctx,espan(q,1), lx-6, YQ(q), {size:7,color:AB.PAL.ink3,align:'right'});
+  });
+  AB.text(ctx,'Q/Q₀', lx-8, gy-10, {size:8,color:AB.PAL.ink3});
+  AB.text(ctx,'% estrechamiento', lx+lw/2, gy+gH+24, {size:8,color:AB.PAL.ink3});
+  ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=2.4;
+  ctx.beginPath();
+  for(let i=0;i<=80;i++){
+    const s=i/80*100;
+    const q=s>75?Math.pow((100-s)/25,1.5):1;
+    const x=X(s), y=YQ(q);
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  }
+  ctx.stroke();
+  // estenosis crítica
+  AB.dashed(ctx,X(75),gy,X(75),YQ(0),{color:AB.PAL.amber,width:1.4});
+  AB.text(ctx,'crítica ~75 %', X(75), gy+14, {size:7,color:AB.PAL.amber,weight:'700'});
+  // marcador
+  const mx=X(S), my=YQ(Q);
+  ctx.beginPath(); ctx.arc(mx,my,5,0,Math.PI*2); ctx.fillStyle=AB.PAL.amber; ctx.fill();
+  ctx.strokeStyle=AB.PAL.amber; ctx.lineWidth=1.6;
+  ctx.beginPath(); ctx.moveTo(mx,my); ctx.lineTo(mx,gy+gH); ctx.stroke();
+  AB.text(ctx,espan(Q,2), mx+8, my-8, {size:8,weight:'700',color:AB.PAL.amber,align:'left'});
+  AB.text(ctx,'el flujo se mantiene hasta ~75 % y luego se desploma', w/2, h*0.90, {size:8,color:AB.PAL.ink3});
+  const out=el('es_out');
+  if (out) out.textContent=grade+' · Q/Q₀ ≈ '+espan(Q,2);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S16 · Frank-Starling: V_stroke = f(precarga)
+   ═══════════════════════════════════════════════════════════ */
+function drawFrank(){
+  const cv=el('sim-frank'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const PV=Math.max(0,Math.min(15,num('fs_pv')||5));
+  const F=Math.max(40,Math.min(160,num('fs_f')||70));
+  const a=el('fs_pvv'); if (a) a.textContent=espan(PV,1)+' mmHg';
+  const b=el('fs_fv'); if (b) b.textContent=espan(F,0)+' /min';
+  const KL=1.12, Qmax=14;
+  const QL=Math.min(KL*PV, Qmax);
+  const Vst=QL*1000/F;
+  const lx=w*0.14, lw=w*0.72, gy=h*0.16, gH=h*0.54;
+  const X=p=>lx+lw*p/15;
+  const YQ=q=>gy+gH*(1-q/Qmax);
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.beginPath(); ctx.moveTo(lx,gy); ctx.lineTo(lx,gy+gH); ctx.lineTo(lx+lw,gy+gH); ctx.stroke();
+  [0,5,10,15].forEach(v=>{
+    const x=X(v);
+    AB.dashed(ctx,x,gy,x,gy+gH,{color:AB.PAL.line});
+    AB.text(ctx,espan(v,0), x, gy+gH+12, {size:7,color:AB.PAL.ink3});
+  });
+  [0,7,14].forEach(q=>{
+    AB.dashed(ctx,lx,YQ(q),lx+lw,YQ(q),{color:AB.PAL.line});
+    AB.text(ctx,espan(q,0), lx-6, YQ(q), {size:7,color:AB.PAL.ink3,align:'right'});
+  });
+  AB.text(ctx,'Q_L (L/min)', lx-10, gy-10, {size:8,color:AB.PAL.ink3});
+  AB.text(ctx,'P_pv (mmHg)', lx+lw/2, gy+gH+24, {size:8,color:AB.PAL.ink3});
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2.4;
+  ctx.beginPath();
+  for(let i=0;i<=40;i++){
+    const p=i/40*15;
+    const q=Math.min(KL*p, Qmax);
+    const x=X(p), y=YQ(q);
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  }
+  ctx.stroke();
+  AB.text(ctx,'Q_L = K_L·P_pv', lx+lw, gy-8, {size:8,color:AB.PAL.blood,align:'right',weight:'700'});
+  // marcador
+  const mx=X(PV), my=YQ(QL);
+  ctx.beginPath(); ctx.arc(mx,my,5,0,Math.PI*2); ctx.fillStyle=AB.PAL.amber; ctx.fill();
+  AB.dashed(ctx,mx,gy,mx,my,{color:AB.PAL.amber,width:1.4});
+  AB.text(ctx,'Q = '+espan(QL,1)+' L/min', mx+10, my-10, {size:9,weight:'700',color:AB.PAL.amber,align:'left'});
+  AB.text(ctx,'V_stroke = Q/F', mx+10, my+10, {size:8,color:AB.PAL.ink3,align:'left'});
+  AB.text(ctx,'Frank-Starling: el corazón bombea lo que recibe', w/2, h*0.90, {size:8,color:AB.PAL.ink3});
+  const out=el('fs_out');
+  if (out) out.textContent='V_stroke ≈ '+espan(Vst,0)+' mL · Q ≈ '+espan(QL,1)+' L/min';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S17 · Modelo de la circulación (8 subunidades)
+   ═══════════════════════════════════════════════════════════ */
+function drawCircuit(){
+  const cv=el('sim-circuit'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const RS=Math.max(10,Math.min(30,num('cc_rs')||17.5));
+  const CSV=Math.max(0.8,Math.min(2.5,num('cc_cv')||1.75));
+  const a=el('cc_rsv'); if (a) a.textContent=espan(RS,1);
+  const b=el('cc_cvv'); if (b) b.textContent=espan(CSV,2);
+  // parámetros del modelo (Tabla 8.8)
+  const KL=1.12, KR=2.8, RP=1.79;
+  const CSA=0.01, CPA=0.00667, CPV=0.08, V0=5.0;
+  // solución: Q = V0/T (eq 8.80)
+  const iKR=1/KR, iKL=1/KL;
+  const T=CSA*(iKR+RS)+CSV*iKR+CPA*(iKL+RP)+CPV*iKL;
+  const Q=V0/T;
+  const Psv=Q*iKR, Ppv=Q*iKL, Psa=Psv+RS*Q, Ppa=Ppv+RP*Q;
+  // layout: dos circuitos (pulmonar izq, sistémico der) + corazones
+  const lx=w*0.06, lw=w*0.88, top=h*0.10, bot=h*0.66, mid=h*0.38;
+  // corazones (VI y VD)
+  const hxR=w*0.86, hxL=w*0.14;
+  function heart(x,y,lab){
+    ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2.2;
+    ctx.beginPath();
+    ctx.moveTo(x,y-14); ctx.bezierCurveTo(x+16,y-20,x+22,y-2,x,y+14);
+    ctx.bezierCurveTo(x-22,y-2,x-16,y-20,x,y-14); ctx.closePath(); ctx.stroke();
+    ctx.fillStyle='rgba(169,42,30,.12)'; ctx.fill();
+    AB.text(ctx,lab, x, y+30, {size:8,color:AB.PAL.blood,weight:'700'});
+  }
+  // caja sistémica (R_s) y pulmonar (R_p)
+  function resistor(x0,y0,x1,y1,lab){
+    const ang=Math.atan2(y1-y0,x1-x0);
+    const steps=8, seg=(x1-x0)/steps;
+    ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=2.2;
+    ctx.beginPath(); ctx.moveTo(x0,y0);
+    for(let i=1;i<steps;i++){
+      const x=x0+seg*i;
+      const y=y0+(i%2? -7:7);
+      ctx.lineTo(x,y);
+    }
+    ctx.lineTo(x1,y1); ctx.stroke();
+    AB.text(ctx,lab, (x0+x1)/2, y0+(y1>y0?12:-12), {size:7.5,color:AB.PAL.teal,weight:'700'});
+  }
+  // capacitor (dos líneas paralelas)
+  function cap(x,y,lab){
+    ctx.strokeStyle=AB.PAL.amber; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(x-9,y-9); ctx.lineTo(x-9,y+9); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x+9,y-9); ctx.lineTo(x+9,y+9); ctx.stroke();
+    AB.text(ctx,lab, x, y+24, {size:7.5,color:AB.PAL.amber,weight:'700'});
+  }
+  // conductos
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.6;
+  // circuito sistémico (derecha): P_sa → R_s → P_sv → VD → P_sa
+  ctx.beginPath(); ctx.moveTo(w*0.26,top); ctx.lineTo(w*0.86,top); ctx.stroke();   // aorta
+  resistor(w*0.86,top, w*0.86,bot, 'R_s');                                        // bajada
+  ctx.beginPath(); ctx.moveTo(w*0.86,bot); ctx.lineTo(w*0.26,bot); ctx.stroke();  // vena cava
+  // circuito pulmonar (izquierda)
+  ctx.beginPath(); ctx.moveTo(w*0.14,top); ctx.lineTo(w*0.20,top); ctx.stroke();
+  resistor(w*0.14,bot, w*0.14,top, 'R_p');                                        // subida
+  ctx.beginPath(); ctx.moveTo(w*0.20,top); ctx.lineTo(w*0.26,top); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(w*0.20,bot); ctx.lineTo(w*0.26,bot); ctx.stroke();
+  // corazones conectados
+  heart(w*0.20, mid, 'VI');
+  heart(w*0.80, mid, 'VD');
+  // compliancias
+  cap(w*0.20, top-0, 'C_pa');
+  cap(w*0.80, top, 'C_sa');
+  cap(w*0.20, bot, 'C_pv');
+  cap(w*0.80, bot, 'C_sv = '+espan(CSV,2));
+  // presiones en los nodos
+  AB.text(ctx,'P_sa = '+espan(Psa,0)+' mmHg', w*0.53, top-10, {size:9,weight:'700',color:AB.PAL.blood});
+  AB.text(ctx,'P_sv = '+espan(Psv,1)+' mmHg', w*0.53, bot+16, {size:9,weight:'700',color:AB.PAL.teal});
+  AB.text(ctx,'P_pa = '+espan(Ppa,0)+' mmHg', w*0.17, top-10, {size:9,weight:'700',color:AB.PAL.blood});
+  AB.text(ctx,'P_pv = '+espan(Ppv,1)+' mmHg', w*0.17, bot+16, {size:9,weight:'700',color:AB.PAL.teal});
+  // flujo Q (flechas)
+  AB.arrow(ctx, w*0.30, top, w*0.44, top, {color:AB.PAL.teal,width:2});
+  AB.text(ctx,'Q = '+espan(Q,1)+' L/min', w*0.37, top+14, {size:8,color:AB.PAL.teal,weight:'700'});
+  AB.text(ctx,'8 subunidades: 2 corazones · 4 vasos grandes · 2 lechos de R', w/2, h*0.92, {size:8,color:AB.PAL.ink3});
+  const out=el('cc_out');
+  if (out) out.textContent='Q = '+espan(Q,1)+' L/min · P_sa = '+espan(Psa,0)+' mmHg';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S18 · Circulación fetal y cambio al nacer
+   ═══════════════════════════════════════════════════════════ */
+function solve4(A,b){
+  for(let i=0;i<4;i++){
+    let p=i;
+    for(let r=i+1;r<4;r++) if(Math.abs(A[r][i])>Math.abs(A[p][i])) p=r;
+    if(Math.abs(A[p][i])<1e-12) return null;
+    [A[i],A[p]]=[A[p],A[i]]; [b[i],b[p]]=[b[p],b[i]];
+    for(let r=i+1;r<4;r++){
+      const f=A[r][i]/A[i][i];
+      for(let c=i;c<4;c++) A[r][c]-=f*A[i][c];
+      b[r]-=f*b[i];
+    }
+  }
+  const x=[0,0,0,0];
+  for(let i=3;i>=0;i--){
+    let s=b[i];
+    for(let c=i+1;c<4;c++) s-=A[i][c]*x[c];
+    x[i]=s/A[i][i];
+  }
+  return x;
+}
+function drawFetal(){
+  const cv=el('sim-fetal'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const RP=Math.max(0.5,Math.min(25,num('fd_rp')||18));
+  const vv=el('fd_rpv'); if (vv) vv.textContent=espan(RP,0)+(RP>17.5?' (fetal)':' (neonato)');
+  // constantes: corazones simétricos K, R_s fijo
+  const K=2.8, RS=17.5;
+  const CSA=0.01, CPA=0.00667, CSV=1.75, CPV=0.08, V0=5.0;
+  const G_d=2, G_f=2;   // conducto y foramen abiertos (conductancias)
+  function solve(Gd,Gf){
+    // ecuaciones: balance P_sa, P_pa, P_pv + volumen
+    const A=[
+      [-(Gd+1/RS), 1/RS, Gd, K],
+      [Gd, K, -(1/RP+Gd), 1/RP],
+      [0, Gf, 1/RP, -(1/RP+Gf+K)],
+      [CSA, CSV, CPA, CPV]
+    ];
+    const b=[0,0,0,V0];
+    const x=solve4(A,b);
+    if(!x) return null;
+    return {Psa:x[0], Psv:x[1], Ppa:x[2], Ppv:x[3], Qd:Gd*(x[2]-x[0]), Qf:Gf*(x[1]-x[3])};
+  }
+  let s, fetal;
+  if (RP>RS){
+    s=solve(G_d,G_f); fetal=true;
+  } else {
+    s=solve(G_d,0); fetal=false;   // foramen cerrado, conducto abierto
+  }
+  if(!s){ s={Psa:100,Psv:5,Ppa:15,Ppv:5,Qd:0,Qf:0}; }
+  const ductusOpen=fetal?true:true;
+  const ductRev=!fetal&&s.Qd<0;
+  const foramenOpen=fetal;
+  const Qp=(s.Ppa-s.Ppv)/RP, Qs=(s.Psa-s.Psv)/RS;
+  // layout de circuito fetal
+  const lx=w*0.10, rx=w*0.90, top=h*0.10, bot=h*0.60, mid=h*0.35;
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.6;
+  // bucle pulmonar (izq)
+  ctx.beginPath(); ctx.moveTo(lx,mid); ctx.lineTo(lx,bot); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(lx,bot); ctx.lineTo(w*0.42,bot); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(w*0.42,bot); ctx.lineTo(w*0.42,top); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(w*0.42,top); ctx.lineTo(lx,top); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(lx,top); ctx.lineTo(lx,mid); ctx.stroke();
+  // bucle sistémico (der)
+  ctx.beginPath(); ctx.moveTo(rx,mid); ctx.lineTo(rx,bot); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(rx,bot); ctx.lineTo(w*0.58,bot); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(w*0.58,bot); ctx.lineTo(w*0.58,top); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(w*0.58,top); ctx.lineTo(rx,top); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(rx,top); ctx.lineTo(rx,mid); ctx.stroke();
+  // corazones
+  function heart(x,y,lab){
+    ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2;
+    ctx.beginPath();
+    ctx.moveTo(x,y-12); ctx.bezierCurveTo(x+14,y-17,x+19,y-2,x,y+12);
+    ctx.bezierCurveTo(x-19,y-2,x-14,y-17,x,y-12); ctx.closePath(); ctx.stroke();
+    ctx.fillStyle='rgba(169,42,30,.12)'; ctx.fill();
+    AB.text(ctx,lab, x, y+26, {size:7.5,color:AB.PAL.blood,weight:'700'});
+  }
+  heart(w*0.20, mid, 'VD → pulmón');
+  heart(w*0.80, mid, 'VI → cuerpo');
+  // resistencias
+  function resistor(x0,y0,x1,y1,lab){
+    const steps=8;
+    ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(x0,y0);
+    for(let i=1;i<steps;i++){
+      const x=x0+(x1-x0)*i/steps, y=y0+((i%2)?-6:6);
+      ctx.lineTo(x,y);
+    }
+    ctx.lineTo(x1,y1); ctx.stroke();
+    AB.text(ctx,lab, (x0+x1)/2+10, (y0+y1)/2, {size:7.5,color:AB.PAL.teal,weight:'700'});
+  }
+  resistor(w*0.42,bot, w*0.42,top, 'R_p');
+  resistor(w*0.58,bot, w*0.58,top, 'R_s');
+  // ductus: conecta P_pa (top izq) con P_sa (top der)
+  const dArrow=ductRev?(w*0.42+6):(w*0.58-6);
+  ctx.strokeStyle=ductRev?AB.PAL.amber:AB.PAL.teal; ctx.lineWidth=3;
+  ctx.beginPath(); ctx.moveTo(w*0.44,top-14); ctx.lineTo(w*0.56,top-14); ctx.stroke();
+  AB.arrow(ctx, ductRev?w*0.52: w*0.46, top-14, ductRev?w*0.56:w*0.44, top-14, {color:ductRev?AB.PAL.amber:AB.PAL.teal,width:2.4});
+  AB.text(ctx,'ductus arterioso'+(ductRev?' (invertido)':''), w*0.5, top-26, {size:7.5,weight:'700',color:ductRev?AB.PAL.amber:AB.PAL.teal});
+  // foramen: conecta P_sv (bot der) con P_pv (bot izq)
+  if (foramenOpen){
+    ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=3;
+    ctx.beginPath(); ctx.moveTo(w*0.44,bot+14); ctx.lineTo(w*0.56,bot+14); ctx.stroke();
+    AB.arrow(ctx, w*0.54, bot+14, w*0.46, bot+14, {color:AB.PAL.teal,width:2.4});
+    AB.text(ctx,'foramen oval (abierto)', w*0.5, bot+28, {size:7.5,weight:'700',color:AB.PAL.teal});
+  } else {
+    AB.dashed(ctx,w*0.44,bot+14,w*0.56,bot+14,{color:AB.PAL.ink3,width:1.6});
+    AB.text(ctx,'foramen (cerrado)', w*0.5, bot+28, {size:7.5,color:AB.PAL.ink3});
+  }
+  // presiones
+  AB.text(ctx,'P_pa = '+espan(s.Ppa,0)+' mmHg', w*0.24, top-6, {size:8,weight:'700',color:AB.PAL.blood});
+  AB.text(ctx,'P_sa = '+espan(s.Psa,0)+' mmHg', w*0.76, top-6, {size:8,weight:'700',color:AB.PAL.blood});
+  AB.text(ctx,'P_pv = '+espan(s.Ppv,1)+' mmHg', w*0.24, bot+40, {size:8,weight:'700',color:AB.PAL.teal});
+  AB.text(ctx,'P_sv = '+espan(s.Psv,1)+' mmHg', w*0.76, bot+40, {size:8,weight:'700',color:AB.PAL.teal});
+  // flujos
+  AB.text(ctx,'Q_p = '+espan(Qp,1), w*0.46, top+12, {size:7.5,color:AB.PAL.ink3});
+  AB.text(ctx,'Q_s = '+espan(Qs,1), w*0.54, top+12, {size:7.5,color:AB.PAL.ink3});
+  AB.text(ctx, fetal?'feto: R_p > R_s → la sangre bypasea el pulmón':'al nacer: R_p < R_s → el circuito cambia', w/2, h*0.90, {size:8,color:AB.PAL.ink3});
+  const state=fetal?'feto: ductus → · foramen →':'neonato: ductus '+ (ductRev?'← invertido':'→')+' · foramen cerrado';
+  const out=el('fd_out');
+  if (out) out.textContent=state;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S19 · Onda de pulso: P_pulso = V_stroke/C_sa
+   ═══════════════════════════════════════════════════════════ */
+function drawPulse(){
+  const cv=el('sim-pulse'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const VS=Math.max(50,Math.min(100,num('pu_vs')||70));
+  const C=Math.max(0.001,Math.min(0.003,num('pu_c')||0.00175));
+  const a=el('pu_vsv'); if (a) a.textContent=espan(VS,0)+' mL';
+  const b=el('pu_cv'); if (b) b.textContent=espan(C,5);
+  const Pp=(VS/1000)/C;
+  const DIA=80, SYS=DIA+Pp;
+  const RS=17.5, TAU=RS*C;   // min
+  const lx=w*0.10, lw=w*0.80, gy=h*0.12, gH=h*0.58;
+  const P0=60, P1=200;
+  const Y=p=>gy+gH*(1-(p-P0)/(P1-P0));
+  function waveP(t){
+    if (t<0.12) return DIA+(SYS-DIA)*(t/0.12);
+    if (t<0.36) return SYS-(SYS-DIA)*0.03*((t-0.12)/0.24);
+    if (t<0.44) return SYS*0.88;
+    if (t<0.50) return SYS*0.96-12*((t-0.44)/0.06);
+    const td=(t-0.50)/0.50;
+    return DIA+(SYS*0.92-DIA)*Math.exp(-td/TAU*0.45);
+  }
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.beginPath(); ctx.moveTo(lx,gy); ctx.lineTo(lx,gy+gH); ctx.lineTo(lx+lw,gy+gH); ctx.stroke();
+  [DIA,SYS].forEach(v=>{
+    const y=Y(v);
+    AB.dashed(ctx,lx,y,lx+lw,y,{color:AB.PAL.line});
+    AB.text(ctx,espan(v,0)+' mmHg', lx-6, y, {size:8,color:AB.PAL.ink3,align:'right'});
+  });
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2.6;
+  ctx.beginPath();
+  for(let i=0;i<=160;i++){
+    const x=lx+i/160*lw, y=Y(waveP(i/160));
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  }
+  ctx.stroke();
+  AB.text(ctx,'P_pulso = '+espan(Pp,0)+' mmHg', w/2, gy-12, {size:9,weight:'700',color:AB.PAL.blood});
+  AB.text(ctx,'P_pulso = V_stroke/C_sa', lx+lw, gy+gH, {size:8,color:AB.PAL.teal,align:'right'});
+  AB.text(ctx,'decaimiento diastólico: τ = R_s·C_sa', w/2, h*0.90, {size:8,color:AB.PAL.ink3});
+  const out=el('pu_out');
+  if (out) out.textContent='P_pulso = '+espan(Pp,0)+' mmHg · τ = '+espan(TAU,3)+' min';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S20 · Windkessel: capacitor arterial + resistor
+   ═══════════════════════════════════════════════════════════ */
+function toggleWindkessel(){
+  window.__wkPlaying=!window.__wkPlaying;
+  if (window.__wkPlaying) window.__wkT=0;
+  const b=el('wk_play'); if (b) b.textContent=window.__wkPlaying?'⏸':'▶';
+  drawWindkessel();
+}
+function drawWindkessel(){
+  const cv=el('sim-windkessel'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const C=Math.max(0.001,Math.min(0.003,num('wk_c')||0.002));
+  const R=Math.max(10,Math.min(25,num('wk_r')||17.5));
+  const F=Math.max(40,Math.min(160,num('wk_f')||70));
+  const a=el('wk_cv'); if (a) a.textContent=espan(C,4);
+  const b=el('wk_rv'); if (b) b.textContent=espan(R,1);
+  const c=el('wk_fv'); if (c) c.textContent=espan(F,0)+' /min';
+  const TAU=R*C;  // min
+  const T=60/F;   // s por ciclo
+  const VS=0.08;  // L
+  const Pmin=80, Pmax=Pmin+VS/C;
+  const t=(window.__wkT||0);
+  const ph=(t*1000% (T*1000))/ (T*1000);   // fracción de ciclo 0..1
+  const f_s=0.35;
+  // presión según fase
+  let P;
+  if (ph<f_s) P=Pmin+(Pmax-Pmin)*(ph/f_s);
+  else { const td=(ph-f_s)*T/60; P=Pmax*Math.exp(-td/TAU); }
+  // capacitor (depósito) — infla/deflata
+  const sx=w*0.30, sy=h*0.40, s0=Math.min(44, h*0.20);
+  const pfrac=(P-Pmin)/(Pmax-Pmin);
+  const sr=s0*(0.72+0.42*pfrac);
+  ctx.fillStyle='rgba(13,110,100,.10)'; ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=2.4;
+  ctx.beginPath(); ctx.arc(sx,sy,sr,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  AB.text(ctx,'arterias (C)', sx, sy, {size:9,weight:'700',color:AB.PAL.teal});
+  AB.text(ctx,espan(P,0)+' mmHg', sx, sy+22, {size:9,weight:'700',color:AB.PAL.blood});
+  // resistor (tubo con zigzag)
+  const rx0=sx+sr+8, ry=sy;
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=5;
+  ctx.beginPath(); ctx.moveTo(sx+sr,ry); ctx.lineTo(rx0+6,ry); ctx.stroke();
+  for(let i=0;i<4;i++){
+    const x=rx0+8+i*10;
+    ctx.strokeStyle=AB.PAL.amber; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(x,ry-7); ctx.lineTo(x+5,ry+7); ctx.lineTo(x+10,ry-7); ctx.stroke();
+  }
+  AB.text(ctx,'R_p (periferia)', rx0+30, ry-16, {size:8,color:AB.PAL.amber,weight:'700'});
+  AB.arrow(ctx, rx0+30, ry, rx0+44, ry, {color:AB.PAL.blood,width:2.2});
+  // traza de presión
+  const gx=w*0.14, gw=w*0.72, gy=h*0.66, gh=h*0.20;
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.beginPath(); ctx.moveTo(gx,gy); ctx.lineTo(gx,gy+gh); ctx.lineTo(gx+gw,gy+gh); ctx.stroke();
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2;
+  ctx.beginPath();
+  for(let i=0;i<=120;i++){
+    const t2=i/120;
+    const p2=t2<f_s?Pmin+(Pmax-Pmin)*(t2/f_s):Pmax*Math.exp(-((t2-f_s)*T/60)/TAU);
+    const x=gx+i/120*gw, y=gy+gh*(1-(p2-Pmin)/(Pmax-Pmin));
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  }
+  ctx.stroke();
+  // marcador de fase
+  const mx=gx+ph*gw, my=gy+gh*(1-(P-Pmin)/(Pmax-Pmin));
+  ctx.beginPath(); ctx.arc(mx,my,4.5,0,Math.PI*2); ctx.fillStyle=AB.PAL.amber; ctx.fill();
+  AB.text(ctx, ph<f_s?'sístole: el depósito se llena (Q_in = C·dP/dt + P/R)':'diástole: P(t) = P₀·e^(−t/τ)', w/2, h*0.92, {size:8,color:ph<f_s?AB.PAL.teal:AB.PAL.amber});
+  const out=el('wk_out');
+  if (out) out.textContent='τ = '+espan(TAU,3)+' min · diástole: P(t) = P₀·e^(−t/τ)';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S21 · Ejercicio: reparto del flujo (Tabla 8.6)
+   ═══════════════════════════════════════════════════════════ */
+function drawExercise(){
+  const cv=el('sim-exercise'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const L=Math.max(0,Math.min(3,num('ej_i')||0));
+  const lv=el('ej_iv'); if (lv) lv.textContent=['reposo','ligero','intenso','máximo'][Math.min(3,Math.round(L))];
+  // anclas por intensidad (mL/min) — Tabla 8.6
+  const anchors=[
+    {cerebro:750,corazon:250,musculo:1200,piel:500,rinon:1100,abdomen:1400,total:5800},
+    {cerebro:750,corazon:400,musculo:4500,piel:1200,rinon:1200,abdomen:1400,total:9500},
+    {cerebro:750,corazon:600,musculo:12000,piel:1500,rinon:1000,abdomen:1500,total:17500},
+    {cerebro:750,corazon:1000,musculo:22000,piel:600,rinon:250,abdomen:600,total:25000}
+  ];
+  const i0=Math.min(3,Math.floor(L)), f=L-i0;
+  const A=anchors[i0], B=anchors[Math.min(3,i0+1)];
+  const orgs=['cerebro','corazon','musculo','piel','rinon','abdomen'];
+  const cols={cerebro:AB.PAL.sagittal,corazon:AB.PAL.blood,musculo:AB.PAL.blood,corazon2:AB.PAL.blood,piel:AB.PAL.amber,rinon:AB.PAL.teal,abdomen:AB.PAL.tealLight};
+  const vals={};
+  let total=0;
+  orgs.forEach(o=>{ const v=A[o]+(B[o]-A[o])*f; vals[o]=v; total+=v; });
+  const otros=Math.max(0, A.total+(B.total-A.total)*f-total);
+  total+=otros;
+  // barra apilada
+  const lx=w*0.12, lw=w*0.76, y0=h*0.16, barh=h*0.16;
+  const order=['musculo','cerebro','corazon','rinon','abdomen','piel','otros'];
+  let x=lx;
+  order.forEach((o,i)=>{
+    const v=(o==='otros')?otros:vals[o];
+    const frac=v/total;
+    const bw=frac*lw;
+    if (bw<1) return;
+    const col=o==='otros'?AB.PAL.ink3:(cols[o]||AB.PAL.teal);
+    ctx.fillStyle=col;
+    ctx.fillRect(x,y0,bw,barh);
+    if (frac>0.05){
+      AB.text(ctx,espan(v/1000,1)+' L', x+bw/2, y0+barh+14, {size:8,color:col,weight:'700'});
+      if (i===0) AB.text(ctx,espan(frac*100,0)+' %', x+bw/2, y0+barh+28, {size:7.5,color:col});
+    }
+    x+=bw;
+  });
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.strokeRect(lx,y0,lw,barh);
+  AB.text(ctx,'Q = '+espan(total/1000,1)+' L/min', w/2, y0-12, {size:11,weight:'700',color:AB.PAL.teal});
+  // cerebro constante (línea horizontal)
+  const cb=vals.cerebro;
+  const yCB=y0+barh+8;
+  AB.dashed(ctx,lx,yCB,lx+lw,yCB,{color:AB.PAL.sagittal,width:1.4});
+  AB.text(ctx,'cerebro: '+espan(cb,0)+' mL/min (constante)', w*0.14, yCB+16, {size:7.5,align:'left',color:AB.PAL.sagittal,weight:'700'});
+  AB.text(ctx,'el músculo se lleva el aumento · el cerebro no cambia', w/2, h*0.88, {size:8,color:AB.PAL.ink3});
+  const out=el('ej_out');
+  if (out) out.textContent='Q = '+espan(total/1000,1)+' L/min · músculo '+espan(vals.musculo/total*100,0)+' %';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S22 · Disfunción: ESPVR y EDPVR
+   ═══════════════════════════════════════════════════════════ */
+function drawDysfunction(){
+  const cv=el('sim-dysfunction'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const CT=Math.max(0.5,Math.min(1.5,num('df_ct')||1));
+  const ST=Math.max(0.5,Math.min(2,num('df_st')||1));
+  const a=el('df_ctv'); if (a) a.textContent=espan(CT,1);
+  const b=el('df_stv'); if (b) b.textContent=espan(ST,1);
+  const Vd=40, E=5, VED=150, PSA=100;
+  const VES=Math.max(Vd+8, Vd+PSA/(E*CT));
+  const EF=(VED-VES)/VED*100;
+  const P_edp=V=>ST*0.001*Math.pow(V-Vd,2);
+  const lx=w*0.12, lw=w*0.62, gy=h*0.10, gH=h*0.62;
+  const V0=50, V1=240, P1=160;
+  const X=v=>lx+lw*(v-V0)/(V1-V0);
+  const Y=p=>gy+gH*(1-p/P1);
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.beginPath(); ctx.moveTo(lx,gy); ctx.lineTo(lx,gy+gH); ctx.lineTo(lx+lw,gy+gH); ctx.stroke();
+  [0,50,100,150].forEach(v=>{
+    AB.dashed(ctx,lx,Y(v),lx+lw,Y(v),{color:AB.PAL.line});
+    AB.text(ctx,espan(v,0), lx-6, Y(v), {size:7,color:AB.PAL.ink3,align:'right'});
+  });
+  [50,100,150,200,240].forEach(v=>{
+    const x=X(v);
+    AB.dashed(ctx,x,gy,x,gy+gH,{color:AB.PAL.line});
+    AB.text(ctx,espan(v,0), x, gy+gH+12, {size:7,color:AB.PAL.ink3});
+  });
+  AB.text(ctx,'V (mL)', lx+lw, gy+gH+12, {size:8,color:AB.PAL.ink3,align:'right'});
+  AB.text(ctx,'P (mmHg)', lx-10, gy-10, {size:8,color:AB.PAL.ink3});
+  // ESPVR (pendiente ∝ contractilidad)
+  ctx.strokeStyle=AB.PAL.amber; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(X(Vd),Y(0)); ctx.lineTo(X(V1),Y(E*CT*(V1-Vd))); ctx.stroke();
+  AB.text(ctx,'ESPVR', X(V1)+2, Y(E*CT*(V1-Vd))-4, {size:7,color:AB.PAL.amber,align:'left'});
+  // EDPVR (pendiente ∝ rigidez)
+  ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=1.8;
+  ctx.beginPath();
+  for(let i=0;i<=40;i++){
+    const v=Vd+(V1-Vd)*i/40;
+    const x=X(v), y=Y(P_edp(v));
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  }
+  ctx.stroke();
+  AB.text(ctx,'EDPVR', X(Vd)+6, Y(P_edp(Vd+6)), {size:7,color:AB.PAL.teal,align:'left'});
+  // lazo
+  const A=[VES,P_edp(VES)], B=[VED,P_edp(VED)], C=[VED,PSA], D=[VES,PSA];
+  ctx.fillStyle='rgba(169,42,30,.14)';
+  ctx.beginPath(); ctx.moveTo(X(A[0]),Y(A[1])); ctx.lineTo(X(B[0]),Y(B[1])); ctx.lineTo(X(C[0]),Y(C[1]));
+  ctx.lineTo(X(D[0]),Y(D[1])); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2.2;
+  ctx.beginPath();
+  ctx.moveTo(X(A[0]),Y(A[1])); ctx.lineTo(X(B[0]),Y(B[1])); ctx.lineTo(X(C[0]),Y(C[1]));
+  ctx.quadraticCurveTo(X((VED+VES)/2), Y(PSA*1.05), X(D[0]),Y(D[1]));
+  ctx.lineTo(X(A[0]),Y(A[1])); ctx.closePath(); ctx.stroke();
+  // panel EF
+  const px0=w*0.82, py0=h*0.14, pw=w*0.15, ph2=h*0.66;
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.strokeRect(px0,py0,pw,ph2);
+  AB.text(ctx,'fracción de eyección', px0+pw/2, py0+16, {size:8,color:AB.PAL.ink,weight:'700'});
+  AB.text(ctx,'EF = V_s/V_ED', px0+pw/2, py0+34, {size:7.5,color:AB.PAL.ink3});
+  AB.text(ctx,espan(EF,0)+' %', px0+pw/2, py0+58, {size:16,weight:'700',color:AB.PAL.blood});
+  AB.text(ctx,'normal 55–75 %', px0+pw/2, py0+80, {size:7,color:AB.PAL.ink3});
+  AB.text(ctx,'disfunción', px0+pw/2, py0+96, {size:7,color:AB.PAL.ink3});
+  AB.text(ctx,'sistólica < 40 %', px0+pw/2, py0+110, {size:7,color:AB.PAL.ink3});
+  AB.text(ctx,'diastólica: EF preservado', px0+pw/2, py0+124, {size:7,color:AB.PAL.ink3});
+  AB.text(ctx,'la pendiente ESPVR es la contractilidad · la EDPVR, la rigidez', w/2, h*0.90, {size:8,color:AB.PAL.ink3});
+  const out=el('df_out');
+  if (out) out.textContent='EF ≈ '+espan(EF,0)+' % · '+(EF<40?'disfunción sistólica':EF<50?'fronterizo':'normal');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S23 · Fracción de eyección: válvulas
+   ═══════════════════════════════════════════════════════════ */
+function toggleEjection(){
+  window.__efPlaying=!window.__efPlaying;
+  if (window.__efPlaying) window.__efT=0;
+  const b=el('ef_play'); if (b) b.textContent=window.__efPlaying?'⏸':'▶';
+  drawEjection();
+}
+function drawEjection(){
+  const cv=el('sim-ejection'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const VED=Math.max(100,Math.min(240,num('ef_ed')||150));
+  const VES=Math.max(30,Math.min(130,num('ef_es')||60));
+  const a=el('ef_edv'); if (a) a.textContent=espan(VED,0)+' mL';
+  const b=el('ef_esv'); if (b) b.textContent=espan(VES,0)+' mL';
+  const EF=(VED-VES)/VED*100;
+  const t=(window.__efT||0);
+  const ph=(t*0.8)%1;
+  // volumen instantáneo: llenado rápido, eyección más lenta
+  let V;
+  if (ph<0.4) V=VES+(VED-VES)*(ph/0.4);
+  else V=VED-(VED-VES)*((ph-0.4)/0.6);
+  const playing=window.__efPlaying;
+  // ventrículo
+  const cx=w*0.30, cy=h*0.44;
+  const s=V/ (playing?VED:VED);
+  const rx=Math.max(26, Math.min(88, 22+V*0.28));
+  const ry=Math.max(20, rx*0.78);
+  ctx.fillStyle='rgba(169,42,30,'+(playing?0.14:0.10)+')';
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2.4;
+  ctx.beginPath(); ctx.ellipse(cx,cy,rx,ry,0,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  // válvula aórtica (flecha)
+  const open=playing? ph>=0.40 && ph<1 : true;
+  if (playing){
+    AB.arrow(ctx, cx, cy-ry-6, cx, cy-ry-26, {color:open?AB.PAL.teal:AB.PAL.ink3,width:2.4});
+    AB.text(ctx,open?'eyectando':'llenando', cx, cy-ry-34, {size:8,weight:'700',color:open?AB.PAL.teal:AB.PAL.ink3});
+  }
+  // volumen
+  AB.text(ctx,'V = '+espan(playing?V:VED,0)+' mL', cx, cy+ry+18, {size:10,weight:'700',color:AB.PAL.blood});
+  AB.text(ctx,'V_ED '+espan(VED,0)+' mL → V_ES '+espan(VES,0)+' mL', cx, cy+ry+32, {size:7.5,color:AB.PAL.ink3});
+  // medidor circular EF
+  const gx=w*0.72, gy=h*0.42, GR=Math.min(64,h*0.30);
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=8;
+  ctx.beginPath(); ctx.arc(gx,gy,GR,-Math.PI,0); ctx.stroke();
+  ctx.strokeStyle=EF>=55?AB.PAL.teal:EF>=40?AB.PAL.amber:AB.PAL.blood;
+  ctx.lineWidth=8;
+  ctx.beginPath(); ctx.arc(gx,gy,GR,-Math.PI,-Math.PI+Math.PI*Math.max(0.05,Math.min(1,EF/100))); ctx.stroke();
+  AB.text(ctx,'EF', gx, gy-6, {size:10,color:AB.PAL.ink3});
+  AB.text(ctx,espan(EF,0)+' %', gx, gy+16, {size:18,weight:'700',color:AB.PAL.teal});
+  AB.text(ctx,EF>=55?'normal':EF>=40?'fronterizo':'disfunción sistólica', gx, gy+36, {size:8,weight:'700',color:EF>=55?AB.PAL.teal:EF>=40?AB.PAL.amber:AB.PAL.blood});
+  AB.text(ctx,'EF = V_stroke / V_ED', w/2, h*0.90, {size:8,color:AB.PAL.ink3});
+  const out=el('ef_out');
+  if (out) out.textContent='EF = '+espan(EF,0)+' % · '+(EF>=55?'normal':EF>=40?'fronterizo':'disfunción sistólica');
+}
+
+/* ── Bucle de animación (marco-tiempo independiente) ── */
+let __lastTs=0;
+function animLoop(ts){
+  const dt=Math.min(0.06, ((ts-__lastTs)||0)/1000);
+  __lastTs=ts;
+  if (current===6){ window.__reT=(window.__reT||0)+dt; drawReynolds(); }
+  if (current===11 && window.__pvPlaying){ window.__pvT=(window.__pvT||0)+dt; drawPVLoop(); }
+  if (current===14 && window.__rpPlaying){ window.__rpT=(window.__rpT||0)+dt; drawPulsatile(); }
+  if (current===20 && window.__wkPlaying){ window.__wkT=(window.__wkT||0)+dt; drawWindkessel(); }
+  if (current===23 && window.__efPlaying){ window.__efT=(window.__efT||0)+dt; drawEjection(); }
+  requestAnimationFrame(animLoop);
+}
+requestAnimationFrame(animLoop);
+
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  dots();
+  buildModuleTabs();
+  if (window.renderMathInElement) renderMathInElement(document.body, {
+    delimiters:[
+      {left:'\\(',right:'\\)',display:false},
+      {left:'\\[',right:'\\]',display:true}
+    ],
+    throwOnError:false
+  });
+  requestAnimationFrame(()=>redrawSlide(0));
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1857 @@
+﻿\documentclass{book}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}        % Fuentes vectoriales Type 1
+\usepackage{microtype}      % Mejora la legibilidad
+\usepackage[spanish]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{sidecap}
+\usepackage{placeins}
+\usepackage{url}
+
+\graphicspath{{imagenes/}}
+
+\AtBeginDocument{\shorthandoff{"}}
+
+\begin{document}
+\setcounter{chapter}{9}
+
+% --- INICIO DEL CAPÃTULO 10 ---
+\chapter{Sonido, habla y audiciÃ³n}
+
+\begin{flushleft}
+    \textit{En primer lugar, se desarrolla la fÃ­sica bÃ¡sica del sonido, incluyendo la de la propagaciÃ³n de ondas sonoras en el aire y en interfaces, y la del sonido en cavidades resonantes; a continuaciÃ³n, estos conceptos se aplican al habla y a la audiciÃ³n. Se presentan la estructura y funciÃ³n de los componentes corporales relevantes para el habla y la audiciÃ³n, seguido de una discusiÃ³n sobre cÃ³mo el cuerpo produce el sonido y lo detecta. Por Ãºltimo, se ofrece una visiÃ³n general de otros tipos de sonidos corporales.}
+\end{flushleft}
+
+\hrule
+\vspace{1em}
+
+En este capÃ­tulo nos preguntaremos: Â¿CÃ³mo hablamos? Â¿CÃ³mo oÃ­mos? Para responder a estas preguntas tendremos que profundizar en la fÃ­sica de las ondas sonoras, que se denomina acÃºstica, porque hablar es crear sonido y oÃ­r es detectar sonido. Primero revisaremos la fÃ­sica bÃ¡sica de las ondas sonoras y luego examinaremos con mÃ¡s detalle la fÃ­sica del habla y la audiciÃ³n en los seres humanos.
+
+El sonido tambiÃ©n es importante en el diagnÃ³stico mÃ©dico. Los mÃ©dicos utilizan estetoscopios para escuchar los sonidos del cuerpo (auscultaciÃ³n; ver el final de este capÃ­tulo) y golpean partes del cuerpo, como se harÃ­a con un tambor, como un diagnÃ³stico percusivo. Otro diagnÃ³stico mÃ©dico importante que utiliza el sonido es el mapeo ultrasÃ³nico o la ultrasonografÃ­a. Es un mÃ©todo de obtenciÃ³n de imÃ¡genes no destructivo que utiliza sonido a frecuencias ($\sim 1\text{--}10\text{ MHz}$), muy por encima de nuestro rango de audiciÃ³n ($20\text{ Hz}\text{--}20\text{ kHz}$), el cual proporciona imÃ¡genes con la muy Ãºtil resoluciÃ³n espacial de $\sim 1\text{ mm}$~\cite{51, 72}. Las ondas se envÃ­an a un objeto y se reflejan, y el tiempo de retraso entre la transmisiÃ³n del haz de prueba y la llegada de los pulsos acÃºsticos reflejados al detector proporciona la ubicaciÃ³n relativa del objeto. Por ejemplo, en el anÃ¡lisis del corazÃ³n, el uso de un Ãºnico haz escaneado proporciona informaciÃ³n valiosa pero limitada, como el grosor de la pared y los diÃ¡metros de las cavidades (ecocardiografÃ­a en modo M), mientras que el uso de mÃºltiples haces transmitidos a travÃ©s de un arco amplio proporciona imÃ¡genes bidimensionales del corazÃ³n (ecocardiografÃ­a bidimensional o en 2-D). El cambio de la frecuencia acÃºstica cuando el ultrasonido se refleja en un objetivo en movimiento (el efecto Doppler) es la base para medir la direcciÃ³n, la turbulencia y la velocidad del flujo sanguÃ­neo (ultrasonografÃ­a Doppler). (Ver los Problemas~10.22 y 10.23, y la Fig.~10.56 mÃ¡s adelante).
+
+\section{La fÃ­sica de las ondas sonoras}
+
+El sonido es una onda de compresiÃ³n en un gas, lÃ­quido o sÃ³lido. Una onda es una perturbaciÃ³n periÃ³dica que viaja en el espacio, por ejemplo, en la direcciÃ³n $z$. Es periÃ³dica en el espacio, lo que significa que a cualquier tiempo $t$ dado, la perturbaciÃ³n se repite periÃ³dicamente con $z$, como en la Fig.~10.1. Es periÃ³dica en el tiempo, lo que significa que en cualquier posiciÃ³n $z$ dada, la perturbaciÃ³n se repite periÃ³dicamente con el tiempo $t$. La perturbaciÃ³n viaja con una velocidad $v$, la velocidad del sonido, de modo que desde el tiempo $t_1$ hasta el tiempo $t_2$, la perturbaciÃ³n recorre una distancia $\delta z = z_2 - z_1 = v(t_2 - t_1)$. La cantidad $z - vt$ no cambia para la perturbaciÃ³n a medida que Â«viajaÂ» con la onda.
+
+Hasta ahora hemos descrito la propagaciÃ³n de una perturbaciÃ³n mediante un tipo genÃ©rico de onda, pero no hemos especificado quÃ© es lo que se perturba. En las ondas sonoras, estas perturbaciones son cambios locales en la presiÃ³n, $\delta P = P(z, t) - P_{\text{ambiente}}$, la densidad de masa, $\delta\rho$ (o densidad molecular, $\delta n$), y el desplazamiento, $\delta z$, respecto a sus valores ambientales. Las ondas sonoras en gases y lÃ­quidos son longitudinales o de compresiÃ³n en el sentido de que estos cambios ocurren en la misma direcciÃ³n en la que se propaga la onda, aquÃ­ en la direcciÃ³n $z$. Si se pulsa una cuerda, la onda se prorroga a lo largo de la misma, pero la perturbaciÃ³n real de la cuerda es perpendicular a ella, lo que la convierte en una onda transversal. (En los sÃ³lidos, las ondas sonoras pueden ser longitudinales o transversales). La Figura~10.2 muestra el movimiento longitudinal de las molÃ©culas durante una onda sonora. Estas variaciones de presiÃ³n y densidad estÃ¡n en fase entre sÃ­, lo que significa que ambas aumentan (compresiÃ³n) o disminuyen (rarefacciÃ³n) conjuntamente a partir de sus valores ambientales. (Las ecuaciones de estado de los materiales, como $P = nRT$ para gases ideales, suelen mostrar que la densidad aumenta con la presiÃ³n). Por el contrario, el desplazamiento de las molÃ©culas estÃ¡ desfasado con respecto a la densidad y la presiÃ³n; el desplazamiento varÃ­a espacialmente como una onda de coseno si la densidad y la presiÃ³n varÃ­an como ondas de seno. Donde la densidad y la presiÃ³n estÃ¡n en su punto mÃ¡ximo, el desplazamiento es cero, pero el desplazamiento es positivo justo a la izquierda y negativo justo a la derecha, lo que maximiza la densidad y la presiÃ³n. Donde la densidad y la presiÃ³n estÃ¡n en su punto mÃ­nimo, el desplazamiento tambiÃ©n es cero, pero el desplazamiento es negativo justo a la izquierda y positivo justo a la derecha. Esto se observa en la Fig.~10.2.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.55\textwidth]{101.png}
+  \caption{Ondas en (a) un tiempo, (b) un lugar, y (c) dos tiempos diferentes, mostrando la propagaciÃ³n de la onda.}
+  \label{fig:101}
+\end{figure}
+
+\begin{SCfigure}[0.75][htbp]
+  \centering
+  \includegraphics[width=0.6\textwidth]{102.png}
+  \caption{Las ondas sonoras son ondas de compresiÃ³n.}
+  \label{fig:102}
+\end{SCfigure}
+
+
+
+\FloatBarrier
+
+\FloatBarrier
+
+Hemos elegido hasta ahora examinar las ondas mÃ¡s sencillas, para las cuales la perturbaciÃ³n periÃ³dica varÃ­a como una funciÃ³n seno (o, equivalentemente, una funciÃ³n coseno). Aunque las ondas sonoras del habla son sumas complejas de tales ondas a diferentes frecuencias, con una muy buena aproximaciÃ³n podemos examinar la fÃ­sica de cada frecuencia por separado y sumar los efectos. (Esto se denomina linealidad o superposiciÃ³n lineal).
+
+\subsection{La velocidad y las propiedades de las ondas sonoras}
+
+Las ondas sonoras se mueven a una velocidad $v_s$ que estÃ¡ determinada por las propiedades del medio. En general, la velocidad del sonido es
+\begin{equation}
+v_s = \sqrt{\frac{C}{\rho}},
+\label{eq:10.1}
+\end{equation}
+donde $C$ es una constante que describe la rigidez del material (cuando no hay flujo de calor, lo que constituye condiciones Â«adiabÃ¡ticasÂ») y $\rho$ es la densidad de masa. En los sÃ³lidos, esta constante de rigidez puede depender de la direcciÃ³n en la que se propaga la onda sonora. Es igual al mÃ³dulo de Young $Y$ para la propagaciÃ³n de ondas de compresiÃ³n a lo largo de una barra que es mucho mÃ¡s larga que ancha. Para el acero, $v_s = 5960\text{ m/s}$. En los fluidos (lÃ­quidos y gases), $C$ es el mÃ³dulo de compresibilidad (adiabÃ¡tico) $B$, que describe cuÃ¡nta presiÃ³n se necesita para lograr una disminuciÃ³n fraccionaria dada en el volumen. En los gases, $B = \gamma P$, donde $\gamma$ es la relaciÃ³n de los calores especÃ­ficos a presiÃ³n constante ($c_p$) y volumen constante ($c_v$). (La relaciÃ³n $c_p/c_v$ varÃ­a desde 1, para molÃ©culas muy grandes, hasta $5/3$, para un gas monoatÃ³mico ideal, y es $1.4$ para el aire, que estÃ¡ compuesto principalmente por gases diatÃ³micos). En consecuencia, la velocidad del sonido en los gases es
+\begin{equation}
+v_s = \sqrt{\frac{\gamma P}{\rho}} = \sqrt{\frac{\gamma RT}{m}},
+\label{eq:10.2}
+\end{equation}
+donde $R$ es la constante de la ley de los gases ideales (7.2) ($R = 8.31\text{ J/(mol}\cdot\text{K)}$), y $m$ es la masa molecular. La velocidad del sonido en el aire es $343\text{ m/s}$ (a $20\text{ }^{\circ}\text{C}$), que es $15\times$ mÃ¡s lenta que en el acero, mientras que en el agua es $1482\text{ m/s}$ (ver los Problemas~10.4 y 10.5).
+
+Las ondas son periÃ³dicas en el espacio (a un $t$ dado) y se repiten con una periodicidad espacial llamada longitud de onda $\lambda$ (Fig.~10.1). TambiÃ©n son periÃ³dicas en el tiempo (en una posiciÃ³n $z$ dada) con una periodicidad temporal llamada periodo $T$, que corresponde a una frecuencia $f$ con $f = 1/T$ (Fig.~10.1). MatemÃ¡ticamente, a una perturbaciÃ³n que se mueve hacia la derecha (hacia valores mayores de $z$) se le puede expresar como $g(z - v_s t)$ para cualquier onda con forma funcional $g$, debido a que $z - v_s t$ permanece constante a medida que la onda se mueve hacia la derecha a velocidad $v_s$. Un ejemplo de esto es $\cos(z - v_s t)$. De manera similar, una perturbaciÃ³n que se mueve hacia la izquierda (hacia valores menores de $z$) se puede expresar como $g(z + v_s t)$, porque $z + v_s t$ permanece constante a medida que la onda se mueve hacia la izquierda.
+
+La frecuencia tiene unidades de ciclos por segundo (cps) = Hertz (Hz). A veces usaremos la frecuencia radial $\omega$, que tiene unidades de rad/s o simplemente $1/\text{s}$, y que se relaciona con la frecuencia mediante $\omega = 2\pi f$. La longitud de onda, la frecuencia y la velocidad de una onda se interrelacionan mediante
+\begin{equation}
+v_s = \lambda f.
+\label{eq:10.3}
+\end{equation}
+
+Por lo tanto, las ondas de baja frecuencia tienen longitudes de onda largas, mientras que las ondas de alta frecuencia tienen longitudes de onda cortas. Utilizando la velocidad del sonido en el aire, las ondas sonoras de $f = 1000\text{ Hz}$ en el aire tienen una longitud de onda de $0.34\text{ m} \simeq 1\text{ ft}$. Para algunos tipos de ondas, $v_s$ depende de $f$, por lo que $v_s = v_s(f)$, pero no ocurre asÃ­ para el sonido en el aire. Cuando las ondas sonoras viajan de un medio a otro, la frecuencia permanece igual, pero la longitud de onda cambia con el cambio en la velocidad del sonido (10.3). Cabe seÃ±alar que, en las ondas acÃºsticas, es la perturbaciÃ³n la que se propaga; las molÃ©culas reales no viajan fÃ­sicamente con la perturbaciÃ³n y se mueven muy poco.
+
+% Control de Calidad: 11 pÃ¡rrafos origen -> 11 pÃ¡rrafos salida. Mapeo 1:1 verificado. Sin omisiones.
+
+\subsection{Intensidad de las ondas sonoras}
+
+La intensidad $I$ de una onda sonora es la energÃ­a transportada por la onda por unidad de Ã¡rea y por unidad de tiempo (en unidades de $\text{J/}(\text{m}^2\cdot\text{s})$ o $\text{W/m}^2$). A una distancia $R$ de una fuente isotrÃ³pica de potencia acÃºstica promedio $P_{\text{power}}$, la intensidad es
+\begin{equation}
+I = \frac{P_{\text{power}}}{4\pi R^2}.
+\label{eq:10.4}
+\end{equation}
+
+La intensidad acÃºstica tambiÃ©n es igual a la energÃ­a cinÃ©tica de la onda por unidad de volumen, $\rho u_{\text{max}}^2 / 2$, multiplicada por la velocidad de la onda, $v_s$, o bien
+\begin{equation}
+I = \frac{1}{2}\rho u_{\text{max}}^2 v_s,
+\label{eq:10.5}
+\end{equation}
+donde $u_{\text{max}} = (\delta z_{\text{max}})\omega$ es la velocidad mÃ¡xima de las molÃ©culas para un desplazamiento mÃ¡ximo $\delta z_{\text{max}}$ durante la perturbaciÃ³n. Por lo tanto, vemos que
+\begin{equation}
+I = \frac{1}{2}\rho v_s [(\delta z_{\text{max}})\omega]^2.
+\label{eq:10.6}
+\end{equation}
+
+La impedancia acÃºstica de un medio $Z$ viene dada por el producto de la densidad de masa y la velocidad del sonido para ese medio, de modo que
+\begin{equation}
+Z = \rho v_s.
+\label{eq:10.7}
+\end{equation}
+
+La Tabla~10.1 enumera la densidad de masa, la velocidad del sonido y la impedancia acÃºstica para el aire, el agua, la grasa, el mÃºsculo y varios otros materiales corporales. La impedancia acÃºstica para el agua, la grasa y el mÃºsculo es $\sim 3500\times$ la del aire. Veremos mÃ¡s adelante que este desacoplamiento es responsable de la reflexiÃ³n del sonido entre el aire y estos otros medios.
+
+\begin{table}[h]
+\centering
+\caption{Densidad de masa, velocidad del sonido e impedancia acÃºstica.}
+\label{tab:101}
+\small
+\begin{tabularx}{\textwidth}{l >{\centering\arraybackslash}X >{\centering\arraybackslash}X >{\centering\arraybackslash}X}
+\toprule
+Material & $\rho$ ($\text{kg/m}^3$) & $v_s$ ($\text{m/s}$) & $Z$ ($= \rho v_s$) ($\text{kg/}(\text{m}^2\cdot\text{s})$) \\
+\midrule
+Aire ($20\text{ }^{\circ}\text{C}$) & $1.20$ & $343$ & $413$ \\
+Agua & $1.00 \times 10^3$ & $1480$ & $1.48 \times 10^6$ \\
+Grasa & $0.92 \times 10^3$ & $1450$ & $1.33 \times 10^6$ \\
+MÃºsculo & $1.04 \times 10^3$ & $1580$ & $1.64 \times 10^6$ \\
+Hueso & $2.23 \times 10^3$ & $3500$ & $7.80 \times 10^6$ \\
+Sangre & $1.03 \times 10^3$ & $1570$ & $1.61 \times 10^6$ \\
+Tejido blando (prom.)$^a$ & $1.06 \times 10^3$ & $1540$ & $1.63 \times 10^6$ \\
+PulmÃ³n & $286$ & $630$ & $1.80 \times 10^5$ \\
+\bottomrule
+\end{tabularx}
+\begin{flushleft}\small
+Utilizando datos de~\cite{24, 51}\\
+$^a$El valor del tejido blando es representativo de la piel, el riÃ±Ã³n, el hÃ­gado y el cerebro.
+\end{flushleft}
+\end{table}
+\FloatBarrier
+
+Por simplicidad, renombraremos la presiÃ³n manomÃ©trica $\delta P$ ($= P - P_{\text{atmÃ³sfera}}$) como $P$ para el resto de este capÃ­tulo y la llamaremos presiÃ³n sonora. AdemÃ¡s, $P$ denotarÃ¡ en realidad la presiÃ³n mÃ¡xima en el ciclo, $P_{\text{max}}$. La magnitud de la variaciÃ³n mÃ¡xima de presiÃ³n en la onda sonora se relaciona con este desplazamiento mÃ¡ximo (desfasado) mediante
+\begin{equation}
+|P| = (\rho v_s)\omega|\delta z_{\text{max}}| = Z\omega|\delta z_{\text{max}}|.
+\label{eq:10.8}
+\end{equation}
+
+Podemos entender esto porque la presiÃ³n es la fuerza por unidad de Ã¡rea y la fuerza es el cambio del momento lineal con el tiempo, por lo que la presiÃ³n es el cambio en el momento lineal por unidad de Ã¡rea por unidad de tiempo. Utilizando (10.8), la intensidad acÃºstica es
+\begin{equation}
+I = \frac{1}{2}Z(\delta z_{\text{max}})^2\omega^2 = \frac{P^2}{2Z}.
+\label{eq:10.9}
+\end{equation}
+
+Podemos presentar la intensidad sonora $I$ en unidades de $\text{W/m}^2$ o cualquier otra unidad equivalente. TambiÃ©n es muy comÃºn caracterizar la intensidad sonora de una manera con mayor base fisiolÃ³gica, en la cual $I$ se refiere a $I_{\text{ref}} = 10^{-12}\text{ W/m}^2$; $I_{\text{ref}}$ es una intensidad sonora que es apenas audible a $3000\text{ Hz}$. Dado que las intensidades sonoras en nuestra experiencia cotidiana pueden ser muchos Ã³rdenes de magnitud mayores que esta intensidad de referencia, generalmente usamos una escala logarÃ­tmica ---con base 10--- para caracterizar $I$. En unidades de belios, llamadas asÃ­ en honor a Alexander Graham Bell, $I$ (en belios) $= \log_{10}(I/I_{\text{ref}})$. De hecho, lo estÃ¡ndar es utilizar una escala mÃ¡s fina en dÃ©cimas de belio, llamada decibelios o dB, con
+\begin{equation}
+I\text{ (en dB)} = 10\log_{10}\left(\frac{I}{I_{\text{ref}}}\right).
+\label{eq:10.10}
+\end{equation}
+
+Por ejemplo, para $I = 10^{-8}\text{ W/m}^2 = 10^4 I_{\text{ref}}$, vemos que $I$ (en dB) $= 10\log_{10}(10^4) = 10 \times 4 = 40$, o $40\text{ dB}$.
+
+La escala en dB tambiÃ©n se utiliza para denotar la magnitud relativa de las intensidades, como la de $I_2$ en relaciÃ³n con $I_1$. Con
+\begin{equation}
+I_1\text{ (en dB)} = 10\log_{10}\left(\frac{I_1}{I_{\text{ref}}}\right)\quad\text{y}\quad I_2\text{ (en dB)} = 10\log_{10}\left(\frac{I_2}{I_{\text{ref}}}\right)
+\label{eq:10.11}
+\end{equation}
+vemos que
+\begin{equation}
+I_2\text{ (en dB)} - I_1\text{ (en dB)} = 10\log_{10}\left(\frac{I_2}{I_{\text{ref}}}\right) - 10\log_{10}\left(\frac{I_1}{I_{\text{ref}}}\right) = 10\log_{10}\left(\frac{I_2}{I_1}\right).
+\label{eq:10.12}
+\end{equation}
+
+Por lo tanto, un aumento de $20\text{ dB}$ en la intensidad sonora indica un aumento por un factor de $10^2 = 100$ en $I$. Debido a que la escala en dB tambiÃ©n se utiliza para indicar magnitudes relativas, esta unidad acÃºstica absoluta en (10.10) a menudo se denota como dB SPL (nivel de presiÃ³n sonora). La Tabla~10.2 muestra las intensidades acÃºsticas de sonidos comunes. El ruido de fondo normal es de $50\text{--}60\text{ dB SPL}$. La conversaciÃ³n normal es de $60\text{--}70\text{ dB SPL}$. El habla es de alrededor de $70\text{--}80\text{ dB SPL}$ a $1\text{ m}$. El umbral del dolor ocurre a aproximadamente $120\text{ dB SPL}$. Las ventanas se rompen a aproximadamente $163\text{ dB SPL}$. Las ondas de choque y las explosiones sÃ³nicas causan niveles de aproximadamente $200\text{ dB SPL}$ a una distancia de $330\text{ m}$.
+
+\begin{table}[h]
+\centering
+\caption{Intensidades sonoras tÃ­picas.}
+\label{tab:102}
+\small
+\begin{tabularx}{\textwidth}{>{\hsize=1.4\hsize}X >{\centering\arraybackslash\hsize=0.8\hsize}X >{\centering\arraybackslash\hsize=0.8\hsize}X}
+\toprule
+Sonido & Intensidad ($\text{W/m}^2$) & Nivel de intensidad ($\text{dB SPL}$) \\
+\midrule
+Sonido apenas perceptible, humano con buena audiciÃ³n & $10^{-12}$ & $0$ \\
+RespiraciÃ³n humana a $3\text{ m}$ & $10^{-11}$ & $10$ \\
+Susurro a $1\text{ m}$, murmullo de hojas, reloj haciendo tictac & $10^{-10}$ & $20$ \\
+Comunidad residencial silenciosa por la noche, zumbido de refrigerador & $10^{-8}$ & $40$ \\
+Restaurante silencioso, lluvia & $10^{-7}$ & $50$ \\
+ConversaciÃ³n normal a $1\text{ m}$, oficina, restaurante & $10^{-6}$ & $60$ \\
+TrÃ¡fico denso & $10^{-5}$ & $70$ \\
+MÃºsica a alto volumen, trÃ¡fico pesado, aspiradora a $1\text{ m}$ & $10^{-4}$ & $80$ \\
+FÃ¡brica ruidosa & $10^{-3}$ & $90$ \\
+Tren rÃ¡pido, martillo neumÃ¡tico a $2\text{ m}$, discoteca, secador de pelo & $10^{-2}$ & $100$ \\
+Motocicleta acelerando a $5\text{ m}$, motosierra a $1\text{ m}$ & $10^{-1}$ & $110$ \\
+Concierto de rock, aviÃ³n a reacciÃ³n despegando a $100\text{ m}$ & $1 = 10^0$ & $120$ \\
+Martillo perforador & $10^1$ & $130$ \\
+Disparo de escopeta, petardo & $10^2$ & $140$ \\
+Motor de reacciÃ³n a $30\text{ m}$ & $10^3$ & $150$ \\
+Motor de cohete a $30\text{ m}$ & $10^6$ & $180$ \\
+\bottomrule
+\end{tabularx}
+\end{table}
+\FloatBarrier
+
+Los astronautas del Apolo estuvieron expuestos a sonidos muy fuertes durante el despegue, de mÃ¡s de $85\text{ dB SPL}$ durante unos $80\text{ s}$ despuÃ©s del despegue ---con niveles mÃ¡ximos por debajo de $100\text{ Hz}$~\cite{25, 37}. Alrededor de $60\text{ s}$ despuÃ©s del lanzamiento, el sonido en el Ã¡rea de la tripulaciÃ³n era de aproximadamente $123\text{ dB}$ en un amplio rango de frecuencias, pero los astronautas escucharon sonidos mucho menos intensos (debido a que llevaban cascos y trajes), desde $119\text{ dB}$ a $63\text{ Hz}$ hasta $89\text{ dB}$ a $2000\text{ Hz}$. En la estructura de lanzamiento (gantry), a $10\text{ m}$ sobre el suelo, los niveles mÃ¡ximos fueron de $158\text{--}168\text{ dB SPL}$ desde $2$ hasta $2000\text{ Hz}$ y luego disminuyeron a $152\text{ dB}$ a $8000\text{ Hz}$~\cite{37, 39}. Los niveles fueron de $12\text{--}31\text{ dB}$ menores a $400\text{ m}$ de la estructura de lanzamiento.
+
+La ecuaciÃ³n (10.9) relaciona la intensidad sonora y la presiÃ³n sonora mediante $I = P^2/2Z$. Para la intensidad de referencia $I_{\text{ref}} = P_{\text{ref}}^2/2Z$, y con $I_{\text{ref}} = 10^{-12}\text{ W/m}^2$ y $Z = 413\text{ kg/}(\text{m}^2\cdot\text{s})$ para el aire, vemos que la presiÃ³n de referencia $P_{\text{ref}} = 2.9 \times 10^{-5}\text{ N/m}^2$ (Pa). Al dividir estas dos relaciones para la intensidad y la presiÃ³n se obtiene
+\begin{equation}
+\frac{I}{I_{\text{ref}}} = \frac{P^2}{P_{\text{ref}}^2}
+\label{eq:10.13}
+\end{equation}
+y utilizando (10.10) se obtiene
+\begin{equation}
+I\text{ (en dB SPL)} = 20\log_{10}\left(\frac{P}{P_{\text{ref}}}\right).
+\label{eq:10.14}
+\end{equation}
+
+A veces se hace una distinciÃ³n entre la expresiÃ³n para la intensidad, (10.10), que da el nivel de intensidad (IL) en unidades de dB IL, y la de (10.14) para la presiÃ³n, que da el nivel de presiÃ³n sonora en dB SPL, pero no haremos tal distinciÃ³n aquÃ­ y las unidades se denominarÃ¡n dB SPL. Generalizando (10.12) se obtiene
+\begin{equation}
+I_2\text{ (en dB SPL)} - I_1\text{ (en dB SPL)} = 10\log_{10}\left(\frac{I_2}{I_1}\right) = 20\log_{10}\left(\frac{P_2}{P_1}\right).
+\label{eq:10.15}
+\end{equation}
+
+Cuando la intensidad sonora aumenta en $60\text{ dB}$, $I$ aumenta en $10^6$ y $P$ aumenta en $10^3$.
+
+Existe una analogÃ­a con (10.9) en la electrÃ³nica con la potencia $P_{\text{elect}} = V_{\text{elect}}^2/2R_{\text{elect}}$, donde $V_{\text{elect}}$ es la caÃ­da de tensiÃ³n y $R_{\text{elect}}$ es la resistencia. (El factor de 2 en el denominador estÃ¡ presente para tensiones sinusoidales y ausente para tensiones continuas o DC). Al igual que en la acÃºstica, la escala en dB se utiliza comÃºnmente en electrÃ³nica de manera anÃ¡loga a (10.10), (10.12) y (10.15).
+
+\subsubsection*{AbsorciÃ³n del sonido}
+
+Dentro de un medio dado, la onda sonora puede ser atenuada por absorciÃ³n y dispersiÃ³n. En la dispersiÃ³n, parte del haz en propagaciÃ³n se redirige en muchas direcciones, sin ser absorbido. La amplitud de la onda acÃºstica ($A =$ magnitud de la presiÃ³n $\delta P_{\text{max}}$ o del desplazamiento $\delta z_{\text{max}}$) disminuye exponencialmente con la distancia $z$ que se propaga la onda. Esto se puede escribir como
+\begin{equation}
+A(z) = A(z = 0)\exp(-\gamma_{\text{sound}}Fz),
+\label{eq:10.16}
+\end{equation}
+donde $\gamma_{\text{sound}}$ es el coeficiente de absorciÃ³n y $F$ es la dependencia con la frecuencia. Para lÃ­quidos puros, $F = f^2$ en $\text{Hz}^2$ y para tejidos blandos, $F \sim f$ en $\text{Hz}$. Los valores tÃ­picos de $\gamma_{\text{sound}}$ se presentan en la Tabla~10.3 para tejidos corporales y en la Tabla~10.4 para otros materiales. Utilizando (10.13), la potencia o intensidad acÃºstica varÃ­a como
+\begin{equation}
+I(z) = I(z = 0)\exp(-2\gamma_{\text{sound}}Fz).
+\label{eq:10.17}
+\end{equation}
+
+Esta variaciÃ³n tambiÃ©n se aplica a la absorciÃ³n de la luz en los medios y se denomina ley de Beer. En la jerga de la ley de Beer, el coeficiente de absorciÃ³n de la intensidad $2\gamma_{\text{sound}}F$ en (10.17) se llama $\alpha_{\text{sound}}$, por lo que, por ejemplo, $\alpha_{\text{sound}} = 2\gamma_{\text{sound}}f$ para el tejido. La ley de Beer para la luz se expresa habitualmente como:
+\begin{equation}
+I(z) = I(z = 0)\exp(-\alpha_{\text{light}}z).
+\label{eq:10.18}
+\end{equation}
+
+Al analizar la fracciÃ³n medida de la intensidad de la luz o el sonido transmitidos a travÃ©s de un medio, deben considerarse todos los mecanismos de pÃ©rdida: la reflexiÃ³n en las interfaces (ver mÃ¡s adelante), la absorciÃ³n y la dispersiÃ³n. Debido a que las longitudes de onda de las ondas sonoras son del mismo orden de magnitud que los objetos cotidianos, como ventanas, tuberÃ­as, cabezas, etc., la difracciÃ³n y la interferencia de las ondas sonoras son muy comunes.
+
+% Control de Calidad: 22 pÃ¡rrafos origen -> 22 pÃ¡rrafos salida. Mapeo 1:1 verificado. Sin omisiones.
+
+\begin{table}[h]
+\centering
+\caption{Coeficiente de absorciÃ³n de amplitud $\gamma_{\text{sound}}$ para tejidos.}
+\label{tab:103}
+\small
+\begin{tabularx}{0.6\textwidth}{X >{\centering\arraybackslash}X}
+\toprule
+Tejido & $\gamma_{\text{sound}}$ ($\text{s/m}$) \\
+\midrule
+Humor acuoso & $1.1 \times 10^{-6}$ \\
+Humor vÃ­treo & $1.2 \times 10^{-6}$ \\
+Sangre & $2.1 \times 10^{-6}$ \\
+Cerebro (lactante) & $3.4 \times 10^{-6}$ \\
+Abdomen & $5.9 \times 10^{-6}$ \\
+Grasa & $7.0 \times 10^{-6}$ \\
+Tejido blando (promedio) & $8.3 \times 10^{-6}$ \\
+HÃ­gado & $1.0 \times 10^{-5}$ \\
+Nervios & $1.0 \times 10^{-5}$ \\
+Cerebro (adulto) & $1.1 \times 10^{-5}$ \\
+RiÃ±Ã³n & $1.2 \times 10^{-5}$ \\
+MÃºsculo & $2.3 \times 10^{-5}$ \\
+Cristalino del ojo & $2.6 \times 10^{-5}$ \\
+Hueso & $1.6 \times 10^{-4}$ \\
+PulmÃ³n & $4.7 \times 10^{-4}$ \\
+\bottomrule
+\end{tabularx}
+\begin{flushleft}\small
+Utilizando datos de~\cite{24}\\
+Se multiplica por la frecuencia $f$ (en Hz) para obtener el coeficiente de absorciÃ³n de amplitud por unidad de longitud.
+\end{flushleft}
+\end{table}
+\FloatBarrier
+
+\begin{table}[h]
+\centering
+\caption{Coeficiente de absorciÃ³n de amplitud $\gamma_{\text{sound}}$ para fluidos.}
+\label{tab:104}
+\small
+\begin{tabularx}{0.6\textwidth}{X >{\centering\arraybackslash}X}
+\toprule
+Fluidos & $\gamma_{\text{sound}}$ ($\text{s}^2\text{/m}$) \\
+\midrule
+Agua & $2.5 \times 10^{-14}$ \\
+Aceite de ricino & $1.2 \times 10^{-11}$ \\
+Aire (STP) & $1.4 \times 10^{-10}$ \\
+\bottomrule
+\end{tabularx}
+\begin{flushleft}\small
+Utilizando datos de~\cite{24}\\
+Se multiplica por $f^2$, donde $f$ es la frecuencia (en Hz), para obtener el coeficiente de absorciÃ³n de amplitud por unidad de longitud. STP corresponde a la temperatura y presiÃ³n estÃ¡ndar.
+\end{flushleft}
+\end{table}
+\FloatBarrier
+
+\subsubsection*{Componentes de la impedancia (Tema avanzado)}
+
+El concepto de impedancia se utiliza de manera mÃ¡s general para evaluar las caracterÃ­sticas de un medio que Â«se oponeÂ» al flujo de energÃ­a en un sistema. TambiÃ©n se utiliza para caracterizar componentes y circuitos elÃ©ctricos, donde la resistencia elÃ©ctrica es la parte real de la impedancia, y la capacitancia e inductancia de un sistema corresponden a la parte imaginaria de la impedancia elÃ©ctrica. Conceptos anÃ¡logos se emplean en Ã³ptica para caracterizar la transmisiÃ³n de la luz en los medios. En acÃºstica (y en otras Ã¡reas), el recÃ­proco de la impedancia $Z$ se denomina admitancia $Y = 1/Z$, la cual describe la facilidad del flujo de energÃ­a. La admitancia o impedancia se engloban a veces bajo el tÃ©rmino Â«inmitanciaÂ», que se utiliza como un tÃ©rmino general para describir quÃ© tan bien fluye la energÃ­a en un medio.
+
+La impedancia es generalmente un parÃ¡metro complejo. La parte real de $Z$ es la resistencia $R$. Desfasadas respecto a la resistencia en $90\text{ }^{\circ}$ (o $\pi/2\text{ rad}$) se encuentran la reactancia de masa (positiva) ($X_m$), que es proporcional a la frecuencia $f$, y la reactancia de rigidez (o negativa) ($X_s$), que es inversamente proporcional a $f$; $X_m$ y $X_s$ estÃ¡n desfasadas en $180\text{ }^{\circ}$ (o $\pi\text{ rad}$) entre sÃ­. En general, $Z = R + i(X_m - X_s)$. La reactancia neta es $X_{\text{net}} = |X_m - X_s|$. La magnitud de la impedancia se relaciona con estas partes componentes mediante
+\begin{equation}
+|Z| = \sqrt{R^2 + X_{\text{net}}^2}.
+\label{eq:10.19}
+\end{equation}
+
+De manera similar, la admitancia $Y = G + i(B_m - B_s)$. La parte real $G$ es la conductancia, y las partes imaginarias $B_m$ y $B_s$ son la susceptancia de masa y la susceptancia de rigidez (o capacitiva/elÃ¡stica), respectivamente. (Cuando la impedancia tiene Ãºnicamente un tÃ©rmino resistivo, la conductancia es $G = 1/R$). La susceptancia neta es $B_{\text{net}} = |B_m - B_s|$. Los componentes de la admitancia se relacionan con los tÃ©rminos de la impedancia mediante $G = R/(R^2 + X_{\text{net}}^2)$, $B_m = -X_m/(R^2 + X_{\text{net}}^2)$ y $B_s = -X_s/(R^2 + X_{\text{net}}^2)$. La magnitud de la admitancia se relaciona con estas partes componentes mediante
+\begin{equation}
+|Y| = \sqrt{G^2 + B_{\text{net}}^2}.
+\label{eq:10.20}
+\end{equation}
+
+Los Problemas~10.26 a 10.29 abordan estas y otras relaciones que involucran impedancias.
+
+Esta discusiÃ³n se puede aplicar a la impedancia en acÃºstica, electrÃ³nica o flujo (ApÃ©ndice~D). Por ejemplo, esta terminologÃ­a se puede aplicar al anÃ¡logo en mecÃ¡nica de una masa unida a un resorte que se desliza sobre una superficie rugosa. La fricciÃ³n debida al deslizamiento sobre la superficie rugosa es la resistencia. La inercia debida a la masa es la reactancia de masa y la resistencia al movimiento debida al resorte es la reactancia de rigidez.
+
+Cuando se utilizan en audiologÃ­a y otros aspectos del sonido, estos parÃ¡metros tambiÃ©n se caracterizan por el tÃ©rmino Â«acÃºsticoÂ», como impedancia acÃºstica, admitancia acÃºstica, resistencia acÃºstica, reactancia acÃºstica de masa (positiva), etc. Para evitar confusiones, podrÃ­amos usar subÃ­ndices, como $R_{\text{acoust}}$ para la resistencia acÃºstica, y asÃ­ sucesivamente.
+
+Las unidades de la impedancia $Z$ son los ohmios ($\Omega$), al igual que en la electrÃ³nica. Las unidades de la admitancia $Y$ son $1/\text{ohm} = 1\text{ mho}$. $R$, $X_m$ y $X_s$ tienen unidades de ohmios, y $G$, $B_m$ y $B_s$ tienen unidades de mhos. En audiologÃ­a, los valores de admitancia son pequeÃ±os y la unidad mÃ¡s Ãºtil es el milimho o mmho.
+
+\subsubsection*{La impedancia en un sistema forzado armÃ³nicamente (Tema avanzado)}
+
+Ahora examinamos el concepto de impedancia y deducimos (10.19) al considerar el movimiento de un cuerpo de masa $m$ unido a un resorte con constante de fuerza $k$. EstÃ¡ sujeto a una fuerza de fricciÃ³n viscosa, caracterizada por $\eta$, y a un tÃ©rmino de excitaciÃ³n, $F_A \exp(i\omega t)$. Este movimiento se describe mediante
+\begin{equation}
+m\frac{d^2x}{dt2} + \eta\frac{dx}{dt} + kx = F_A \exp(i\omega t).
+\label{eq:10.21}
+\end{equation}
+
+El tÃ©rmino de excitaciÃ³n tiene una parte real $F_A \cos(\omega t)$, porque $\exp(i\omega t) = \cos(\omega t) + i \sin(\omega t)$. Este modelo es similar al modelo de Voigt en el Cap.~4 con $F = \eta \, dx/dt + kx$ (de (4.57)). (Se puede representar por el modelo presentado mÃ¡s adelante en la Fig.~10.13, con el tÃ©rmino de fuerza de excitaciÃ³n actuando lateralmente sobre la masa).
+
+Sustituyendo una soluciÃ³n potencial $x = x_0 \exp(i\omega t)$ en esta ecuaciÃ³n, se obtiene la soluciÃ³n (Â«particularÂ» o de estado estacionario)
+\begin{equation}
+x = \frac{F_A}{-m\omega^2 + i\eta\omega + k} \exp(i\omega t).
+\label{eq:10.22}
+\end{equation}
+
+(Ver el ApÃ©ndice~C). Al diferenciar esto, la velocidad del cuerpo es
+\begin{equation}
+\frac{dx}{dt} = \frac{i\omega F_A}{-m\omega^2 + i\eta\omega + k} \exp(i\omega t)
+\label{eq:10.23}
+\end{equation}
+\begin{equation}
+= \frac{F_A}{\eta + im\omega + k/i\omega} \exp(i\omega t).
+\label{eq:10.24}
+\end{equation}
+
+La relaciÃ³n entre la fuerza de excitaciÃ³n, $F_A \exp(i\omega t)$, y la velocidad, $dx/dt$, es la impedancia mecÃ¡nica $Z$
+\begin{equation}
+\frac{F_A \exp(i\omega t)}{dx/dt} = \eta + im\omega + \frac{k}{i\omega} = Z.
+\label{eq:10.25}
+\end{equation}
+
+Esta impedancia a veces se expresa como
+\begin{equation}
+Z = R + i\omega M + \frac{S}{i\omega} = R + i\left(\omega M - \frac{S}{\omega}\right).
+\label{eq:10.26}
+\end{equation}
+
+AquÃ­, $R = \eta$ proporciona la resistencia, $M = m$ es el tÃ©rmino inercial (o inercia), y $S = k$ es la rigidez. En tÃ©rminos de la reactancia de masa (positiva) ($X_m$), que es proporcional a la frecuencia $f$, y la reactancia de rigidez (o negativa) ($X_s$), que es inversamente proporcional a $f$, podemos decir
+\begin{equation}
+Z = R + iX_m + \frac{X_s}{i} = R + i(X_m - X_s),
+\label{eq:10.27}
+\end{equation}
+con $X_m = \omega M = 2\pi f M$ y $X_s = S/\omega = S/2\pi f$. La ecuaciÃ³n (10.19) se deduce de la magnitud de un nÃºmero complejo.
+
+\subsection{Â¿QuÃ© sucede cuando el sonido viaja de un medio a otro?}
+
+La transmisiÃ³n del sonido de un medio a otro es muy importante en la audiciÃ³n, porque el sonido se transmite desde el aire en el pabellÃ³n auricular y el conducto auditivo hacia el oÃ­do medio, y luego hacia el oÃ­do interno. Esto se puede entender al ver quÃ© le sucede a una onda sonora incidente en la interfaz plana entre dos medios semiinfinitos diferentes, como los medios 1 y 2 en la Fig.~10.3.
+
+\begin{SCfigure}[0.9][htbp]
+  \centering
+  \includegraphics[width=0.5\textwidth]{103.png}
+  \caption{Esquema de la transmisiÃ³n y reflexiÃ³n de ondas acÃºsticas.}
+  \label{fig:103}
+\end{SCfigure}
+
+
+
+\FloatBarrier
+
+Esta onda sonora viaja en el medio 1 con una intensidad $I_i$ y una presiÃ³n $P_i$ incidentes en la interfaz. La parte que se refleja de regreso al mismo medio tiene intensidad $I_r$ y presiÃ³n $P_r$, y la parte que se transmite al medio 2 tiene intensidad $I_t$ y presiÃ³n $P_t$. Estas presiones se relacionan al Â«acoplar las condiciones de contornoÂ» en la interfaz, como veremos muy pronto. Como se indicÃ³ anteriormente, la frecuencia es la misma en ambos medios, pero la longitud de onda cambia con el cambio en la velocidad del sonido segÃºn (10.3), por lo que $\lambda_1 = v_1/f$ y $\lambda_2 = v_2/f$. Estas frecuencias deben ser las mismas porque las oscilaciones sinusoidales de la presiÃ³n y el movimiento de la materia en ambos lados de la interfaz siempre deben coincidir. Las magnitudes de las presiones deben coincidir para que no haya una fuerza neta sobre la interfaz. Esto da
+\begin{equation}
+P_i + P_r = P_t.
+\label{eq:10.28}
+\end{equation}
+
+El movimiento en la interfaz causado por las tres ondas debe coincidir. La velocidad de este desplazamiento lateral es $|\omega(\delta z)|$ y, para una onda que inicialmente se mueve hacia la derecha, es positiva para las ondas incidente y transmitida, y negativa para la onda reflejada. Utilizando (10.8), $\delta z \sim P/(Z\omega)$, sabemos que $|\omega(\delta z)| \sim P/Z$, por lo que el acoplamiento del desplazamiento da
+\begin{equation}
+\frac{P_i}{Z_1} - \frac{P_r}{Z_1} = \frac{P_t}{Z_2}.
+\label{eq:10.29}
+\end{equation}
+
+Al resolver estas dos ecuaciones se obtiene
+\begin{equation}
+\frac{P_r}{P_i} = \frac{Z_2 - Z_1}{Z_1 + Z_2}
+\label{eq:10.30}
+\end{equation}
+y
+\begin{equation}
+\frac{P_t}{P_i} = \frac{2Z_2}{Z_1 + Z_2}.
+\label{eq:10.31}
+\end{equation}
+
+% Control de Calidad: 19 pÃ¡rrafos origen -> 19 pÃ¡rrafos salida. Mapeo 1:1 verificado. Sin omisiones.
+
+Usando (10.9) y (10.30), la fracciÃ³n de intensidad que se refleja es
+\begin{equation}
+R_{\text{refl}} = \frac{I_r}{I_i} = \frac{P_r^2 / 2Z_1}{P_i^2 / 2Z_1} = \frac{P_r^2}{P_i^2}
+\label{eq:10.32}
+\end{equation}
+y
+\begin{equation}
+= \left( \frac{Z_2 - Z_1}{Z_1 + Z_2} \right)^2 = \left( \frac{1 - Z_2/Z_1}{1 + Z_2/Z_1} \right)^2.
+\label{eq:10.33}
+\end{equation}
+
+Usando (10.31), la fracciÃ³n de intensidad que se transmite es
+\begin{equation}
+T_{\text{trans}} = \frac{I_t}{I_i} = \frac{P_t^2 / 2Z_2}{P_i^2 / 2Z_1} = \frac{Z_1}{Z_2} \frac{P_t^2}{P_i^2}
+\label{eq:10.34}
+\end{equation}
+y
+\begin{equation}
+= \frac{Z_1}{Z_2} \left( \frac{2Z_2}{Z_1 + Z_2} \right)^2 = \frac{4Z_2/Z_1}{(1 + Z_2/Z_1)^2}.
+\label{eq:10.35}
+\end{equation}
+
+Vemos que $I_i = I_r + I_t$ y $R_{\text{refl}} + T_{\text{trans}} = 1$, lo que significa que la energÃ­a (y la intensidad) sonora se conserva. AdemÃ¡s, la fracciÃ³n reflejada es grande (y aproximadamente igual a 1) cuando $Z_2/Z_1$ es mucho mayor o menor que 1, es decir, cuando hay un desajuste de impedancia acÃºstica muy grande. Veremos que esto significa que el gran desajuste de impedancias acÃºsticas entre el aire y cualquier medio sÃ³lido o lÃ­quido (Tabla 10.1) tiene consecuencias importantes en el funcionamiento del oÃ­do. El tÃ©rmino Â«acoplar impedanciaÂ» significa minimizar $R_{\text{refl}}$, y esto se logra haciendo que $Z_1$ y $Z_2$ sean aproximadamente iguales (10.33). En la Tabla 10.5 se presentan ejemplos de este desajuste en el cuerpo. La mayor parte del sonido que incide sobre el cuerpo se refleja. Se refleja poco sonido entre los tejidos blandos (cerebro, piel, riÃ±Ã³n, hÃ­gado, etc.) y entre los tejidos blandos y la sangre. Existe una reflexiÃ³n significativa en las interfaces de los tejidos blandos con los pulmones y con los huesos.
+
+\begin{SCfigure}[0.9][htbp]
+  \includegraphics[width=0.5\textwidth]{104.png}
+  \caption{Los tres modos mÃ¡s bajos en una cuerda de longitud $L$, cada uno mostrado en momentos con excursiones mÃ¡ximas y cero (Basado en \cite{28}).}
+  \label{fig:10.4}
+\end{SCfigure}
+
+
+
+\begin{table}[htbp]
+\centering
+\caption{Fracciones representativas de energÃ­a acÃºstica reflejada y transmitida en interfaces tisulares}
+\label{tab:10.5}
+\small
+\begin{tabularx}{\textwidth}{X >{\centering\arraybackslash}X >{\centering\arraybackslash}X}
+\toprule
+Interfaz tisular & FracciÃ³n reflejada (\%) & FracciÃ³n transmitida (\%) \\
+\midrule
+Agua/tejido blando & 0.23 & 99.77 \\
+Grasa/mÃºsculo & 1.08 & 98.92 \\
+Hueso/mÃºsculo & 41.23 & 58.77 \\
+Tejido blando/hueso & 43.50 & 56.50 \\
+Hueso/grasa & 48.91 & 51.09 \\
+Tejido blando/pulmÃ³n & 63.64 & 36.36 \\
+Aire/mÃºsculo & 98.01 & 1.99 \\
+Aire/agua & 99.89 & 0.11 \\
+Aire/tejido blando & 99.90 & 0.10 \\
+\bottomrule
+\end{tabularx}
+\begin{flushleft}\small
+Usando datos de \cite{24, 51, 74}
+\end{flushleft}
+\end{table}
+\FloatBarrier
+
+\FloatBarrier
+
+\subsection{Cavidades resonantes}
+
+Muchas propiedades de las ondas sonoras dependen del medio en el que se propaga la onda y de las caracterÃ­sticas del recinto. Esto es importante en la producciÃ³n de sonido â€”como en el habla humana, los instrumentos musicales, los megÃ¡fonos y el sonido producido en cÃ¡maras de ecoâ€” y en la captaciÃ³n de ondas sonoras â€”como en la audiciÃ³n humana en el oÃ­do externoâ€”. Una forma de analizar estas propiedades es considerar las propiedades de las ondas sonoras en cavidades resonantes; de manera mÃ¡s general, estas propiedades de las cavidades resonantes se pueden aplicar a cualquier onda en cualquier estructura resonante.
+
+Â¿QuÃ© es una estructura resonante? Consideremos una onda en una cuerda de longitud $L$. La cuerda se puede pulsar de manera que una onda localizada pueda propagarse a lo largo de la cuerda. Alternativamente, se puede pulsar la cuerda para que una (onda transversal) oscile periÃ³dicamente en todas partes. Si la cuerda estÃ¡ rÃ­gidamente fija en ambos extremos, el movimiento periÃ³dico de menor orden (o modo, para el cual el desplazamiento transversal en cualquier punto a lo largo de la cuerda varÃ­a como $\cos\omega t$) es aquel con media onda entre los dos extremos (Fig. 10.4). AquÃ­ $\lambda/2 = L$, por lo que la longitud de onda es $\lambda = 2L$. Las Â«condiciones de contornoÂ» para este movimiento son un movimiento transversal nulo en cada extremo; tales lugares sin movimiento se llaman nodos. Es posible tener modos de orden superior con nÃºmeros enteros mayores de medias longitudes de onda. En general, para $n$ medias longitudes de onda, la longitud de onda cumple $n(\lambda_n/2) = L$, por lo que las longitudes de onda de resonancia son
+\begin{equation}
+\lambda_n = \frac{2L}{n}
+\label{eq:10.36}
+\end{equation}
+con $n = 1, 2, 3, \dots$.
+
+Dado que $v_s = \lambda f$, las frecuencias de resonancia o de modo son
+\begin{equation}
+f_n = \frac{v_s}{\lambda_n} = \frac{n v_s}{2L},
+\label{eq:10.37}
+\end{equation}
+
+\begin{figure}[htbp]
+\centering
+  \includegraphics[width=0.7\textwidth]{105.png}
+\caption{Modos de onda en un tubo, para tubos \textbf{a} abiertos en ambos extremos, \textbf{b} cerrados en ambos extremos y \textbf{c} abiertos en el lado izquierdo y cerrados en el lado derecho. Los desplazamientos de modo del aire se muestran a la izquierda para el primer sobretono o modo fundamental y para los dos sobretonos siguientes, y los cambios correspondientes en presiÃ³n y densidad para estos modos se muestran a la derecha (Basado en \cite{28}).}
+\label{fig:10.5}
+\end{figure}
+
+
+
+\FloatBarrier
+
+las cuales son $v_s/2L, 2(v_s/2L), 3(v_s/2L), \dots$ para $n = 1, 2, 3, \dots$; estas tambiÃ©n se llaman la frecuencia fundamental, el primer armÃ³nico, el segundo armÃ³nico, etc. Las frecuencias de los modos en este caso estÃ¡n espaciadas equitativamente por $v_s/2L$.
+
+Si uno de los dos extremos de la cuerda sin masa no estÃ¡ fijo, sino que estÃ¡ libre para moverse (solo de forma transversal al eje de la cuerda), esta condiciÃ³n de contorno diferente conduce a un conjunto diferente de longitudes de onda y frecuencias de resonancia. En el extremo fijo, el desplazamiento transversal sigue siendo cero, lo cual es un nodo. En el extremo libre, el desplazamiento transversal ahora tiene una magnitud mÃ¡xima (y pendiente cero), y esto se llama antinodo, como en la Fig. 10.5. El modo de menor orden tiene ahora un cuarto de longitud de onda entre los dos extremos separados por la longitud de la cuerda, por lo que $\lambda/4 = L$ y la longitud de onda es $\lambda = 4L$. El siguiente modo de menor orden tiene un ciclo de media longitud de onda adicional con $3\lambda/4 = L$, por lo que la longitud de onda es $\lambda = 4L/3$, etc. Ahora la condiciÃ³n de resonancia es $(m/2 + 1/4)\lambda_m = L$, por lo que las longitudes de onda de resonancia son
+\begin{equation}
+\lambda_m = \frac{2L}{m + 1/2}
+\label{eq:10.38}
+\end{equation}
+con $m = 0, 1, 2, 3, \dots$.
+
+\begin{figure}[htbp]
+\centering
+  \includegraphics[width=0.7\textwidth]{106.png}
+\caption{Frecuencias de modo para un tubo cerrado en ambos extremos, abierto en ambos extremos, o cerrado en un extremo y abierto en el otro.}
+\label{fig:10.6}
+\end{figure}
+
+
+
+\FloatBarrier
+
+Las frecuencias de los modos son
+\begin{equation}
+f_m = \frac{v_s}{\lambda_m} = \left( m + \frac{1}{2} \right) \frac{v_s}{2L},
+\label{eq:10.39}
+\end{equation}
+
+lo cual es $v_s/4L, 3v_s/4L, 5v_s/4L, \dots$ para $m = 0, 1, 2, \dots$. Aunque las frecuencias de los modos son diferentes a las del caso anterior, siguen estando espaciadas equitativamente por $v_s/2L$. La frecuencia mÃ¡s baja es ahora $v_s/4L$ y solo estÃ¡n presentes los armÃ³nicos impares. La Figura 10.6 muestra las frecuencias de los modos para ambas condiciones de contorno.
+
+Los tubos huecos son buenos modelos de primer orden para los tubos del cuerpo donde se propagan ondas sonoras longitudinales (similares a los tubos de un Ã³rgano de tubos) (Fig. 10.6). Si el tubo de longitud $L$ estÃ¡ abierto en ambos extremos, la presiÃ³n se fija a la presiÃ³n ambiental en cada extremo y $P = 0$ en los extremos. Esto es formalmente equivalente a la cuerda con extremos fijos, por lo que las longitudes de onda y frecuencias de resonancia estÃ¡n dadas por (10.36) y (10.37). La oscilaciÃ³n de densidad tambiÃ©n es cero en cada extremo (nodos) y el desplazamiento molecular es de magnitud mÃ¡xima en cada extremo (antinodos). Si el tubo estÃ¡ abierto en un extremo y cerrado en el otro, $P$ sigue siendo cero en el extremo abierto (un nodo). En el extremo cerrado, el desplazamiento lateral se fija en cero (un nodo), mientras que los cambios de presiÃ³n y densidad tienen una magnitud mÃ¡xima (un antinodo). Esto es formalmente equivalente a la cuerda fija en un extremo y libre en el otro, por lo que las longitudes de onda y frecuencias de resonancia estÃ¡n dadas por (10.38) y (10.39). (Las longitudes de onda y frecuencias de resonancia para un tubo cerrado en ambos extremos son las mismas que para uno que estÃ¡ abierto en ambos extremos, pero las identificaciones de nodos y antinodos estÃ¡n intercambiadas). Esta es la razÃ³n por la que la longitud del tubo y las condiciones de contorno son importantes para determinar estas resonancias, y por la que estas resonancias se pueden cambiar variando las condiciones del tubo (longitud, Ã¡rea de secciÃ³n transversal y forma variables), como puede ocurrir en la regiÃ³n entre las cuerdas vocales y la abertura de la boca. Para obtener detalles sobre las resonancias acÃºsticas, vÃ©ase \cite{53, 54}.
+
+\begin{SCfigure}[1.0][htbp]
+  \includegraphics[width=0.45\textwidth]{107.png}
+  \caption{Resonancias de transmisiÃ³n para un tubo: \textbf{a} sin pÃ©rdidas ($Q$ infinita), \textbf{b} pÃ©rdida moderada ($Q$ moderada) y \textbf{c} con muchas pÃ©rdidas ($Q$ muy baja) (Basado en \cite{69}).}
+  \label{fig:10.7}
+\end{SCfigure}
+
+
+
+\FloatBarrier
+
+Las matemÃ¡ticas de la excitaciÃ³n resonante de un medio acÃºstico son las mismas que las utilizadas en el Cap. 8 para analizar (8.48) y (8.50), y se deben a las pÃ©rdidas acÃºsticas. Este amortiguamiento conduce a anchos finitos de las resonancias para la energÃ­a acÃºstica, que son $\sim\gamma/2\pi$, en Hz, entre los puntos con la mitad de la respuesta mÃ¡xima. La Figura 10.7 compara las resonancias irrealmente estrechas con las resonancias amortiguadas, mÃ¡s amplias y mÃ¡s realistas. El nÃºmero de ciclos que dura una excitaciÃ³n durante su decaimiento (hasta $1/e$ de la energÃ­a inicial) es $Q/2\pi$, donde el factor de calidad es $Q = \omega/\gamma = 2\pi f/\gamma$, donde $\omega$ y $f$ son las frecuencias de resonancia. (VÃ©ase el ApÃ©ndice D para mÃ¡s detalles).
+
+% Control de Calidad: 12 pÃ¡rrafos origen -> 12 pÃ¡rrafos salida. Mapeo 1:1 verificado. Sin omisiones.
+
+\section{ProducciÃ³n del habla}
+
+\subsection{Tipos de sonidos}
+
+El habla humana se produce por el aire de los pulmones a medida que pasa a travÃ©s de la trÃ¡quea (conducto de aire), la laringe (que alberga los pliegues o cuerdas vocales) y la faringe (garganta), a travÃ©s de la boca y las cavidades nasales, y luego sale por la boca y la nariz (Fig. 9.1). Para fuentes generales sobre el habla, vÃ©ase \cite{6, 7, 16, 17, 23, 29, 31, 43, 66, 69, 76}.
+
+Los pliegues vocales (o cuerdas vocales) son pliegues de ligamento que se extienden a cada lado de la laringe, y el espacio entre ellos se llama glotis. La estructura por encima de la laringe se llama tracto vocal. En mujeres adultas, la longitud promedio de la faringe es de $6.3\text{ cm}$ y la de la cavidad oral es de $7.8\text{ cm}$, para una longitud total del tracto vocal de $14.1\text{ cm}$. En hombres adultos, la longitud promedio de la faringe es de $8.9\text{ cm}$ y la de la cavidad oral es de $8.1\text{ cm}$, para una longitud total del tracto vocal de $16.9\text{ cm}$.
+
+Â¿Por quÃ© podemos vocalizar bien sonidos distintos? Una razÃ³n es que podemos modificar nuestra lengua, que es muy redonda, y las otras partes de nuestro tracto vocal de manera rÃ¡pida y precisa \cite{43, 44}. Otra es que nuestros tractos vocales horizontales (por encima de la lengua) y verticales (por debajo de la lengua) son aproximadamente de la misma longitud (Fig. 9.1), a diferencia de los tractos en los primates. Nuestros tractos horizontales son mÃ¡s cortos que en los primates porque nuestras caras y mandÃ­bulas sobresalen menos, y nuestros tubos verticales son mÃ¡s largos porque nuestras laringes estÃ¡n mÃ¡s bajas en el cuello debido a que estÃ¡n suspendidas del hioides, un pequeÃ±o hueso flotante en la base de la lengua. Por el lado negativo, al estar la laringe tan baja, hay una regiÃ³n abierta donde viajan la comida y el aire antes de ingresar al esÃ³fago o a la trÃ¡quea, por lo que con este diseÃ±o somos susceptibles a atragantarnos con la comida. (En otros mamÃ­feros, la epiglotis y el paladar blando se tocan y hay dos tubos, uno interno para el flujo de aire y uno externo para el transporte de alimentos y lÃ­quidos).
+
+La forma del tracto vocal se puede variar moviendo el paladar blando, la lengua, los labios y la mandÃ­bula, y estos son los articuladores. El ajuste del tracto vocal para producir sonidos del habla se llama articulaciÃ³n. Los elementos bÃ¡sicos del habla se clasifican en: (1) los fonemas (los sonidos bÃ¡sicos), (2) los rasgos fonÃ©ticos (cÃ³mo se producen los sonidos) y (3) la seÃ±al acÃºstica (la naturaleza acÃºstica de los sonidos). Primero analizaremos los fonemas y la seÃ±al acÃºstica, y luego describiremos cÃ³mo producimos el sonido.
+
+Los fonemas son los segmentos mÃ¡s cortos del habla, que en el inglÃ©s americano general son los 14 sonidos vocÃ¡licos y los 24 sonidos consonÃ¡nticos. Cada fonema es producido por movimientos distintivos del tracto vocal, los cuales son los rasgos fonÃ©ticos del habla. Las vocales se producen con el tracto vocal relativamente abierto, con diferentes formas de apertura. Las consonantes se producen mediante una constricciÃ³n o cierre del tracto vocal. La producciÃ³n de fonemas se caracteriza por tres rasgos fonÃ©ticos: (a) la sonoridad (fonaciÃ³n), (b) el punto de articulaciÃ³n y (c) el modo de articulaciÃ³n.
+
+Los sonidos producidos a medida que el aire pasa a travÃ©s de los pliegues vocales vibrantes en la laringe (Fig. 9.1) se denominan sonidos sonoros. Todas las vocales son sonidos sonoros. (Toque la mitad de su garganta mientras las pronuncia). Muchas consonantes tambiÃ©n son sonoras, como los sonidos Â«dÂ», Â«mÂ», Â«wÂ» y Â«vÂ». (No utilizaremos la notaciÃ³n formal estÃ¡ndar para los fonemas \cite{6, 17, 69}). Los sonidos producidos sin la vibraciÃ³n de los pliegues vocales y que solo involucran el flujo de aire a travÃ©s de constricciones o bordes producidos por la lengua, los dientes, los labios y el paladar se denominan sonidos sordos, como los sonidos Â«tÂ» y Â«fÂ».
+
+Las obstrucciones necesarias para producir consonantes se forman en diferentes puntos de articulaciÃ³n, incluyendo (en orden desde el frente hacia la parte posterior de la boca) bilabial (ambos labios, o labial) para los sonidos Â«pÂ», Â«bÂ», Â«mÂ» y Â«wÂ», labiodental (el labio inferior y los dientes frontales superiores) para los sonidos Â«fÂ» y Â«vÂ», dental o interdental (dientes) para ambos sonidos Â«thÂ» (como en Â«thinÂ» y Â«themÂ»), el borde alveolar o alveolar (encÃ­as superiores cerca de los dientes) para los sonidos Â«dÂ», Â«tÂ», Â«sÂ», Â«zÂ», Â«nÂ», Â«rÂ» y Â«lÂ», palatal o alveopalatal (paladar duro, que estÃ¡ detrÃ¡s de las encÃ­as superiores) para los sonidos Â«shÂ», Â«zhÂ» (como en Â«visionÂ»), Â«chÂ», Â«jÂ» y Â«yÂ», velar (paladar blando, que estÃ¡ detrÃ¡s del paladar duro) para los sonidos Â«kÂ», Â«gÂ», Â«ngÂ» y Â«wÂ», y glotal para el sonido Â«hÂ».
+
+El medio mecÃ¡nico por el cual se forman las consonantes, incluyendo la forma en que el aire es empujado a travÃ©s de la abertura, es el modo de articulaciÃ³n. Los sonidos oclusivos o de parada como Â«dÂ», Â«bÂ», Â«pÂ», Â«gÂ», Â«tÂ» y Â«kÂ» tienen una naturaleza de staccato porque se forman bloqueando el flujo de aire y luego dejando salir una ligera rÃ¡faga de aire. Los sonidos fricativos como los sordos Â«fÂ», Â«thÂ» (como en Â«thinÂ»), Â«sÂ» y Â«shÂ», y los sonoros Â«vÂ», Â«thÂ» (como en Â«themÂ»), Â«zÂ» y Â«zhÂ» (cada conjunto en orden desde la parte anterior a la posterior de la boca) tienen una naturaleza de siseo debido a que el flujo de aire se constriÃ±e en el punto de articulaciÃ³n, haciendo que el flujo de aire sea turbulento. El sonido Â«mÂ» es nasal porque el paladar blando se desciende para acoplar las cavidades nasales a la faringe y el aire se libera repentinamente para fluir a travÃ©s de la nariz. Algunos sonidos sordos tienen una combinaciÃ³n de carÃ¡cter inicialmente oclusivo y luego fricativo (y son africados), como los sonidos Â«chÂ» y Â«jÂ» y otros guturales. Las aproximantes se producen moviendo un articulador hacia otro sin crear una constricciÃ³n cerrada, como para los sonidos Â«wÂ», Â«yÂ», Â«rÂ» y Â«lÂ». TambiÃ©n se dice que el sonido Â«wÂ» se forma de manera semivocÃ¡lica.
+
+La seÃ±al acÃºstica es el conjunto de frecuencias e intensidades acÃºsticas en funciÃ³n del tiempo. Por ejemplo, la Fig. 10.8a muestra un espectrograma de sonido â€”un grÃ¡fico de los componentes de frecuencia del sonido en funciÃ³n del tiempoâ€” para la expresiÃ³n Â«She had her dark suit in...Â» Se observan seÃ±ales claramente diferentes para las diferentes vocales y consonantes. Este espectrograma claramente tiene informaciÃ³n mÃ¡s Ãºtil que la forma de onda en el dominio del tiempo para la misma expresiÃ³n en la Fig. 10.8b (a pesar de que tienen el mismo contenido de informaciÃ³n).
+
+\begin{figure}[htbp]
+\centering
+  \includegraphics[width=0.7\textwidth]{108.png}
+\caption{Espectrograma de sonido de una hablante femenina diciendo Â«She had her dark suit in...Â» en \textbf{a}, con la correspondiente seÃ±al de forma de onda en el dominio del tiempo en \textbf{b} (De \cite{5}).}
+\label{fig:10.8}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+  \includegraphics[width=0.45\textwidth]{109.png}
+\caption{Espectrogramas de sonido de \textbf{a} Â«say shopÂ» y Â«say chopÂ», \textbf{b} Â«a miteÂ», Â«a biteÂ» y Â«a whiteÂ», y \textbf{c} /ba/, /da/ y /ga/ como en Â«fatherÂ» y Â«potÂ». Las frecuencias de los formantes $F_1$, $F_2$ y $F_3$ para la vocal en Â«shopÂ» se denotan en la parte \textbf{a} (De \cite{19}).}
+\label{fig:10.9}
+\end{figure}
+
+
+
+\FloatBarrier
+
+\FloatBarrier
+
+Estas diferentes contribuciones de vocales y consonantes se ven mÃ¡s claramente en la Fig. 10.9 \cite{5}. En la parte \textbf{a} se observa que los espectros de las consonantes Â«shÂ» y Â«chÂ» son diferentes y tienen duraciones distintas; ademÃ¡s, hay un intervalo de silencio antes de la Â«chÂ». Ambos son muy diferentes del espectro de la Â«sÂ». Cada vocal tiene bandas caracterÃ­sticas. Por ejemplo, la a larga en Â«sayÂ» en \textbf{a} tiene tres bandas de frecuencia, cerca de $500$, $1700$ y $2500\text{ Hz}$. Estas pueden etiquetarse, respectivamente, como $F_1$, $F_2$ y $F_3$. Tales mÃºltiples bandas son caracterÃ­sticas de las vocales y se llaman formantes: el primer formante ($F_1$), el segundo formante ($F_2$), y asÃ­ sucesivamente. Estas frecuencias de los formantes difieren para las diferentes vocales, como se ve para esta a larga, la Â«ahÂ» en Â«fatherÂ» y Â«potÂ» en la parte \textbf{a} y /ba/ en la parte \textbf{c}, y la i larga en Â«miteÂ» en la parte \textbf{b}. Como veremos mÃ¡s adelante, estos formantes definen las vocales y son la caracterÃ­stica distintiva en la percepciÃ³n de las mismas. Para las tres sÃ­labas en la parte \textbf{c}, la parte mÃ¡s baja del primer espectro de la consonante aumenta hacia el $F_1$ de la vocal. Sin embargo, esta variaciÃ³n es diferente para el segundo y tercer formantes, y esto ayuda a definir estos diferentes sonidos. Para /ba/, $F_2$ y $F_3$ ascienden hacia la vocal; para /da/, $F_2$ y $F_3$ descienden hacia la vocal; y para /ga/, $F_2$ desciende, mientras que $F_3$ asciende hacia la vocal.
+
+\begin{figure}[htbp]
+\centering
+  \includegraphics[width=0.8\textwidth]{1010.png}
+\caption{Los tres sistemas neuromusculares en la producciÃ³n de la voz (Basado en \cite{16}).}
+\label{fig:10.10}
+\end{figure}
+
+
+
+\FloatBarrier
+
+\subsection{Sistemas en la producciÃ³n del habla}
+
+Existen tres sistemas neuromusculares secuenciales involucrados en la producciÃ³n del habla (Fig. 10.10). (a) Los pulmones son el mecanismo de flujo de aire en el cual se utiliza la fuerza muscular para producir una corriente de aire comprimido. (b) La laringe es el mecanismo de fonaciÃ³n, el cual toma el aire comprimido y lo convierte en un zumbido, siseo o explosiÃ³n acÃºstica. (c) El tracto del tubo vocal es el mecanismo de articulaciÃ³n, el cual toma los sonidos de la laringe y los convierte en sonidos del habla. Estos tres sistemas funcionan, respectivamente, como una fuente de alimentaciÃ³n de aire comprimido, un zumbador y un sistema de filtrado resonante. Hemos descrito las propiedades de los pulmones en el Cap. 9. Ahora examinaremos los mecanismos de fonaciÃ³n y articulaciÃ³n.
+
+\subsubsection*{El zumbador acÃºstico}
+
+La separaciÃ³n de los pliegues vocales (cuerdas vocales, apertura de la glotis) varÃ­a con nuestro estado al hablar (Fig. 10.11). La glotis abierta tiene forma de V porque los pliegues vocales se mantienen unidos en la parte anterior de la laringe y se separan en la parte posterior. Cuando no producimos voz, los pliegues vocales estÃ¡n totalmente abiertos para la respiraciÃ³n normal. Durante el susurro, los pliegues estÃ¡n mÃ¡s juntos. El aire se mueve a travÃ©s de la constricciÃ³n glÃ³tica (gana velocidad) y gira en remolinos turbulentos para darle su sonido caracterÃ­stico. Como se detalla mÃ¡s adelante, nuestra voz durante el habla normal de sonidos sonoros se crea mediante la apertura y el cierre periÃ³dicos de los pliegues, para dar rÃ¡fagas periÃ³dicas de aire. No fluye aire cuando hay una oclusiÃ³n glotal.
+
+\begin{figure}[htbp]
+\centering
+  \includegraphics[width=0.7\textwidth]{1011.png}
+\caption{Serie de fotogramas de video del movimiento de los pliegues vocales durante un ciclo glÃ³tico normal. Tenga en cuenta que la apertura es asimÃ©trica, con la glotis mÃ¡s abierta en la parte inferior que en la superior. Durante el susurro, la glotis estÃ¡ aÃºn mÃ¡s abierta que durante el habla normal (en el extremo derecho de la fila superior), y estÃ¡ aÃºn mÃ¡s abierta durante la inhalaciÃ³n forzada (De \cite{69}, fotografÃ­a de Debra K. Klein. The University of Iowa Hospitals and Clinics. Usada con permiso).}
+\label{fig:10.11}
+\end{figure}
+
+
+
+\FloatBarrier
+
+Durante el habla, el aire que pasa rÃ¡pidamente a travÃ©s de los pliegues vocales en la laringe desde la trÃ¡quea hacia la faringe hace que los pliegues vocales vibren, lo que a su vez conduce a una modulaciÃ³n del aire que fluye hacia la trÃ¡quea (Fig. 10.12). Inicialmente, los pliegues estÃ¡n separados y las presiones en la trÃ¡quea y la faringe son iguales, y ambas son iguales a la presiÃ³n atmosfÃ©rica. Debido a la separaciÃ³n, la presiÃ³n es la misma antes y despuÃ©s de los pliegues, incluso con el aire fluyendo desde los pulmones. Las contracciones musculares hacen que los pliegues se muevan hacia la lÃ­nea media del tubo. Debido a este flujo de aire constreÃ±ido, la presiÃ³n antes de la glotis (presiÃ³n subglÃ³tica) excede entonces la presiÃ³n oral. Esta diferencia de presiÃ³n obliga a los pliegues a separarse rÃ¡pidamente, lo que conduce a una rÃ¡pida rÃ¡faga de aire. Esto produce una sobrepresiÃ³n por encima de la glotis y una onda de choque acÃºstica que se desplaza hacia arriba por el tracto vocal. Luego, los pliegues rebotan de regreso a sus posiciones iniciales debido a sus propiedades de retroceso elÃ¡stico y al gradiente de presiÃ³n. Este gradiente de presiÃ³n surge de la combinaciÃ³n de la ecuaciÃ³n de Bernoulli en el lÃ­mite de Venturi y la ecuaciÃ³n que describe la continuidad del flujo, como en (7.18):
+\begin{equation}
+P_{\text{glotis}} - P_{\text{subglotis}} = \frac{1}{2}\rho v_{\text{subglotis}}^2 \left[ 1 - \left( \frac{A_{\text{subglotis}}}{A_{\text{glotis}}} \right)^2 \right] < 0.
+\label{eq:10.40}
+\end{equation}
+
+\begin{SCfigure}[1.3][htbp]
+  \includegraphics[width=0.35\textwidth]{1012.png}
+  \caption{Etapas secuenciales de la vibraciÃ³n glÃ³tica (Basado en \cite{16}).}
+  \label{fig:10.12}
+\end{SCfigure}
+
+
+
+% Control de Calidad: 13 pÃ¡rrafos origen -> 13 pÃ¡rrafos salida. Mapeo 1:1 verificado. Sin omisiones.
+
+\FloatBarrier
+
+Debido a que el Ã¡rea de flujo abierta en la glotis (entre los pliegues) es mucho menor que la que estÃ¡ debajo de ella, la velocidad del flujo en esta rÃ¡faga de aire es mÃ¡s rÃ¡pida y la presiÃ³n en la glotis es menor que la que estÃ¡ debajo de ella. Los pliegues regresan a sus posiciones iniciales, continuando el flujo de aire. El ciclo se repite y el flujo modulado de aire da como resultado un zumbido. La Figura 10.11 muestra fotografÃ­as de la glotis durante diferentes etapas de esta vibraciÃ³n. El movimiento de la glotis se puede modelar con resortes y otros componentes mecÃ¡nicos, como se muestra en la Fig. 10.13.
+
+La frecuencia de este zumbido depende de la masa de los pliegues vocales y de su tensiÃ³n. La frecuencia fundamental $f_{\text{fund}}$ (o tono) de este zumbido es tÃ­picamente de $\sim 125\text{ Hz}$ en los hombres y de $\sim 250\text{ Hz}$ en las mujeres. La frecuencia fundamental mÃ¡s baja (cantante bajo) es de $\sim 64\text{ Hz}$ (que es un Do grave), mientras que la frecuencia fundamental mÃ¡s alta (soprano) es de $\sim 2048\text{ Hz}$ (cinco octavas por encima del Do grave). (Una octava se extiende desde cualquier frecuencia dada hasta el doble de esta). El zumbido acÃºstico contiene esta frecuencia fundamental junto con muchos armÃ³nicos (mÃºltiplos enteros de la fundamental).
+
+\begin{SCfigure}[0.8][htbp]
+  \includegraphics[width=0.55\textwidth]{1013.png}
+  \caption{Modelo mecÃ¡nico de una masa de la vibraciÃ³n glÃ³tica, con presiÃ³n contra la pared del tejido (Basado en \cite{69}).}
+  \label{fig:10.13}
+\end{SCfigure}
+
+
+
+\FloatBarrier
+
+Cada pliegue vocal se puede modelar como un objeto bidimensional similar a una cinta, con vibraciones a lo largo de la longitud del pliegue y en una direcciÃ³n perpendicular a travÃ©s de la altura del mismo. En primer orden, cada una de estas vibraciones se puede tratar con nuestros modelos unidimensionales de vibraciÃ³n.
+
+Usando (10.37), la frecuencia fundamental de una cuerda rÃ­gidamente fija en ambos extremos, de densidad de masa $\rho$, longitud $L$ y radio $r$ bajo una fuerza de tensiÃ³n $F$, es $v_s/2L$, donde $v_s$ es la velocidad de las ondas a lo largo de la cuerda. Para tal cuerda, sabemos que $v_s = \sqrt{F/\mu}$, donde $\mu$ es la densidad de masa por unidad de longitud. Usando $\mu = \pi r^2 \rho$ y $v_s = \sqrt{F/(\pi r^2\rho)} = \sqrt{[F/(\pi r^2)]/\rho} = \sqrt{\sigma/\rho}$ â€”donde el esfuerzo es $\sigma = F/(\pi r^2)$â€” la frecuencia fundamental es
+\begin{equation}
+f_{\text{fund}} = \frac{1}{2L} \sqrt{\frac{\sigma}{\rho}}.
+\label{eq:10.41}
+\end{equation}
+
+\begin{SCfigure}[0.9][htbp]
+  \includegraphics[width=0.5\textwidth]{1014.png}
+  \caption{Frecuencia del pliegue vocal en funciÃ³n de la longitud, con la edad como variable implÃ­cita (Basado en \cite{69}).}
+  \label{fig:10.14}
+\end{SCfigure}
+
+
+
+\FloatBarrier
+
+La mayor parte de la longitud del pliegue vocal consiste en material membranoso. Esta longitud es de aproximadamente $16\text{ mm}$ para hombres adultos y $10\text{ mm}$ para mujeres adultas. La Figura 10.14 muestra que la variaciÃ³n de la frecuencia fundamental de oscilaciÃ³n del pliegue vocal con esta
+
+% Control de Calidad: 5 pÃ¡rrafos origen -> 5 pÃ¡rrafos salida. Mapeo 1:1 verificado. Sin omisiones.
+
+La longitud membranosa tiene aproximadamente la dependencia $1/L$ predicha por (10.41). (VÃ©ase tambiÃ©n el Problema 10.37). NÃ³tese que esta longitud es mayor en los hombres que en las mujeres y crece con la edad durante la infancia, por lo que la frecuencia fundamental es menor en los hombres que en las mujeres y disminuye hasta la edad adulta. Las curvas tÃ­picas de esfuerzo-deformaciÃ³n para los tejidos de los pliegues vocales humanos presentadas en la Fig. 10.15 proporcionan informaciÃ³n sobre la constante elÃ¡stica para este modelo (Problema 10.38). El control muscular de los pliegues tambiÃ©n debe incluirse en tales modelos, ya que la oscilaciÃ³n no es realmente libre.
+
+\begin{SCfigure}[1.0][htbp]
+  \centering
+  \includegraphics[width=0.45\textwidth]{1015.png}
+  \caption{Curvas hipotÃ©ticas de esfuerzo-deformaciÃ³n para tejidos en los pliegues vocales humanos (Basado en [69]).}
+  \label{fig:1015}
+\end{SCfigure}
+
+
+
+\FloatBarrier
+
+\section{ProducciÃ³n del habla}
+
+Â¿CÃ³mo es la corriente de aire que sale de la glotis? Supongamos que el aire fluye hacia los pulmones de un varÃ³n durante la inspiraciÃ³n a una tasa de $100\text{ cm}^3/\text{s}$. Este es tambiÃ©n el flujo promedio de aire que sale de los pulmones y pasa a travÃ©s de la glotis. Si la glotis vibra a $125\text{ Hz}$, un volumen de $(100\text{ cm}^3/\text{s})/125\text{ Hz} = 0.8\text{ cm}^3$ sale en cada bocanada de aire en un ciclo. Cada una de estas bocanadas de aire dura $3\text{ ms}$ (dentro del ciclo de $8\text{ ms}$ para $125\text{ Hz}$), por lo que la tasa de flujo volumÃ©trico pico de aire es $(0.8\text{ cm}^3/3) \times 10^{-3}\text{ s} = 270\text{ cm}^3/\text{s}$. Debido a que la abertura de la glotis suele tener un ancho de $\sim 0.3\text{ cm}$ y una altura de $\sim 2\text{ cm}$, este aire fluye a travÃ©s de un Ã¡rea de $\sim 0.6\text{ cm}^2$. Usando (7.13), la velocidad mÃ¡xima del aire que sale de la glotis es $(270\text{ cm}^3/\text{s})/(0.6\text{ cm}^2) = 450\text{ cm}/\text{s} = 4.5\text{ m}/\text{s}$.
+
+\subsection{TeorÃ­a de filtrado de la voz (Tema avanzado)}
+
+La onda glotal (es decir, la secuencia de pulsos de los pliegues vocales) de la laringe se muestra esquemÃ¡ticamente en el dominio del tiempo en la Fig. 10.16. Esto podrÃ­a representar la intensidad o la presiÃ³n acÃºstica. Digamos que es la intensidad $I(t)$. Esta descripciÃ³n estÃ¡ en el dominio del tiempo. Alternativamente, podrÃ­amos caracterizar esta misma onda de intensidad utilizando un enfoque diferente, en el dominio de la frecuencia, observando las frecuencias de las ondas senoidales (o cosenoidales) que se pueden sumar para dar el mismo patrÃ³n en el tiempo. Los componentes de frecuencia de este patrÃ³n glotal cÃ­clico en el tiempo pueden determinarse mediante un mÃ©todo llamado anÃ¡lisis de Fourier, para determinar la fuerza de la fundamental $I_1$ (en $f_{\text{fund}}$) y de cada armÃ³nico $I_n$ (en $n f_{\text{fund}}$ para $n = 2, 3, 4, \dots$).
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{1016.png}
+  \caption{ModificaciÃ³n de la onda glotal por el tracto vocal en la teorÃ­a de filtrado de la voz del habla. Las seÃ±ales graficadas frente al tiempo (en el dominio del tiempo) estÃ¡n en la fila superior, mientras que las graficadas frente a la frecuencia (en el dominio de la frecuencia) estÃ¡n en la fila inferior. El espectro de la fuente desde la laringe (mostrado como pulsos de los pliegues vocales en el dominio del tiempo) es $I_{\text{in}}(f)$, donde $f$ es la frecuencia. La formaciÃ³n de los dos primeros formantes se observa en la transmisiÃ³n vocal ($T(f)$) y la vocal radiada ($I_{\text{out}}(f)$). La vocal radiada se muestra como una onda radiada en el dominio del tiempo. Es precisamente nuestra incapacidad para concebir un anÃ¡logo en el dominio del tiempo de la caja de transmisiÃ³n vocal en el dominio de la frecuencia lo que hace que este tipo de anÃ¡lisis de frecuencia sea tan importante (Adaptado de [21]. Usado con autorizaciÃ³n).}
+  \label{fig:1016}
+\end{figure}
+
+
+
+\FloatBarrier
+
+\begin{equation}
+I(t) = \sum_{n=1}^{\infty} I_n \sin(2\pi n f_{\text{fund}} t)
+\label{eq:10.42}
+\end{equation}
+\begin{equation}
+= I_1 \sin(2\pi f_{\text{fund}} t) + I_2 \sin(4\pi f_{\text{fund}} t) + I_3 \sin(6\pi f_{\text{fund}} t) + \cdots.
+\label{eq:10.43}
+\end{equation}
+
+(De manera mÃ¡s general, todas las funciones del tiempo se pueden analizar mediante Fourier de esta manera).
+
+Este espectro de frecuencias asociado con la onda glotal se muestra en el dominio de la frecuencia en la Fig. 10.16, con los componentes de intensidad $I_n$ expresados en dB SPL. (Las diferencias en los componentes de intensidad serÃ­an mÃ¡s pronunciadas en una grÃ¡fica lineal). Para fines de comparaciÃ³n, la Fig. 10.17 muestra que una onda senoidal (o cosenoidal) tiene un Ãºnico componente de frecuencia â€”que es precisamente la frecuencia de la ondaâ€”, una onda cuadrada â€”con el mismo perÃ­odo que la onda senoidalâ€” que estÃ¡ compuesta por el mismo componente de frecuencia mÃ¡s sus armÃ³nicos impares, y una forma de onda en el tiempo mÃ¡s aleatoria y aperiÃ³dica que estÃ¡ compuesta por una amplia gama de componentes de frecuencia.
+
+Dentro de la teorÃ­a de filtrado de voz de la articulaciÃ³n, esta onda glotal (Fig. 10.16) es la entrada a la faringe, y las cavidades farÃ­ngea, oral y nasal actÃºan como cavidades resonantes que transmiten algunas frecuencias mejor que otras; estas ondas luego salen de nuestras bocas y narices. Examinamos los componentes de frecuencia de la onda glotal porque es mÃ¡s fÃ¡cil entender cÃ³mo se modifica esta onda sonora en el tracto vocal mediante el seguimiento de cada componente de frecuencia (con el factor de transmisiÃ³n en la Fig. 10.16) que mediante el seguimiento de la respuesta como una funciÃ³n del tiempo. La razÃ³n de esto deberÃ­a quedar clara a partir de nuestra discusiÃ³n sobre las cavidades resonantes simples formadas por tubos abiertos y cerrados en sus extremos.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{1017.png}
+  \caption{Tres formas de onda a la izquierda con sus variaciones con el tiempo (el dominio del tiempo) â€”una onda senoidal (o cosenoidal), una onda cuadrada y un patrÃ³n mÃ¡s aleatorioâ€” con sus respectivos componentes de frecuencia (analizados mediante Fourier y en el dominio de la frecuencia) (De [73]. Reimpreso con autorizaciÃ³n de Wiley).}
+  \label{fig:1017}
+\end{figure}
+
+
+
+\FloatBarrier
+
+En la cavidad idealizada de un tubo, digamos un tubo que estÃ¡ abierto en ambos lados, parte del sonido que entra por un extremo se propaga a travÃ©s de Ã©l y sale por el otro extremo. Solo aquellos componentes de frecuencia de la onda sonora entrante que coinciden con las diversas frecuencias de resonancia del tubo (la fundamental y sus armÃ³nicos) se propagarÃ¡n a travÃ©s del tubo y saldrÃ¡n; mÃ¡s precisamente, conducen a grandes presiones en el tubo, las cuales son luego emitidas por el tubo. Las otras frecuencias se disiparÃ¡n. Esta modificaciÃ³n en los componentes de frecuencia de la onda sonora conduce a un cambio correspondiente en la onda sonora en el dominio del tiempo. Los componentes de frecuencia a cada frecuencia $f$ se multiplican por los factores de transmisiÃ³n a esa frecuencia $T(f)$
+
+\begin{equation}
+I_{\text{out}}(f) = T(f) I_{\text{in}}(f).
+\label{eq:10.44}
+\end{equation}
+
+En realidad, la transmisiÃ³n no ocurre Ãºnicamente a las frecuencias de resonancia precisas, sino en una regiÃ³n de frecuencias centrada alrededor de las frecuencias de resonancia. El ancho del rango a veces se expresa como la frecuencia $f$ dividida por el factor $Q$ de la cavidad. Estos anchos son relativamente pequeÃ±os en una cavidad de alto $Q$. Esto se muestra esquemÃ¡ticamente en la Fig. 10.7 para un tubo genÃ©rico. En la Fig. 10.18 se muestran resonancias de $Q$ moderado para varios tipos de tubos abiertos en sus extremos.
+
+El tracto vocal no es un tubo con estas resonancias igualmente espaciadas, por lo que su curva de transmisiÃ³n es diferente de la de un tubo de diÃ¡metro constante (Fig. 10.18g). El factor $Q$ es bastante bajo y, por lo tanto, las resonancias son bastante amplias debido a: (1) la forma irregular de la cavidad vocal, (2) la naturaleza blanda e irregular de las paredes, y (3) las pÃ©rdidas acÃºsticas debidas a (a) la transmisiÃ³n a travÃ©s de la boca y de regreso a travÃ©s de la glotis hacia los pulmones, (b) la naturaleza viscoelÃ¡stica de los tejidos blandos vibrantes, y (c) la viscosidad del aire. Debido a que somos capaces de cambiar la forma del tracto vocal, cambiamos habitualmente esta curva de transmisiÃ³n durante el habla. Para una curva de transmisiÃ³n dada $I_{\text{out},n} = T(n f_{\text{fund}}) I_{\text{in},n}$ con
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.55\textwidth]{1018.png}
+  \caption{Frecuencias de resonancia para tractos vocales con diferentes longitudes y constricciones, en relaciÃ³n con el tracto vocal sin constricciones en (g). Las vocales son: a [i] como en Â«sitÂ», b [u] como en Â«putÂ» y c [a] (o Â«ahÂ») como en Â«fatherÂ» y Â«potÂ» (Basado en [16]).}
+  \label{fig:1018}
+\end{figure}
+
+
+
+% Control de Calidad: 8 pÃ¡rrafos origen -> 8 pÃ¡rrafos salida. Mapeo 1:1 verificado. Sin omisiones.
+
+\FloatBarrier
+
+\begin{equation}
+I_{\text{in}}(t) = \sum_{n=1}^{\infty} I_{\text{in},n} \sin(2\pi n f_{\text{fund}} t)
+\label{eq:10.45}
+\end{equation}
+\begin{equation}
+I_{\text{out}}(t) = \sum_{n=1}^{\infty} T(n f_{\text{fund}}) I_{\text{in},n} \sin(2\pi n f_{\text{fund}} t).
+\label{eq:10.46}
+\end{equation}
+
+La Fig. 10.16 muestra esquemÃ¡ticamente las representaciones correspondientes del zumbido en los dominios del tiempo al de la frecuencia, la multiplicaciÃ³n de los componentes de frecuencia por el factor de transmisiÃ³n y las seÃ±ales de sonido de salida en los dominios de la frecuencia y del tiempo.
+
+La onda sonora de salida tiene los mismos componentes de frecuencia que la onda de entrada, incluyendo la misma frecuencia fundamental. Sin embargo, las intensidades relativas de cada componente de frecuencia son muy diferentes. En la onda de entrada, $I_{\text{in},n}$ disminuye monÃ³tonamente con $n$ (cuanto mayor es la frecuencia, menor es la intensidad). Por lo general, esto ya no es cierto en la onda de salida. De hecho, $I_{\text{out},n}$ presenta picos en varios armÃ³nicos, los cuales se denominan formantes. El pico de menor frecuencia es el primer formante, el segundo es el segundo formante, y asÃ­ sucesivamente, como se ve en la Fig. 10.16.
+
+\begin{SCfigure}[0.8][htbp]
+  \centering
+  \includegraphics[width=0.55\textwidth]{1019.png}
+  \caption{Frecuencias del segundo formante frente a las frecuencias del primer formante para 10 vocales del inglÃ©s americano, pronunciadas por una amplia gama de 76 personas: hombres, mujeres y niÃ±os. Los contornos cerrados incluyen el 90\% de los sonidos pronunciados (De [2] adaptado de [55], y usado con autorizaciÃ³n).}
+  \label{fig:1019}
+\end{SCfigure}
+
+
+
+\FloatBarrier
+
+Â¿QuÃ© hace que el sonido de una Â«aÂ» como en Â«sayÂ» sea diferente de una Â«eÂ» como en Â«seeÂ»? Tienen diferentes formantes, como se ilustra para varias vocales en la Fig. 10.9. Las frecuencias reales de estos formantes dependen del tipo de sonido y cambian profundamente las variaciones temporales de la intensidad del sonido.
+
+La Fig. 10.19 grafica la frecuencia del segundo formante $F_2$ frente a la del primer formante $F_1$ para varios sonidos vocÃ¡licos. Para cada sonido hay un Ã³valo que muestra el rango de estas frecuencias de formante para diferentes personas. Por ejemplo, para el sonido Â«ahÂ» en Â«fatherÂ» y Â«potÂ», el rango de $F_1$ es $600\text{--}1300\text{ Hz}$, abarcando el rango desde varones adultos hasta niÃ±os, mientras que para $F_2$ este rango es $800\text{--}1700\text{ Hz}$. Incluso con estas variaciones, los lugares geomÃ©tricos de las frecuencias para cada sonido son muy diferentes entre sÃ­ (es decir, no se superponen), lo que nos permite diferenciar una vocal de otra pronunciada por cualquier persona, incluso con estas variaciones naturales.
+
+La Fig. 10.20 muestra los espectros acÃºsticos para voces humanas de soprano, contralto, tenor y bajo que pronuncian el sonido vocÃ¡lico Â«ahÂ» en Â«fatherÂ» y Â«potÂ». En cada una se observa que la fundamental y los armÃ³nicos tienen diferentes intensidades debido a la formaciÃ³n de la vocal. Se aprecia evidencia del agrupamiento de los picos cerca de las frecuencias de los formantes.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.45\textwidth]{1020.png}
+  \caption{Espectros acÃºsticos para cuatro voces, con las frecuencias fundamentales dadas, que producen la vocal Â«ahÂ» como en Â«fatherÂ» y Â«potÂ» (Basado en [54]).}
+  \label{fig:1020}
+\end{figure}
+
+
+
+\FloatBarrier
+
+Es fundamental diferenciar entre los diferentes roles de la frecuencia de oscilaciÃ³n de los pliegues vocales y las resonancias de los formantes del tracto vocal. La Fig. 10.21 muestra la seÃ±al acÃºstica en el tiempo y su espectro de frecuencias para la misma vocal pronunciada con dos frecuencias fundamentales de los pliegues vocales diferentes. Con un rango mÃ¡s fino de componentes de frecuencia, el comportamiento a corto plazo en el dominio del tiempo es mÃ¡s suave, pero la envolvente de ambos es similar. En contraste, la Fig. 10.22 los muestra para dos vocales diferentes con la misma frecuencia fundamental de los pliegues vocales. Los perfiles en el dominio del tiempo tienen la misma estructura a corto plazo, pero diferentes envolventes. (Los picos de las envolventes son las frecuencias de los formantes).
+
+La Fig. 10.23 muestra el patrÃ³n espectral de un hombre y una mujer pronunciando el mismo mensaje. En el espacio de frecuencias, el patrÃ³n de oscilaciÃ³n para el hombre es mÃ¡s rÃ¡pido que el de la mujer, porque el patrÃ³n consiste en los armÃ³nicos de la frecuencia fundamental del zumbido, que es mÃ¡s baja en el hombre que en la mujer. Sin embargo, la envolvente espectral es la misma para ambos, y esta envolvente contiene la informaciÃ³n mÃ¡s importante para la comprensiÃ³n del habla.
+
+Considere una vocal pronunciada por alguien con una frecuencia fundamental de $128\text{ Hz}$. Si la vocal tiene un primer formante a $512\text{ Hz}$, entonces este se encuentra en el tercer armÃ³nico de la fundamental a $128\text{ Hz}$. En el dominio del tiempo, este componente de $512\text{ Hz}$ se observa en la seÃ±al en el dominio del tiempo como un rizado fino cada $2.0\text{ ms}$ ($1/(512\text{ Hz})$) superpuesto al ciclo repetido mÃ¡s lento cada $7.8\text{ ms}$ ($=1/(128\text{ Hz})$).
+
+\begin{SCfigure}[0.8][htbp]
+  \centering
+  \includegraphics[width=0.55\textwidth]{1021.png}
+  \caption{Formas de onda (a, c) y espectros correspondientes (b, d) para la misma vocal Â«awÂ» como en Â«boughtÂ» y Â«aweÂ», pero con dos frecuencias diferentes de los pliegues vocales de (a, b) $90\text{ Hz}$ y (c, d) $150\text{ Hz}$ (Basado en [17]).}
+  \label{fig:1021}
+\end{SCfigure}
+
+\begin{SCfigure}[0.8][htbp]
+  \centering
+  \includegraphics[width=0.55\textwidth]{1022.png}
+  \caption{Formas de onda (a, c) y espectros correspondientes (b, d) para diferentes vocales (a, b) Â«awÂ» como en Â«boughtÂ» y Â«aweÂ» y (c, d) Â«uhÂ» como en Â«butÂ» y Â«aboutÂ», pero con la misma frecuencia fundamental de los pliegues vocales de $90\text{ Hz}$ (Basado en [17]).}
+  \label{fig:1022}
+\end{SCfigure}
+
+
+
+% Control de Calidad: 8 pÃ¡rrafos origen -> 8 pÃ¡rrafos salida. Mapeo 1:1 verificado. Sin omisiones.
+
+\FloatBarrier
+
+\FloatBarrier
+
+En el modelo mÃ¡s simple de formaciÃ³n de vocales en el tracto vocal, la regiÃ³n desde los pliegues vocales hasta la boca es un cilindro de diÃ¡metro constante y longitud $L$ que estÃ¡ abierto en un extremo (boca) y cerrado en el otro (pliegues vocales). (Esto ignora la curvatura de $90^\circ$ en el tracto vocal desde la faringe hasta la boca). Usando (10.39), las frecuencias de resonancia serÃ­an: $f_m = (m + 1/2)(v_s/2L)$, lo cual es $v_s/4L, 3v_s/4L, 5v_s/4L, \dots$ para $m = 0, 1, 2, \dots$. Las frecuencias de los formantes del sonido transmitido a travÃ©s de esta cavidad tendrÃ­an relaciones de 1:3:5 y asÃ­ sucesivamente. La Fig. 10.24 muestra que el tracto vocal tiene formas muy diferentes para las tres vocales representadas y, en consecuencia, estas vocales tienen frecuencias de formantes muy diferentes. TambiÃ©n muestra que este modelo de un solo tubo da $F_1 = 500\text{ Hz}$ y $F_2 = 1500\text{ Hz}$ para estas vocales. Llamando $f_r = v_s/4L$, estas corresponden a $f_r$ y $3f_r$. Sin embargo, las frecuencias reales de los formantes estÃ¡n claramente desplazadas de estos valores.
+
+\begin{SCfigure}[1.0][htbp]
+  \centering
+  \includegraphics[width=0.45\textwidth]{1023.png}
+  \caption{Espectros a corto plazo del mismo patrÃ³n lingÃ¼Ã­stico pronunciado por un hablante masculino y una femenina, con la envolvente espectral mostrada (De [5]).}
+  \label{fig:1023}
+\end{SCfigure}
+
+
+
+\FloatBarrier
+
+\subsection{Modelo de dos tubos (Tema avanzado)}
+
+Â¿CÃ³mo podemos mejorar el modelo de un solo tubo? Un modelo mejor para la Â«ahÂ» como en Â«fatherÂ» y Â«potÂ» es la aproximaciÃ³n de dos tubos, en la que el tracto se modela como un tubo farÃ­ngeo de menor diÃ¡metro, que estÃ¡ cerrado en un extremo, conectado a un tubo bucal del mismo largo y de mayor diÃ¡metro (Fig. 10.25a). Esto hace que se parezca un poco mÃ¡s al tracto vocal real de la Fig. 10.24c.
+
+Antes de determinar las frecuencias de los modos para este modelo de dos tubos, necesitamos analizar cÃ³mo cambia la presiÃ³n cuando una onda acÃºstica viaja desde un tubo de un diÃ¡metro con Ã¡rea de secciÃ³n transversal $A_1$ a uno de otro diÃ¡metro y Ã¡rea de secciÃ³n transversal $A_2$, como en la Fig. 10.25a, b. Esto puede tratarse como una generalizaciÃ³n de nuestro anÃ¡lisis anterior de los haces acÃºsticos transmitidos y reflejados en una interfaz entre dos medios semiinfinitos con diferentes impedancias acÃºsticas. TodavÃ­a se requiere la continuidad de la presiÃ³n, $P_i + P_r = P_t$, en la interfaz entre los dos tubos â€”como en (10.28)â€”; sin embargo, (10.29) necesita modificarse. El movimiento de los medios sigue estando descrito por $P/Z$, pero esta cantidad debe multiplicarse por el Ã¡rea $A$, por lo que la continuidad del movimiento de los medios requiere
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.55\textwidth]{1024.png}
+  \caption{Formas del tracto vocal y espectros para tres vocales: a Â«eeÂ» como en Â«seeÂ», b Â«ooÂ» como en Â«tooÂ» y c Â«ahÂ» como en Â«fatherÂ» y Â«potÂ». La diferencia de los dos primeros formantes se muestra aquÃ­ en relaciÃ³n con los de un tubo con secciÃ³n transversal constante. Estos son similares a la Fig. 10.18a--c, excepto por el tracto vocal mÃ¡s realista representado aquÃ­ y que la boca estÃ¡ a la derecha de la laringe en este caso (Basado en [69]).}
+  \label{fig:1024}
+\end{figure}
+
+
+
+% Control de Calidad: 3 pÃ¡rrafos origen -> 3 pÃ¡rrafos salida. Mapeo 1:1 verificado. Sin omisiones.
+
+\begin{equation}
+A_1 \frac{P_i}{Z_1} - A_1 \frac{P_r}{Z_1} = A_2 \frac{P_t}{Z_2}.
+\label{eq:10.47}
+\end{equation}
+Esto da
+\begin{equation}
+\frac{P_r}{P_i} = \frac{Z_2/A_2 - Z_1/A_1}{Z_1/A_1 + Z_2/A_2}
+\label{eq:10.48}
+\end{equation}
+
+\FloatBarrier
+
+y
+\begin{equation}
+\frac{P_t}{P_i} = \frac{2Z_2/A_2}{Z_1/A_1 + Z_2/A_2}.
+\label{eq:10.49}
+\end{equation}
+AquÃ­ la impedancia es la misma en ambos tubos, por lo que
+\begin{equation}
+\frac{P_r}{P_i} = \frac{A_1 - A_2}{A_1 + A_2}
+\label{eq:10.50}
+\end{equation}
+y
+\begin{equation}
+\frac{P_t}{P_i} = \frac{2A_1}{A_1 + A_2}.
+\label{eq:10.51}
+\end{equation}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.7\textwidth]{1025.png}
+  \caption{Modelos de dos tubos de (lado izquierdo; a, c, e) Â«ahÂ» como en Â«fatherÂ» y Â«potÂ», y (lado derecho; b, d, f) Â«eeÂ» como en Â«seeÂ», cada uno mostrando el modelo de dos tubos con el Ã¡rea de secciÃ³n transversal indicada en los tubos de igual longitud en (a, b), la modificaciÃ³n del modo para el modelo de un solo tubo (lÃ­neas discontinuas) al modo en el modelo de dos tubos (lÃ­neas sÃ³lidas, con cambios en la longitud efectiva indicados por las lÃ­neas punteadas) para el primer (c, d) y segundo (e, f) formantes (Basado en [69]).}
+  \label{fig:1025}
+\end{figure}
+
+
+
+\FloatBarrier
+
+Esto significa que la presiÃ³n en la onda transmitida es menor que la de la onda incidente cuando el segundo tubo es mÃ¡s ancho (expansiÃ³n, $A_2 > A_1$) (Fig. 10.25a) y es mayor que ella cuando el segundo tubo es mÃ¡s estrecho (contracciÃ³n, $A_2 < A_1$) (Fig. 10.25b).
+
+El desplazamiento hacia arriba en $F_1$ y el desplazamiento hacia abajo en $F_2$ para Â«ahÂ» como en Â«fatherÂ» y Â«potÂ» en relaciÃ³n con el de un cilindro de diÃ¡metro uniforme y longitud $L$, puede verse desde dos perspectivas. (1) Los dos modos mÃ¡s bajos para un cilindro de longitud $L$ cambian porque la presiÃ³n en la boca mÃ¡s ancha es menor que en la faringe mÃ¡s estrecha. Esto perturba la estructura del modo respecto a la de un cilindro uniforme. Para el modo mÃ¡s bajo, la presiÃ³n en la regiÃ³n de la boca es relativamente menor que la indicada por este modo, por lo que la abertura ocurre efectivamente (antes en la corriente de aire y) en la boca, haciendo que $L$ sea efectivamente mÃ¡s corta y $F_1$ sea mayor que $f_r$. Para el siguiente modo mÃ¡s bajo, el nodo (presiÃ³n manomÃ©trica cero) en la faringe se desplaza efectivamente hacia la derecha (hacia la boca) porque la presiÃ³n deberÃ­a ser mayor en la faringe. La longitud de esta semionda es mayor, lo que hace que $L$ sea efectivamente mÃ¡s larga y $F_2$ sea menor que $3f_r$. Este punto de vista se representa en la Fig. 10.25c, e. (2) Alternativamente, podemos tratar la faringe y la boca como dos cilindros separados de longitud $L/2$ que se acoplan dÃ©bilmente y, por lo tanto, se perturban mutuamente. La faringe estÃ¡ cerrada en el extremo de los pliegues vocales y casi abierta en el lado de la boca. Usando (10.39), el modo mÃ¡s bajo estÃ¡ en $v_s/(4(L/2)) = v_s/2L = 2f_r$, pero dado que el extremo de la boca no estÃ¡ totalmente abierto y hay fuga de presiÃ³n hacia la boca, la longitud efectiva es un poco mayor, por lo que este modo estÃ¡ a una frecuencia algo menor que $2f_r$, como el formante $F_1$ en este caso. AdemÃ¡s, la boca estÃ¡ abierta en el extremo de los dientes y casi cerrada en el extremo de la faringe (porque la faringe es mÃ¡s estrecha). Nuevamente, el modo mÃ¡s bajo estarÃ­a en $2f_r$ si el lado de la faringe estuviera totalmente cerrado. Debido a que no lo estÃ¡ y la presiÃ³n es mayor en el lado de la faringe, este nodo izquierdo es empujado hacia la cavidad bucal, por lo que $L$ es efectivamente mÃ¡s corta y el modo mÃ¡s bajo es un poco mayor que $2f_r$, como el formante $F_2$ para esta vocal. Un modelo de dos tubos diferente parece funcionar para otras vocales (Figs. 10.24a y 10.25b, d, f, Problema 10.45 para el sonido Â«eeÂ» como en Â«seeÂ»). Para mÃ¡s informaciÃ³n sobre modelos de filtrado de voz, vÃ©ase [16, 21, 69].
+
+\subsection{ParÃ¡metros de la voz humana}
+
+Cada caracterÃ­stica fisiolÃ³gica que ayuda a crear la voz modula una caracterÃ­stica particular de las ondas sonoras vocales, y cada una de estas caracterÃ­sticas acÃºsticas estÃ¡ vinculada a un tipo especÃ­fico de percepciÃ³n. La tensiÃ³n en los pliegues vocales afecta la frecuencia fundamental de los pliegues vocales â€”y de sus armÃ³nicosâ€”, y esta frecuencia se percibe como el tono de la voz. La compresiÃ³n medial de los pliegues vocales y la presiÃ³n de los pulmones afectan la intensidad de la fonaciÃ³n, lo que conduce a la sonoridad percibida de la voz. La aducciÃ³n o abducciÃ³n de los pliegues vocales crea una diferencia espectral acÃºstica, y esta se percibe como la calidad o el timbre de la voz.
+
+\textbf{Frecuencia vocal.} Cuanto mayor es la tensiÃ³n en los pliegues vocales, mayor es la fuerza de retroceso elÃ¡stico y mÃ¡s delgados son los pliegues; ambos efectos contribuyen a frecuencias de oscilaciÃ³n mÃ¡s altas. Esta tasa de zumbido glotal es la frecuencia fundamental de la voz humana. Las frecuencias modales de los pliegues vocales, $f$, son aquellas tasas de zumbido glotal con las que nos sentimos mÃ¡s cÃ³modos y que usamos con mÃ¡s frecuencia, como en la conversaciÃ³n normal. Por lo general, se pueden variar por un factor de $2.5$, con $f_{\text{highest}} = 2.5 f_{\text{lowest}}$, cambiando la tensiÃ³n de los pliegues vocales; esto significa que las personas suelen tener un rango de frecuencia modal de $2.5$ octavas. (La escala Â«do-re-mi-fa-sol-la-si-doÂ» corresponde a una octava). Aunque esta frecuencia acÃºstica del zumbido se puede cambiar, con el consiguiente cambio en el tono percibido, las frecuencias de los formantes no cambian. (El hecho de que no cambien por este factor de $2.5$ deberÃ­a quedar claro a partir de la Fig. 10.19). La frecuencia modal estÃ¡ en el rango inferior de $1/4\text{--}1/3$ del rango vocal del hablante, por lo que las personas suelen fonar cerca del extremo inferior de las frecuencias posibles.
+
+La frecuencia modal promedio para los hombres es de $128\text{ Hz}$ y la de las mujeres es de $260\text{ Hz}$, pero existe una amplia distribuciÃ³n alrededor de estas medias para hombres y mujeres. Las voces femeninas tienen un tono mÃ¡s alto que las voces masculinas porque las mujeres, en promedio, tienen laringes mÃ¡s pequeÃ±as y pliegues vocales mÃ¡s cortos, delgados y menos masivos. Las frecuencias modales promedio al hablar para las diferentes clasificaciones de voz son: bajo: $98\text{ Hz}$, barÃ­tono: $123\text{ Hz}$, tenor: $165\text{ Hz}$, contralto: $175\text{ Hz}$, mezzosoprano: $196\text{ Hz}$ y soprano: $247\text{ Hz}$. La Fig. 10.20 grafica los espectros acÃºsticos para voces humanas en varias de estas categorÃ­as.
+
+\textbf{Intensidad vocal.} Cuanto mayor sea la compresiÃ³n medial de los pliegues vocales, mayor serÃ¡ la presiÃ³n subglÃ³tica que los pliegues cerrados pueden soportar antes de abrirse y, por lo tanto, mayor serÃ¡ la sonoridad. Cada duplicaciÃ³n de la presiÃ³n (manomÃ©trica) de los pulmones aumenta la intensidad de la voz en $8\text{--}12\text{ dB}$, por lo que la intensidad vocal $I$ varÃ­a aproximadamente como el cubo de la presiÃ³n pulmonar $P_{\text{lung}}$, $I \propto P_{\text{lung}}^3$. El habla suave corresponde a $2\text{--}3\text{ cmH}_2\text{O}$, el habla fuerte a $15\text{--}20\text{ cmH}_2\text{O}$ y los gritos a $40\text{--}60\text{ cmH}_2\text{O}$. A una distancia de $1\text{ m}$, el habla convencional corresponde a una intensidad de sonido de aproximadamente $60\text{ dB SPL}$ y los gritos a $108\text{ dB SPL}$. (VÃ©ase tambiÃ©n la Fig. 10.30).
+
+% Control de Calidad: 6 pÃ¡rrafos origen -> 6 pÃ¡rrafos salida. Mapeo 1:1 verificado. Sin omisiones.
+
+La intensidad o potencia de la voz en el habla normal se modula muy lentamente en un rango de frecuencias $<20\text{ Hz}$, para cualquier idioma. Esto tambiÃ©n es cierto para la mÃºsica. Los gritos son diferentes en el sentido de que tambiÃ©n tienen tales modulaciones de $30\text{--}150\text{ Hz}$, dentro del rÃ©gimen espectral de Â«asperezaÂ» de este capÃ­tulo. Se cree que este atributo perceptivo es la razÃ³n por la que los gritos se perciben de manera diferente al habla normal y como alarmas.
+
+\textbf{Tipo de fonaciÃ³n.} Los pliegues vocales estÃ¡n totalmente abiertos durante la inhalaciÃ³n forzada y siguen estando muy abiertos durante la respiraciÃ³n normal. EstÃ¡n mÃ¡s juntos, pero todavÃ­a muy separados durante el susurro, y mucho mÃ¡s juntos durante el habla normal, formando una obstrucciÃ³n en la vÃ­a aÃ©rea. El grado en que los pliegues vocales estÃ¡n abiertos (abducciÃ³n) o cerrados (aducciÃ³n) afecta la distribuciÃ³n espectral de la voz y, por lo tanto, su calidad, como el hecho de ser percibida como Â«ruidosaÂ», Â«sopladaÂ» (ruidosa y con zumbido) o Â«crujienteÂ» (rÃ¡fagas de aire de baja frecuencia espaciadas irregularmente).
+
+La frecuencia fundamental de la voz en las mujeres disminuye con la edad avanzada y en los hombres disminuye hasta los $50\text{--}60$ aÃ±os de edad, y luego aumenta. Las frecuencias de los formantes tambiÃ©n cambian, pero el patrÃ³n no estÃ¡ claro en la actualidad. Los pliegues vocales se adelgazan y se deterioran, pierden fibras elÃ¡sticas y colÃ¡genas, y se vuelven mÃ¡s rÃ­gidos y delgados. Estos y otros cambios conducen a algunos de los atributos comunes de la voz envejecida (presbifonÃ­a), que incluyen un aumento de la voz soplada y del temblor vocal, un volumen algo disminuido, el adelgazamiento de la voz y una menor eficiencia y resistencia vocal [46, 61].
+
+\subsection{La energÃ©tica del habla}
+
+Â¿QuÃ© fracciÃ³n de la energÃ­a total en el flujo de aire de los pulmones durante el habla se convierte en las ondas acÃºsticas oscilatorias que se irradian desde la boca? Supongamos que toda la capacidad vital (aproximadamente $5\text{ L} = 0.005\text{ m}^3$) fuera expulsada en $1\text{ s}$ con una presiÃ³n pulmonar de $2\text{ kPa}$ (aproximadamente $20\text{ cmH}_2\text{O}$). Esta potencia Â«aerodinÃ¡micaÂ» serÃ­a de $0.005\text{ m}^3 \times 2\text{ kPa} = 10\text{ W}$ durante ese $1\text{ s}$. Sin embargo, este volumen podrÃ­a ser expulsado Ãºnicamente con la glotis completamente abierta, por lo que con la glotis mayormente cerrada durante el habla, la tasa de flujo serÃ­a mucho menor que $0.005\text{ m}^3/\text{s}$, y tal vez de $0.0001\text{--}0.0005\text{ m}^3/\text{s}$. Con las mismas diferencias de presiÃ³n, la potencia Â«aerodinÃ¡micaÂ» no superarÃ­a $1\text{ W}$. Por lo tanto, el habla continua agregarÃ­a solo alrededor del $1\%$ a nuestra tasa metabÃ³lica (ignorando la eficiencia para formar este flujo de aire). El habla conversacional es de aproximadamente $60\text{ dB SPL}$ a $1\text{ m}$, lo que corresponde a $10^{-6}\text{ W/m}^2$, por lo que usando (10.4) la potencia es de aproximadamente $\sim 10^{-5}\text{ W}$. Definiendo la eficiencia glotal como la relaciÃ³n entre esta potencia acÃºstica y la potencia aerodinÃ¡mica, la eficiencia es de $\sim 10^{-5} = 0.001\%$. En una variedad de condiciones, a menudo se indica que esta eficiencia varÃ­a de $0.0001\text{--}1\%$.
+
+% Control de Calidad: 4 pÃ¡rrafos origen -> 4 pÃ¡rrafos salida. Mapeo 1:1 verificado. Sin omisiones.
+
+% --- SECCIÃ“N 10.3: AUDICIÃ“N ---
+
+\section{AudiciÃ³n}
+
+El oÃ­do consta de los oÃ­dos externo, medio e interno (Figs. 10.26 y 10.27). El oÃ­do externo es el pabellÃ³n auricular externo (o pinna), que Â«canalizaÂ» el sonido hacia el canal auditivo o tubo del canal auditivo (o canal externo o meato â€”\textit{meatus} (mee-ay'-tus)â€” o meato auditivo externo). El oÃ­do medio, tambiÃ©n conocido como cavidad timpÃ¡nica, comienza con la membrana timpÃ¡nica (tÃ­mpano) y continÃºa con los tres pequeÃ±os huesos conectados u huesecillos, la cadena osicular: el martillo (malleus), el yunque (incus) y el estribo (stapes). Por un lado, la membrana timpÃ¡nica se conecta con el tubo del canal auditivo y, por el otro, estÃ¡ en contacto con el martillo. El oÃ­do interno consiste en la cÃ³clea y el nervio auditivo que viaja desde la cÃ³clea hasta el cerebro. El estribo estÃ¡ en contacto con la ventana oval de la cÃ³clea. La cÃ³clea comienza medialmente con el vestÃ­bulo, continÃºa con la regiÃ³n anterior en forma de caracol y luego, en la parte posterior, con tres canales semicirculares. El sonido es llevado al oÃ­do por el oÃ­do externo y el procesamiento real del sonido comienza en el oÃ­do interno. El oÃ­do externo y el oÃ­do medio se denominan colectivamente sistema de conducciÃ³n, el cual conduce el sonido hacia el oÃ­do interno. Veremos que el oÃ­do medio Â«mejoraÂ» la transmisiÃ³n del sonido desde el oÃ­do externo al oÃ­do interno. La cÃ³clea y el octavo nervio craneal â€”que incluye tanto al nervio auditivo como al nervio vestibularâ€” se denominan sistema sensorineural, el cual detecta el sonido, genera una seÃ±al elÃ©ctrica y la envÃ­a al cerebro. Para fuentes generales sobre la audiciÃ³n, vÃ©ase [12, 16, 20, 22, 23, 26, 27, 29--31, 35, 36, 60, 75, 76].
+
+Existen cuatro pasos en el proceso de audiciÃ³n dentro del oÃ­do. (1) La onda sonora entra al oÃ­do externo. (2) El movimiento de la membrana timpÃ¡nica se transfiere por conducciÃ³n a travÃ©s de los huesecillos a la ventana oval de la cÃ³clea. (3) El movimiento de la ventana oval genera una onda de compresiÃ³n (sonora) en el fluido de la cÃ³clea. (4) Esta onda mueve la membrana basilar sobre la cual se encuentran los receptores auditivos primarios (las cÃ©lulas ciliadas), y las seÃ±ales elÃ©ctricas generadas por las cÃ©lulas ciliadas se envÃ­an al cerebro. Esta conversiÃ³n de sonido en seÃ±ales elÃ©ctricas se denomina transducciÃ³n mecanoelÃ©ctrica. En la Fig. 10.28 se muestran modelos mecÃ¡nicos anÃ¡logos del oÃ­do.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.7\textwidth]{1026.png}
+  \caption{Diagrama del oÃ­do externo, medio e interno (De [62])}
+  \label{fig:1026}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{1027.png}
+  \caption{OÃ­do medio en detalle y visualizaciÃ³n del desenrollamiento parcial y total de la cÃ³clea. El corte en la cÃ³clea parcialmente desenrollada muestra la secciÃ³n transversal de los tubos, que se observa con mÃ¡s detalle en la Fig. 10.32 (De [62])}
+  \label{fig:1027}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{1028.png}
+  \caption{AnÃ¡logos mecÃ¡nicos del oÃ­do externo, medio e interno (Basado en [30])}
+  \label{fig:1028}
+\end{figure}
+
+
+
+\FloatBarrier
+
+\FloatBarrier
+
+\FloatBarrier
+
+\subsection{Sensibilidad auditiva}
+
+El sistema auditivo humano normal es sensible desde aproximadamente $20\text{ Hz}$ hasta $20\text{ kHz}$, con una sensibilidad mÃ¡xima en una amplia regiÃ³n cercana a los $3000\text{ Hz}$, como se observa en el audiograma de umbrales de tonos puros en la Fig. 10.29. Entre $100$ y $10\,000\text{ Hz}$, el umbral normal varÃ­a de aproximadamente $0$ a $20\text{ dB SPL}$. El umbral para una sonoridad incÃ³moda es de aproximadamente $100\text{ dB SPL}$. De $120$ a $140\text{ dB SPL}$, se alcanza el umbral de Â«sensaciÃ³nÂ», Â«hormigueoÂ» y Â«cosquilleoÂ» en el oÃ­do.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.7\textwidth]{1029.png}
+  \caption{Umbral auditivo absoluto para residentes tÃ­picos de EE. UU. Las curvas muestran el porcentaje de personas que podÃ­an escuchar sonidos por debajo del nivel de la curva; la curva superior muestra el umbral de Â«sensaciÃ³nÂ» en el oÃ­do (Basado en [17])}
+  \label{fig:1029}
+\end{figure}
+
+
+
+\FloatBarrier
+
+Relacionado con esto estÃ¡ la cuestiÃ³n de quÃ© tan sensible debe ser nuestra audiciÃ³n. Nuestros oÃ­dos deben ser lo suficientemente sensibles para escuchar nuestras voces y, por supuesto, nuestras voces deben ser lo suficientemente fuertes para ser escuchadas. La Figura 10.30 grafica los rangos de sensibilidad auditiva normal frente a la frecuencia, junto con los rangos de intensidad y frecuencia del habla y la mÃºsica, mÃ¡s especÃ­ficamente la mÃºsica orquestal.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{1030.png}
+  \caption{Los lÃ­mites de la audiciÃ³n normal, en tÃ©rminos de intensidad acÃºstica y frecuencia, comparados con los rangos de frecuencia y volumen del habla y de la mÃºsica orquestal (Basado en [10, 53])}
+  \label{fig:1030}
+\end{figure}
+
+
+
+\FloatBarrier
+
+\subsubsection*{OÃ­do externo}
+
+A pesar de su apariencia de embudo, el pabellÃ³n auricular o pinna proporciona una capacidad insignificante de recolecciÃ³n y amplificaciÃ³n de sonido. SÃ­ proporciona indicios para la localizaciÃ³n de la fuente sonora. (Los gatos orientan sus pabellones auriculares hacia una fuente sonora para ayudar a determinar su direcciÃ³n). Esta localizaciÃ³n depende de la forma asimÃ©trica e irregular de la pinna. Una caracterÃ­stica importante de la pinna es que atenÃºa los componentes de alta frecuencia de los sonidos que provienen de la parte posterior en relaciÃ³n con los que provienen del frente.
+
+El canal externo en el oÃ­do externo mide aproximadamente $9\text{ mm}$ de alto, $6.5\text{ mm}$ de ancho y aproximadamente de $2.5\text{--}3.5\text{ cm}$ de largo. EstÃ¡ abierto por un lado (el exterior) y terminado por el otro lado por el tÃ­mpano. Aunque es curvo, lo modelaremos como un tubo recto, un tubo abierto por un lado y cerrado por el otro (Fig. 10.28). Con $L = 2.5\text{ cm}$, el modo fundamental tiene una longitud de onda $= 4L = 10\text{ cm}$. La frecuencia fundamental es $f = v_s/4L$ (ecuaciÃ³n (10.39) con $m = 0$), y con $v_s = 343\text{ m/s}$ para el aire, vemos que $f = (343\text{ m/s})/10\text{ cm} = 3430\text{ Hz}$.
+
+% Control de Calidad: 6 pÃ¡rrafos origen -> 6 pÃ¡rrafos salida. Mapeo 1:1 verificado. Sin omisiones.
+
+Esto es muy cercano al pico de sensibilidad auditiva de los humanos, que se encuentra cerca de los $3000\text{ Hz}$ (Fig. 10.29). Esto tiene sentido porque los sonidos cercanos a los $3400\text{ Hz}$ se transportan de manera mÃ¡s eficiente desde el oÃ­do externo al oÃ­do interno. Este canal tiene un valor de $Q$ bajo y una resonancia bastante amplia por varias razones, entre ellas que no estÃ¡ perfectamente cerrado. A continuaciÃ³n se presenta un modelo de la admitancia del canal auditivo.
+
+\subsubsection*{OÃ­do medio}
+
+Â¿Por quÃ© existe un oÃ­do medio? QuizÃ¡s sea mejor hacer una pregunta relacionada que sea mÃ¡s fÃ¡cil de responder: Â¿Por quÃ© la audiciÃ³n se deteriora si el oÃ­do medio se daÃ±a? Sin la membrana timpÃ¡nica y la conducciÃ³n a travÃ©s de los huesecillos, el sonido del canal externo incidirÃ­a directamente sobre la ventana oval de la cÃ³clea y la sensibilidad auditiva disminuirÃ­a en casi $30\text{ dB}$, debido a que la ventana oval tiene un Ã¡rea mucho menor que la membrana timpÃ¡nica. Esta es una pÃ©rdida suficiente para hacer que una voz de volumen medio sea apenas perceptible.
+
+El tÃ­mpano estÃ¡ inclinado en un Ã¡ngulo de aproximadamente $55^{\circ}$ respecto al canal auditivo. Tiene un espesor promedio de aproximadamente $0.074\text{ mm}$, y es un poco mÃ¡s alto ($\approx 9\text{--}10\text{ mm}$) que ancho ($\approx 8\text{--}9\text{ mm}$). El martillo mide $\approx 8\text{--}9\text{ mm}$ de largo y tiene una masa de $25\text{ mg}$. El mango (manubrio) de este martillo estÃ¡ incrustado en el tÃ­mpano por capas de membranas fibrosas y mucosas, y estÃ¡ orientado casi hacia arriba: a la 1 en punto en el oÃ­do derecho y a las 11 en punto en el oÃ­do izquierdo (Fig. 10.27). El yunque mide $\approx 7\text{ mm}$ de largo y tiene una masa de $30\text{ mg}$, y se parece mÃ¡s a un diente con un cuerpo y dos raÃ­ces que a un yunque. La cabeza del martillo se conecta con el cuerpo del yunque a travÃ©s de la articulaciÃ³n incudomaleolar, que es bastante rÃ­gida y consiste en una articulaciÃ³n de doble silla de montar. La raÃ­z (o apÃ³fisis) mÃ¡s larga del yunque termina en un nÃ³dulo redondeado que forma la cabeza de la articulaciÃ³n con la cabeza del estribo (la articulaciÃ³n incudoestapedial). El estribo parece un estribo de montar, mide $\approx 3.5\text{ mm}$ de largo, tiene una masa de $3\text{--}4\text{ mg}$ y tiene una base de $\sim 3.2\text{ mm}^2$ de Ã¡rea que se une a la ventana oval mediante el ligamento anular.
+
+En la conducciÃ³n directa, la mayor parte del sonido incidente se reflejarÃ­a y muy poco se transmitirÃ­a para su anÃ¡lisis por la cÃ³clea. AcÃºsticamente, la ventana oval y el fluido coclear pueden aproximarse como equivalentes al agua. (Este es un modelo sobresimplificado. No obstante, el fluido coclear aporta la contribuciÃ³n dominante a la impedancia de la cÃ³clea por encima de $1\text{ kHz}$ [48]). Con $Z_1 = Z_{\text{air}} = 413\text{ kg/(m}^2\cdot\text{s)}$ y $Z_2 = Z_{\text{water}} = 1.48 \times 10^6\text{ kg/(m}^2\cdot\text{s)}$ (Tabla 10.1), $Z_2/Z_1 = 3580$ y la fracciÃ³n de intensidad sonora transmitida a la cÃ³clea es (ecuaciones (10.34) y (10.35))
+\begin{equation}
+T = \frac{4 Z_2 / Z_1}{(1 + Z_2 / Z_1)^2} = \frac{4 \times 3580}{(1 + 3580)^2} = 1.1 \times 10^{-3} = 0.11\%.
+\label{eq:10.52}
+\end{equation}
+
+Esta es una pÃ©rdida muy grande. Expresada en decibelios, es una pÃ©rdida de $|10 \log_{10}(I_{\text{coupled}}/I_{\text{in}})| = |10 \log_{10} 0.0011| = 10 \times 2.95 = 29.5\text{ dB}$, o aproximadamente una pÃ©rdida de $30\text{ dB}$, lo cual es verdaderamente grande.
+
+Â¿CÃ³mo mejora esto el oÃ­do medio? Usando la jerga comÃºn en electrÃ³nica, a menudo se afirma que el oÃ­do medio reduce el desajuste de impedancia mediante el Â«acoplamiento de impedanciasÂ». Esto no es cierto. Incluso con el oÃ­do medio, la mayor parte del sonido incidente desde el aire sobre la estructura de mayor impedancia (tÃ­mpano/huesecillos/ventana coclear/fluido coclear) se pierde por reflexiÃ³n. El oÃ­do medio sÃ­ mejora la audiciÃ³n al aumentar la presiÃ³n incidente en la ventana oval coclear mediante la Â«canalizaciÃ³nÂ» del sonido incidente desde el tÃ­mpano, que es mÃ¡s grande, hacia la ventana coclear, que es mÃ¡s pequeÃ±a. Existen varios argumentos fÃ­sicos para esto (que presentaremos pronto).
+
+La importancia del oÃ­do medio para mejorar la audiciÃ³n se evidencia por la gran pÃ©rdida auditiva que resulta cuando el martillo, el yunque y el estribo no estÃ¡n en contacto entre sÃ­ en serie. El reflejo acÃºstico es un mecanismo que reduce intencional y temporalmente esta transmisiÃ³n a travÃ©s del sistema osicular para limitar la presiÃ³n sobre la ventana oval y proteger la cÃ³clea de sonidos muy fuertes. Los mÃºsculos del estribo (estapedio) y del tensor del tÃ­mpano responden en $40\text{--}80\text{ ms}$ como una acciÃ³n refleja ante tales sonidos fuertes. El mÃºsculo del estribo tira del estribo hacia afuera y el mÃºsculo tensor del tÃ­mpano tira del mango del martillo hacia adentro [33]. Este mecanismo tambiÃ©n reduce los sonidos de baja frecuencia que a menudo constituyen el ruido de fondo en un entorno ruidoso, de modo que se puedan detectar los sonidos de alta frecuencia que transportan informaciÃ³n. La importancia del oÃ­do medio tambiÃ©n se observa en un tipo de pÃ©rdida auditiva permanente, de $\sim 30\text{ dB}$, que ocurre cuando estos huesos no estÃ¡n permanentemente en contacto con los huesecillos adyacentes.
+
+Un mecanismo de conducciÃ³n del oÃ­do medio es la transmisiÃ³n de la fuerza sobre el tÃ­mpano de gran Ã¡rea (de un Ã¡rea total de $\sim 85\text{ mm}^2$, de la cual solo $2/3$ del Ã¡rea vibra, por lo que su Ã¡rea efectiva es $A_e \sim 55\text{ mm}^2$) al estribo, que tiene un Ã¡rea menor ($A_s \sim 3.2\text{ mm}^2$) en contacto con la ventana oval. La fuerza sobre el tÃ­mpano es $F_e = P_e A_e$, donde $P_e$ es la presiÃ³n acÃºstica sobre Ã©l (Fig. 10.28). Si esta fuerza se transmite directamente al estribo, entonces
+\begin{equation}
+F_e = P_e A_e = F_s = P_s A_s
+\label{eq:10.53}
+\end{equation}
+
+o bien
+\begin{equation}
+P_s = \frac{A_e}{A_s} P_e = \frac{55\text{ mm}^2}{3.2\text{ mm}^2} P_e = 17 P_e.
+\label{eq:10.54}
+\end{equation}
+
+Dado que el Ã¡rea del estribo sobre la ventana oval es aproximadamente el Ã¡rea de la ventana oval, se observa que el tÃ­mpano es un dispositivo de recolecciÃ³n de sonido mucho mÃ¡s grande que la ventana oval, que es mÃ¡s pequeÃ±a.
+
+Este mecanismo de canalizaciÃ³n de fuerza podrÃ­a ocurrir con un solo huesecillo que conecte el tÃ­mpano y la ventana oval. Un segundo mecanismo se basa en la geometrÃ­a proporcionada por el hecho de tener mÃ¡s de un hueso en la cadena osicular. Esta geometrÃ­a es tal que la cadena actÃºa como una palanca, en la cual en realidad se transmiten momentos de torsiÃ³n (torques) â€”y no fuerzasâ€” a la ventana oval. Siendo el primer brazo de palanca $L_1$ y el segundo $L_2$, el equilibrio de momentos de torsiÃ³n da $F_e L_1 = F_s L_2$ y $P_e A_e L_1 = P_s A_s L_2$, o bien
+\begin{equation}
+P_s = \frac{A_e}{A_s} \frac{L_1}{L_2} P_e = (17)(1.3) P_e = 22 P_e,
+\label{eq:10.55}
+\end{equation}
+
+utilizando $L_1/L_2 = 1.3$. La mejora de la audiciÃ³n debido a este mecanismo de palanca parece ser una de las razones por las que la naturaleza ha desarrollado una cadena de huesos osiculares.
+
+Estos dos mecanismos en el oÃ­do medio mejoran la conducciÃ³n del sonido en
+\begin{equation*}
+20 \log_{10}(P_s/P_e) = 20 \log_{10} 22 = 27\text{ dB}.
+\end{equation*}
+Esto es aproximadamente igual a la pÃ©rdida de $30\text{ dB}$ al no estar en contacto los huesecillos y a las pÃ©rdidas por reflexiÃ³n del aire a la cÃ³clea; esta cuasi-igualdad entre la mejora del oÃ­do medio y las pÃ©rdidas por reflexiÃ³n podrÃ­a ser simplemente una coincidencia de la naturaleza.
+
+A veces se citan otras razones para la mejora de la audiciÃ³n por el oÃ­do medio, como la curvatura de la membrana timpÃ¡nica, lo que conduce al mecanismo de pandeo de la membrana curva (Fig. 10.31). El manubrio del martillo estÃ¡ unido al centro del tÃ­mpano curvo y, como consecuencia de esta colocaciÃ³n, se desplaza hacia adelante y hacia atrÃ¡s menos que (y aproximadamente la mitad de) el desplazamiento promedio hacia adelante y hacia atrÃ¡s del tÃ­mpano. El argumento continÃºa diciendo que la fuerza sobre el manubrio es el doble que la de la membrana porque se transmite el mismo momento de torsiÃ³n desde el tÃ­mpano al martillo y el manubrio se mueve la mitad de lo que lo hace la membrana. Algunos piensan que el efecto de pandeo de la membrana curva duplica la ventaja mecÃ¡nica total del oÃ­do medio de $22$ a aproximadamente $44$; si es asÃ­, esto conduce a un aumento total de $33\text{ dB}$ debido al oÃ­do medio.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{1031.png}
+  \caption{Principio de pandeo de la membrana curva para el tÃ­mpano, mostrando la posiciÃ³n del manubrio del martillo. La membrana se muestra sin fuerza (lÃ­neas continuas) y con una fuerza (hacia abajo) (lÃ­neas discontinuas) (Basado en [27, 70])}
+  \label{fig:1031}
+\end{figure}
+
+
+
+\FloatBarrier
+
+% Control de Calidad: 14 pÃ¡rrafos origen -> 14 pÃ¡rrafos salida. Mapeo 1:1 verificado. Sin omisiones.
+
+Ahora analizaremos la vibraciÃ³n de un tÃ­mpano bajo tensiÃ³n, la cual es una vibraciÃ³n normal a una superficie bidimensional (2D), modelÃ¡ndola como la vibraciÃ³n de una cuerda bajo tensiÃ³n, que es una vibraciÃ³n normal a un objeto unidimensional (1D). Usando la ecuaciÃ³n (10.41), la frecuencia fundamental de una cuerda bajo esfuerzo de tensiÃ³n $\sigma$ que estÃ¡ rÃ­gidamente fija en ambos extremos es $(1/2L)\sqrt{\sigma/\rho}$, para una densidad de masa $\rho$ y longitud $L$. Para una membrana circular de radio $a$, sustituimos $L$ por $2a$ para obtener $(1/4a)\sqrt{\sigma/\rho}$. La frecuencia fundamental de la vibraciÃ³n transversal de una membrana circular de radio $a$, espesor $d$ y densidad de masa $\rho$ bajo tensiÃ³n $T$ es en realidad
+\begin{equation}
+f_{\text{fund}} = \frac{2.405}{2\pi a} \sqrt{\frac{\sigma}{\rho}},
+\label{eq:10.56}
+\end{equation}
+donde el esfuerzo es $\sigma = T/d$.
+
+(La derivaciÃ³n de este resultado exacto excede nuestro alcance). La concordancia con el modelo simple de cuerda es sorprendentemente buena. Considere un tÃ­mpano con un diÃ¡metro de $8\text{ mm}$, un espesor de $20\ \mu\text{m}$ y una densidad de masa $\rho = 1000\text{ kg/m}^3$. Para que tenga una resonancia fundamental a $1000\text{ Hz}$, el esfuerzo debe ser de $1.1 \times 10^5\text{ N/m}^2$ y la tensiÃ³n debe ser de $2.2\text{ N/m}$. SerÃ­a de esperar que el tÃ­mpano tuviera una frecuencia de resonancia aproximadamente cercana al pico de sensibilidad auditiva de $3000\text{ Hz}$ y a la resonancia del canal auditivo.
+
+\subsubsection*{OÃ­do interno}
+
+La vibraciÃ³n transmitida al estribo se transmite al fluido en la cÃ³clea gracias a que el estribo estÃ¡ en contacto con la ventana oval. La vibraciÃ³n en el fluido coclear induce un movimiento que produce una seÃ±al elÃ©ctrica que provoca la liberaciÃ³n de un transmisor quÃ­mico (Cap. 12). Este transmisor excita las cÃ©lulas nerviosas que estÃ¡n conectadas con el cerebro. Los modelos de la cÃ³clea se describen en [3, 12, 15, 41, 64]. (Gran parte del trabajo pionero sobre la cÃ³clea fue realizado por Georg von BÃ©kÃ©sy, quien fue galardonado con el Premio Nobel de FisiologÃ­a o Medicina en 1961 por sus descubrimientos sobre el mecanismo fÃ­sico de estimulaciÃ³n dentro de la cÃ³clea).
+
+\subsubsection*{Vibraciones del tubo coclear}
+
+La cÃ³clea puede verse como un tubo enrollado en $2\frac{3}{4}$ vueltas. Desenrollada, como se muestra en la Fig. 10.27, serÃ­a un cilindro de $\sim 2\text{ mm}$ de diÃ¡metro y $35\text{ mm}$ de largo. Tiene un tubo en la Â«mitad superiorÂ», la rampa vestibular (scala vestibuli), y un tubo en la Â«mitad inferiorÂ», la rampa timpÃ¡nica (scala tympani), que contienen un fluido llamado perilinfa y estÃ¡n separados por una particiÃ³n coclear que consiste en la rampa media (scala media) y el Ã³rgano de Corti, que contienen un fluido llamado endolinfa (Fig. 10.32). La rampa vestibular y la rampa timpÃ¡nica confluyen entre sÃ­ en el helicotrema, que se encuentra al final del tubo, en el Ã¡pice. El Ã³rgano de Corti contiene las cÃ©lulas ciliadas y colinda con la rampa timpÃ¡nica. El sonido se transmite por el estribo hacia la rampa timpÃ¡nica a travÃ©s de la ventana oval [nota de traducciÃ³n: mantendremos el texto literal Â«hacia la rampa timpÃ¡nica a travÃ©s de la ventana ovalÂ»], y el acoplamiento entre la rampa timpÃ¡nica y la rampa vestibular hace que la membrana basilar (entre la rampa timpÃ¡nica y las cÃ©lulas ciliadas) se mueva transversalmente a la membrana, excitando asÃ­ las cÃ©lulas ciliadas (Fig. 10.33). Este movimiento es similar a la onda viajera que se genera al sacudir una cuerda.
+
+\begin{SCfigure}[0.8][htbp]
+  \centering
+  \includegraphics[width=0.55\textwidth]{1032.png}
+  \caption{SecciÃ³n transversal de la cÃ³clea. (El nervio coclear se combina con los nervios de los canales semicirculares para formar el nervio auditivo). (De [62])}
+  \label{fig:1032}
+\end{SCfigure}
+
+\begin{SCfigure}[0.8][htbp]
+  \centering
+  \includegraphics[width=0.55\textwidth]{1033.png}
+  \caption{MicrografÃ­a electrÃ³nica de barrido de un haz de una sola cÃ©lula ciliada externa de una cÃ³clea de mamÃ­fero (De [34]. Usado con autorizaciÃ³n)}
+  \label{fig:1033}
+\end{SCfigure}
+
+
+
+\FloatBarrier
+
+\FloatBarrier
+
+Existen 3500 cÃ©lulas ciliadas internas en forma de matraz y 12\,000 cÃ©lulas ciliadas externas en forma de tubo, que difieren fÃ­sicamente en cÃ³mo sobresalen los cilios en las cÃ©lulas [22]. Las cÃ©lulas ciliadas internas transmiten informaciÃ³n al cerebro sobre los sonidos transmitidos a la cÃ³clea. Las cÃ©lulas ciliadas externas aumentan la amplitud y la selectividad de frecuencia de la vibraciÃ³n de la membrana basilar para sonidos de bajo nivel. Aproximadamente el $95\%$ de las cÃ©lulas nerviosas auditivas reciben sus seÃ±ales de las cÃ©lulas ciliadas internas (que son relativamente menos numerosas) porque cada cÃ©lula ciliada interna se conecta con aproximadamente $8\text{--}30$ fibras nerviosas auditivas, mientras que varias cÃ©lulas ciliadas externas se conectan a la misma fibra nerviosa (Fig. 10.34). Cuando el cilio se dobla en una direcciÃ³n se despolariza y en la direcciÃ³n opuesta se hiperpolariza, y esta alternancia hace que la cÃ©lula ciliada libere el neurotransmisor. (VÃ©ase el Cap. 12 para una descripciÃ³n de la polarizaciÃ³n). Movimientos tan pequeÃ±os como $10^{-10}\text{ m}$ pueden generar una respuesta en una cÃ©lula ciliada.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{1034.png}
+  \caption{CÃ©lulas ciliadas internas y externas en el Ã³rgano de Corti (De [62])}
+  \label{fig:1034}
+\end{figure}
+
+
+
+\FloatBarrier
+
+La membrana basilar se vuelve de $3\text{--}4$ veces mÃ¡s ancha y cien veces menos rÃ­gida a lo largo de la cÃ³clea Â«desenrolladaÂ» desde su inicio cerca del estribo (la base) hasta su extremo (el Ã¡pice) (Fig. 10.35). Ambas caracterÃ­sticas ayudan a descomponer los componentes de frecuencia de la onda sonora de tal manera que los componentes de mayor frecuencia tienen vibraciones de mayor amplitud mÃ¡s cerca del estribo y de la base, mientras que los componentes de menor frecuencia tienen vibraciones de mayor amplitud mÃ¡s cerca del Ã¡pice (Figs. 10.36 y 10.37).
+
+\begin{SCfigure}[0.75][htbp]
+  \centering
+  \includegraphics[width=0.6\textwidth]{1035.png}
+  \caption{La cÃ³clea desenrollada se vuelve mÃ¡s estrecha desde la base en el estribo hasta el Ã¡pice, a medida que la membrana basilar se ensancha (Basado en [29, 63])}
+  \label{fig:1035}
+\end{SCfigure}
+
+\begin{SCfigure}[1.3][htbp]
+  \centering
+  \includegraphics[width=0.35\textwidth]{1036.png}
+  \caption{Envolvente de la vibraciÃ³n de la membrana basilar frente a la frecuencia (Basado en [9, 29])}
+  \label{fig:1036}
+\end{SCfigure}
+
+
+
+\FloatBarrier
+
+\FloatBarrier
+
+% Control de Calidad: 6 pÃ¡rrafos origen -> 6 pÃ¡rrafos salida. Mapeo 1:1 verificado. Sin omisiones.
+
+Esta separaciÃ³n espacial de los componentes de frecuencia significa que las neuronas excitadas por las cÃ©lulas ciliadas progresivamente mÃ¡s adelante a lo largo de la cÃ³clea son excitadas selectivamente por componentes de frecuencia progresivamente mÃ¡s bajos, y estas seÃ±ales analizadas en frecuencia se envÃ­an como tales al cerebro. Este anÃ¡lisis de frecuencias se mejora aÃºn mÃ¡s por las caracterÃ­sticas cambiantes de las cÃ©lulas ciliadas a lo largo de la cÃ³clea, ya que las frecuencias de resonancia de las cÃ©lulas ciliadas estÃ¡n sintonizadas para coincidir con la frecuencia local optimizada y cambiante. Esto se denomina cÃ³digo de lugar para la frecuencia. TambiÃ©n existe un cÃ³digo temporal: a mayor frecuencia acÃºstica, mayor es la tasa de disparo neuronal. Debido a que la tasa mÃ¡xima de disparo de estas neuronas, $500\text{ Hz}$, es demasiado lenta para que una sola neurona dispare a la mayorÃ­a de las frecuencias acÃºsticas moderadas a altas, varias neuronas disparan de forma cooperativa. Por ejemplo, para una onda de $3000\text{ Hz}$, este principio de andanada (volley principle) sugiere que seis neuronas podrÃ­an disparar sucesivamente, con, por ejemplo, la neurona \#1 disparando en los ciclos 1, 7, 13, \dots, la neurona \#2 disparando en los ciclos 2, 8, 14, \dots, y asÃ­ sucesivamente.
+
+\begin{SCfigure}[0.9][htbp]
+  \centering
+  \includegraphics[width=0.5\textwidth]{1037.png}
+  \caption{Mapa tonotÃ³pico de la sensibilidad coclear a las audiofrecuencias (mostradas en kHz) (De [62], y basado en [13, 22, 29])}
+  \label{fig:1037}
+\end{SCfigure}
+
+
+
+\FloatBarrier
+
+Cuanto mayor es la intensidad acÃºstica, mÃ¡s rÃ¡pida es, en general, la tasa de disparo de las neuronas auditivas. Sin embargo, el rango dinÃ¡mico de respuesta es de solo unos $40\text{ dB}$, y la mayorÃ­a de las fibras alcanzan la saturaciÃ³n por encima de $40\text{--}50\text{ dB SPL}$ y no disparan a tasas mÃ¡s rÃ¡pidas a intensidades mÃ¡s altas. Las intensidades mÃ¡s altas se reconocen como tales (posiblemente) debido a que algunas neuronas no comienzan a disparar hasta el rango de intensidad media, o a que algunas neuronas se encuentran en lugares donde no disparan mucho hasta que la intensidad es alta.
+
+PodrÃ­amos intentar calcular los modos de resonancia de la membrana basilar analizando las ondas en una estructura que se asemeje a una cÃ³clea desenrollada. Un modelo simplificado es una membrana cÃ³nica en forma de sector circular de rigidez uniforme, como se muestra en la Fig. 10.38. La obtenciÃ³n de la soluciÃ³n analÃ­tica para las vibraciones de esta estructura supera el nivel de este texto; se grafica en esta figura. (VÃ©ase tambiÃ©n [53, 54]). Las ondas en este modelo coinciden semicuantitativamente con los datos de la Fig. 10.36: cuanto menor es la frecuencia de la onda, mÃ¡s cerca de los Ã¡pices se encuentra su mÃ¡ximo. La inclusiÃ³n de la variaciÃ³n de rigidez en el modelo requiere una soluciÃ³n numÃ©rica, y se espera que esto acentÃºe aÃºn mÃ¡s la separaciÃ³n espacial.
+
+Las cÃ©lulas ciliadas externas responden a la vibraciÃ³n de manera muy similar a las cÃ©lulas ciliadas internas, pero contribuyen poco a las seÃ±ales enviadas al cerebro. Estas cÃ©lulas se vuelven mÃ¡s cortas cuando se despolarizan y mÃ¡s largas cuando se hiperpolarizan, hasta en un $4\%$ cuando estÃ¡n aisladas. Este mecanismo amplificador coclear puede ayudar a magnificar el movimiento de la membrana basilar y mejorar la selectividad de frecuencia del proceso de detecciÃ³n auditiva, como se ilustra en la Fig. 10.39.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{1038.png}
+  \caption{Modelo de vibraciÃ³n mecÃ¡nica de la cÃ³clea desenrollada de la Fig. 10.35, modelada como una membrana cÃ³nica con rigidez uniforme en (a), con predicciones de los primeros modos en (b). Los mÃ¡ximos principales (en las posiciones de las flechas) de los modos se desplazan hacia la base con el aumento de la frecuencia, lo cual concuerda con la tendencia en la Fig. 10.36. Para una membrana no cÃ³nica, los modos se verÃ­an iguales excepto que cada antinodo (mÃ¡ximo y mÃ­nimo) en el modo tendrÃ­a la misma magnitud (Basado en [23])}
+  \label{fig:1038}
+\end{figure}
+
+\begin{SCfigure}[0.9][htbp]
+  \centering
+  \includegraphics[width=0.5\textwidth]{1039.png}
+  \caption{El umbral de excitaciÃ³n para las cÃ©lulas ciliadas nerviosas o fibras del nervio auditivo con tres frecuencias de resonancia o caracterÃ­sticas diferentes. Sin las cÃ©lulas ciliadas externas, el umbral de sonido es mucho mÃ¡s alto y la selectividad de frecuencia es mucho mÃ¡s deficiente, como se ilustra para la fibra con la mÃ¡s alta de las tres frecuencias de resonancia (Basado en [22])}
+  \label{fig:1039}
+\end{SCfigure}
+
+
+
+\FloatBarrier
+
+\FloatBarrier
+
+\subsubsection*{Vibraciones de las cÃ©lulas ciliadas}
+
+Primero intentaremos modelar las vibraciones transversales de las fibras filamentosas de longitud $L$ (en las cÃ©lulas ciliadas) como las vibraciones acÃºsticas longitudinales de un tubo que estÃ¡ cerrado en un extremo (hacia el cuerpo de la cÃ©lula) y abierto en el otro (para detectar el fluido en vibraciÃ³n). (Esto tambiÃ©n es anÃ¡logo a la vibraciÃ³n transversal de una cuerda que estÃ¡ fija en un extremo y libre en el otro). Utilizando las ecuaciones (10.38) y (10.39), las longitudes de onda resonantes son $4L$, $4L/3$, $4L/5$, \dots\ y las frecuencias son $v_s/4L$, $3v_s/4L$, $5v_s/4L$, \dots. Con $v_s = \sqrt{Y/\rho}$, la frecuencia mÃ¡s baja es $v_s/4L = (\sqrt{Y/\rho})/4L$. Sin embargo, esta es en realidad la frecuencia de resonancia para vibraciones longitudinales a lo largo de una barra ancha de longitud $L$, con una cara fija y la otra libre.
+
+Las oscilaciones transversales de una barra son bastante diferentes [53, 54]. Para un cilindro de longitud $L$ y radio $a$, la frecuencia transversal resonante mÃ¡s baja es
+\begin{equation}
+f_{\text{fund}} = \frac{\pi a \beta^2}{4 L^2} \sqrt{\frac{Y}{\rho}},
+\label{eq:10.57}
+\end{equation}
+donde $\beta = 0.597$.
+
+(La derivaciÃ³n de esto estÃ¡ fuera de nuestro alcance). Esto supone que la barra estÃ¡ unida a una base sin compliancia. A medida que la base se vuelve mÃ¡s complaciente (mÃ¡s flexible), el valor de $\beta$ disminuye, descendiendo hasta $\sim 0.35$ para bases y varillas de igual compliancia, hasta $\sim 0.2$ para bases que son diez veces mÃ¡s complacientes que la varilla, y asÃ­ sucesivamente. Suponiendo que el cilio estÃ¡ compuesto de queratina con $Y = 2 \times 10^9\text{ Pa}$ y densidad $\rho = 1000\text{ kg/m}^3$, la frecuencia de resonancia mÃ¡s baja de un cilio de longitud $2\text{ mm}$ y diÃ¡metro $20\ \mu\text{m}$ firmemente montado en una base no complaciente es de $1.0\text{ kHz}$. (La cÃ©lula es probablemente un poco complaciente, por lo que su frecuencia de resonancia es probablemente un poco mÃ¡s baja).
+
+Ciertamente, este modelo es quizÃ¡s demasiado simplificado. Se deberÃ­an agregar varias caracterÃ­sticas al mismo, incluyendo la viscosidad del fluido coclear y las conexiones fÃ­sicas entre las cÃ©lulas ciliadas. AdemÃ¡s, no estÃ¡ claro si existe una conexiÃ³n entre las frecuencias de vibraciÃ³n de las cÃ©lulas ciliadas y la selecciÃ³n de frecuencias auditivas en los mamÃ­feros.
+
+\subsubsection*{La inmitancia del oÃ­do humano (Tema avanzado)}
+
+Hemos analizado el comportamiento mecÃ¡nico de varios componentes de los oÃ­dos externo, medio e interno. Â¿CÃ³mo se combinan estos y otros componentes para determinar la inmitancia acÃºstica (impedancia, $Z$, o admitancia, $Y = 1/Z$) del oÃ­do? La rigidez (la reactancia de rigidez (o negativa), $X_s$, o, de manera equivalente, la susceptancia de rigidez (compliante), $B_s$) proviene del aire en los espacios del oÃ­do medio y externo, del tÃ­mpano y de los tendones y ligamentos de la cadena osicular. Los tÃ©rminos de masa inercial (la reactancia de masa (positiva), $X_m$, o la susceptancia de masa, $B_m$) provienen de los huesecillos, de la porciÃ³n flÃ¡cida (pars flaccida) del tÃ­mpano y del fluido en las rampas vestibular y timpÃ¡nica de la cÃ³clea (la perilinfa). El componente resistivo y friccional (la resistencia, $R$, o la conductancia, $G$) es producido por la perilinfa, los revestimientos de la membrana mucosa del oÃ­do medio, los conductos estrechos entre el oÃ­do medio y las cavidades aÃ©reas mastoideas, el tÃ­mpano y los tendones y ligamentos en el oÃ­do medio, y se debe principalmente a la absorciÃ³n de la energÃ­a de la onda viajera por la cÃ³clea.
+
+Es mÃ¡s fÃ¡cil trabajar con admitancias aquÃ­ que con impedancias porque son aditivas. (Â¿Por quÃ©?) La admitancia se mide con una sonda que envÃ­a una seÃ±al de $85\text{ dB SPL}$, generalmente a $226$ o $220\text{ Hz}$, hacia el oÃ­do externo, y monitorea la seÃ±al reflejada con un micrÃ³fono [27, 50]. Todo esto se realiza en funciÃ³n de la presiÃ³n del aire en el canal auditivo, variando esta presiÃ³n estÃ¡tica manomÃ©trica (y no sonora) en el tiempo desde aproximadamente $+200\text{ daPa}$ hasta $-300\text{ daPa}$. (La unidad decapascales (daPa) es comÃºn en audiologÃ­a, con $1\text{ daPa} = 10\text{ Pa} = 0.075\text{ mmHg} = 1.02\text{ mmH}_2\text{O}$). Las patologÃ­as del oÃ­do medio y la contracciÃ³n muscular del oÃ­do medio (el reflejo acÃºstico) pueden analizarse con estas...
+
+\begin{SCfigure}[0.8][htbp]
+  \includegraphics[width=0.55\textwidth]{1040.png}
+  \caption{Timpanograma de admitancia tÃ­pico a $226\text{ Hz}$, que muestra las diferentes contribuciones a la admitancia acÃºstica. NÃ³tese que la admitancia del oÃ­do externo determinada a $-300$ y $-400\text{ daPa}$ es menor que la determinada a $+200\text{ daPa}$, por lo que la admitancia del oÃ­do medio determinada a $-300$ y $-400\text{ daPa}$ serÃ­a mayor que aquella a $+200\text{ daPa}$ (Basado en [27]).}
+  \label{fig:1040}
+\end{SCfigure}
+
+
+
+% Control de Calidad: 10 pÃ¡rrafos origen -> 10 pÃ¡rrafos salida. Mapeo 1:1 verificado. Sin omisiones.
+
+\section{AudiciÃ³n}
+
+\FloatBarrier
+
+timpanogramas. La admitancia del oÃ­do medio, $Y_{\text{middle ear}}$, se determina midiendo la admitancia total de los oÃ­dos externo y medio a presiÃ³n ambiente (el tÃ­mpano es entonces relativamente transparente desde el punto de vista acÃºstico) para obtener $Y_{\text{total}} = Y_{\text{outer ear}} + Y_{\text{middle ear}}$, y restando de esta la admitancia Ãºnicamente del oÃ­do externo. $Y_{\text{outer ear}}$ se mide presurizando el oÃ­do externo, porque el tÃ­mpano presurizado es acÃºsticamente opaco para el oÃ­do medio. A partir de la Fig. 10.40, $Y_{\text{outer ear}} = 1.0\text{ mmho}$ (su valor a $200\text{ daPa}$) y $Y_{\text{total}} = 1.75\text{ mmho}$ a $0\text{ daPa}$, y encontramos $Y_{\text{middle ear}} = 0.75\text{ mmho}$. (A $-300\text{ daPa}$ la admitancia es en realidad menor que a $200\text{ daPa}$, y puede proporcionar un mejor valor de $Y_{\text{outer ear}}$ que a $200\text{ daPa}$).
+
+El volumen del canal auditivo expresado en $\text{cm}^3$ es el mismo nÃºmero que la admitancia del oÃ­do externo expresada en $\text{mmho}$, cuando se mide a $226\text{ Hz}$. Esto significa que $Y_{\text{outer ear}} = 1.0\text{ mmho}$, lo que indica que el volumen del canal auditivo es $1.0\text{ cm}^3$ ($= 1.0\text{ mL}$). Â¿Es esto una coincidencia o algo profundo? Veremos ahora que esto es en parte una coincidencia de las unidades naturales y en parte causado por la elecciÃ³n de $f = 226\text{ Hz}$.
+
+\subsection{Un modelo de vibraciÃ³n del aire en el canal auditivo (Tema avanzado)}
+
+Â¿CÃ³mo podemos determinar la admitancia del oÃ­do externo $Y_{\text{outer ear}}$? Modelemos el canal auditivo como un tubo cerrado de volumen $V = AL$, donde $A$ es su secciÃ³n transversal (constante) y $L$ es su longitud \cite{32, 53, 54}. Inicialmente, las presiones interna y externa son las mismas, $P$. Si este tubo se aprieta, la presiÃ³n en el interior aumenta en una cantidad $\Delta P$ y esto conducirÃ¡ a una fuerza restauradora $(\Delta P)A$, como la fuerza restauradora de cualquier material de tipo resorte.
+
+La ley del gas ideal (7.2) es $P = nRT$, donde $P$ es la presiÃ³n, $n$ es la densidad ($= N/V$, donde $N$ es el nÃºmero total de molÃ©culas en el volumen $V$), $R$ es la constante de los gases y $T$ es la temperatura. Si el volumen se distorsionara a $V + \Delta V$, con el nÃºmero de molÃ©culas mantenido constante y la temperatura tambiÃ©n constante (lo que se denomina una condiciÃ³n isotÃ©rmica), la presiÃ³n cambiarÃ­a a $P + \Delta P$, siendo $PV$ y $(P + \Delta P)(V + \Delta V)$ ambos iguales a $NRT$ y entre sÃ­. AsÃ­,
+\begin{equation}
+PV = (P + \Delta P)(V + \Delta V) \simeq PV + (\Delta P)V + P(\Delta V),
+\label{eq:10.58}
+\end{equation}
+
+donde el tÃ©rmino $(\Delta P)(\Delta V)$ es pequeÃ±o y se ha despreciado. Esto da
+\begin{equation}
+\Delta P = -P \frac{\Delta V}{V} = -P \frac{\Delta L}{L} = -nRT \frac{\Delta L}{L}
+\label{eq:10.59}
+\end{equation}
+utilizando el cambio en el volumen, $\Delta V = A(\Delta L)$, asumiendo que el Ã¡rea $A$ es constante en la distorsiÃ³n y que $P = nRT$.
+
+Es convencional normalizar todos los tÃ©rminos por $A^2$, incluyendo la fuerza impulsora $(\Delta P)A$, por lo que
+\begin{equation}
+\frac{(\Delta P)A}{A^2} = \frac{\Delta P}{A} = -\frac{nRT}{V} (\Delta L) = -\frac{nRT}{V} x = -\frac{P}{V} x,
+\label{eq:10.60}
+\end{equation}
+donde ahora a $\Delta L$ se le llama $x$. El coeficiente $nRT/V = P/V$ es la constante de resorte $k$ en (10.21), que tambiÃ©n se denominÃ³ $S$ en el anÃ¡lisis anterior.
+
+Hemos asumido que la temperatura no cambia durante la compresiÃ³n. Si en su lugar asumiÃ©ramos la condiciÃ³n mÃ¡s realista de que el flujo de calor a travÃ©s de las paredes del tubo puede despreciarse durante la compresiÃ³n y la respuesta (lo que se denomina una condiciÃ³n adiabÃ¡tica), entonces
+\begin{equation}
+k = \frac{\gamma nRT}{V} = \frac{\gamma P}{V},
+\label{eq:10.61}
+\end{equation}
+donde $\gamma$ es el parÃ¡metro en (10.2). (Esto se muestra en el Problema 10.59). Con $k = S$ y $X_s = S/\omega = S/2\pi f$,
+\begin{equation}
+X_s = \frac{\gamma P}{\omega V} = \frac{\gamma P}{2\pi f V}.
+\label{eq:10.62}
+\end{equation}
+
+Cuando este es el tÃ©rmino principal en la magnitud de la impedancia, entonces $|Z| = X_s$ y la magnitud de la admitancia es entonces $|Y| = B_s = 1/X_s$, lo que da
+\begin{equation}
+|Y| = B_s = \frac{2\pi f}{\gamma P} V.
+\label{eq:10.63}
+\end{equation}
+
+Una presiÃ³n ambiente $P$ de $1\text{ atm} = 0.1\text{ N/mm}^2 = 1 \times 10^6\text{ g/(cm}\cdot\text{s}^2)$. Para el aire $\gamma = 1.4$ y asÃ­ a $226\text{ Hz}$ encontramos que $2\pi f/\gamma P = (2\pi)(226\text{ Hz})/(1.4(1 \times 10^6\text{ g/(cm}\cdot\text{s}^2))) = 1.0 \times 10^{-3}\text{ cm}\cdot\text{s/g}$. Debido a que $1\text{ mho} = 1.0\text{ cm}^4\cdot\text{s/g}$ y $1\text{ mmho} = 1.0 \times 10^{-3}\text{ cm}^4\cdot\text{s/g}$, vemos que un volumen $V = 1.0\text{ cm}^3$ tiene una admitancia de $1.0\text{ mmho}$. Utilizando los argumentos de escala desarrollados en el Cap. 8 (8.11), la admitancia del oÃ­do externo expresada en $\text{mmho}$ da el volumen del canal auditivo expresado en $\text{cm}^3$.
+
+\subsection{PÃ©rdida auditiva}
+
+Los niveles de sonido superiores a $85\text{ dB SPL}$ se consideran perjudiciales, aquellos por encima del umbral del dolor de $120\text{ dB SPL}$ son inseguros y los que superan los $150\text{ dB SPL}$ causan daÃ±os fÃ­sicos al cuerpo humano. Para evitar daÃ±os auditivos, las organizaciones de seguridad recomiendan una exposiciÃ³n no mayor a $85\text{--}90\text{ dB SPL}$ durante $8\text{ h}$ al dÃ­a, $100\text{ dB SPL}$ durante $2\text{ h}$ al dÃ­a, o $110\text{ dB SPL}$ durante $30\text{ min}$ al dÃ­a. Los tÃ­mpanos se rompen entre $190\text{ dB SPL}$ y $198\text{ dB SPL}$, y niveles de sonido de alrededor de $200\text{ dB SPL}$ pueden causar la muerte a los seres humanos. Dichos niveles se generan cerca de explosiones de bombas, como a $3\text{ m}$ de distancia de la detonaciÃ³n de $23\text{ kg}$ de TNT. Otras causas potenciales de pÃ©rdida auditiva se sugieren en la caricatura de la Fig. 10.41.
+
+\begin{figure}[htbp]
+  \includegraphics[width=0.55\textwidth]{1041.png}
+  \caption{Fuentes potenciales de pÃ©rdida auditiva. (Con seguridad, el lector actual de este libro no comparte la queja del Â«sujetoÂ» de la derecha. AÃºn asÃ­, deberÃ­amos interpretar la interacciÃ³n entre el sujeto de la derecha y su madre desde una perspectiva fÃ­sica. Su madre quiere que disminuya la entropÃ­a (o desorden) de su habitaciÃ³n. Ã‰l tiene preocupaciones (no declaradas) sobre esto porque necesitarÃ¡ usar energÃ­a para disminuir la entropÃ­a de la habitaciÃ³n y sabe que la entropÃ­a general del universo aumentarÃ­a como resultado de cualquier esfuerzo de su parte para limpiar su habitaciÃ³n) (De Beattie; Daytona Beach News-Journal, Copley News Service, NJ-CENTER.com, copyright 1999. Reimpreso con autorizaciÃ³n).}
+  \label{fig:1041}
+\end{figure}
+
+
+
+% Control de Calidad: 14 pÃ¡rrafos origen -> 14 pÃ¡rrafos salida. Mapeo 1:1 verificado. Sin omisiones.
+
+\FloatBarrier
+
+La forma principal en que se evalÃºa la pÃ©rdida auditiva es determinando el umbral de audiciÃ³n para tonos puros desde aproximadamente $125\text{ a }8,000\text{ Hz}$. El nivel de audiciÃ³n generalmente se expresa como el valor del umbral de audiciÃ³n expresado en $\text{dB HL}$ en funciÃ³n de la audiofrecuencia, donde el grÃ¡fico clÃ­nico muestra intensidades de umbral crecientes hacia valores de ordenadas inferiores (Fig. 10.42b), en lugar de hacia valores de ordenadas superiores, como en la Fig. 10.29 o 10.42a. HL significa Â«nivel de audiciÃ³nÂ» (hearing level). En cada frecuencia, el umbral expresado en $\text{dB HL}$ es aquel en $\text{dB SPL}$ menos el valor de referencia normal en $\text{dB SPL}$. Esto explica la variaciÃ³n de la intensidad del umbral con la frecuencia que se observa en las Figs. 10.29 y 10.42a. Estos valores de referencia son de aproximadamente $7.5\text{ dB SPL}$ de $750\text{ a }1,500\text{ Hz}$. A frecuencias mÃ¡s bajas, aumentan a $\simeq 13\text{ dB}$ a $500\text{ Hz}$, $26\text{ dB SPL}$ a $250\text{ Hz}$ y $47\text{ dB SPL}$ a $125\text{ Hz}$. A frecuencias mÃ¡s altas, aumentan a $\simeq 10.5\text{ dB SPL}$ de $2,000\text{ a }4,000\text{ Hz}$ y $13.5\text{ dB SPL}$ de $6,000\text{ a }8,000\text{ Hz}$.
+
+Por lo tanto, la audiciÃ³n normal se define como $0\text{ dB HL}$ en todas las frecuencias Â«audiblesÂ» (curva superior y plana en la Fig. 10.42b), pero aÃºn se dice que las personas con una respuesta en frecuencia promedio $\le 15\text{ dB HL}$ tienen una Â«audiciÃ³n normalÂ». La pÃ©rdida auditiva se define como ligera (valor promedio de $16\text{--}25\text{ dB HL}$), leve ($26\text{--}40\text{ dB HL}$), moderada ($41\text{--}55\text{ dB HL}$), moderadamente grave ($56\text{--}70\text{ dB HL}$), grave ($71\text{--}90\text{ dB HL}$) y profunda ($> 90\text{ dB HL}$). En la Fig. 10.43 se muestra un ejemplo de un audiograma real para una persona con audiciÃ³n normal. La Figura 10.44 muestra cÃ³mo la sensibilidad auditiva disminuye con la edad, lo que se denomina presbiacusia. Uno de estos ejemplos se grafica en $\text{dB HL}$ en la Fig. 10.45.
+
+\begin{SCfigure}[1.0][htbp]
+  \includegraphics[width=0.45\textwidth]{1042.png}
+  \caption{Audiogramas en unidades de a $\text{dB SPL}$ y b $\text{dB HL}$ para una persona normal (cÃ­rculos) y una con pÃ©rdida auditiva de alta frecuencia (triÃ¡ngulos) (Basado en [26, 27]).}
+  \label{fig:1042}
+\end{SCfigure}
+
+
+
+\FloatBarrier
+
+Los modos de pÃ©rdida auditiva pueden ser causados por problemas en el oÃ­do medio o en el oÃ­do interno. La ruta regular de recepciÃ³n del sonido desde el oÃ­do externo al oÃ­do interno se denomina conducciÃ³n aÃ©rea. El sonido tambiÃ©n puede ser conducido al oÃ­do interno por conducciÃ³n Ã³sea, en la cual el sonido se transmite mediante vibraciones de los huesos del crÃ¡neo. Ambos inducen la misma actividad coclear. En audiologÃ­a clÃ­nica, la conducciÃ³n aÃ©rea se evalÃºa mediante auriculares o altavoces, mientras que la conducciÃ³n Ã³sea se evalÃºa mediante un vibrador colocado en la parte frontal del crÃ¡neo. Los modos de vibraciÃ³n del crÃ¡neo cambian con la frecuencia del vibrador, como se observa en la Fig. 10.46. A $200\text{ Hz}$ el crÃ¡neo vibra al unÃ­sono con la misma fase en las direcciones hacia adelante y hacia atrÃ¡s. Cuando la frecuencia aumenta a $800\text{ Hz}$, la parte frontal y la trasera del crÃ¡neo estÃ¡n fuera de fase entre sÃ­, y a $1,600\text{ Hz}$ hay vibraciones hacia adelante-atrÃ¡s y derecha-izquierda. Por encima de $\sim 1,000\text{ Hz}$, las vibraciones del crÃ¡neo conducen a una respuesta auditiva importante mediante excitaciones del oÃ­do externo, medio e interno; a frecuencias mÃ¡s bajas, los mecanismos de los oÃ­dos medio y externo son los mÃ¡s importantes.
+
+\begin{figure}[htbp]
+  \includegraphics[width=0.7\textwidth]{1043.png}
+  \caption{Ejemplo de un audiograma real para una persona con audiciÃ³n normal. Clave del audiograma: conducciÃ³n aÃ©rea derecha (cÃ­rculos abiertos), conducciÃ³n aÃ©rea izquierda (sÃ­mbolos de cruz), conducciÃ³n Ã³sea derecha (corchetes angulares izquierdos) y conducciÃ³n Ã³sea izquierda (corchetes angulares derechos), todos sin enmascarar (Basado en [27]).}
+  \label{fig:1043}
+\end{figure}
+
+\begin{figure}[htbp]
+  \includegraphics[width=0.8\textwidth]{1044.png}
+  \caption{Niveles de audiciÃ³n en funciÃ³n de la edad para a hombres y b mujeres (Basado en [27, 42, 65]. Ver tambiÃ©n [59] para mÃ¡s datos).}
+  \label{fig:1044}
+\end{figure}
+
+
+
+\FloatBarrier
+
+\FloatBarrier
+
+Si alguien tiene una audiciÃ³n deficiente debido a un problema en el oÃ­do medio (o exceso de cera en el canal auditivo), el sonido aÃºn puede propagarse a travÃ©s de los huesos de la cabeza hacia el oÃ­do interno. Los umbrales para la conducciÃ³n al oÃ­do por aire y por transmisiÃ³n directa al hueso pueden evaluarse para distinguir entre la pÃ©rdida del sistema conductivo y la del sensorineural. Si el umbral es el mismo para las pruebas de conducciÃ³n aÃ©rea y de conducciÃ³n Ã³sea, los umbrales superiores a $0\text{ dB HL}$ pueden atribuirse a un problema en la parte sensorineural del oÃ­do. Si los umbrales son diferentes, la diferencia puede atribuirse a un problema en el sistema conductivo (oÃ­do medio). TambiÃ©n puede haber problemas en ambos sistemas. La Figura 10.47a muestra la respuesta auditiva de alguien con audiciÃ³n normal en el oÃ­do izquierdo y pÃ©rdida auditiva (unilateral, es decir, en un solo oÃ­do) en el oÃ­do derecho atribuida a un problema en el sistema conductivo derecho. El sistema sensorial es normal, como se observa en las pruebas de conducciÃ³n Ã³sea. La Figura 10.47b muestra otro audiograma que indica una pÃ©rdida auditiva significativa solo en un oÃ­do, el izquierdo, y esta vez se debe a una pÃ©rdida auditiva en el sistema sensorineural izquierdo. AquÃ­, la pÃ©rdida auditiva se observa en el oÃ­do izquierdo incluso con conducciÃ³n Ã³sea. NÃ³tese que la pÃ©rdida auditiva sensorial tiene una dependencia de la frecuencia mÃ¡s llamativa que la pÃ©rdida auditiva conductiva. El audiograma de un paciente con pÃ©rdida auditiva por alta exposiciÃ³n al ruido (como por exceso de mÃºsica rock o clÃ¡sica a alto volumen) se muestra en la Fig. 10.48a. La pÃ©rdida es bilateral (en ambos oÃ­dos) y se debe a un mal funcionamiento sensorineural. En contraste con estos otros ejemplos, las personas con enfermedad de Meniere (una enfermedad del oÃ­do interno) muestran pÃ©rdida auditiva sensorineural a frecuencias bajas (Fig. 10.48b).
+
+\begin{figure}[htbp]
+  \includegraphics[width=0.7\textwidth]{1045.png}
+  \caption{Audiograma de un paciente con pÃ©rdida auditiva bilateral (es decir, pÃ©rdida en ambos oÃ­dos) debido a una pÃ©rdida auditiva sensorineural (esencialmente simÃ©trica bilateral descendente) asociada con la presbiacusia. Clave del audiograma: conducciÃ³n aÃ©rea derecha (cÃ­rculos abiertos), conducciÃ³n aÃ©rea izquierda (sÃ­mbolos de cruz), conducciÃ³n Ã³sea derecha (corchetes angulares izquierdos) y conducciÃ³n Ã³sea izquierda (corchetes angulares derechos), todos sin enmascarar (Basado en [27]).}
+  \label{fig:1045}
+\end{figure}
+
+\begin{figure}[htbp]
+  \includegraphics[width=0.8\textwidth]{1046.png}
+  \caption{Patrones de vibraciÃ³n del crÃ¡neo inducidos por a un vibrador Ã³seo colocado en la frente, vibrando a diferentes frecuencias aplicadas b $200\text{ Hz}$, c $800\text{ Hz}$, d $1,600\text{ Hz}$. En b--d se muestra el crÃ¡neo vibrante (lÃ­neas discontinuas) en relaciÃ³n con el crÃ¡neo inmÃ³vil (lÃ­neas continuas) para una fase particular de la vibraciÃ³n. Las flechas pequeÃ±as representan el desplazamiento, un desplazamiento que estÃ¡ muy exagerado para ilustrarlo. En la fase opuesta, el movimiento se invierte, con todas las flechas invertidas (al igual que para una onda senoidal). El vibrador estÃ¡ apagado en a (Basado en [8, 27]).}
+  \label{fig:1046}
+\end{figure}
+
+
+
+\FloatBarrier
+
+\FloatBarrier
+
+El tinnitus, que tambiÃ©n se conoce como Â«zumbido en los oÃ­dosÂ», no es infrecuente. Aquellos con casos graves pueden percibir un tono en uno o ambos oÃ­dos de $90\text{ dB}$ o mÃ¡s, que es mÃ¡s fuerte que los $60\text{--}70\text{ dB}$ de una conversaciÃ³n normal.
+
+\begin{figure}[htbp]
+  \includegraphics[width=0.8\textwidth]{1047.png}
+  \caption{Audiogramas de pacientes con a pÃ©rdida auditiva conductiva unilateral en el oÃ­do derecho, con un oÃ­do izquierdo normal, y b pÃ©rdida auditiva sensorineural unilateral en el oÃ­do izquierdo, con un oÃ­do derecho normal. Clave del audiograma: conducciÃ³n aÃ©rea derecha (cÃ­rculos abiertos), conducciÃ³n aÃ©rea izquierda (sÃ­mbolos de cruz), conducciÃ³n Ã³sea derecha (corchetes angulares izquierdos) y conducciÃ³n Ã³sea izquierda (corchetes angulares derechos), todos sin enmascarar; conducciÃ³n aÃ©rea izquierda (cuadrados abiertos), conducciÃ³n Ã³sea derecha (corchetes izquierdos), conducciÃ³n Ã³sea izquierda (corchetes derechos), sin respuesta (flechas), todos enmascarados. (En el enmascaramiento, al oÃ­do no evaluado se le presenta una seÃ±al de ruido constante para evitar que detecte la seÃ±al en el oÃ­do evaluado, de modo que solo el oÃ­do evaluado pueda responder) (Basado en [27]).}
+  \label{fig:1047}
+\end{figure}
+
+\begin{figure}[htbp]
+  \includegraphics[width=0.8\textwidth]{1048.png}
+  \caption{Audiogramas de pacientes con a pÃ©rdida auditiva sensorineural bilateral asociada con la exposiciÃ³n al ruido y b enfermedad de Meniere que presenta pÃ©rdida auditiva sensorineural de baja frecuencia en el oÃ­do derecho. Clave del audiograma: conducciÃ³n aÃ©rea derecha (cÃ­rculos abiertos), conducciÃ³n aÃ©rea izquierda (sÃ­mbolos de cruz), conducciÃ³n Ã³sea derecha (corchetes angulares izquierdos) y conducciÃ³n Ã³sea izquierda (corchetes angulares derechos), todos sin enmascarar; conducciÃ³n Ã³sea derecha (corchetes izquierdos), enmascarada (Basado en [27]).}
+  \label{fig:1048}
+\end{figure}
+
+
+
+% Control de Calidad: 25 pÃ¡rrafos origen -> 25 pÃ¡rrafos salida. Mapeo 1:1 verificado. Sin omisiones.
+
+\FloatBarrier
+
+\FloatBarrier
+
+\subsection{Conexiones con la percepciÃ³n auditiva}
+
+En psicofÃ­sica (o psicoacÃºstica), existen cuatro atributos principales de percepciÃ³n de los sonidos bÃ¡sicos: sonoridad, tono, timbre y localizaciÃ³n \cite{29, 76}. Cada atributo estÃ¡ relacionado de forma no lineal con las caracterÃ­sticas fÃ­sicas del sonido, tales como la intensidad acÃºstica, la frecuencia y la distribuciÃ³n de frecuencias:
+
+1. La sonoridad estÃ¡ relacionada con la intensidad del sonido de una manera no lineal. Como lo caracteriza la ley de Stevens ((1.6), Tabla 1.15), la percepciÃ³n de la sonoridad es muy sublineal con respecto al estÃ­mulo. La curva mÃ¡s baja en la Fig. 10.29 es la curva de audibilidad, que denota el umbral de audiciÃ³n; esta es la Â«curva de igual sonoridadÂ» de menor intensidad. Esta y las otras Â«curvas de igual sonoridadÂ» mÃ¡s Â«fuertesÂ» proporcionan los niveles de $\text{dB SPL}$ de intensidad acÃºstica a cada frecuencia (para tonos puros, es decir, para frecuencias Ãºnicas) necesarios para lograr el mismo nivel de sonoridad percibida. El grado de sonoridad de un sonido se expresa como el nivel de $\text{dB SPL}$ a $1,000\text{ Hz}$ que tiene la misma sonoridad. Si a esta intensidad acÃºstica a $1,000\text{ Hz}$ con la misma sonoridad se le llama $I$, entonces la sonoridad en fonios es
+\begin{equation}
+L_p(\text{en fonios}) = 10 \log \frac{I}{I_{\text{ref,p}}},
+\label{eq:10.64}
+\end{equation}
+donde $I_{\text{ref,p}} = 1 \times 10^{-12}\text{ W/m}^2$. (Esta ecuaciÃ³n es claramente muy similar a (10.10)).
+
+Como se observa en la Fig. 10.49, por encima de $\sim 80\text{ fonios}$, se necesita aproximadamente la misma intensidad acÃºstica en frecuencias bajas, medias y altas para percibir la misma sonoridad en cada regiÃ³n. Por debajo de $\sim 80\text{ fonios}$, se necesita una mayor intensidad a bajas y altas frecuencias para lograr la misma sonoridad percibida que en las frecuencias medias. Esto explica por quÃ© es necesario aumentar los graves y los agudos en los sintonizadores estÃ©reo (como presionando el botÃ³n de Â«sonoridadÂ» o loudness) a menor intensidad para percibir la misma mÃºsica, solo que a menor volumen. Las Figuras 10.44 y 10.45 muestran que las personas mayores suelen tener menos sensibilidad a las altas frecuencias (presbiacusia). Varios trastornos, como la enfermedad de Meniere, tambiÃ©n deterioran la audiciÃ³n (Fig. 10.48b).
+
+La escala de fonios no da ninguna indicaciÃ³n de la sonoridad relativa. Esta la proporciona la unidad llamada sonio, la cual se relaciona con los fonios en la Fig. 10.50. Una sensaciÃ³n de sonoridad de $1\text{ sonio}$ es proporcionada por $40\text{ dB}$ de un tono puro de $1,000\text{ Hz}$. Un sonido de $10\text{ sonios}$ se percibe como el doble de fuerte que uno de $5\text{ sonios}$. Una formulaciÃ³n casi exacta de la sonoridad en sonios $L_s$ es
+\begin{equation}
+L_s(\text{en sonios}) = \left( \frac{I}{I_{\text{ref,s}}} \right)^{0.3},
+\label{eq:10.65}
+\end{equation}
+donde $I_{\text{ref,s}} = 1 \times 10^{-8}\text{ W/m}^2$ y, nuevamente, $I$ es la intensidad acÃºstica a $1,000\text{ Hz}$ con la misma sonoridad \cite{35}. (Esto es un poco diferente de la escala cercana a la raÃ­z cuadrada de la sonoridad percibida con la intensidad acÃºstica indicada en la Tabla 1.15).
+
+Otra medida de la sonoridad es la diferencia apenas perceptible (JND) o el umbral diferencial (DL), que denota cuÃ¡nto mÃ¡s intenso debe ser un sonido para ser percibido como mÃ¡s fuerte. Para un tono de $1,000\text{ Hz}$, el DL para un sonido de $5\text{ dB SPL}$ es $5\text{ dB SPL}$, pero para $100\text{ dB SPL}$ es una fracciÃ³n mucho menor, $0.6\text{ dB SPL}$.
+
+\begin{SCfigure}[0.9][htbp]
+  \includegraphics[width=0.5\textwidth]{1049.png}
+  \caption{Curvas de sonoridad y de fonios en funciÃ³n de la frecuencia con etiquetas de fonios (nivel de sonoridad) (Basado en [27, 38, 58]).}
+  \label{fig:1049}
+\end{SCfigure}
+
+\begin{SCfigure}[0.8][htbp]
+  \includegraphics[width=0.55\textwidth]{1050.png}
+  \caption{Sonoridad percibida (en sonios) en funciÃ³n del nivel de sonoridad del estÃ­mulo (en fonios) para un tono de $1,000\text{ Hz}$ de [67, 76], mostrada como la lÃ­nea continua, junto con las predicciones de la ley aproximada de potencia de $0.3$ mostrada como la lÃ­nea discontinua, que es la base para la escala nacional e internacional de sonios (De [35]).}
+  \label{fig:1050}
+\end{SCfigure}
+
+
+
+\FloatBarrier
+
+\FloatBarrier
+
+2. El tono denota si un tono suena agudo o grave. Una onda de presiÃ³n que es puramente senoidal es un tono puro; se percibe como grave para frecuencias bajas y como agudo para frecuencias altas. La percepciÃ³n del tono se expresa en unidades de mels, definiÃ©ndose que el tono de $1,000\text{ Hz}$ a $40\text{ dB SPL}$ tiene un tono de $1,000\text{ mels}$. Existe una relaciÃ³n muy no lineal entre los mels y la frecuencia para un tono puro (Fig. 10.51). Un tono de $2,000\text{ mels}$ (que corresponde a aproximadamente $3,500\text{--}4,000\text{ Hz}$) suena como si tuviera el doble de tono que un tono de $1,000\text{ mels}$, el cual a su vez suena el doble de agudo que un tono de $500\text{ mels}$ (que corresponde a $400\text{ Hz}$).
+
+\begin{SCfigure}[0.8][htbp]
+  \includegraphics[width=0.55\textwidth]{1051.png}
+  \caption{Tono percibido (en mels) en funciÃ³n de la frecuencia [68], mostrado como la lÃ­nea gruesa (que se extiende desde $20\text{ Hz}$ hasta casi $20\text{ kHz}$), junto con la lÃ­nea delgada que grafica el tono igual a la frecuencia y la lÃ­nea discontinua que muestra el tono proporcional al nÃºmero de octava (De [35]).}
+  \label{fig:1051}
+\end{SCfigure}
+
+
+
+\FloatBarrier
+
+Existe un cambio de frecuencia mÃ­nimo detectable para tonos puros, de aproximadamente $2\text{--}3\text{ Hz}$ para tonos por debajo de $1,000\text{ Hz}$ y un cambio fraccionario de aproximadamente $1/3\%$ para tonos de mayor frecuencia. A una sonoridad constante de $40\text{ fonios}$, se pueden percibir $1,400$ frecuencias diferentes. AdemÃ¡s, a una frecuencia constante de $1,000\text{ Hz}$ se pueden percibir alrededor de $280$ niveles diferentes de sonoridad. En consecuencia, las personas pueden percibir casi $1,400 \times 280 = 400,000$ variaciones diferentes de tono y sonoridad.
+
+La frecuencia aumenta en un factor de dos al progresar de una nota musical a la misma nota en la siguiente octava, como al ir de la, si, do, re, mi, fa, sol y volver a la; este aumento continuo en la frecuencia con las notas sucesivas se reconoce como un aumento en la altura del tono. Al pasar de una octava a otra, como de $\text{A}_5$ en un piano con una frecuencia fundamental de $440\text{ Hz}$, a $\text{A}_6$ a $880\text{ Hz}$, a $\text{A}_7$ a $1,760\text{ Hz}$, y asÃ­ sucesivamente, hay una repeticiÃ³n de notas que es perceptualmente similar, es decir, exhiben las mismas propiedades de croma de tono (especÃ­ficamente aquÃ­ la de la nota la), pero con diferentes alturas de tono. Estas notas se pueden representar grÃ¡ficamente como una espiral vertical con las notas sucesivas marcadas; cada octava completa es una vuelta en la espiral, y todas las notas con el mismo croma de tono (todas las la, todos los si, etc.) estÃ¡n inmediatamente una encima de otra en vueltas sucesivas.
+
+La mayorÃ­a de las notas musicales tienen un rango de frecuencias y consisten en una frecuencia fundamental y sus armÃ³nicos. Tales tonos complejos se perciben en la frecuencia fundamental, por lo que un tono de $400\text{ Hz}$ y sus armÃ³nicos a $800$, $1,200$, $1,600\text{ Hz}$, y asÃ­ sucesivamente, se perciben como si tuvieran un tono de $400\text{ Hz}$. AdemÃ¡s, otras series complejas de frecuencias se perciben en la frecuencia de diferencia comÃºn mÃ­nima, por lo que un tono complejo con $800$, $1,200$, $1,600$ y $2,000\text{ Hz}$ se percibe como si tuviera un tono de $400\text{ Hz}$, al igual que un tono complejo con frecuencias de $2,000$ y $2,400\text{ Hz}$. Estos conceptos se conocen como tono de periodicidad o el efecto de la fundamental ausente.
+
+Los tonos escuchados al mismo tiempo tambiÃ©n pueden enmascararse entre sÃ­. Los tonos tienden a enmascarar mejor las frecuencias cercanas. AdemÃ¡s, los tonos de baja frecuencia enmascaran muy bien a los tonos de alta frecuencia, pero los tonos de alta frecuencia no enmascaran bien a los de baja frecuencia.
+
+\begin{figure}[htbp]
+  \includegraphics[width=0.55\textwidth]{1052.png}
+  \caption{Espectros de Fourier para una guitarra, un fagot y un saxofÃ³n alto que tocan a una frecuencia fundamental de $196\text{ Hz}$ (Basado en [54]).}
+  \label{fig:1052}
+\end{figure}
+
+
+
+% Control de Calidad: 41 pÃ¡rrafos origen -> 41 pÃ¡rrafos salida. Mapeo 1:1 verificado. Sin omisiones.
+
+\FloatBarrier
+
+3. Los tonos complejos que contienen muchas frecuencias pueden percibirse como si tuvieran la misma sonoridad y tono, pero aun asÃ­ percibirse como diferentes. Esto se caracteriza como una diferencia en la calidad o timbre. Una razÃ³n para esto es que diferentes tonos complejos con la misma frecuencia fundamental consisten en armÃ³nicos con diferentes intensidades relativas. Estas diferentes distribuciones se ven en la Fig. 10.52 para un tono de $196\text{ Hz}$ de una guitarra, un fagot y un saxofÃ³n alto; esto explica por quÃ© estos diferentes instrumentos suenan de manera diferente cuando se toca la misma nota (frecuencia fundamental). De hecho, cuando tonos musicales de la misma frecuencia pueden tocarse de diferentes maneras en el mismo instrumento, suenan de manera diferente, como el tono de $440\text{ Hz}$ tocado en las cuerdas La (A) y Re (D) de un violÃ­n, como se ve en la Fig. 10.53. AdemÃ¡s, la percepciÃ³n no solo se basa en estas estructuras armÃ³nicas distintivas, sino tambiÃ©n en los tiempos de ataque y decaimiento distintivamente diferentes para los diversos armÃ³nicos tocados en un instrumento dado.
+
+4. El sonido se percibe como proveniente de una ubicaciÃ³n espacial determinada, lo que se denomina localizaciÃ³n. La audiciÃ³n binaural ayuda a las personas a localizar el origen de un sonido dentro de aproximadamente $10^\circ$. El cerebro localiza la fuente basÃ¡ndose en la informaciÃ³n de ambos oÃ­dos, utilizando la diferencia en los tiempos de llegada ---con un tiempo de propagaciÃ³n mÃ¡s largo al oÃ­do mÃ¡s lejano--- y en la intensidad ---con una intensidad acÃºstica mÃ¡s dÃ©bil que llega al oÃ­do mÃ¡s lejano---. Esto se analiza mÃ¡s a fondo en el Problema 10.79.
+
+\begin{figure}[htbp]
+  \includegraphics[width=0.7\textwidth]{1053.png}
+  \caption{Espectros de Fourier para un violÃ­n que toca a una frecuencia fundamental de $440\text{ Hz}$ utilizando las cuerdas La (A) y Re (D) (Basado en [54]).}
+  \label{fig:1053}
+\end{figure}
+
+
+
+\FloatBarrier
+
+La percepciÃ³n de estÃ­mulos acÃºsticos mÃ¡s complejos, como en el habla, es mucho mÃ¡s complicada. Los elementos bÃ¡sicos se relacionan con el procesamiento de seÃ±ales de las componentes de frecuencia.
+
+\section{Otras vibraciones en el cuerpo}
+
+\subsection{Fuentes cardÃ­acas y de otro tipo de sonidos}
+
+El cuerpo puede ser la fuente de muchos sonidos, aparte del habla, tales como los provenientes de la masticaciÃ³n (alimentos crujientes y no crujientes \cite{56, 57, 71}), gruÃ±idos estomacales, caminar y correr, aplausos, hipo, soplos cardÃ­acos, contacto del cuerpo con cualquier cosa, aleteo de pÃ¡rpados, uso de toallas, chasquidos o clics en rodillas y articulaciones de los dedos, vÃ³mitos, tos, flatos, sonado de nariz, tarareo, silbido, estornudos, respiraciÃ³n normal, sibilancias y risa. Algunos de estos se enumeran en la Tabla 10.6. Las mÃ¡s fuertes de estas vibraciones acÃºsticas pueden ser detectadas por el cuerpo. Algunas se escuchan y otras se sienten por los receptores mecÃ¡nicos en el cuerpo (Cap. 2). Los sonidos cardÃ­acos se describen en \cite{45} y los sonidos pulmonares en \cite{47}. Las vibraciones tambiÃ©n pueden hacer que se sienta dolor en el cuerpo, como se ilustra en la Fig. 10.54. El chasquido de nudillos, y el ruido de otras articulaciones sinoviales, que durante mucho tiempo se pensÃ³ que se debÃ­an al colapso de una burbuja de cavitaciÃ³n que se forma cuando las superficies articulares se estÃ¡n separando, bien pueden deberse al proceso de formaciÃ³n
+
+% Control de Calidad: 49 pÃ¡rrafos origen -> 49 pÃ¡rrafos salida. Mapeo 1:1 verificado. Sin omisiones.
+
+de una cavidad \cite{40}. Por cierto, aunque el chasquido libera mucha energÃ­a y podrÃ­a causar daÃ±os, el chasquido frecuente de nudillos aparentemente no acelera la degeneraciÃ³n de las articulaciones \cite{18}, a pesar de las advertencias de muchas generaciones de padres.
+
+\begin{figure}[htbp]
+\centering
+  \includegraphics[width=0.7\textwidth]{1054.png}
+  \caption{SÃ­ntomas de dolor por vibraciones de $1$ a $20\text{ Hz}$ (Basado en \cite{11, 49})}
+  \label{fig:10.54}
+\end{figure}
+
+
+
+\begin{table}[htbp]
+\centering
+\caption{ParÃ¡metros acÃºsticos estimados de fuentes en el cuerpo}
+\label{tab:10.6}
+\begin{tabularx}{\textwidth}{>{\hsize=1.6\hsize}X >{\hsize=0.7\hsize\centering\arraybackslash}X >{\hsize=0.7\hsize\centering\arraybackslash}X}
+\toprule
+\textbf{Fuente} & \textbf{Cambio mÃ¡ximo de presiÃ³n (atm)} & \textbf{Frecuencia tÃ­pica (Hz)} \\
+\midrule
+Gritar & 0.05 & 1000 \\
+Hablar & 0.005 & 1000 \\
+Susurrar & 0.0005 & 1000 \\
+Correr & 2.0 & 4 \\
+Caminar & 0.4 & 1 \\
+Aplaudir vigorosamente & 0.2 & 2 \\
+Masticar comida crujiente & 0.0001 & 1000 \\
+Turbulencia del flujo de aire respiratorio & 0.00004 & 1000 \\
+Pulso arterial & 0.02 & 1 \\
+\bottomrule
+\end{tabularx}
+\begin{flushleft}\small
+De \cite{24}
+\end{flushleft}
+\end{table}
+\FloatBarrier
+
+\FloatBarrier
+
+La auscultaciÃ³n es la escucha de los sonidos producidos por los Ã³rganos internos para el diagnÃ³stico mÃ©dico. Los estetoscopios modernos tienen dos piezas torÃ¡cicas para tales diagnÃ³sticos: una pieza torÃ¡cica de Â«campanaÂ» aplicada suavemente sobre la piel para captar sonidos de baja frecuencia y una pieza torÃ¡cica de Â«diafragmaÂ» presionada firmemente sobre la piel para minimizar el sonido de baja frecuencia y, por lo tanto, acentuar la audiciÃ³n de los sonidos de alta frecuencia.
+
+Los corazones con un funcionamiento normal producen sonidos que se escuchan fÃ¡cilmente con un estetoscopio (Fig. 10.55) \cite{45}. Estos se deben a la apertura y cierre de las vÃ¡lvulas cardÃ­acas y al flujo de sangre. El primer ruido cardÃ­aco (S1) es un sonido de alta frecuencia que se escucha al comienzo de la sÃ­stole debido al cierre de las vÃ¡lvulas atrioventriculares mitral y tricÃºspide, lo cual ocurre cuando la presiÃ³n ventricular supera la presiÃ³n atrial. La vÃ¡lvula mitral se cierra unos $10\text{ ms}$ antes de la vÃ¡lvula tricÃºspide debido a la excitaciÃ³n elÃ©ctrica y contracciÃ³n mÃ¡s tempranas del ventrÃ­culo izquierdo. Estos diferentes tiempos de cierre son audibles solo cuando existe un trastorno, como un bloqueo de rama derecha, que retrasa el cierre de la vÃ¡lvula tricÃºspide. La intensidad del sonido S1 puede verse acentuada o disminuida por varios trastornos cardÃ­acos.
+
+\begin{figure}[htbp]
+\centering
+  \includegraphics[width=0.8\textwidth]{1055.png}
+  \caption{Fonocardiogramas idealizados (trazados de sonido) para corazones normales y anormales, con estenosis (obstrucciÃ³n parcial) o regurgitaciÃ³n (reflujo) de la vÃ¡lvula cardÃ­aca izquierda o con conducto arterioso persistente. (El conducto arterioso persistente es la afecciÃ³n en la que el conducto arterioso (derivaciÃ³n arterial del flujo sanguÃ­neo arterial pulmonar desde la arteria pulmonar hacia la aorta en un feto) no se cierra despuÃ©s del nacimiento). Se muestran los tiempos del primer (S1), segundo (S2), tercer (S3) y cuarto o atrial (S4) ruidos cardÃ­acos. VÃ©ase tambiÃ©n el fonocardiograma en la Fig. 8.5 (Basado en \cite{33})}
+  \label{fig:10.55}
+\end{figure}
+
+
+
+\FloatBarrier
+
+El segundo ruido (S2) se escucha al final de la eyecciÃ³n ventricular y de la sÃ­stole cuando se cierran las vÃ¡lvulas pulmonar y aÃ³rtica. El componente aÃ³rtico (A2) precede al componente pulmonar (P2) porque el gradiente de presiÃ³n entre la aorta y el ventrÃ­culo izquierdo es mayor que el que existe entre la arteria pulmonar y el ventrÃ­culo derecho. Estos dos componentes normalmente se fusionan en uno solo durante la espiraciÃ³n, pero normalmente se desdoblan de forma audible durante la inspiraciÃ³n debido a la disminuciÃ³n de la presiÃ³n intratorÃ¡cica que retrasa aÃºn mÃ¡s a P2 y adelanta a A2. La disminuciÃ³n de la presiÃ³n intratorÃ¡cica provoca una mayor caÃ­da de presiÃ³n desde el interior hacia el exterior de las arterias y venas pulmonares, y estos vasos de distensibilidad aumentan de volumen a la misma presiÃ³n interna. Este retraso en P2 es causado por el mayor tiempo necesario para llenar la arteria pulmonar. El adelanto de A2 se debe al menor flujo sanguÃ­neo desde las venas pulmonares, aÃºn mÃ¡s cargadas de sangre, hacia el atrio izquierdo y luego al ventrÃ­culo izquierdo, y al volumen sistÃ³lico resultante mÃ¡s pequeÃ±o y al menor tiempo necesario para que el ventrÃ­culo izquierdo se vacÃ­e. El tiempo de la sÃ­stole es aproximadamente el que transcurre entre S1\text{â€“}S2, y el de la diÃ¡stole es de S2 a S1 en el siguiente ciclo. Estos ruidos cardÃ­acos principales, S1 y S2, son sonidos de alta frecuencia que se escuchan mejor con el diafragma del estetoscopio.
+
+El tercer ruido cardÃ­aco (S3) es un sonido sordo y de tono bajo que se escucha mejor con la campana del estetoscopio, el cual se percibe despuÃ©s de la apertura de las vÃ¡lvulas atrioventriculares durante el llenado ventricular; es normal en niÃ±os y adultos jÃ³venes y anormal en adultos de mediana edad y mayores. El cuarto ruido cardÃ­aco (S4), que usualmente indica enfermedad cardÃ­aca, es generado por la contracciÃ³n de un atrio contra un ventrÃ­culo rÃ­gido al final de la diÃ¡stole. Los soplos cardÃ­acos son generados por la presencia de un flujo sanguÃ­neo turbulento en lugar de un flujo laminar, y pueden indicar flujo a travÃ©s de una obstrucciÃ³n parcial, como una estenosis (estrechamiento) de la aorta, un aumento en la velocidad del flujo, eyecciÃ³n de sangre en una cÃ¡mara dilatada, flujo regurgitante (reflujo) en una vÃ¡lvula cardÃ­aca defectuosa o una derivaciÃ³n anormal de sangre de cÃ¡maras de mayor presiÃ³n a cÃ¡maras de menor presiÃ³n a travÃ©s de una divisiÃ³n membranosa (tabique) \cite{45}. (Recuerde del Cap. 8 que el flujo en la aorta a veces es turbulento y se puede escuchar). Como se observa en la Fig. 8.5, los ruidos cardÃ­acos mÃ¡s fuertes tienen frecuencias mayoritariamente inferiores a $30\text{ Hz}$ y, por lo tanto, son inaudibles. El flujo turbulento pulsÃ¡til que se escucha durante la mediciÃ³n de la presiÃ³n arterial fue descrito en el Cap. 8.
+
+\section{Resumen}
+
+La fÃ­sica del sonido, es decir, la acÃºstica, describe las propiedades de las ondas sonoras â€”incluyendo cÃ³mo se expresa la intensidad del sonido en unidades de $\text{dB}$â€” y cÃ³mo se propagan las ondas sonoras entre diferentes medios y en cavidades. Los modelos acÃºsticos pueden utilizarse para comprender cÃ³mo se produce el sonido en el habla, lo cual se explica en parte por la teorÃ­a de filtrado de la voz, y cÃ³mo caracterizar la voz humana. TambiÃ©n pueden utilizarse para comprender la propagaciÃ³n del sonido en los oÃ­dos externo y medio, cÃ³mo se generan las seÃ±ales nerviosas en el oÃ­do interno y los modos de pÃ©rdida auditiva. Las vibraciones son importantes en otras partes del cuerpo y en el diagnÃ³stico mÃ©dico, como en la interpretaciÃ³n de los ruidos cardÃ­acos y el uso de ultrasonido para la obtenciÃ³n de imÃ¡genes.
+
+% Control de Calidad: 6 pÃ¡rrafos origen -> 6 pÃ¡rrafos salida. Mapeo 1:1 verificado. Sin omisiones.
+
+\section*{Problemas}
+
+\subsection*{Ondas sonoras}
+
+\noindent \textbf{10.1} Encuentre la distancia que se mueven las molÃ©culas en el aire para niveles de sonido de $20\text{ dB SPL}$ y $120\text{ dB SPL}$, ambos a $500$ y $5000\text{ Hz}$.
+
+\noindent \textbf{10.2} Un mÃºsico con tono perfecto puede identificar un tono puro de $1\text{ kHz}$ en $4\text{ ms}$. Â¿A cuÃ¡ntos perÃ­odos de la onda sonora equivale esto?
+
+\noindent \textbf{10.3} Utilice (10.6) y la densidad de masa del aire de $1.3 \times 10^{-3}\text{ g/cm}^3$ para calcular el desplazamiento caracterÃ­stico del aire para $0\text{ dB SPL}$ y $120\text{ dB SPL}$ a $4\text{ kHz}$.
+
+\noindent \textbf{10.4} (a) Demuestre que la velocidad del sonido en el aire $v_{\text{air}} \propto \sqrt{T}$ y la densidad de masa varÃ­a como $\rho_{\text{air}} \propto 1/T$, y por lo tanto la impedancia acÃºstica del aire varÃ­a como $Z_{\text{air}} \propto 1/\sqrt{T}$, donde $T$ estÃ¡ en $\text{K}$.
+
+(b) Encuentre cada uno de estos parÃ¡metros a $0$, $20$ y $25^\circ\text{C}$.
+
+(c) Â¿Afecta significativamente esta variaciÃ³n de $Z_{\text{air}}$ con $T$ a la reflexiÃ³n y transmisiÃ³n del sonido desde el aire hacia los componentes del cuerpo? Â¿Por quÃ© sÃ­ o por quÃ© no?
+
+\noindent \textbf{10.5} Encuentre la velocidad del sonido en el agua utilizando el mÃ³dulo de compresibilidad del agua de $2.26\text{ GPa}$. Â¿Es este el resultado esperado?
+
+\subsection*{Intensidad del sonido}
+
+\noindent \textbf{10.6} La escala de intensidad acÃºstica en la Fig. 10.30 varÃ­a de $-20$ a $140\text{ dB SPL}$. Â¿A quÃ© rango de presiÃ³n corresponde esto en $\text{dinas/cm}^2$?
+
+\noindent \textbf{10.7} Un sonido con una intensidad de $60\text{ dB SPL}$ en el aire incide sobre el agua. Â¿QuÃ© fracciÃ³n de este se transmite al agua (en $\text{dB SPL}$ y $\text{W/m}^2$)?
+
+\noindent \textbf{10.8} Martillar sobre una placa de acero produce sonidos que a dos pies de distancia alcanzan un mÃ¡ximo de $115\text{ dB SPL}$. Si esta intensidad acÃºstica es isotrÃ³pica, Â¿cuÃ¡l es la potencia total de esta onda acÃºstica en $\text{W}$?
+
+\noindent \textbf{10.9} Â¿CuÃ¡l es el cambio en $\text{dB}$ si la intensidad de una onda sonora se:
+(a) reduce a la mitad
+(b) duplica
+(c) triplica
+(d) cuadruplica?
+
+\noindent \textbf{10.10} Â¿Por quÃ© hay una disminuciÃ³n de $6\text{ dB SPL}$ en el nivel de sonido por cada duplicaciÃ³n de la distancia desde una fuente isotrÃ³pica pequeÃ±a?
+
+\noindent \textbf{10.11} La intensidad acÃºstica es de $60\text{ dB SPL}$ a una distancia dada de una fuente isotrÃ³pica. Â¿CuÃ¡l serÃ­a la intensidad si esta misma fuente de nivel radiara solo en $1/10$ de todo el espacio?
+
+\noindent \textbf{10.12} Â¿QuÃ© sonido es mÃ¡s intenso a $20\text{ m}$ de su fuente isotrÃ³pica: un sonido de $10\text{ Hz}$ que tiene $80\text{ dB SPL}$ a una distancia de $4\text{ m}$ de su fuente o un sonido de $4000\text{ Hz}$ que tiene $60\text{ dB SPL}$ a una distancia de $3\text{ m}$ de su fuente?
+
+\subsection*{Intensidad del sonido para el umbral de sensibilidad de audiciÃ³n}
+
+\noindent \textbf{10.13} (a) Â¿A quÃ© distancia de una fuente acÃºstica isotrÃ³pica de $10\text{ }\mu\text{W}$ el sonido se encuentra en el umbral de audiciÃ³n para un ser humano?
+
+(b) El umbral de audiciÃ³n para los perros es de $1 \times 10^{-15}\text{ W/m}^2$. Â¿A quÃ© distancia puede un perro escuchar esta fuente?
+
+\noindent \textbf{10.14} (a) Exprese en $\text{dB SPL}$ los niveles de sonido de triple forte de la mÃºsica (muy fuerte, $1 \times 10^{-2}\text{ W/m}^2$) y triple piano (muy suave, $1 \times 10^{-8}\text{ W/m}^2$).
+
+(b) En un concierto al aire libre sin amplificaciÃ³n de sonido, el pÃºblico sentado a $4\text{ m}$ de la orquesta escucha sonidos de triple forte y triple piano. Â¿CuÃ¡les son las respectivas intensidades acÃºsticas (en $\text{dB SPL}$) para aquellos en el pÃºblico sentados a $60\text{ m}$ de distancia? Considere a la orquesta como una fuente puntual.
+
+\noindent \textbf{10.15} (a) Demuestre que $1\text{ W}$ de un radiador de potencia acÃºstica isotrÃ³pico produce una intensidad de $115\text{ dB SPL}$ a una distancia de $0.5\text{ m}$ de la fuente.
+
+(b) Encuentre esta intensidad acÃºstica a $1\text{ m}$ de la fuente.
+
+(c) Â¿QuÃ© tan lejos puede estar de la fuente y aÃºn asÃ­ apenas escucharla (para una fuente de $1000\text{ Hz}$)?
+
+\noindent \textbf{10.16} Determine $P_{\text{ref}}$ y los (cambios de) presiÃ³n a $100\text{ dB SPL}$ en $\text{mmHg}$.
+
+\subsection*{TransmisiÃ³n de sonido, reflexiÃ³n y ultrasonido}
+
+\noindent \textbf{10.17} La Tabla 10.3 proporciona el coeficiente de absorciÃ³n $\alpha$ para el hueso como $1.6 \times 10^{-4}\text{ s/m}$. Otras fuentes lo dan como $14\text{ dB/cm}$ a una frecuencia de $1\text{ MHz}$. Â¿Son consistentes estos dos valores? Â¿Por quÃ©?
+
+\noindent \textbf{10.18} Â¿Se puede hablar a travÃ©s de una persona? (En otras palabras, Â¿son las personas un buen blindaje acÃºstico?) Estime la pÃ©rdida en $\text{dB}$ para un sonido de $3000\text{ Hz}$ transmitido a travÃ©s de su pecho para ayudar a responder a esta pregunta.
+
+\noindent \textbf{10.19} Para cada tejido en la Tabla 10.3, determine el espesor de tejido necesario para reducir a la mitad la intensidad de una onda de ultrasonido de $5\text{ MHz}$. (Asuma que las pÃ©rdidas se deben Ãºnicamente a la absorciÃ³n y no a la reflexiÃ³n en las interfaces).
+
+\noindent \textbf{10.20} A menudo, en la mediciÃ³n por ultrasonido, el transductor y el detector de ultrasonido estÃ¡n en la misma sonda, por lo que se detectan las ondas de sonido reflejadas. Determine la fracciÃ³n de la intensidad del sonido inicial que se detecta para los siguientes casos rastreando el haz que se transmite a travÃ©s del material X en el cuerpo, se refleja con incidencia normal desde la interfaz de X con Y, y luego se transmite nuevamente a travÃ©s del material X. (Asuma que todo el sonido del transductor ingresa a X y todo el que sale de X despuÃ©s de la reflexiÃ³n en Y ingresa al detector. Considere la atenuaciÃ³n en el medio, asÃ­ como la reflexiÃ³n en la interfaz X\text{â€“}Y):
+
+(a) X es $1\text{ cm}$ de mÃºsculo e Y es hueso, para un sonido de $1\text{ MHz}$
+
+(b) X es $1\text{ cm}$ de mÃºsculo e Y es hueso, para un sonido de $10\text{ MHz}$
+
+(c) X es $5\text{ cm}$ de grasa e Y es mÃºsculo, para un sonido de $1\text{ MHz}$
+
+(d) X es $2\text{ cm}$ de sangre e Y es mÃºsculo, para un sonido de $5\text{ MHz}$
+
+(e) X es $1\text{ cm}$ de hueso e Y es mÃºsculo, para un sonido de $1\text{ MHz}$.
+
+\noindent \textbf{10.21} Calcule los tiempos de retraso relativo entre el sonido que se refleja al comienzo del medio X y el que se refleja en la interfaz X\text{â€“}Y, para cada caso en el Problema 10.20.
+
+\noindent \textbf{10.22} Estime los tiempos de retraso relativo para un sonido de $1\text{ MHz}$ que se refleja normalmente desde la primera superficie externa de la aorta, la primera superficie interna de la aorta, la segunda superficie interna de la aorta y la segunda superficie externa de la aorta.
+
+\noindent \textbf{10.23} Cuando la sirena de una ambulancia que resuena a una frecuencia $f$ se acerca a usted a una velocidad $v$, usted escucha la frecuencia desviada hacia arriba a $f' = f (1 + v/v_s)$, mientras que cuando se aleja de usted, escucha la frecuencia desviada hacia abajo a $f' = f (1 - v/v_s)$. Este es el efecto Doppler.
+
+(a) Demuestre que esto es consistente con $f' = f (1 - (v/v_s) \cos \theta)$, donde $\theta$ es el Ã¡ngulo entre el vector de velocidad del objeto en movimiento y el vector de posiciÃ³n desde usted hacia Ã©l.
+
+(b) Demuestre que la ecocardiografÃ­a Doppler por ultrasonido (Fig. 10.56) se puede utilizar para determinar que la velocidad del flujo sanguÃ­neo $v$ es
+\begin{equation}
+v = \frac{(\delta f) v_s}{2 f \cos \theta},
+\label{eq:10.66}
+\end{equation}
+donde $\delta f$ es el desplazamiento Doppler medido ($f' - f$) y $v_s$ es la velocidad del sonido en el tejido corporal.
+
+(c) Calcule el desplazamiento Doppler mÃ¡ximo para la sangre que fluye en la aorta, utilizando ultrasonido de $1\text{ MHz}$.
+
+\begin{figure}[htbp]
+\centering
+  \includegraphics[width=0.7\textwidth]{1056.png}
+  \caption{Examen Doppler del flujo sanguÃ­neo en un vaso a una velocidad $u$, con el escaneo mostrado (Reimpreso de \cite{51}. Utilizado con permiso de Elsevier)}
+  \label{fig:10.56}
+\end{figure}
+
+
+
+\FloatBarrier
+
+\noindent \textbf{10.24} Se aplica una cantidad generosa de gel en el cabezal de la sonda de ultrasonido antes de colocarla sobre la piel (Fig. 10.56):
+
+(a) Â¿Por quÃ©?
+
+(b) Â¿CuÃ¡les deben ser las propiedades acÃºsticas deseadas de este gel?
+
+\noindent \textbf{10.25} Exprese la unidad de admitancia acÃºstica, el $\text{mmho}$ (milimho), en unidades del SI.
+
+\noindent \textbf{10.26} (problema avanzado) Con $Z = R + iX_m + X_s/i$, derive la ecuaciÃ³n (10.19).
+
+\noindent \textbf{10.27} (problema avanzado) Con $Z = R + i(X_m - X_s)$ e $Y = G + i(B_m - B_s)$, derive:
+
+(a) La ecuaciÃ³n (10.20)
+
+(b) $G$, $B_m$ y $B_s$ en tÃ©rminos de $R$, $X_m$ y $X_s$
+
+(c) $R$, $X_m$ y $X_s$ en tÃ©rminos de $G$, $B_m$ y $B_s$.
+
+\noindent \textbf{10.28} (problema avanzado) Con $Z = R + i\omega M + S/i\omega$, donde $\omega$ es la frecuencia angular en $\text{rad/s}$ y $\omega = 2\pi f$ donde $f$ es la frecuencia en $\text{Hz}$ o ciclos por segundo, demuestre que
+\begin{equation}
+|Z| = \sqrt{R^2 + \left(2\pi f M - \frac{S}{2\pi f}\right)^2}.
+\label{eq:10.67}
+\end{equation}
+En problemas de electrÃ³nica, $R$ es la resistencia, $M$ corresponde a la inductancia $L$, y $S$ corresponde al recÃ­proco de la capacitancia $C$ ($S = 1/C$).
+
+% Control de Calidad: 47 pÃ¡rrafos origen -> 47 pÃ¡rrafos salida. Mapeo 1:1 verificado. Sin omisiones.
+
+\subsection*{Habla}
+
+\noindent \textbf{10.29} (problema avanzado) Utilice (10.24) para demostrar que el tÃ©rmino resistivo de la velocidad varÃ­a como una onda de coseno y que los tÃ©rminos inercial y de rigidez varÃ­an ambos como ondas de seno, pero con signos opuestos.
+
+\noindent \textbf{10.30} Las velocidades del sonido en el cerebro y en el hueso del crÃ¡neo son $1550$ y $4090\text{ m/s}$, respectivamente. Â¿QuÃ© fracciÃ³n de sonido se pierde en la reflexiÃ³n del aire al hueso del crÃ¡neo y luego del hueso del crÃ¡neo al cerebro? Asuma que las densidades del cerebro y del hueso del crÃ¡neo son de $1\text{ g/cm}^3$.
+
+\noindent \textbf{10.31} Por lo general, nos preocupa la luz que ingresa al ojo, pero Â¿quÃ© sucede cuando el sonido ingresa al ojo? Calcule el coeficiente de reflexiÃ³n en cada interfaz entre el aire/cÃ³rnea/humor acuoso/cristalino/humor vÃ­treo. Las velocidades del sonido en el humor acuoso, el cristalino y el humor vÃ­treo son $1510$, $1630$ y $1540\text{ m/s}$, respectivamente. Asuma que la densidad de cada medio en el ojo es de $1\text{ g/cm}^3$ y que la cÃ³rnea y el cristalino tienen las mismas propiedades.
+
+\noindent \textbf{10.32} La velocidad del sonido en el colÃ¡geno es de $3640\text{ m/s}$ a lo largo del eje de la fibra y de $2940\text{ m/s}$ a travÃ©s de este eje. Â¿CuÃ¡l es el coeficiente de reflexiÃ³n entre la sangre y el colÃ¡geno, para el sonido que viaja en ambas direcciones en el colÃ¡geno?
+
+\noindent \textbf{10.33} La cavidad oral de una niÃ±a tiene $8\text{ cm}$ de longitud, medida desde sus labios hasta los pliegues vocales. Â¿CuÃ¡l es la frecuencia fundamental de oscilaciÃ³n de esta cavidad? (Trate la cavidad oral como un cilindro abierto en un extremo y cerrado en el otro). Â¿Tiene esto sentido a la luz de las diferencias entre las voces de los niÃ±os y los adultos?
+
+\noindent \textbf{10.34} Grafique en el mismo conjunto de ejes todas las frecuencias de resonancia por debajo de $5\text{ kHz}$ para un cilindro de $18\text{ cm}$ de longitud que estÃ¡ abierto en ambos extremos y un cilindro de $16\text{ cm}$ de longitud que estÃ¡ abierto en un extremo y cerrado en el otro.
+
+\noindent \textbf{10.35} Los fumadores pueden tener pliegues vocales ligeramente hinchados e inflamados y, por lo tanto, quizÃ¡s tengan pliegues que sean mÃ¡s masivos que los de los no fumadores. Â¿CÃ³mo afectarÃ­a esto a la frecuencia de vibraciÃ³n de sus pliegues vocales? Â¿SerÃ­an las voces de los fumadores de tono relativamente mÃ¡s grave o mÃ¡s agudo?
+
+\noindent \textbf{10.36} Explique por quÃ© las personas hablan con un tono agudo despuÃ©s de inhalar helio. La velocidad del sonido en el helio es de aproximadamente $970\text{ m/s}$. (Demuestre esto, dado que $\gamma = c_p/c_v$ es $5/3$ para el helio).
+
+\noindent \textbf{10.37} En el texto, la relaciÃ³n inversa entre la frecuencia del pliegue vocal y la longitud del pliegue vocal se explicÃ³ considerando las frecuencias de resonancia de una cuerda oscilante. Utilice (4.4) para demostrar que esta relaciÃ³n tambiÃ©n se espera si los pliegues vocales se modelan como un objeto libre similar a un resorte que oscila longitudinalmente.
+
+\noindent \textbf{10.38} Estime la frecuencia de vibraciÃ³n de los pliegues vocales asumiendo que son un objeto similar a un resorte que oscila longitudinalmente de $1\text{ cm}$ de largo, $0.3\text{ cm}$ de ancho y $0.3\text{ cm}$ de espesor, con un mÃ³dulo de Young de $100\text{ kPa}$ y una densidad de masa de $1\text{ g/cm}^3$ \cite{1}. (VÃ©ase (4.4)).
+
+\noindent \textbf{10.39} Podemos describir la producciÃ³n del sonido Â«mÂ» como nasal bilabial sonora. Â¿De quÃ© manera difiere la producciÃ³n del sonido Â«nÂ»?
+
+\noindent \textbf{10.40} En comparaciÃ³n con los hombres, Â¿utilizan las mujeres armÃ³nicos mÃ¡s altos o mÃ¡s bajos de su frecuencia fundamental de zumbido para producir el mismo formante vocÃ¡lico? Â¿Por quÃ©?
+
+\noindent \textbf{10.41} Utilice el grÃ¡fico de formantes vocÃ¡licos (Fig. 10.19) para bosquejar la curva de transmisiÃ³n del tracto vocal para tres vocales.
+
+\noindent \textbf{10.42} Describa los espectros de frecuencia de las vocales y consonantes en la Fig. 10.9. SeÃ±ale sus similitudes y diferencias.
+
+\noindent \textbf{10.43} Grafique las frecuencias del primer y segundo formante para cada vocal en la Fig. 10.9 en el mismo conjunto de ejes.
+
+\noindent \textbf{10.44} Grafique las frecuencias del primer y segundo formante para la vocal en la Fig. 10.20 en el mismo conjunto de ejes.
+
+\noindent \textbf{10.45} (problema avanzado) Explique por quÃ© el modelo de dos tubos en la Fig. 10.25b, d, f explica los cambios de modo para el sonido Â«eeÂ» como en Â«seeÂ», los cuales estÃ¡n desviados de las predicciones del modelo de un solo tubo en la Fig. 10.24a.
+
+\subsection*{Mecanismo de audiciÃ³n}
+
+\noindent \textbf{10.46} Â¿CuÃ¡l es la frecuencia de resonancia del canal auditivo de $1.3\text{ cm}$ de longitud de un bebÃ©? Â¿CÃ³mo se compara con la de un adulto?
+
+\noindent \textbf{10.47} La amplitud de movimiento del tÃ­mpano es de $0.03\text{ }\mu\text{m}$ cuando se mide a $100\text{ dB SPL}$ para $3000\text{ Hz}$. Asumiendo que la amplitud es lineal con la fuerza total sobre el tÃ­mpano (lo cual es una buena suposiciÃ³n para presiones por debajo de $130\text{ dB SPL}$), encuentre la amplitud del movimiento del tÃ­mpano a $0\text{ dB SPL}$ en $\text{m}$.
+
+\noindent \textbf{10.48} Modele el movimiento del tÃ­mpano como una membrana plana que estÃ¡ fija en sus extremos, con un desplazamiento que aumenta linealmente desde el borde hacia el centro del tÃ­mpano. (El movimiento es en realidad mÃ¡s cercano a uno sinusoidal que a esta forma de modo triangular). Si este desplazamiento mÃ¡ximo en el centro es de $0.03\text{ }\mu\text{m}$, como en el Problema 10.47, encuentre el cambio total de Ã¡ngulo que realiza el tÃ­mpano durante su movimiento (en radianes y grados).
+
+\noindent \textbf{10.49} Compare la energÃ­a potencial del movimiento del tÃ­mpano a $3000\text{ Hz}$ con la que tiene a $1\text{ Hz}$ para la misma amplitud de movimiento. (Asuma que el movimiento se puede modelar como un oscilador armÃ³nico simple).
+
+\noindent \textbf{10.50} Â¿Es razonable modelar el tÃ­mpano como un objeto que vibra libremente, dado que el estribo lo toca? Â¿Por quÃ©?
+
+\noindent \textbf{10.51} Â¿Tienen las personas una buena sensibilidad auditiva en las frecuencias fundamentales de sus voces? Â¿Es esto importante? Â¿Por quÃ©?
+
+\noindent \textbf{10.52} Â¿CuÃ¡l es la ganancia en $\text{dB}$ debida al oÃ­do medio si solo se considera el aumento de fuerza en el oÃ­do medio (y no todo el aumento de torque)?
+
+\noindent \textbf{10.53} Bosqueje las respuestas de las cÃ©lulas ciliadas en la Fig. 10.39 en un grÃ¡fico linealâ€“lineal de la intensidad acÃºstica frente a la frecuencia.
+
+\noindent \textbf{10.54} Â¿CÃ³mo se relacionan las tres respuestas agudas de las cÃ©lulas ciliadas de la Fig. 10.39 con las respuestas para un oscilador como se muestra en las Figs. 10.7 y D.3?
+
+\noindent \textbf{10.55} DiseÃ±e cÃ©lulas ciliadas compuestas de queratina con frecuencias de resonancia que varÃ­en de $20\text{ Hz}$ a $20\text{ kHz}$ con:
+
+(a) Una longitud fija de $2\text{ mm}$
+
+(b) Un diÃ¡metro fijo de $20\text{ }\mu\text{m}$ o
+
+(c) Dimensiones de $2\text{ mm}$ de longitud y $20\text{ }\mu\text{m}$ de diÃ¡metro para el cilio resonante a $1\text{ kHz}$, con variaciones en estos dos parÃ¡metros que causen cambios iguales en la frecuencia para diferentes cÃ©lulas ciliadas.
+
+\noindent \textbf{10.56} Calcule la frecuencia fundamental para vibraciones laterales de una barra de hueso sÃ³lido de longitud $10\text{ mm}$ y diÃ¡metro $1\text{ mm}$ ($Y = 1 \times 10^{11}\text{ Pa}$ y densidad $\rho = 3000\text{ kg/m}^3$) fija en un extremo a una base rÃ­gida.
+
+\noindent \textbf{10.57} (a) Demuestre que $1\text{ mmH}_2\text{O} = 0.98\text{ daPa}$.
+
+(b) Exprese el rango del timpanograma de $+200\text{ daPa}$ a $-300\text{ daPa}$ en $\text{mmH}_2\text{O}$.
+
+\noindent \textbf{10.58} Demuestre que la relaciÃ³n de impedancia equivalente a la relaciÃ³n de admitancia para los timpanogramas, $Y_{\text{oÃ­do medio}} = Y_{\text{total}} - Y_{\text{oÃ­do externo}}$, es $Z_{\text{oÃ­do medio}} = \frac{Z_{\text{oÃ­do externo}} Z_{\text{total}}}{Z_{\text{oÃ­do externo}} - Z_{\text{total}}}$.
+
+\noindent \textbf{10.59} (problema avanzado) Para condiciones adiabÃ¡ticas (sin flujo de calor), $PV^\gamma$ es una constante. Demuestre que (10.59) se convierte en $\Delta P = -\gamma P(\Delta V)/V$ y que esto conduce a (10.61).
+
+\subsection*{Niveles de audiciÃ³n y percepciÃ³n}
+
+\noindent \textbf{10.60} Un estudiante en una clase quiere configurar el tono del timbre de su telÃ©fono celular de manera que Ã©l pueda escucharlo, pero su instructor, que es un poco mayor que Ã©l, no pueda. Â¿SerÃ­a adecuada una frecuencia fundamental de $250$, $1000$, $17000$ o $30000\text{ Hz}$? Â¿Por quÃ©?
+
+\noindent \textbf{10.61} Â¿A cuÃ¡ntos fotones Ã³pticos equivale la potencia acÃºstica sobre el tÃ­mpano en el umbral ($0\text{ dB SPL}$) \cite{52}? (Sugerencia: use la intensidad de umbral conocida y las dimensiones del tÃ­mpano).
+
+\noindent \textbf{10.62} Compare la intensidad del chasquido de un bate golpeando una pelota de bÃ©isbol como lo escuchan el receptor y un espectador en las gradas.
+
+\noindent \textbf{10.63} Un ruidoso tren elevado (al aire libre) en Brooklyn, en la ciudad de Nueva York, causa molestias acÃºsticas a quienes se encuentran a $5\text{ pies}$ de distancia. Â¿A cuÃ¡ntas cuadras de la ciudad se puede escuchar? (Trate al tren como una fuente puntual, aunque esto es claramente una aproximaciÃ³n. Hay 20 cuadras de ciudad canÃ³nicas en una milla. AdemÃ¡s, recuerde que los ruidos de fondo en la ciudad podrÃ­an enmascarar el sonido del tren, por lo que la intensidad del umbral para escucharlo estÃ¡ muy por encima del umbral de audiciÃ³n de tonos puros en una habitaciÃ³n silenciosa).
+
+\noindent \textbf{10.64} La explosiÃ³n de $23\text{ kg}$ de TNT genera un nivel de sonido de $200\text{ dB SPL}$ a una distancia de $3\text{ m}$ de la detonaciÃ³n. Asuma que la energÃ­a acÃºstica total producida en tales explosiones es proporcional a la masa del TNT:
+
+(a) Â¿A quÃ© distancia debe estar para evitar el umbral del dolor de una detonaciÃ³n de $100\text{ kg}$ de TNT?
+
+(b) Â¿QuÃ© fracciÃ³n de la energÃ­a liberada por la detonaciÃ³n se presenta en forma de energÃ­a acÃºstica sobre la regiÃ³n de liberaciÃ³n hemisfÃ©rica? Asuma que la explosiÃ³n dura $50\text{ ms}$ y que una tonelada de TNT libera $4.18 \times 10^9\text{ J}$.
+
+(c) Se ha informado que $1$ tonelada de TNT produce $120\text{ dB SPL}$ a $15\text{ km}$. Â¿Es esto consistente con los datos proporcionados en este problema?
+
+\noindent \textbf{10.65} Una presiÃ³n estÃ¡tica de $8 \times 10^3\text{ Pa}$ a travÃ©s del tÃ­mpano puede causar su ruptura \cite{11}. Â¿CÃ³mo se compara esto con la presiÃ³n sonora de un sonido de $160\text{ dB SPL}$ que tambiÃ©n puede causar la ruptura del tÃ­mpano?
+
+\noindent \textbf{10.66} De acuerdo con la Fig. 10.30, Â¿quÃ© rango de frecuencias se necesita para escuchar el habla y sobre quÃ© rango de volumen general en $\text{dB SPL}$ se requiere esto?
+
+\noindent \textbf{10.67} De acuerdo con la Fig. 10.30, Â¿quÃ© rango de frecuencias se necesita para escuchar mÃºsica de orquesta y sobre quÃ© rango de volumen general en $\text{dB SPL}$ se requiere esto?
+
+\noindent \textbf{10.68} Vuelva a bosquejar el rango de audiciÃ³n normal en la Fig. 10.30 junto con el rango musical para la mÃºsica rock and roll (que no existÃ­a en 1934 cuando se realizÃ³ esta curva).
+
+\noindent \textbf{10.69} Demuestre que la ecuaciÃ³n (10.65) estÃ¡ referenciada a una sonoridad correspondiente a $40\text{ fonos}$.
+
+\noindent \textbf{10.70} Demuestre que la sonoridad en fonos, $L_p$, y en sones, $L_s$, se relacionan mediante: $L_p = 33.3 \log L_s + 40$, utilizando (10.64) y (10.65).
+
+\noindent \textbf{10.71} Â¿CuÃ¡l es el mÃ¡s fuerte y cuÃ¡l es el mÃ¡s silencioso de estos tres sonidos: uno a $7000\text{ Hz}$ con una sonoridad de $60\text{ fonos}$, uno a $4000\text{ Hz}$ con una sonoridad de $8\text{ sones}$ o uno a $1000\text{ Hz}$ con una intensidad de $50\text{ dB SPL}$? (Como parte de este problema, exprese cada uno de los tres conjuntos de datos en unidades de sonoridad de fonos y sones).
+
+\noindent \textbf{10.72} Â¿QuÃ© sonido de $1000\text{ Hz}$ es mÃ¡s fuerte a $50\text{ pies}$ de su fuente isotrÃ³pica: uno con una intensidad de $80\text{ dB SPL}$ a una distancia de $5\text{ pies}$ de la fuente o uno que tiene $65\text{ dB SPL}$ a una distancia de $25\text{ pies}$ de la fuente? (En ambos casos, calcule la intensidad en $\text{dB SPL}$ a $50\text{ pies}$).
+
+\noindent \textbf{10.73} Se necesitan aproximadamente $80\text{ dB SPL}$ para lograr una sonoridad de $80\text{ fonos}$ a $100$ y $1000\text{ Hz}$. Para lograr $40\text{ fonos}$, se necesitan $40\text{ dB SPL}$ a $1000\text{ Hz}$. Â¿CuÃ¡nta mÃ¡s intensidad acÃºstica se necesita para alcanzar esta sonoridad a $100\text{ Hz}$? Exprese su respuesta en $\text{dB}$ y por el factor de aumento de intensidad necesario a $100\text{ Hz}$ en relaciÃ³n con $1000\text{ Hz}$.
+
+\noindent \textbf{10.74} Usted tiene una radio con altavoces econÃ³micos que producen sonido solo en el rango de frecuencias de $250\text{â€“}5000\text{ Hz}$. Â¿SerÃ¡ capaz de escuchar notas con frecuencias fundamentales de $100\text{ Hz}$ y, de ser asÃ­, por quÃ©?
+
+\noindent \textbf{10.75} Â¿Coincide la escala de sonoridad relativa dada por los sones con la dependencia de la ley de potencia descrita en la Tabla 1.14?
+
+\noindent \textbf{10.76} Usted desea diseÃ±ar un Ã³rgano con un tono de $55\text{ Hz}$:
+
+(a) Demuestre que necesita usar un tubo de $3\text{ m}$ de longitud (abierto en ambos extremos) para producir esta frecuencia de resonancia.
+
+(b) Suponga que este tubo de $3\text{ m}$ de longitud es demasiado largo para usarse en el Ã³rgano, pero aÃºn desea percibir un tono de nota de $55\text{ Hz}$. Explique por quÃ© puede tocar notas desde tubos de $1.0$ y $1.5\text{ m}$ de largo al mismo tiempo y escuchar un tono de $55\text{ Hz}$.
+
+\noindent \textbf{10.77} La escala musical de Â«afinaciÃ³n justa (o entonaciÃ³n justa)Â» consiste en tonos que suenan agradables cuando se emiten juntos o inmediatamente uno despuÃ©s de otro. Tales combinaciones agradables ocurren cuando las notas son armÃ³nicos entre sÃ­ o tienen frecuencias que estÃ¡n relacionadas por fracciones con numeradores y denominadores enteros relativamente pequeÃ±os \cite{54}. Las frecuencias de las notas en una octava en la tÃ³nica C en la escala mayor de afinaciÃ³n justa son $f$ para un tono C, $9f/8$ para D, $5f/4$ para E, $4f/3$ para F, $3f/2$ para G, $5f/3$ para A, $15f/8$ para B y $2f$ para C:
+
+(a) Encuentre las frecuencias en esta escala si el tono A tiene una frecuencia de $440\text{ Hz}$.
+
+(b) Calcule las longitudes de los tubos con frecuencias fundamentales en las frecuencias de cada una de estas notas (con los tubos abiertos en ambos extremos).
+
+\noindent \textbf{10.78} En el texto, se citÃ³ que el limen de diferencia para un tono de $1000\text{ Hz}$ es de $5\text{ dB SPL}$ para un sonido de $5\text{ dB SPL}$ y una fracciÃ³n mucho menor, $6\text{ dB SPL}$, para el sonido mucho mÃ¡s fuerte de $100\text{ dB SPL}$. Determine y luego compare el aumento absoluto en la intensidad acÃºstica (en $\text{W/m}^2$) en ambos casos.
+
+\noindent \textbf{10.79} Una persona, a $2\text{ m}$ de su oÃ­do izquierdo, le habla, y su voz llega a su oÃ­do izquierdo con una intensidad de $60\text{ dB SPL}$:
+
+(a) Si su oÃ­do derecho recibe su voz retrasada por $0.05\text{ ms}$, Â¿dÃ³nde se encuentra ubicado este hablante en relaciÃ³n con usted? (Suponga que una persona directamente frente a usted estÃ¡ a $0^\circ$ e inmediatamente a su derecha estÃ¡ a $90^\circ$. Asuma que sus oÃ­dos estÃ¡n separados por $20\text{ cm}$).
+
+(b) Si la intensidad de la voz disminuye inversamente con el cuadrado de la distancia de propagaciÃ³n, Â¿quÃ© tan menor (en $\text{dB}$) es el sonido que llega al oÃ­do derecho?
+
+% Control de Calidad: 64 pÃ¡rrafos origen -> 64 pÃ¡rrafos salida. Mapeo 1:1 verificado. Sin omisiones.
+
+\begin{thebibliography}{99}
+\bibitem{1} B.K. Ahlborn, \textit{Zoological Physics: Quantitative Models, Body Design, Actions and Physical Limitations in Animals} (Springer, BerlÃ­n, 2004)
+\bibitem{2} R.M.N. Alexander, \textit{The Human Machine} (Columbia University Press, Nueva York, 1992)
+\bibitem{3} J.B. Allen, S.T. Neely, Micromechanical models of the cochlea. \textit{Phys. Today} 40--47 (1992)
+\bibitem{4} L.H. Arnal, A. Flinker, A. Kleinschmidt, A.-L. Giraud, D. Poeppel, Human screams occupy a privileged niche in the communication soundscape. \textit{Curr. Biol.} \textbf{25}, 1--6 (2015)
+\bibitem{5} C. Avendano, L. Deng, H. Hermansky, B. Gold, en \textit{Speech Processing in the Auditory System}, eds. por S. Greenberg, W.A. Ainsworth, A.N. Popper, R.R. Fay, The Analysis and Representation of Speech (Springer, BerlÃ­n, 2004), Cap. 2, pp. 63--100
+\bibitem{6} P. Avery, S. Ehrlich, \textit{Teaching American English Pronunciation} (Oxford University Press, Nueva York, 1992)
+\bibitem{7} M.J. Ball, J. Rahilly, \textit{Phonetics: The Science of Speech} (Arnold, Londres, 1999)
+\bibitem{8} G. Bekesy, Zur Theorie des Horens bei der Schallauftiahme durch Knochenleitung. \textit{Ann. Phys.} \textbf{13}, 111--136 (1932)
+\bibitem{9} G. von BÃ©kÃ©sy, \textit{Experiments in Hearing} (McGraw-Hill, Nueva York, 1960)
+\bibitem{10} Bell Labs, \textit{Record} \textbf{12}(6), 314 (1934)
+\bibitem{11} J.R. Cameron, J.G. Skofronick, R. Grant, \textit{Physics of the Body}, 2.Âª ed. (Medical Physics, Madison, 1999)
+\bibitem{12} G. Clark, \textit{Cochlear Implants: Fundamentals and Applications} (Springer, BerlÃ­n, 2003)
+\bibitem{13} E.A. Culler, J.D. Coakley, K. Lowy, N. Gross, A revised frequency-map of the guinea-pig cochlea. \textit{Am. J. Psychol.} \textbf{56}, 475--500 (1943)
+\bibitem{14} J.T. Cushing, The spring-mass system revisited. \textit{Am. J. Phys.} \textbf{52}, 925--933 (1984)
+\bibitem{15} P. Dallos, A.N. Popper, R.R. Fay (eds.), \textit{The Cochlea} (Springer, BerlÃ­n, 1996)
+\bibitem{16} R. Daniloff, G. Schuckers, L. Feth, \textit{The Physiology of Speech and Hearing: An Introduction} (Prentice-Hall, Englewood Cliffs, 1980)
+\bibitem{17} P.B. Denes, E.N. Pinson, \textit{The Speech Chain: The Physics and Biology of Spoken Language}, 2.Âª ed. (W.H. Freeman and Co., Nueva York, 1993)
+\bibitem{18} K. Deweber, M. Olszewski, R. Ortolano, Knuckle cracking and hand osteoarthritis. \textit{J. Am. Board Fam. Med.} \textbf{24}, 169--174 (2011)
+\bibitem{19} R.L. Diehl, B. Lindblom, Explaining the structure of feature and phoneme inventories: the role of auditory distinctiveness. en \textit{Speech Processing in the Auditory System}, eds. S. Greenberg, W.A. Ainsworth, A.N. Popper, R.R. Fay (Springer, BerlÃ­n, 2004), Cap. 3, pp. 101--162
+\bibitem{20} G.L. Fain, \textit{Sensory Transduction} (Sinauer, Sunderland, 2003)
+\bibitem{21} G. Fant, \textit{Acoustic Theory of Speech Production} (Mouton, La Haya, 1970)
+\bibitem{22} R. Fettiplace, C.M. Hackney, The sensory and motor roles of auditory hair cells. \textit{Nat. Rev. Neurosci.} \textbf{7}, 19--29 (2006)
+\bibitem{23} N.H. Fletcher, \textit{Acoustic Systems in Biology} (Oxford University Press, Nueva York, 1992)
+\bibitem{24} R.A. Freitas Jr., \textit{Nanomedicine, Volume I: Basic Capabilities} (Landes Bioscience, Austin, 1999)
+\bibitem{25} B.O. French, Appraisal of Apollo launch noise. \textit{Aerosp. Med.} \textbf{38}, 719--722 (1967)
+\bibitem{26} S.A. Gelfand, \textit{Hearing: An Introduction to Psychological and Physiological Acoustics} (Dekker, Nueva York, 1981)
+\bibitem{27} S.A. Gelfand, \textit{Essentials of Audiology}, 2.Âª ed. (Thieme, Nueva York, 2001)
+\bibitem{28} D.C. Giancoli, \textit{Physics}, 4.Âª ed. (Prentice-Hall, Englewood Cliffs, 1995)
+\bibitem{29} E.B. Goldstein, \textit{Sensation and Perception}, 4.Âª ed. (Brooks/Cole, Paciï¬c Grove, 1996)
+\bibitem{30} D.M. Green, \textit{An Introduction to Hearing} (Lawrence Erlbaum, Hillsdale, 1976)
+\bibitem{31} S. Greenberg, W.A. Ainsworth, A.N. Popper, R.R. Fay (eds.), \textit{Speech Processing in the Auditory System} (Springer, BerlÃ­n, 2004)
+\bibitem{32} J. Gruber, Basic multifrequency tympanometry: the physical background. \url{www.lymenet.de/symptoms/tympanom/basictym.htm}
+\bibitem{33} A.C. Guyton, J.E. Hall, \textit{Human Physiology and Mechanisms of Disease}, 6.Âª ed. (Saunders, Filadelfia, 1997)
+\bibitem{34} C.M. Hackney, D.H. Furness, Mechanotransduction in vertebrate hair cells: structure and function of the stereociliary bundle. \textit{Am. J. Physiol. Cell. Physiol.} \textbf{268}, 1--13 (1995)
+\bibitem{35} W.M. Hartmann, \textit{Signals, Sound, and Sensation} (Springer, BerlÃ­n, 1998)
+\bibitem{36} H.L. Hawkins, T.A. McMullen, A.N. Popper, R.R. Fay (eds.), \textit{Auditory Computation} (Springer, BerlÃ­n, 1996)
+\bibitem{37} D.C. Hodge, G.R. Garinther, en \textit{Noise and Blast}, eds. J.F. Parker Jr., V.R. West, \textit{Bioastronautics Data Book} (NASA, Washington, 1973), Cap. 15, pp. 693--750
+\bibitem{38} International Standards Organization (ISO): \textit{Recommendation 226: Normal Equal Loudness Contours for Pure Tones and Normal Thresholds of Hearing Under Free-Field Listening Conditions} (ISO, Ginebra, 1961)
+\bibitem{39} J.F. Kennedy, Space Center. Results of AS-503 facilities and environmental measurements, Vol. 1. Technical. Report 927 (1969)
+\bibitem{40} G.N. Kawchuk, J. Fryer, J.L. Jaremko, H. Zeng, L. Rowe, R. Thompson, Real-time visualization of joint cavitation. \textit{PLOS ONE} (2015). doi:10.1371/journal.pone.01194701
+\bibitem{41} J. Keener, J. Sneyd (eds.), \textit{Mathematical Physiology II: Systems Physiology}, 2.Âª ed. (Springer, BerlÃ­n, 2009)
+\bibitem{42} C.P. Lebo, R.C. Reddell, The presbycusis component in occupational hearing loss. \textit{Laryngoscope} \textbf{82}, 1399--1409 (1972)
+\bibitem{43} P. Lieberman, \textit{Toward an Evolutionary Biology of Language} (Belknap, Cambridge, MA, 2006)
+\bibitem{44} D.E. Lieberman, \textit{The Story of the Human Body: Evolution, Health, and Disease} (Pantheon, Nueva York, 2013)
+\bibitem{45} L.S. Lilly, Heart sounds and murmurs, en \textit{Pathophysiology of Heart Disease: A Collaborative Project of Medical Students and Faculty}, 3.Âª ed., ed. por L.S. Lilly (Lippincott Williams \& Wilkins, Filadelfia, 2003), Cap. 2, pp. 29--43
+\bibitem{46} S.E. Linville, The sound of senescence. \textit{J. Voice} \textbf{10}, 190--200 (1996)
+\bibitem{47} R.G. Loudon, R.L.H. Murphy, Lung sounds, en \textit{The Lung: Scientific Foundations}, 2.Âª ed., ed. por R.G. Crystal, J.B. West, P.J. Barnes, E.R. Weibel (Lippincott-Raven, Nueva York, 1997), Cap. 100, pp. 1383--1391
+\bibitem{48} T.J. Lynch III, V. Nedzelnitsky, W.T. Peake, Input impedance of the cochlea in cat. \textit{J. Acoust. Soc. Am.} \textbf{72}, 108--130 (1982)
+\bibitem{49} E.B. Magid, R.R. Coermann, G.H. Ziegenruecker, Human tolerance to whole body sinusoidal vibration. \textit{Aerosp. Med.} \textbf{31}, 921 (1960)
+\bibitem{50} R.H. Margolis, Acoustic immittance measurements, en \textit{Audiology: Diagnosis}, ed. por R.J. Roeser, M. Valente, H. Hosford-Dunn (Thieme, Nueva York, 2000), Cap. 17, pp. 381--423
+\bibitem{51} W.N. McDicken, \textit{Diagnostic Ultrasonics: Principles and Use of Instruments}, 3.Âª ed. (Churchill Livingstone, Edimburgo, 1991)
+\bibitem{52} H.J. Metcalf, \textit{Topics in Classical Biophysics} (Prentice-Hall, Englewood Cliffs, 1980)
+\bibitem{53} H.F. Olson, \textit{Acoustical Engineering} (Van Nostrand, Princeton, 1957)
+\bibitem{54} H.F. Olson, \textit{Music, Physics, and Engineering}, 2.Âª ed. (Dover, Nueva York, 1967)
+\bibitem{55} G.E. Peterson, H.L. Barney, Control methods used in a study of vowels. \textit{J. Acoust. Soc. Am.} \textbf{24}, 175--184 (1952)
+\bibitem{56} M. Roach, \textit{Gulp: Adventures on the Alimentary Canal} (Norton, Nueva York, 2013)
+\bibitem{57} Mary Roach on studying how humans chew and eat. \textit{N.Y. Times} (2013). \url{http://www.nytimes.com/2013/03/26/health/mary-roach-on-studying-food-and-how-humans-eat-it.html}
+\bibitem{58} D.W. Robinson, R.S. Dadson, A re-determination of the equal loudness relations for pure waves. \textit{Br. J. Appl. Phys.} \textbf{7}, 166--181 (1956)
+\bibitem{59} D.W. Robinson, G.J. Sutton, Age effect in hearing: a comparative analysis of threshold data. \textit{Audiology} \textbf{18}, 320--334 (1979)
+\bibitem{60} R.J. Roeser, M. Valente, H. Hosford-Dunn (eds.), \textit{Audiology: Diagnosis} (Thieme, Nueva York, 2000)
+\bibitem{61} R.T. Sataloff, D. Caputo, Rosen, M. Hawkshaw, J.R. Spiegel, The aging adult voice. \textit{J. Voice} \textbf{11}, 156--160 (1997)
+\bibitem{62} R.F. Schmidt, F. Lang, G. Thews, \textit{Physiologie des Menschen}, 29.Âª ed. (Springer, BerlÃ­n, 2005)
+\bibitem{63} E.D. Schubert, \textit{Hearing: Its Function and Dysfunction} (Springer, BerlÃ­n, 1980)
+\bibitem{64} H. Spoendlin, The afferent innervation of the cochlea, en \textit{Electrical Activity of the Auditory Nervous System}, ed. por R.F. Naunton, C. Fernandez (Academic, Londres, 1978), pp. 21--41
+\bibitem{65} A. Spoor, Presbycusis values in relation to noise-induced hearing loss. \textit{Int. Audiol.} \textbf{6}, 48--57 (1967)
+\bibitem{66} K.N. Stevens, \textit{Acoustic Phonetics} (MIT, Cambridge, 1998)
+\bibitem{67} S.S. Stevens, H. Davis, \textit{Hearing: Its Psychology and Physiology} (Wiley, Nueva York, 1938), Reimpreso por la Acoustical Society of America (1983)
+\bibitem{68} S.S. Stevens, J. Volkman, The relation of pitch to frequency. \textit{Am. J. Psychol.} \textbf{53}, 329--353 (1940)
+\bibitem{69} I.R. Titze, \textit{Principles of Voice Production} (Prentice-Hall, Englewood Cliffs, 1994)
+\bibitem{70} J. Tonndorf, S.M. Khanna, The role of the tympanic membrane in middle ear transmission. \textit{Ann. Otol. Rhinol. Laryngol.} \textbf{79}, 743--753 (1970)
+\bibitem{71} T. van Vliet, \textit{Rheology and Fracture Mechanics of Foods} (CRC Press, Boca Raton, 2013)
+\bibitem{72} S. Webb (ed.), \textit{The Physics of Medical Imaging} (Adam Hilger, Bristol, 1988)
+\bibitem{73} D.A. Winter, \textit{Biomechanics and Motor Control of Human Movement}, 3.Âª ed. (Wiley, Nueva York, 2005)
+\bibitem{74} A.B. Wolbarst, \textit{The Physics of Radiology} (Appleton \& Lange, Norwalk, 1993)
+\bibitem{75} W.A. Yost, \textit{Fundamentals of Hearing: An Introduction}, 3.Âª ed. (Academic, San Diego, 1994)
+\bibitem{76} E. Zwicker, H. Fastl, \textit{Psychoacoustics: Facts and Models} (Springer, BerlÃ­n, 1990)
+\end{thebibliography}
+
+% Control de Calidad: 76 pÃ¡rrafos origen -> 76 pÃ¡rrafos salida. Mapeo 1:1 verificado. Sin omisiones.
+
+\end{document}
+

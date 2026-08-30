@@ -1,0 +1,282 @@
+﻿\documentclass{book}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}        % Fuentes vectoriales Type 1
+\usepackage{microtype}      % Mejora la legibilidad
+\usepackage[spanish]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{sidecap}
+\usepackage{url}
+
+\graphicspath{{imagenes/}}
+
+\AtBeginDocument{\shorthandoff{"}}
+
+\begin{document}
+
+% ==========================================
+% PÃGINA DE DETALLES DE LA SERIE Y COMITÃ‰ EDITORIAL
+% ==========================================
+\thispagestyle{empty}
+\noindent\textbf{FÃSICA BIOLÃ“GICA Y MÃ‰DICA, INGENIERÃA BIOMÃ‰DICA}
+
+\vspace{1em}
+\noindent Los campos de la fÃ­sica biolÃ³gica y mÃ©dica y de la ingenierÃ­a biomÃ©dica son amplios, multidisciplinarios y dinÃ¡micos. Se encuentran en la encrucijada de la investigaciÃ³n de frontera en fÃ­sica, biologÃ­a, quÃ­mica y medicina. La serie \textit{Biological and Medical Physics, Biomedical Engineering} estÃ¡ diseÃ±ada para ser integral, cubriendo una amplia gama de temas importantes para el estudio de las ciencias fÃ­sicas, quÃ­micas y biolÃ³gicas. Su objetivo es proporcionar a cientÃ­ficos e ingenieros libros de texto, monografÃ­as y obras de referencia para abordar la creciente necesidad de informaciÃ³n.
+
+\noindent Los libros de la serie enfatizan Ã¡reas establecidas y emergentes de la ciencia, incluyendo la biofÃ­sica molecular, de membranas y matemÃ¡tica; la captaciÃ³n y conversiÃ³n de energÃ­a fotosintÃ©tica; el procesamiento de informaciÃ³n; los principios fÃ­sicos de la genÃ©tica; las comunicaciones sensoriales; las redes de autÃ³matas, redes neuronales y autÃ³matas celulares. De igual importancia serÃ¡ la cobertura de aspectos aplicados de la fÃ­sica biolÃ³gica y mÃ©dica y de la ingenierÃ­a biomÃ©dica, tales como componentes y dispositivos electrÃ³nicos moleculares, biosensores, medicina, imÃ¡genes, principios fÃ­sicos de la producciÃ³n de energÃ­a renovable, prÃ³tesis avanzadas, y control e ingenierÃ­a ambiental.
+
+\vspace{1.5em}
+\noindent\textbf{Editor en Jefe:} \\
+Elias Greenbaum, Oak Ridge National Laboratory, Oak Ridge, Tennessee, EE. UU.
+
+\vspace{1.5em}
+\noindent\textbf{ComitÃ© Editorial:}
+\begin{small}
+\begin{itemize}
+    \item \textbf{Masuo Aizawa}, Departamento de BioingenierÃ­a, Instituto de TecnologÃ­a de Tokio, Yokohama, JapÃ³n
+    \item \textbf{Olaf S. Andersen}, Departamento de FisiologÃ­a, BiofÃ­sica y Medicina Molecular, Universidad de Cornell, Nueva York, EE. UU.
+    \item \textbf{Robert H. Austin}, Departamento de FÃ­sica, Universidad de Princeton, Princeton, Nueva Jersey, EE. UU.
+    \item \textbf{James Barber}, Departamento de BioquÃ­mica, Imperial College of Science, Technology and Medicine, Londres, Inglaterra
+    \item \textbf{Howard C. Berg}, Departamento de BiologÃ­a Molecular y Celular, Universidad de Harvard, Cambridge, Massachusetts, EE. UU.
+    \item \textbf{Victor Bloomfield}, Departamento de BioquÃ­mica, Universidad de Minnesota, St. Paul, Minnesota, EE. UU.
+    \item \textbf{Robert Callender}, Departamento de BioquÃ­mica, Albert Einstein College of Medicine, Bronx, Nueva York, EE. UU.
+    \item \textbf{Britton Chance}, Departamento de BioquÃ­mica/BiofÃ­sica, Universidad de Pensilvania, Filadelfia, EE. UU.
+    \item \textbf{Steven Chu}, Lawrence Berkeley National Laboratory, Berkeley, California, EE. UU.
+    \item \textbf{Louis J. DeFelice}, Departamento de FarmacologÃ­a, Universidad de Vanderbilt, Nashville, Tennessee, EE. UU.
+    \item \textbf{Johann Deisenhofer}, Instituto MÃ©dico Howard Hughes, Universidad de Texas, Dallas, Texas, EE. UU.
+    \item \textbf{George Feher}, Departamento de FÃ­sica, Universidad de California, San Diego, La Jolla, California, EE. UU.
+    \item \textbf{Hans Frauenfelder}, Los Alamos National Laboratory, Los Alamos, Nuevo MÃ©xico, EE. UU.
+    \item \textbf{Ivar Giaever}, Rensselaer Polytechnic Institute, Troy, Nueva York, EE. UU.
+    \item \textbf{Sol M. Gruner}, Universidad de Cornell, Ithaca, Nueva York, EE. UU.
+    \item \textbf{Judith Herzfeld}, Departamento de QuÃ­mica, Universidad de Brandeis, Waltham, Massachusetts, EE. UU.
+    \item \textbf{Mark S. Humayun}, Doheny Eye Institute, Los Ãngeles, California, EE. UU.
+    \item \textbf{Pierre Joliot}, Institut de Biologie Physico-Chimique, Fondation Edmond de Rothschild, ParÃ­s, Francia
+    \item \textbf{Lajos Keszthelyi}, Instituto de BiofÃ­sica, Academia de Ciencias de HungrÃ­a, Szeged, HungrÃ­a
+    \item \textbf{Robert S. Knox}, Departamento de FÃ­sica y AstronomÃ­a, Universidad de Rochester, Rochester, Nueva York, EE. UU.
+    \item \textbf{Aaron Lewis}, Departamento de FÃ­sica Aplicada, Universidad Hebrea, JerusalÃ©n, Israel
+    \item \textbf{Stuart M. Lindsay}, Departamento de FÃ­sica y AstronomÃ­a, Universidad Estatal de Arizona, Tempe, Arizona, EE. UU.
+    \item \textbf{David Mauzerall}, Universidad Rockefeller, Nueva York, Nueva York, EE. UU.
+    \item \textbf{Eugenie V. Mielczarek}, Departamento de FÃ­sica y AstronomÃ­a, Universidad George Mason, Fairfax, Virginia, EE. UU.
+    \item \textbf{Markolf Niemz}, Facultad de Medicina de Mannheim, Universidad de Heidelberg, Mannheim, Alemania
+    \item \textbf{V. Adrian Parsegian}, Physical Science Laboratory, National Institutes of Health, Bethesda, Maryland, EE. UU.
+    \item \textbf{Linda S. Powers}, Universidad de Arizona, Tucson, Arizona, EE. UU.
+    \item \textbf{Earl W. Prohofsky}, Departamento de FÃ­sica, Universidad de Purdue, West Lafayette, Indiana, EE. UU.
+    \item \textbf{Andrew Rubin}, Departamento de BiofÃ­sica, Universidad Estatal de MoscÃº, MoscÃº, Rusia
+    \item \textbf{Michael Seibert}, National Renewable Energy Laboratory, Golden, Colorado, EE. UU.
+    \item \textbf{David Thomas}, Departamento de BioquÃ­mica, Facultad de Medicina de la Universidad de Minnesota, Minneapolis, Minnesota, EE. UU.
+\end{itemize}
+\end{small}
+
+\vspace{1.5em}
+\noindent MÃ¡s informaciÃ³n sobre esta serie en \url{http://www.springer.com/series/3740}
+\clearpage
+
+% ==========================================
+% PORTADA INTERNA (TITLE PAGE)
+% ==========================================
+\thispagestyle{empty}
+\begin{center}
+    \vspace*{3cm}
+    {\large\textbf{FÃ­sica BiolÃ³gica y MÃ©dica, IngenierÃ­a BiomÃ©dica}}
+    
+    \vspace{2.5cm}
+    {\Huge\textbf{Irving P. Herman}}
+    
+    \vspace{1.5cm}
+    {\Huge\textbf{FÃ­sica del Cuerpo Humano}}
+    
+    \vspace{1.2cm}
+    {\Large\textbf{Segunda EdiciÃ³n}}
+    
+    \vspace*{\fill}
+    {\large\textbf{Springer}}
+\end{center}
+\clearpage
+
+% ==========================================
+% PÃGINA DE COPYRIGHT
+% ==========================================
+\thispagestyle{empty}
+\noindent\textbf{Irving P. Herman} \\
+Departamento de FÃ­sica Aplicada \\
+y MatemÃ¡ticas Aplicadas \\
+Universidad de Columbia \\
+Nueva York, NY, EE. UU.
+
+\vspace{3em}
+\noindent ISSN 1618-7210 \hfill ISSN 2197-5647 (electrÃ³nico) \\
+Biological and Medical Physics, Biomedical Engineering \\
+ISBN 978-3-319-23930-9 \hfill ISBN 978-3-319-23932-3 (eBook) \\
+DOI 10.1007/978-3-319-23932-3
+
+\vspace{1.5em}
+\noindent NÃºmero de Control de la Biblioteca del Congreso: 2015951417
+
+\vspace{1.5em}
+\noindent Springer Cham Heidelberg New York Dordrecht London
+
+\vspace{1.5em}
+\noindent \copyright\ Springer International Publishing Switzerland 2006, 2016
+
+\vspace{1.5em}
+\noindent Esta obra estÃ¡ sujeta a derechos de autor. Todos los derechos estÃ¡n reservados por la Editorial, ya sea que se trate de la totalidad o parte del material, especÃ­ficamente los derechos de traducciÃ³n, reimpresiÃ³n, reutilizaciÃ³n de ilustraciones, recitaciÃ³n, difusiÃ³n, reproducciÃ³n en microfilmes o en cualquier otra forma fÃ­sica, y transmisiÃ³n o almacenamiento de informaciÃ³n y recuperaciÃ³n, adaptaciÃ³n informÃ¡tica, software de computadora, o por metodologÃ­a similar o diferente conocida ahora o desarrollada en el futuro.
+
+\vspace{1em}
+\noindent El uso de nombres descriptivos generales, nombres registrados, marcas comerciales, marcas de servicio, etc. en esta publicaciÃ³n no implica, incluso en ausencia de una declaraciÃ³n especÃ­fica, que dichos nombres estÃ©n exentos de las leyes y reglamentos de protecciÃ³n pertinentes y, por lo tanto, libres para su uso general.
+
+\vspace{1em}
+\noindent La editorial, los autores y los editores pueden asumir con seguridad que los consejos e informaciÃ³n de este libro se consideran verdaderos y precisos a la fecha de publicaciÃ³n. Ni la editorial ni los autores o editores ofrecen una garantÃ­a, expresa o implÃ­cita, con respecto al material aquÃ­ contenido o por cualquier error u omisiÃ³n que pudiera haberse cometido.
+
+\vspace{2.5em}
+\noindent Impreso en papel libre de Ã¡cido.
+
+\vspace{1.5em}
+\noindent Springer International Publishing AG Switzerland es parte de Springer Science+Business Media (www.springer.com)
+\clearpage
+
+% ==========================================
+% DEDICATORIA
+% ==========================================
+\thispagestyle{empty}
+\vspace*{7cm}
+\begin{center}
+    \itshape
+    Este libro estÃ¡ dedicado a Daniel, Jonathan y Janet, \\
+    a Sandy Koufax, \\
+    y a la vida de Ron McNair.
+\end{center}
+\clearpage
+
+% ==========================================
+% PREFACIO A LA SEGUNDA EDICIÃ“N
+% ==========================================
+\chapter*{Prefacio a la Segunda EdiciÃ³n}
+\addcontentsline{toc}{chapter}{Prefacio a la Segunda EdiciÃ³n}
+
+Cerca del final de uno de los discursos mÃ¡s famosos de la historia estadounidense, Abraham Lincoln hizo referencia al Â«gobierno del pueblo, por el pueblo, para el puebloÂ» \cite{2nd-5}. En un sentido similar, un texto sobre la fÃ­sica y el cuerpo humano podrÃ­a cubrir la Â«fÃ­sica del cuerpo, por el cuerpo y para el cuerpoÂ», pero tal vez eso serÃ­a demasiado amplio. Nuestro enfoque principal en esta segunda ediciÃ³n sigue siendo la fÃ­sica del cuerpo, concretamente la fÃ­sica de la fisiologÃ­a, y el texto estÃ¡ nuevamente organizado en gran medida por temas de fisiologÃ­a. Sigue habiendo un fuerte Ã©nfasis en la modelaciÃ³n de la fisiologÃ­a. Como se seÃ±ala en el excelente libro de Rideout \cite{2nd-7}, la modelaciÃ³n general en fisiologÃ­a incluye la del momento (como el flujo sanguÃ­neo), la masa (oxÃ­geno, diÃ³xido de carbono, etc., en la sangre), la energÃ­a (flujo de calor) y la informaciÃ³n (seÃ±ales en los nervios, hormonas en el torrente sanguÃ­neo) \cite{2nd-7}. Los modelos que acoplan mÃºltiples sistemas tambiÃ©n son importantes. (DespuÃ©s de todo, todos somos mÃºltiples sistemas fisiolÃ³gicos fuertemente acoplados que, por supuesto, estÃ¡n determinados en Ãºltima instancia por la fÃ­sica). Seguiremos limitÃ¡ndonos a los aspectos mÃ¡s fÃ­sicos y menos quÃ­micos de la modelaciÃ³n fisiolÃ³gica; la modelaciÃ³n quÃ­mica se aborda adecuadamente en otras fuentes \cite{2nd-1, 2nd-2, 2nd-3, 2nd-4, 2nd-6, 2nd-7}. Dentro de nuestro enfoque de Â«fÃ­sica del cuerpoÂ», hemos mejorado la discusiÃ³n sobre la fÃ­sica de las enfermedades, el envejecimiento, el movimiento y la estructura y funciÃ³n de los mÃºsculos, y ahora exploramos cÃ³mo el equilibrio, el metabolismo y el sistema circulatorio cambian durante el embarazo y el parto. La fÃ­sica de los eventos transversales del ciclo de vida, como el embarazo, las lesiones, las enfermedades y trastornos, el envejecimiento y la muerte, trasciende los temas de cualquier capÃ­tulo individual. Ahora se resumen en el nuevo ApÃ©ndice F; este apÃ©ndice tambiÃ©n describe cÃ³mo localizar las discusiones sobre estos temas dentro del texto principal.
+
+La Â«fÃ­sica por el cuerpoÂ» incluye la fÃ­sica de la locomociÃ³n comÃºn y la que ocurre durante eventos atlÃ©ticos y colisiones. Estos temas se abordaron en varias partes de la primera ediciÃ³n, incluyendo muchos problemas. Ahora se discuten con mÃ¡s detalle tanto en el texto como en los problemas. En particular, la fÃ­sica del movimiento, la kinesiologÃ­a y el equilibrio \cite{2nd-8} se discuten de manera mÃ¡s directa mediante el anÃ¡lisis del modelado multisegmento y el tratamiento ampliado de la fÃ­sica del deporte. La discusiÃ³n sobre el rendimiento humano en tareas cotidianas y en los extremos de la competencia atlÃ©tica tambiÃ©n trasciende los temas de cualquier capÃ­tulo individual y acopla muchos de ellos, especialmente los que abordan la estÃ¡tica, el movimiento, el metabolismo, la respiraciÃ³n y la circulaciÃ³n sanguÃ­nea. Para ayudar a unificar la discusiÃ³n sobre el atletismo, se ha aÃ±adido el ApÃ©ndice G para vincular los temas relevantes en estos capÃ­tulos y unificar las referencias a diferentes actividades deportivas.
+
+La Â«fÃ­sica para el cuerpoÂ» incluye la fÃ­sica del anÃ¡lisis de mediciones y el diagnÃ³stico, asÃ­ como la fÃ­sica del tratamiento, gran parte de la cual se denomina fÃ­sica mÃ©dica. La primera ediciÃ³n contenÃ­a cierta discusiÃ³n sobre mediciones y diagnÃ³stico, y prÃ¡cticamente nada sobre el tratamiento. La presentaciÃ³n del anÃ¡lisis de mediciones incluyÃ³ varios mÃ©todos y un poco sobre los resultados de las mediciones. En el nuevo ApÃ©ndice H se presenta ahora una descripciÃ³n general de este tema, que incluye un localizador que describe dÃ³nde se detalla el anÃ¡lisis fÃ­sico del cuerpo en el texto y en los problemas. Aparte de la nueva y breve discusiÃ³n en el ApÃ©ndice H, el tratamiento sigue sin abordarse en esta ediciÃ³n.
+
+Este texto aÃºn puede adaptarse para su uso en cursos de pregrado de nivel inferior o superior, asÃ­ como para algunos cursos de posgrado de nivel inicial. Puede cumplir las funciones de texto principal para un curso completo o servir como fuente secundaria, por ejemplo, mediante el uso de capÃ­tulos individuales. Los ApÃ©ndices F, G y H unifican los temas transversales presentados en varios capÃ­tulos, y pueden utilizarse para guiar la discusiÃ³n de estos temas.
+
+Esta ediciÃ³n incluye numerosos problemas adicionales que abordan el material del texto y lo exploran con mucho mÃ¡s detalle. Ahora se proporcionan muchas soluciones adicionales al final del libro. El autor recomienda encarecidamente que, al leer cualquier secciÃ³n del texto, al menos se examine el contenido de los problemas relacionados al final del capÃ­tulo (incluso si no se planea resolverlos), ya que muchos enfoques e ideas esenciales se tratan Ãºnicamente en los problemas.
+
+En la ediciÃ³n anterior se citaron varios textos excelentes sobre temas relacionados. En particular, destacamos nuevamente varios de los libros sobresalientes que describen modelos matemÃ¡ticos de fisiologÃ­a \cite{2nd-1, 2nd-2, 2nd-3, 2nd-4, 2nd-6, 2nd-7}, los cuales estÃ¡n en su mayor parte a un nivel mÃ¡s avanzado que el de este texto. AdemÃ¡s, resulta de interÃ©s mÃ¡s general la obra reciente Â«The Story of the Human BodyÂ» de Daniel E. Lieberman, que analiza la evoluciÃ³n del cuerpo humano e incluye perspectivas extraordinarias sobre la estructura y funciÃ³n de los cuerpos de los humanos modernos.
+
+El autor estÃ¡ en deuda con Julio Fernandez, Glenn Fleisig, Joel Gersten, Daniel Herman, Jonathan Herman, Ronald Koder, Jeffrey Kysar, David Lerner, Kristin Myers, Herman Pontzer y Alejandro Tello, y muchos otros por sus comentarios, sugerencias y aportes mientras preparaba esta segunda ediciÃ³n; con los numerosos estudiantes, incluyendo a Sarah Beck, que encontraron errores en la primera ediciÃ³n; y con quienes ayudaron en la preparaciÃ³n de la primera ediciÃ³n. TambiÃ©n le gustarÃ­a agradecer al sistema de bibliotecas de la Universidad de Columbia por la rÃ¡pida recuperaciÃ³n de libros de referencia y artÃ­culos (y por permitirle al autor renovar los libros muchas, muchas veces).
+
+\vspace{1.5em}
+\noindent Nueva York, NY \hfill Irving P. Herman \\
+Julio de 2015
+
+\vspace{2em}
+\begin{thebibliography}{9}
+\bibitem{2nd-1} E. Carson, C. Cobelli, \textit{Modelling Methodology for Physiology and Medicine} (Academic, San Diego, 2001)
+\bibitem{2nd-2} J.L. Hargrove, \textit{Dynamic Modeling in the Health Sciences} (Springer, BerlÃ­n, 1998)
+\bibitem{2nd-3} F.C. Hoppensteadt, C.S. Peskin, \textit{Modeling and Simulation in Medicine and the Life Sciences}, 2.Âª ed. (Springer, BerlÃ­n, 2002) (La primera ediciÃ³n de 1992 se llamÃ³ \textit{Mathematics in Medicine and the Life Sciences})
+\bibitem{2nd-4} J. Keener, J. Sneyd (eds.), \textit{Mathematical Physiology II: Systems Physiology}, 2.Âª ed. (Springer, BerlÃ­n, 2009)
+\bibitem{2nd-5} A. Lincoln, \textit{Lincoln: Speeches and Writings: 1859--1865} (Library of America, Nueva York, 2012)
+\bibitem{2nd-6} J.T. Ottesen, M.S. Olufsen, J.K. Larsen (eds.), \textit{Applied Mathematical Models in Human Physiology} (SIAM, Filadelfia, 2004)
+\bibitem{2nd-7} V.C. Rideout, \textit{Mathematical and Computer Modeling of Physiological Systems} (Prentice-Hall, Englewood Cliffs, 1991)
+\bibitem{2nd-8} N. Hamilton, W. Weimar, K. Luttgens, \textit{Kinesiology: Scientific Basis of Human Motion}, 12.Âª ed. (McGraw-Hill, Nueva York, 2012)
+\end{thebibliography}
+
+% Control de Calidad: 7 pÃ¡rrafos origen -> 7 pÃ¡rrafos salida. Mapeo 1:1 verificado. Sin omisiones.
+
+\clearpage
+
+% ==========================================
+% PREFACIO A LA PRIMERA EDICIÃ“N
+% ==========================================
+\chapter*{Prefacio a la Primera EdiciÃ³n}
+\addcontentsline{toc}{chapter}{Prefacio a la Primera EdiciÃ³n}
+
+La fÃ­sica explica todo desde el principio hasta el final de cualquier descripciÃ³n completa del cuerpo humano. Una discusiÃ³n tan exhaustiva deberÃ­a comenzar con la estructura bÃ¡sica de la materia, tal como la explica la mecÃ¡nica cuÃ¡ntica â€”la fÃ­sica a pequeÃ±as dimensionesâ€”, y terminar con la mecÃ¡nica del movimiento humano, la energÃ©tica del metabolismo, la dinÃ¡mica de fluidos del flujo sanguÃ­neo a travÃ©s de los vasos, los mecanismos para hablar y oÃ­r, y el sistema de imÃ¡genes Ã³pticas que llamamos el ojo. Todas las combinaciones requeridas de Ã¡tomos para formar las complejas molÃ©culas y Ã³rganos de los organismos que viven y se reproducen pueden explicarse mediante la mecÃ¡nica cuÃ¡ntica; sin embargo, tales explicaciones pueden volverse bastante complejas. Los campos de la quÃ­mica y la biologÃ­a se han desarrollado, en parte, para explicar la brecha entre los extremos: la microfÃ­sica y la macrofÃ­sica de organismos como el cuerpo humano.
+
+Este libro se enfoca principalmente en el extremo de la macrofÃ­sica del cuerpo humano. Asumiremos que los Ã¡tomos forman molÃ©culas que forman cÃ©lulas que forman Ã³rganos. Queremos comprender la fÃ­sica de los Ã³rganos humanos y de los propios seres humanos. Aplicaremos y ampliaremos en cierta medida la fÃ­sica de primer aÃ±o de universidad para ver cÃ³mo funciona el cuerpo. AdemÃ¡s de aplicar conceptos fÃ­sicos al cuerpo, intentaremos comprender el cuerpo desde un punto de vista que es mÃ¡s numÃ©rico del que se suele adoptar en las presentaciones biolÃ³gicas y mÃ©dicas.
+
+Una forma de caracterizar este texto es diciendo lo que es y lo que no es. Ciertamente trata sobre la fÃ­sica del cuerpo humano. No trata sobre anatomÃ­a humana, aunque necesitaremos utilizar algunos conceptos anatÃ³micos bÃ¡sicos. No trata sobre fisiologÃ­a humana, aunque puede llamarse un libro sobre la fÃ­sica de la fisiologÃ­a. No es una monografÃ­a en ingenierÃ­a biomÃ©dica en sÃ­, aunque aproximadamente la mitad de este volumen se refiere a la biomecÃ¡nica, un Ã¡rea importante en la ingenierÃ­a biomÃ©dica. La fÃ­sica mÃ©dica estÃ¡ mÃ¡s estrechamente relacionada con la fÃ­sica de la salud, el uso de radiaciÃ³n ionizante, las imÃ¡genes y la instrumentaciÃ³n, que con la macrofÃ­sica del cuerpo. La biofÃ­sica se refiere a cÃ³mo se puede utilizar la fÃ­sica para estudiar la biologÃ­a y se centra mucho mÃ¡s en la base molecular y celular de lo que lo haremos nosotros (ver el ApÃ©ndice E). Se podrÃ­a decir que la fÃ­sica del cuerpo humano es sinÃ³nimo de comprender la mÃ¡quina humana.
+
+Nuestro objetivo es comprender los aspectos fÃ­sicos relacionados con el cuerpo humano, en parte mediante la resoluciÃ³n de problemas para profundizar en esta comprensiÃ³n. El enfoque no consiste en absoluto en aprender y memorizar terminologÃ­a mÃ©dica. AÃºn asÃ­, se introducirÃ¡n y utilizarÃ¡n algunos conceptos muy bÃ¡sicos de anatomÃ­a y fisiologÃ­a. Varios de los muchos y excelentes textos generales de anatomÃ­a y fisiologÃ­a se citan al final \cite{1st-11, 1st-16, 1st-21, 1st-22, 1st-23, 1st-24, 1st-25, 1st-26, 1st-27, 1st-29}.
+
+Un tema recurrente a lo largo de este texto es el desarrollo y posterior uso de modelos simples y, posteriormente, mÃ¡s refinados de la macrofÃ­sica del cuerpo humano \cite{1st-7, 1st-13, 1st-15}. Los fÃ­sicos tienden a modelar los conceptos en los tÃ©rminos mÃ¡s simples posibles al principio. Por ejemplo, a orden cero, un fÃ­sico modelarÃ­a una vaca como una esfera. (Esto se utiliza a veces como parte de un chiste). AquÃ­ nos volveremos un poco mÃ¡s complejos, pero no mucho mÃ¡s. Otro tema consiste en abordar de manera cuantitativa cuestiones de la biologÃ­a humana que a menudo se tratan solo cualitativamente. El llamado de Burton a un pensamiento mÃ¡s cuantitativo en fisiologÃ­a en \textit{Physiology by Numbers} \cite{1st-5} es muy apreciado por el autor. AdemÃ¡s, presentaremos datos fisiolÃ³gicos reales y los vincularemos con anÃ¡lisis y modelado cuantitativos.
+
+Si hay una fuerza aplicada, energÃ­a, flujo de fluidos, un rayo de luz, una corriente elÃ©ctrica, o un campo elÃ©ctrico o magnÃ©tico asociado con el cuerpo, lo llamaremos fÃ­sica y lo analizaremos. Tenderemos a evitar temas que profundicen mÃ¡s en cuestiones de quÃ­mica y biologÃ­a, pero abordaremos brevemente cuestiones de fisicoquÃ­mica que involucran gradientes de concentraciÃ³n y similares, en la medida en que se relacionen con el intercambio de fluidos en los capilares y la conducciÃ³n en los nervios. Aunque enfatizamos la fÃ­sica del cuerpo por encima de la instrumentaciÃ³n utilizada para realizar mediciones fÃ­sicas en el cuerpo y explorar la funciÃ³n corporal, dicha instrumentaciÃ³n se aborda segÃºn sea necesario.
+
+Nuestra intenciÃ³n es utilizar la fÃ­sica bÃ¡sica y no enseÃ±arla, en particular desde cero. Muchos capÃ­tulos incluyen una breve revisiÃ³n de los principios fÃ­sicos necesarios en ese capÃ­tulo y en los capÃ­tulos posteriores. Algunos temas se desarrollan un poco mÃ¡s, y algunos incluso un poco mÃ¡s allÃ¡, y estos se identifican como temas avanzados. Se ofrecen descripciones mÃ¡s detalladas para temas que rara vez se cubren en detalle durante un curso de fÃ­sica de dos semestres, como los fluidos (Cap. 7), la acÃºstica (Cap. 10) y la Ã³ptica (Cap. 11), y para Ã¡reas utilizadas en varios contextos, como el movimiento armÃ³nico (Cap. 3). Se utiliza algo de cÃ¡lculo diferencial e integral. (La diferenciaciÃ³n parcial se usa con moderaciÃ³n, y principalmente en las secciones etiquetadas como temas avanzados). En el ApÃ©ndice C se presenta una breve revisiÃ³n de las soluciones a las ecuaciones diferenciales simples utilizadas aquÃ­ para ayudar a los estudiantes con una formaciÃ³n limitada en cÃ¡lculo.
+
+Comenzaremos con una comparaciÃ³n de la terminologÃ­a mÃ©dica y fÃ­sica en el Cap. 1. El primer capÃ­tulo tambiÃ©n incluye una discusiÃ³n sobre el ser humano Â«estÃ¡ndarÂ» e introduce el concepto de relaciones de escala. Podemos agrupar los temas de los siguientes 11 capÃ­tulos en cuatro Ã¡reas de la fÃ­sica del cuerpo humano: (1) En los Caps. 2 al 5, se analiza la mecÃ¡nica del cuerpo estÃ¡tico (Cap. 2) y del cuerpo en movimiento (Cap. 3), que luego se vinculan con las propiedades mecÃ¡nicas de los materiales del cuerpo (Cap. 4) y los motores del cuerpo: los mÃºsculos (Cap. 5); estos temas pueden caracterizarse como \textit{LocomociÃ³n en tierra}. (2) El segundo tema, \textit{EnergÃ©tica del metabolismo corporal}, se analiza en el Cap. 6 y es necesario para comprender las discusiones sobre la locomociÃ³n y la funciÃ³n del cuerpo que lo preceden y lo suceden. (3) Los CapÃ­tulos 7 al 9 cubren la \textit{LocomociÃ³n de los humanos en fluidos} (distinta de la locomociÃ³n en tierra) y el \textit{Movimiento de fluidos en los humanos}. El CapÃ­tulo 7 ofrece una visiÃ³n general de la fÃ­sica de los fluidos y aborda la locomociÃ³n en el agua (nataciÃ³n) y en el aire (sobre el suelo, al menos la perspectiva del vuelo humano). Los CapÃ­tulos 8 y 9 cubren respectivamente la fluÃ­dica de la sangre (sistema cardiovascular) y del aire (sistema respiratorio) en el cuerpo. (4) El CapÃ­tulo 10 explora la acÃºstica de las ondas sonoras en el habla y la audiciÃ³n. La Ã³ptica de los ojos y la visiÃ³n se investiga en el Cap. 11. Las propiedades elÃ©ctricas bÃ¡sicas del cuerpo se desarrollan en el Cap. 12, junto con una breve descripciÃ³n de las propiedades magnÃ©ticas del cuerpo. Por lo tanto, estos tres capÃ­tulos abordan respectivamente las ondas sonoras, electromagnÃ©ticas y elÃ©ctricas, que colectivamente podemos llamar \textit{Ondas y seÃ±ales}. (La naturaleza electromagnÃ©tica de las ondas de luz no se analiza en el Cap. 11).
+
+El CapÃ­tulo 13 examina cÃ³mo el cuerpo utiliza automÃ¡ticamente el principio de ingenierÃ­a bÃ¡sico de retroalimentaciÃ³n y control en la regulaciÃ³n de todos los aspectos de su funciÃ³n. Se describe la fÃ­sica de la sensaciÃ³n de tres de los cinco sentidos: audiciÃ³n, visiÃ³n y tacto (este Ãºltimo brevemente en el Cap. 2). En el Cap. 1 se realiza alguna conexiÃ³n entre la fÃ­sica de la sensaciÃ³n, la bioquÃ­mica de la sensaciÃ³n y la percepciÃ³n (psicofÃ­sica). Los sentidos del gusto y del olfato son puramente quÃ­micos, con poca base en la fÃ­sica (aparte de que la quÃ­mica de las interacciones moleculares en cada uno de ellos son aplicaciones claras de la fÃ­sica), y no se cubren, excepto por una breve discusiÃ³n de las propiedades elÃ©ctricas de las neuronas sensoriales del gusto y del olfato en el Cap. 12. El Ã©nfasis en todo momento estÃ¡ en cÃ³mo la fÃ­sica puede explicar el funcionamiento del cuerpo en circunstancias normales e inusuales. Nos ocuparemos del cuerpo humano con sus coberturas corporales comunes: calzado para minimizar el estrÃ©s durante el movimiento (Cap. 4), ropa para regular la pÃ©rdida de calor (Cap. 6) y lentes correctivos para mejorar la visiÃ³n (Cap. 11).
+
+Los capÃ­tulos estÃ¡n diseÃ±ados mÃ¡s para abordar Ã¡reas especÃ­ficas de la fÃ­sica que partes o sistemas especÃ­ficos del cuerpo. Es difÃ­cil construir capÃ­tulos con divisiones nÃ­tidas porque se necesitan diferentes Ã¡reas de la fÃ­sica para comprender muchos componentes del cuerpo. Por ejemplo, para comprender la fÃ­sica del corazÃ³n, es necesario abordar su papel en la circulaciÃ³n (Cap. 8), la acciÃ³n de los mÃºsculos (Cap. 5, que se centra mÃ¡s en el mÃºsculo esquelÃ©tico que en el mÃºsculo cardÃ­aco, que es bastante similar) y las seÃ±ales elÃ©ctricas generadas por el corazÃ³n (Cap. 12).
+
+Este texto concluye con cinco apÃ©ndices. El ApÃ©ndice A ofrece una visiÃ³n general de los sÃ­mbolos y las unidades, y hace referencia a las tablas de unidades presentadas en los capÃ­tulos. El ApÃ©ndice B enumera las figuras y tablas que describen las caracterÃ­sticas principales de la informaciÃ³n anatÃ³mica y antropomÃ©trica humana, que se utilizan a lo largo de este texto. Los tipos de ecuaciones diferenciales utilizadas en el texto se revisan en el ApÃ©ndice C. Estas mismas ecuaciones diferenciales se utilizan en todo el texto en modelos mecÃ¡nicos, de flujo de fluidos y elÃ©ctricos; las conexiones entre estos modelos se realizan en el ApÃ©ndice D. El ApÃ©ndice E intenta definir el campo de la biofÃ­sica y conecta los contenidos de este texto con este campo.
+
+Este texto se ha desarrollado a partir de las notas de clase del autor preparadas para el curso \textit{FÃ­sica del Cuerpo Humano}, que es una materia optativa restringida de Â«nivel profesionalÂ» que Ã©l diseÃ±Ã³, cursada principalmente por estudiantes de primer y segundo aÃ±o de pregrado en la Fu Foundation School of Engineering and Applied Science de la Universidad de Columbia. Este curso fue diseÃ±ado de modo que pudiera ser tomado por todos los estudiantes de primer aÃ±o en su segundo semestre (en conjunto con la fÃ­sica y el cÃ¡lculo del segundo semestre).
+
+El autor suele cubrir los Caps. 1 al 10 con cierto detalle y los Caps. 11 al 13 con menos detalle en un semestre completo.
+
+Se pueden dictar cursos a diferentes niveles, incluidos cursos de pregrado de nivel medio y superior, incluyendo o excluyendo deliberadamente temas mÃ¡s detallados y avanzados en el texto y los problemas. Dependiendo del nivel de profundidad deseado, el material de aproximadamente la mitad o de todos los capÃ­tulos puede cubrirse en un semestre.
+
+Este texto tambiÃ©n puede utilizarse como volumen complementario en cursos introductorios de fÃ­sica, y ayudar a los estudiantes de pregrado de premÃ©dica a aprender y repasar fÃ­sica. TambiÃ©n puede servir como texto en cursos introductorios de ingenierÃ­a biomÃ©dica o de materiales mÃ©dicos. Los estudiantes de medicina interesados en un enfoque mÃ¡s cuantitativo de la fisiologÃ­a y aquellos que realizan investigaciÃ³n mÃ©dica tambiÃ©n pueden apreciar los enfoques adoptados aquÃ­.
+
+Al final de cada capÃ­tulo se presentan muchos problemas que van desde problemas sencillos hasta otros mÃ¡s avanzados (estos Ãºltimos se denominan como tales). Varios problemas tienen mÃºltiples partes, y solo se pueden asignar algunas de estas partes. Las respuestas a los problemas seleccionados se proporcionan despuÃ©s de los apÃ©ndices.
+
+Por lo general, se utilizan unidades del SI (MKS, m-kg-s); cuando resulta mÃ¡s conveniente, se utilizan otras unidades mÃ©tricas, incluidas las unidades CGS (cm-g-s) y unidades mÃ©tricas mixtas. A veces se utilizan deliberadamente unidades del sistema inglÃ©s FPS (ft-lb-s) para hacer una conexiÃ³n con el mundo real (al menos en paÃ­ses como EE. UU. y el Reino Unido). Por ejemplo, serÃ­a extraÃ±o escuchar a un locutor de bÃ©isbol decir: Â«Este lanzador realmente estÃ¡ tirando fuego. La pistola de radar cronometrÃ³ su Ãºltimo lanzamiento a $43,8\text{ m/s}$ (o $158\text{ km/h}$), en lugar de $98\text{ mph}$Â». SerÃ­a aÃºn mÃ¡s extraÃ±o escuchar a un locutor de fÃºtbol (es decir, fÃºtbol americano) decir: Â«Tienen primero y $9,144$ por avanzarÂ», en referencia a $9,144\text{ m}$ en lugar de $10\text{ yd}$. Del mismo modo, serÃ­a extraÃ±o discutir la fÃ­sica del cuerpo en estos deportes, como al lanzar una pelota de bÃ©isbol, en unidades distintas de las habituales. Los Ã¡ngulos se expresan en radianes, excepto cuando el uso de grados proporciona una imagen fÃ­sica mÃ¡s clara.
+
+Varios textos excelentes cubren material que se superpone con los temas tratados aquÃ­, cada uno con un enfoque diferente. Son recursos magnÃ­ficos por derecho propio. \textit{Physics of the Body} de Cameron, Skofronick y Grant \cite{1st-6} abarca la mayorÃ­a de los temas de este libro y proporciona una excelente visiÃ³n fÃ­sica. EstÃ¡ a un nivel de fÃ­sica inferior al utilizado aquÃ­ y deduce y presenta menos de las ecuaciones necesarias para un tratamiento mÃ¡s riguroso, pero proporciona una base bÃ¡sica muy buena en fisiologÃ­a humana para no expertos. En cierto modo, el Ã©nfasis de \textit{The Human Machine} de Alexander \cite{1st-2} coincide con el nuestro, pero, de nuevo, las explicaciones son mÃ¡s cualitativas. El modo de pensamiento fÃ­sico que presenta es impresionante. \textit{Physics with Examples from Medicine and Biology} de Benedek y Villars \cite{1st-3} es una serie de tres textos completos de fÃ­sica introductoria en los que se han elegido excelentes ejemplos y problemas relativos a la fÃ­sica del cuerpo. Los autores han tomado varios temas bastante complejos y los han hecho completamente comprensibles. Muchos otros textos de fÃ­sica general de primer aÃ±o de uso comÃºn hoy en dÃ­a contienen varios ejemplos y problemas de capÃ­tulo relacionados con el cuerpo. \textit{Intermediate Physics for Medicine and Biology} de Hobbie \cite{1st-14} es un texto mÃ¡s avanzado que enfatiza tanto la fÃ­sica como la fisicoquÃ­mica. \textit{Medical Physics and Biomedical Engineering} de Brown et al. \cite{1st-4} es un poco mÃ¡s avanzado y se centra tambiÃ©n en Ã¡reas clÃ¡sicas de la fÃ­sica mÃ©dica, como la radiactividad y la instrumentaciÃ³n. Muchos de los problemas ilustrativos sobre biologÃ­a humana y temas relacionados se han recopilado en los hermosos libros: \textit{Biomedical Applications of Introductory Physics} de Tuszynski y Dixon \cite{1st-28}, \textit{Physics in Biology and Medicine} de Davidovits \cite{1st-9}, \textit{Biophysics Problems: A Textbook with Answers} de MarÃ³ti, Berkes y TÃ¶lgyesi \cite{1st-17}, \textit{Physics for the Biological Sciences: A Topical Approach to Biophysical Concepts} de Hallett, Stinson y Speight \cite{1st-12}, y \textit{Topics in Classical Biophysics} de Metcalf \cite{1st-18}. Muchos de los temas de fisiologÃ­a del ejercicio, como el metabolismo durante las actividades deportivas, se describen en tÃ©rminos elementales en \textit{Foxâ€™s Physiological Basis for Exercise and Sport} de Foss y Keteyian \cite{1st-10} y \textit{Physiology of Sport and Exercise} de Wilmore y Costill \cite{1st-30}. \textit{Basic Biomechanics of the Musculoskeletal System}, editado por Nordin y Frankel \cite{1st-20}, es una descripciÃ³n general, completa y clara de la biomecÃ¡nica de estructuras, articulaciones y movimiento. Las aplicaciones de la fÃ­sica a un nivel mÃ¡s molecular y celular, mÃ¡s en el dominio clÃ¡sico de la biofÃ­sica, se describen en \textit{Biophysics: An Introduction} de Cotterill \cite{1st-8} y \textit{Biological Physics: Energy, Information} de Nelson \cite{1st-19}. La aplicaciÃ³n mÃ¡s general de la fÃ­sica a los animales se aborda en el apasionante y muy completo libro \textit{Zoological Physics: Quantitative Models, Body Design, Actions and Physical Limitations in Animals} de Ahlborn \cite{1st-1}. Todos estos textos son muy recomendados para obtener mÃ¡s detalles. Ellos, junto con los textos de anatomÃ­a y fisiologÃ­a citados anteriormente, han contribuido a la preparaciÃ³n de este texto.
+
+El autor agradece a las muchas personas que han realizado valiosos comentarios para contribuir a este libro, incluyendo a Marlene Arbo, Gerard Ateshian, Sarbajit Benerjee, Alex Breskin, Bill Burdick, Yi-Ting Chiang, Kevin Costa, Ted Ducas, Yossi Goffer, Daniel Herman, Jonathan Herman, Steven Heymsfield, Jeffrey Holmes, Mark Langill, Barclay Morrison III, Elizabeth Olson, Thomas Pedersen, Harry Radousky, Paul Sajda, Michael Sheetz y Samuel Sia. TambiÃ©n le gustarÃ­a agradecer al sistema de bibliotecas de la Universidad de Columbia.
+
+Este autor comenzÃ³ a escribir este texto cuando era becario Lady Davis durante su aÃ±o sabÃ¡tico en la Universidad Hebrea de JerusalÃ©n como invitado de Uri Banin, y agradece sinceramente este apoyo.
+
+\vspace{1.5em}
+\noindent Nueva York, NY \hfill Irving P. Herman \\
+Noviembre de 2006
+
+\vspace{2em}
+\begin{thebibliography}{99}
+\bibitem{1st-1} B.K. Ahlborn, \textit{Zoological Physics: Quantitative Models, Body Design, Actions and Physical Limitations in Animals} (Springer, BerlÃ­n, Heidelberg, Nueva York, 2004)
+\bibitem{1st-2} R. McNeill Alexander, \textit{The Human Machine} (Columbia University Press, Nueva York, 1992)
+\bibitem{1st-3} G.B. Benedek, F.M.H. Villars, \textit{Physics with Illustrative Examples from Medicine and Biology}, tres volÃºmenes, 2.Âª ed. (AIP/Springer, Nueva York, BerlÃ­n, Heidelberg, 2000)
+\bibitem{1st-4} B.H. Brown, R.H. Smallwood, D.C. Barber, P.V. Lawford, D.R. Hose, \textit{Medical Physics and Biomedical Engineering} (Institute of Physics, Filadelfia, 1999)
+\bibitem{1st-5} R.F. Burton, \textit{Physiology by Numbers: An Encouragement to Quantitative Thinking} (Cambridge University Press, Cambridge, 1994)
+\bibitem{1st-6} J.R. Cameron, J.G. Skofronick, R. Grant, \textit{Physics of the Body}, 2.Âª ed. (Medical Physics, Madison, WI, 1999)
+\bibitem{1st-7} E. Carson, C. Cobelli, \textit{Modelling Methodology for Physiology and Medicine} (Academic, San Diego, 2001)
+\bibitem{1st-8} R.M.J. Cotterill, \textit{Biophysics: An Introduction} (Wiley, Nueva York, 2002)
+\bibitem{1st-9} P. Davidovits, \textit{Physics in Biology and Medicine}, 2.Âª ed. (Elsevier/Academic, San Diego, 2001)
+\bibitem{1st-10} M.L. Foss, S.J. Keteyian, \textit{Foxâ€™s Physiological Basis for Exercise and Sport}, 6.Âª ed. (McGraw-Hill, Boston, 1998)
+\bibitem{1st-11} A.C. Guyton, J.E. Hall, \textit{Human Physiology and Mechanisms of Disease}, 6.Âª ed. (Saunders, Filadelfia, 1997)
+\bibitem{1st-12} F.R. Hallett, R.H. Stinson, P.A. Speight, \textit{Physics for the Biological Sciences: A Topical Approach to Biophysical Concepts} (Methuen/Chapman \& Hall, Toronto, 1982)
+\bibitem{1st-13} J.L. Hargrove, \textit{Dynamic Modeling in the Health Sciences} (Springer, BerlÃ­n, Heidelberg, Nueva York, 1998)
+\bibitem{1st-14} R.K. Hobbie, \textit{Intermediate Physics for Medicine and Biology}, 3.Âª ed. (AIP, Nueva York, 1997)
+\bibitem{1st-15} F.C. Hoppensteadt, C.S. Peskin, \textit{Modeling and Simulation in Medicine and the Life Sciences}, 2.Âª ed. (Springer, BerlÃ­n, Heidelberg, Nueva York, 2002) (La primera ediciÃ³n de 1992 se llamÃ³ \textit{Mathematics in Medicine and the Life Sciences})
+\bibitem{1st-16} E.N. Marieb, \textit{Human Anatomy \& Physiology}, 5.Âª ed. (Benjamin Cummings, San Francisco, 2001)
+\bibitem{1st-17} P. MarÃ³ti, L. Berkes, F. TÃ¶lgyesi, \textit{Biophysics Problems: A Textbook with Answers} (AkadÃ©miai, Budapest, 1998)
+\bibitem{1st-18} H.J. Metcalf, \textit{Topics in Classical Biophysics} (Prentice-Hall, Englewood Cliffs, NJ, 1980)
+\bibitem{1st-19} P. Nelson, \textit{Biological Physics: Energy, Information, Life} (Freeman, Nueva York, 2003)
+\bibitem{1st-20} M. Nordin, V.H. Frankel (eds.), \textit{Basic Biomechanics of the Musculoskeletal System}, 3.Âª ed. (Lippincott Williams \& Wilkins, Filadelfia, 2001)
+\bibitem{1st-21} P.E. Pack, \textit{Anatomy and Physiology} (Cliff Notes, Lincoln, NE, 1997)
+\bibitem{1st-22} H.D. Patton, A.F. Fuchs, B. Hille, A.M. Scher, R. Steiner (eds.), \textit{Textbook of Physiology}, 21.Âª ed. (Saunders, Filadelfia, 1989)
+\bibitem{1st-23} R.R. Seeley, T.D. Stephens, P. Tate, \textit{Anatomy \& Physiology}, 6.Âª ed. (McGraw-Hill, Boston, 2003)
+\bibitem{1st-24} L. Sherwood, \textit{Human Physiology: From Cells to Systems}, 5.Âª ed. (Thomson Brooks/Cole, Belmont, CA, 2004)
+\bibitem{1st-25} D. Shier, J. Butler, R. Lewis, \textit{Holeâ€™s Human Anatomy and Physiology}, 9.Âª ed. (McGraw-Hill, Boston, 2002)
+\bibitem{1st-26} A. Stalheim-Smith, G.K. Fitch, \textit{Understanding Human Anatomy and Physiology} (West, St. Paul, MN, 1993)
+\bibitem{1st-27} G.J. Tortora, S.R. Grabowski, \textit{Principles of Anatomy and Physiology}, 10.Âª ed. (Wiley, Nueva York, 2003)
+\bibitem{1st-28} J.A. Tuszynski, J.M. Dixon, \textit{Biomedical Applications of Introductory Physics} (Wiley, Nueva York, 2002)
+\bibitem{1st-29} J.B. West (ed.), \textit{Best and Taylorâ€™s Physiological Basis of Medical Practice}, 12.Âª ed. (Williams \& Wilkins, Baltimore, 1991)
+\bibitem{1st-30} J.H. Wilmore, D.L. Costill, \textit{Physiology of Sport and Exercise}, 3.Âª ed. (Human Kinetics, Champaign, IL, 2004)
+\end{thebibliography}
+
+% Control de Calidad: 20 pÃ¡rrafos origen -> 20 pÃ¡rrafos salida. Mapeo 1:1 verificado. Sin omisiones.
+
+\end{document}
+

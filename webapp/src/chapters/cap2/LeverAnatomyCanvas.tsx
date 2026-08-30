@@ -1,0 +1,215 @@
+import React, { Suspense, useRef } from 'react';
+import { Canvas } from '@react-three/fiber';
+import { Html, OrbitControls, useGLTF } from '@react-three/drei';
+import * as THREE from 'three';
+import Cap2ZoomHandler from './Cap2ZoomHandler';
+import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
+import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
+
+type LeverClass = 1 | 2 | 3;
+
+const BONE = new THREE.MeshStandardMaterial({ color: '#e9e1cf', roughness: 0.62, metalness: 0.04 });
+const BONE_DEEP = new THREE.MeshStandardMaterial({ color: '#d5c9b3', roughness: 0.68, metalness: 0.03 });
+const JOINT = new THREE.MeshStandardMaterial({ color: '#4fb9ad', roughness: 0.28, metalness: 0.12, emissive: '#0d6e64', emissiveIntensity: 0.18 });
+const MUSCLE = new THREE.MeshStandardMaterial({ color: '#a92a1e', roughness: 0.58, metalness: 0.03, emissive: '#4a0e08', emissiveIntensity: 0.18 });
+
+const TITLES: Record<LeverClass, string> = {
+  1: 'Cuello · atlanto-occipital',
+  2: 'Tobillo · apoyo plantar',
+  3: 'Codo · flexión con bíceps',
+};
+
+function LeverLoading() {
+  return (
+    <Html center>
+      <div style={{ background: 'rgba(255,253,248,.94)', border: '1px solid #c8bea9', borderRadius: 6, padding: '6px 10px', color: '#43505c', font: '600 .68rem Karla, sans-serif', whiteSpace: 'nowrap' }}>
+        Cargando región anatómica…
+      </div>
+    </Html>
+  );
+}
+
+function AnatomicalVector({
+  origin,
+  vector,
+  color,
+  label,
+  labelOffset,
+}: {
+  origin: [number, number, number];
+  vector: [number, number, number];
+  color: string;
+  label: string;
+  labelOffset?: [number, number, number];
+}) {
+  const v = new THREE.Vector3(...vector);
+  const len = v.length();
+  const dir = v.clone().normalize();
+  const quat = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
+  const shaft = Math.max(0.012, len - 0.025);
+  const base = new THREE.Vector3(...origin);
+  const mid = base.clone().add(dir.clone().multiplyScalar(shaft / 2));
+  const tip = base.clone().add(v);
+  const labelShift = labelOffset ?? [0, 0, 0];
+  const labelPosition: [number, number, number] = [
+    tip.x + dir.x * 0.035 + labelShift[0],
+    tip.y + dir.y * 0.035 + labelShift[1],
+    tip.z + dir.z * 0.035 + labelShift[2],
+  ];
+
+  return (
+    <group>
+      <mesh position={[mid.x, mid.y, mid.z]} quaternion={quat}>
+        <cylinderGeometry args={[0.0028, 0.0028, shaft, 12]} />
+        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.25} />
+      </mesh>
+      <mesh position={[tip.x - dir.x * 0.012, tip.y - dir.y * 0.012, tip.z - dir.z * 0.012]} quaternion={quat}>
+        <coneGeometry args={[0.0085, 0.019, 12]} />
+        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.25} />
+      </mesh>
+      <Html position={labelPosition} center>
+        <div className="lever-anatomy-label lever-vector-label">{label}</div>
+      </Html>
+    </group>
+  );
+}
+
+function AnatomyRegion({ leverClass }: { leverClass: LeverClass }) {
+  const { nodes } = useGLTF('/assets/cap1/human_body.glb') as any;
+  const { nodes: muscleNodes } = useGLTF('/assets/cap1/human_muscles_arm.glb') as any;
+
+  if (leverClass === 1) {
+    return (
+      <group position={[0, 0.03, 0]}>
+        {/* La malla cervical vive alrededor de Y=.40 en el GLB. Se centra
+            aquí para conservar la escala anatómica sin perderla fuera de cámara. */}
+        <group scale={8.5} position={[0, -0.40 * 8.5, 0]}>
+          {/* Cráneo completo: la palanca de primera clase actúa sobre la
+              cabeza como una unidad, no únicamente sobre el occipital. */}
+          {nodes?.frontal && <mesh geometry={nodes.frontal.geometry} material={BONE} />}
+          {nodes?.parietal_L && <mesh geometry={nodes.parietal_L.geometry} material={BONE} />}
+          {nodes?.parietal_R && <mesh geometry={nodes.parietal_R.geometry} material={BONE} />}
+          {nodes?.temporal_L && <mesh geometry={nodes.temporal_L.geometry} material={BONE_DEEP} />}
+          {nodes?.temporal_R && <mesh geometry={nodes.temporal_R.geometry} material={BONE_DEEP} />}
+          {nodes?.occipital && <mesh geometry={nodes.occipital.geometry} material={BONE_DEEP} />}
+          {nodes?.sphenoid && <mesh geometry={nodes.sphenoid.geometry} material={BONE_DEEP} />}
+          {nodes?.ethmoid && <mesh geometry={nodes.ethmoid.geometry} material={BONE_DEEP} />}
+          {nodes?.zygomatic_L && <mesh geometry={nodes.zygomatic_L.geometry} material={BONE} />}
+          {nodes?.zygomatic_R && <mesh geometry={nodes.zygomatic_R.geometry} material={BONE} />}
+          {nodes?.maxilla_L && <mesh geometry={nodes.maxilla_L.geometry} material={BONE} />}
+          {nodes?.maxilla_R && <mesh geometry={nodes.maxilla_R.geometry} material={BONE} />}
+          {nodes?.nasal_L && <mesh geometry={nodes.nasal_L.geometry} material={BONE} />}
+          {nodes?.nasal_R && <mesh geometry={nodes.nasal_R.geometry} material={BONE} />}
+          {nodes?.mandible && <mesh geometry={nodes.mandible.geometry} material={BONE_DEEP} />}
+          {nodes?.cervical3 && <mesh geometry={nodes.cervical3.geometry} material={BONE} />}
+          {nodes?.cervical4 && <mesh geometry={nodes.cervical4.geometry} material={BONE} />}
+          {nodes?.cervical5 && <mesh geometry={nodes.cervical5.geometry} material={BONE} />}
+          {nodes?.cervical6 && <mesh geometry={nodes.cervical6.geometry} material={BONE} />}
+          {nodes?.cervical7 && <mesh geometry={nodes.cervical7.geometry} material={BONE} />}
+          {/* Cóndilos occipitales / atlas: fulcro entre potencia y carga. */}
+          <mesh position={[0.004, 0.402, -0.035]}>
+            <sphereGeometry args={[0.016, 20, 20]} />
+            <primitive object={JOINT} attach="material" />
+          </mesh>
+          {/* La palanca de primera clase: el peso actúa por delante del
+              fulcro y los extensores cervicales por detrás. Ambas fuerzas
+              apuntan hacia abajo y producen torques opuestos. */}
+          <mesh position={[0.004, 0.455, 0.015]}>
+            <sphereGeometry args={[0.010, 16, 16]} />
+            <meshStandardMaterial color="#d97706" emissive="#d97706" emissiveIntensity={0.25} />
+          </mesh>
+          <mesh position={[0.004, 0.425, -0.055]}>
+            <sphereGeometry args={[0.010, 16, 16]} />
+            <meshStandardMaterial color="#0d6e64" emissive="#0d6e64" emissiveIntensity={0.25} />
+          </mesh>
+          <AnatomicalVector origin={[0.004, 0.455, 0.015]} vector={[0, -0.085, 0]} color="#d97706" label="W · centro de masa" labelOffset={[0.10, -0.03, 0]} />
+          <AnatomicalVector origin={[0.004, 0.425, -0.055]} vector={[0, -0.075, 0]} color="#0d6e64" label="Fm · extensores cervicales" labelOffset={[-0.10, 0.02, 0]} />
+        </group>
+      </group>
+    );
+  }
+
+  if (leverClass === 2) {
+    return (
+      <group position={[0, -0.42, 0]}>
+        <group scale={10.5} position={[0.048 * 10.5, 0.496 * 10.5, 0]}>
+          {nodes?.tibia_R && <mesh geometry={nodes.tibia_R.geometry} material={BONE} />}
+          {nodes?.fibula_R && <mesh geometry={nodes.fibula_R.geometry} material={BONE_DEEP} />}
+          {nodes?.talus_R && <mesh geometry={nodes.talus_R.geometry} material={JOINT} />}
+          {/* En el GLB, calcaneus_L es la pieza que continúa con talus_R
+              y los metatarsianos_R; calcaneus_R queda en el lado opuesto. */}
+          {nodes?.calcaneus_L && <mesh geometry={nodes.calcaneus_L.geometry} material={BONE_DEEP} />}
+          {nodes?.navicular_R && <mesh geometry={nodes.navicular_R.geometry} material={BONE} />}
+          {nodes?.metatarsal1_R && <mesh geometry={nodes.metatarsal1_R.geometry} material={BONE} />}
+          {nodes?.metatarsal2_R && <mesh geometry={nodes.metatarsal2_R.geometry} material={BONE} />}
+          {nodes?.metatarsal3_R && <mesh geometry={nodes.metatarsal3_R.geometry} material={BONE} />}
+          {nodes?.metatarsal4_R && <mesh geometry={nodes.metatarsal4_R.geometry} material={BONE} />}
+          {nodes?.metatarsal5_R && <mesh geometry={nodes.metatarsal5_R.geometry} material={BONE} />}
+          <AnatomicalVector origin={[-0.041, -0.463, -0.012]} vector={[0, 0.14, 0]} color="#2e8b57" label="Fm · Aquiles" labelOffset={[-0.11, 0.02, 0]} />
+          <AnatomicalVector origin={[-0.041, -0.463, -0.012]} vector={[0, -0.12, 0]} color="#d97706" label="W · cuerpo" labelOffset={[0.12, -0.03, 0]} />
+        </group>
+      </group>
+    );
+  }
+
+  return (
+    /* El recorte de B1 usa una escala mayor que el cuerpo completo: el
+       codo y el antebrazo deben ser legibles, pero conservar sus proporciones. */
+    <group position={[0.3, 0.1, 0]} scale={5.5}>
+      <group position={[0.128, -0.142, 0.016]}>
+        {nodes?.scapula_R && <mesh geometry={nodes.scapula_R.geometry} material={BONE_DEEP} />}
+        {nodes?.humerus_R && <mesh geometry={nodes.humerus_R.geometry} material={BONE} />}
+        {nodes?.ulna_R && <mesh geometry={nodes.ulna_R.geometry} material={BONE} />}
+        {nodes?.radius_R && <mesh geometry={nodes.radius_R.geometry} material={BONE_DEEP} />}
+        {nodes?.carpal_R && <mesh geometry={nodes.carpal_R.geometry} material={BONE} />}
+        {muscleNodes?.biceps_brachii_long_head_R && <mesh geometry={muscleNodes.biceps_brachii_long_head_R.geometry} material={MUSCLE} />}
+        {muscleNodes?.biceps_brachii_short_head_R && <mesh geometry={muscleNodes.biceps_brachii_short_head_R.geometry} material={MUSCLE} />}
+      </group>
+      <mesh position={[0, 0, 0]}>
+        <sphereGeometry args={[0.022, 20, 20]} />
+        <primitive object={JOINT} attach="material" />
+      </mesh>
+      {/* Ambos vectores comparten el fulcro del codo y el eje del antebrazo
+          calibrado en BicepsCanvas; no son marcadores flotantes. */}
+      <AnatomicalVector origin={[0.01, 0.005, 0.01]} vector={[0.01, 0.11, -0.01]} color="#b02318" label="Fm · bíceps" labelOffset={[-0.11, 0.02, 0]} />
+      <AnatomicalVector origin={[0.01, 0.005, 0.01]} vector={[0, -0.08, 0]} color="#d97706" label="W · mano" labelOffset={[0.12, -0.03, 0]} />
+    </group>
+  );
+}
+
+export default function LeverAnatomyCanvas({ leverClass }: { leverClass: LeverClass }) {
+  const controlsRef = useRef<OrbitControlsImpl | null>(null);
+  return (
+    <div className="lever-anatomy-canvas cap2-webgl-canvas">
+      <Canvas
+        camera={{
+          position: leverClass === 3 ? [1.15, 0.30, 1.90] : (leverClass === 2 ? [1.15, 0.28, 2.05] : [0.95, 0.28, 1.95]),
+          fov: leverClass === 3 ? 42 : 42,
+        }}
+        dpr={[1, 2]}
+        gl={{ antialias: true, alpha: true }}
+      >
+        <ambientLight intensity={0.95} color="#fff9ef" />
+        <directionalLight position={[3, 5, 4]} intensity={1.35} color="#fffdf8" />
+        <directionalLight position={[-3, 2, -2]} intensity={0.55} color="#dbeafe" />
+        <gridHelper args={[2.8, 14, '#c8bea9', '#e1d9ca']} position={[0, -0.48, 0]} />
+        <Suspense fallback={<LeverLoading />}>
+          <AnatomyRegion leverClass={leverClass} />
+        </Suspense>
+        <Cap2ZoomHandler
+          initialPosition={leverClass === 3 ? [1.15, 0.30, 1.90] : (leverClass === 2 ? [1.15, 0.28, 2.05] : [0.95, 0.28, 1.95])}
+          target={[0, 0.12, 0]}
+          minDistance={0.55}
+          maxDistance={3.2}
+        />
+        <OrbitControls ref={controlsRef} enableDamping dampingFactor={0.08} minDistance={0.55} maxDistance={3.2} target={[0, 0.12, 0]} />
+        <Html position={[-0.62, -0.46, 0]} center>
+          <div className="lever-anatomy-label">{TITLES[leverClass]}</div>
+        </Html>
+      </Canvas>
+      <SceneControlPad controlsRef={controlsRef} />
+    </div>
+  );
+}
+
+useGLTF.preload('/assets/cap1/human_body.glb');

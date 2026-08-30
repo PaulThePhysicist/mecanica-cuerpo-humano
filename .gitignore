@@ -1,0 +1,47 @@
+# Dependencias
+node_modules/
+.pnp/
+.pnp.js
+
+# Build output
+dist/
+build/
+.vite/
+
+# Cache de editores / agentes
+.claude/
+.freebuff/
+.DS_Store
+*.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# LaTeX temp files
+*.aux
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+*.toc
+*.out
+
+# Entornos / secretos
+.env
+.env.local
+.env.*.local
+
+# Archivos de preview / QC temporales
+webapp/qc_all/
+Capitulo1_Clase/
+*.tmp
+scratch/
+**/__pycache__/
+
+# Insumos locales BodyParts3D; la aplicación consume los GLB generados.
+# Viven fuera de webapp/public para que Vite no los copie al build.
+webapp/assets_source/
+
+# OS / misc
+desktop.ini

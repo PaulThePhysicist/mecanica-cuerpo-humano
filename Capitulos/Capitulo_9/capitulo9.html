@@ -1,0 +1,3231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Capítulo 9 — Los pulmones y la respiración. Física del Cuerpo Humano, I. P. Herman (2016). Presentación universitaria interactiva en español.">
+<title>Capítulo 9 · Los pulmones y la respiración — Física del Cuerpo Humano</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,600&family=Karla:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<style>
+
+/* ═══════════════════════════════════════════════════════════════
+   SISTEMA CARDIOVASCULAR — design system (continuidad con caps. 1–7)
+   Papel marfil · tinta · tinta fisiológica (teal / sangre / ámbar)
+   Serif académica (Source Serif 4) + grotesca (Karla) + mono técnica
+   ═══════════════════════════════════════════════════════════════ */
+:root{
+  --paper:#f5f0e4;
+  --paper-2:#eee7d6;
+  --paper-3:#e8dfc9;
+  --card:#fbf8f0;
+  --ink:#232c36;
+  --ink-2:#43505c;
+  --ink-3:#6b7885;
+  --line:#cfc3a9;
+  --line-soft:#e2d9c4;
+  --teal:#0d6e64;
+  --teal-deep:#0a5a52;
+  --teal-tint:rgba(13,110,100,.10);
+  --blood:#a92a1e;
+  --blood-deep:#8c1f16;
+  --blood-tint:rgba(169,42,30,.10);
+  --amber:#9a5b00;
+  --amber-deep:#7c4900;
+  --amber-tint:#fbf2dc;
+  --sagittal:#5d4fa8;
+  --coronal:#2d7d4f;
+  --transverse:#b86a1e;
+  --bone:#b6a67f;
+  --serif:'Source Serif 4',Georgia,'Times New Roman',serif;
+  --sans:'Karla',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,'Cascadia Mono',monospace;
+  --radius:12px;
+  --radius-sm:8px;
+  --shadow:0 1px 2px rgba(35,44,54,.05),0 8px 22px rgba(35,44,54,.07);
+  /* ── curvas de movimiento ── */
+  --ease-out:cubic-bezier(.23,1,.32,1);
+  --ease-in-out:cubic-bezier(.77,0,.175,1);
+  --ease-drawer:cubic-bezier(.32,.72,0,1);
+  --press:160ms var(--ease-out);
+  --fade:200ms var(--ease-out);
+  --slide:250ms var(--ease-out);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:clamp(16px,1.32vw,21px)}
+body{
+  font-family:var(--sans);color:var(--ink);background-color:var(--paper);
+  background-image:linear-gradient(rgba(35,44,54,.028) 1px,transparent 1px);
+  background-size:100% 44px;
+  overflow:hidden;height:100dvh;user-select:none;line-height:1.5;
+}
+::selection{background:rgba(13,110,100,.18)}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+
+/* ─── BRAND STRIP + MODULE TABS ─── */
+.module-bar{
+  position:fixed;top:0;left:0;right:0;z-index:30;
+  background:linear-gradient(180deg,rgba(245,240,228,.97) 68%,rgba(245,240,228,0));
+  padding:0 1.6rem;display:flex;gap:.4rem;align-items:flex-end;
+  pointer-events:none;
+}
+.module-bar>*{pointer-events:auto}
+.brand-mark{
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:0 1.2rem .55rem 0;margin-right:auto;flex-shrink:0;
+}
+.brand-mark .treatise{font-family:var(--serif);font-weight:600;font-size:.74rem;letter-spacing:.01em;color:var(--ink)}
+.brand-mark .book{font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.module-tab{
+  background:var(--paper-2);border:1px solid var(--line);border-bottom:none;
+  color:var(--ink-3);padding:.42rem 1.05rem .5rem;border-radius:9px 9px 0 0;
+  font-size:.64rem;font-weight:600;cursor:pointer;
+  transition:color var(--fade),background-color var(--fade),border-color var(--fade),box-shadow var(--slide);
+  letter-spacing:.02em;
+  display:flex;align-items:center;gap:.42rem;margin-bottom:1px;
+}
+.module-tab:active{transform:scale(.97)}
+.module-tab.active{
+  background:var(--card);border-color:var(--line);color:var(--teal-deep);
+  box-shadow:0 -1px 0 var(--card),0 -3px 0 var(--teal);
+  margin-bottom:0;padding-bottom:.55rem;
+}
+.module-tab .mod-badge{
+  font-size:.55rem;background:var(--card);border:1px solid var(--line);
+  padding:.06rem .4rem;border-radius:4px;color:var(--ink-3);font-weight:700;
+}
+.module-tab.active .mod-badge{background:var(--teal);border-color:var(--teal);color:var(--paper)}
+
+/* ─── SLIDES ─── */
+.slides{position:relative;z-index:1;height:100dvh}
+.slide,.slide-full{
+  display:none;width:100%;height:100dvh;
+  padding:3.4rem 2rem 4.6rem;overflow-y:auto;position:relative;
+}
+.slide.active,.slide-full.active{display:flex;flex-direction:column}
+.slide::-webkit-scrollbar-track{background:transparent}
+
+/* ─── PORTADA ─── */
+.slide-full{align-items:center;justify-content:center;text-align:center}
+.slide-full::before{
+  content:"";position:absolute;top:0;left:0;right:0;
+  height:5px;
+  background:linear-gradient(90deg,var(--teal) 0 25%,var(--blood) 25% 50%,var(--amber) 50% 75%,var(--sagittal) 75% 100%);
+}
+.slide-full h1{
+  font-family:var(--serif);font-size:clamp(2.1rem,4.6vw,3.9rem);font-weight:700;
+  letter-spacing:-.035em;line-height:1.06;max-width:18ch;
+  margin:1.4rem auto 1.1rem;
+}
+.slide-full h1 .chapno{
+  display:block;font-family:var(--sans);font-size:clamp(.72rem,1.1vw,1rem);
+  font-weight:700;letter-spacing:.42em;text-transform:uppercase;
+  color:var(--teal-deep);margin-bottom:1.15rem;
+}
+.slide-full h1 .vol{
+  font-style:italic;font-weight:600;color:var(--ink-2);
+}
+.slide-full .subtitle{
+  font-size:clamp(.86rem,1.3vw,1.05rem);color:var(--ink-2);max-width:62ch;
+  line-height:1.65;margin:0 auto;
+}
+.slide-full .rule{width:88px;height:1px;background:var(--line);margin:1.6rem auto}
+.module-preview{display:flex;gap:.55rem;flex-wrap:wrap;justify-content:center}
+.module-preview .mpill{
+  background:var(--card);border:1px solid var(--line);border-radius:999px;
+  padding:.42rem 1.05rem;font-size:.72rem;color:var(--ink-2);
+  transition:color var(--fade),border-color var(--fade),background-color var(--fade),transform var(--press);
+  cursor:pointer;display:flex;align-items:center;gap:.4rem;font-weight:600;
+}
+.module-preview .mpill:active{transform:translateY(-1px) scale(.96)}
+.module-preview .mpill.active{background:var(--teal);border-color:var(--teal-deep);color:var(--paper)}
+.module-preview .mpill .ico{font-size:.9rem}
+.slide-full .start-btn{
+  margin-top:1.9rem;background:var(--teal);color:var(--paper);
+  border:1px solid var(--teal-deep);padding:.78rem 2.4rem;border-radius:8px;
+  font-size:.95rem;font-weight:700;cursor:pointer;
+  transition:background-color var(--fade),box-shadow var(--slide),transform var(--press);
+  letter-spacing:.02em;
+}
+.slide-full .start-btn:active{transform:scale(.97)}
+.slide-full .book-ref{margin-top:2.2rem;font-size:.66rem;color:var(--ink-3);font-style:italic}
+
+/* ─── MODULE HEADER ─── */
+.module-header{
+  display:flex;align-items:baseline;gap:.7rem;margin-bottom:.8rem;flex-shrink:0;
+  padding-bottom:.6rem;border-bottom:1px solid var(--line);
+}
+.module-header .mnum{
+  font-family:var(--mono);font-size:.66rem;font-weight:700;letter-spacing:.08em;
+  color:var(--teal-deep);background:var(--teal-tint);padding:.24rem .7rem;border-radius:6px;
+  border:1px solid rgba(13,110,100,.22);
+}
+.module-header .mtitle{
+  font-family:var(--serif);font-size:1.42rem;font-weight:700;letter-spacing:-.01em;color:var(--ink);
+}
+.module-header .msub{font-size:.68rem;color:var(--ink-3);margin-left:auto;font-style:italic}
+.module-header .mslide-count{
+  font-size:.6rem;color:var(--ink-3);font-family:var(--mono);background:var(--paper-2);
+  padding:.16rem .5rem;border-radius:4px;border:1px solid var(--line-soft);
+}
+
+/* ─── CONTENT GRID ─── */
+.content-grid{
+  display:grid;grid-template-columns:1.12fr .88fr;
+  grid-template-rows:1fr auto;gap:.8rem;flex:1;min-height:0;
+}
+.content-grid.single-col{grid-template-columns:1fr}
+
+/* ─── TEORÍA ─── */
+.theory{
+  overflow-y:auto;line-height:1.5;display:flex;flex-direction:column;gap:.6rem;
+  padding-right:.2rem;
+}
+.theory .card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:.7rem .85rem;box-shadow:var(--shadow);transition:border-color var(--slide),box-shadow var(--slide);cursor:default;
+}
+.theory .card.active{border-color:rgba(13,110,100,.5);box-shadow:var(--shadow)}
+.theory .card .card-hdr{
+  display:flex;align-items:center;gap:.5rem;font-size:.7rem;
+  font-weight:700;color:var(--teal-deep);text-transform:uppercase;letter-spacing:.09em;
+  margin-bottom:.4rem;
+}
+.theory .card .card-hdr .icon{font-size:.92rem}
+.theory .card .card-body{font-size:.78rem;color:var(--ink-2);line-height:1.58;max-width:72ch}
+.theory .card .card-body p{margin-bottom:.3rem}
+.theory .card .card-body p:last-child{margin-bottom:0}
+.theory .card .card-body strong{color:var(--ink);font-weight:700}
+.theory .card .card-body .tag{
+  display:inline-block;font-size:.64rem;font-weight:700;font-family:var(--mono);
+  padding:.06rem .45rem;border-radius:4px;background:var(--teal-tint);color:var(--teal-deep);
+  border:1px solid rgba(13,110,100,.22);margin:0 .08rem;line-height:1.4;
+}
+.theory .card .card-body .row{
+  display:flex;gap:.35rem;flex-wrap:wrap;margin:.3rem 0;
+}
+.theory .card .card-body .pill{
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:.66rem;padding:.2rem .55rem;border-radius:6px;
+  background:var(--paper);border:1px solid var(--line);color:var(--ink-2);
+  transition:color var(--fade),border-color var(--fade),background-color var(--fade),transform var(--press);
+  cursor:pointer;line-height:1.45;
+}
+.theory .card .card-body .pill:active{transform:scale(.96)}
+.theory .card .card-body .pill b{color:var(--ink)}
+.theory .card .card-body .highlight{color:var(--ink);font-weight:600}
+.theory .card .card-body .pill.active{background:var(--teal);border-color:var(--teal-deep);color:var(--paper)}
+
+/* ─── ECUACIONES ─── */
+.eq-block{
+  background:var(--paper-2);border:1px solid var(--line-soft);border-radius:var(--radius-sm);
+  padding:.38rem .6rem;margin:.3rem 0;font-size:.86rem;text-align:center;
+}
+.eq-block .katex{color:var(--ink)}
+
+/* ─── CONCEPT FLOW ─── */
+.concept-flow{
+  display:flex;align-items:center;justify-content:center;gap:.3rem;
+  padding:.35rem;background:var(--paper-2);border-radius:var(--radius-sm);
+  border:1px solid var(--line);margin-top:.15rem;flex-shrink:0;
+}
+.concept-flow .step{
+  font-size:.64rem;font-weight:600;color:var(--ink-3);text-align:center;
+  padding:.26rem .4rem;border-radius:6px;background:var(--card);flex:1;
+  border:1px solid transparent;transition:color var(--fade),border-color var(--fade),background-color var(--fade),transform var(--press);cursor:pointer;
+}
+.concept-flow .step.done{color:var(--teal-deep);border-color:rgba(13,110,100,.35);background:var(--teal-tint)}
+.concept-flow .arrow{color:var(--line);font-size:.75rem;flex-shrink:0}
+.concept-flow .step:active{transform:scale(.96)}
+
+/* ─── CAJA DE APUNTES (detalle del docente) ─── */
+.apuntes{
+  background:var(--amber-tint);border:1px solid rgba(154,91,0,.3);border-radius:8px;
+  padding:.6rem .75rem;margin-top:.4rem;font-size:.7rem;line-height:1.5;flex-shrink:0;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.4);
+}
+.apuntes .a-hdr{
+  display:flex;align-items:center;gap:.4rem;font-weight:700;
+  color:var(--amber-deep);margin-bottom:.2rem;letter-spacing:.03em;
+}
+.apuntes .a-text{color:#5d460f}
+.apuntes .a-text strong{color:#4a3709}
+
+/* ─── PANEL DE SIMULACIÓN ─── */
+.sim-area{
+  background:var(--paper-3);border:1px solid var(--line);border-radius:var(--radius);
+  position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;
+  min-height:200px;box-shadow:inset 0 2px 8px rgba(35,44,54,.06);
+}
+.sim-area canvas.sim{width:100%;height:100%;display:block}
+.sim-col{display:flex;flex-direction:column;gap:.55rem;min-height:0;overflow-y:auto}
+.sim-col .sim-area{flex:1 1 auto}
+.sim-placeholder{text-align:center;color:var(--ink-3);padding:1rem}
+.sim-placeholder .ico{font-size:2rem;display:block;opacity:.4;margin-bottom:.3rem}
+.sim-placeholder p{font-size:.75rem}
+
+/* ─── BARRA DE CONTROL ─── */
+.prof-controls{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:.42rem .8rem;display:flex;align-items:center;gap:.6rem;
+  font-size:.68rem;color:var(--ink-2);min-height:36px;flex-wrap:wrap;
+}
+.prof-controls .badge{
+  padding:.18rem .55rem;border-radius:6px;background:var(--teal-tint);
+  color:var(--teal-deep);font-family:var(--mono);font-size:.62rem;font-weight:700;
+  border:1px solid rgba(13,110,100,.22);flex-shrink:0;
+}
+.prof-controls label{display:flex;align-items:center;gap:.3rem;cursor:pointer;flex-shrink:0;font-size:.64rem}
+.prof-controls input[type="range"]{width:74px;accent-color:var(--teal);}
+.prof-controls input[type="number"]{width:58px;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:.14rem .3rem;font-size:.66rem;color:var(--ink);font-family:var(--mono)}
+.prof-controls select{
+  background:var(--card);color:var(--ink);border:1px solid var(--line);
+  border-radius:6px;padding:.18rem .4rem;font-size:.64rem;cursor:pointer;
+}
+.prof-controls button{
+  background:var(--paper);border:1px solid var(--line);color:var(--ink-2);
+  padding:.22rem .6rem;border-radius:6px;cursor:pointer;font-size:.64rem;
+  transition:border-color var(--fade),color var(--fade),background-color var(--fade),transform var(--press);font-weight:600;
+}
+.prof-controls button:active{transform:scale(.96)}
+.prof-controls .readout{
+  font-family:var(--mono);font-size:.68rem;color:var(--teal-deep);font-weight:700;
+  background:var(--teal-tint);border:1px solid rgba(13,110,100,.22);
+  padding:.14rem .5rem;border-radius:6px;margin-left:auto;flex-shrink:0;
+}
+
+/* ─── TABLAS MINI ─── */
+.data-mini{font-size:.66rem;width:100%;border-collapse:collapse}
+.data-mini th{
+  color:var(--teal-deep);font-weight:700;text-align:left;padding:.18rem .3rem;
+  border-bottom:1px solid var(--line);text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;
+}
+.data-mini td{padding:.16rem .3rem;border-bottom:1px solid var(--line-soft);color:var(--ink-2)}
+.data-mini td:last-child{font-family:var(--mono);color:var(--ink);font-size:.62rem}
+.data-mini tr{cursor:pointer}
+.data-mini .table-caption{font-size:.56rem;color:var(--ink-3);padding:.14rem .3rem;font-style:italic}
+.data-mini td b{color:var(--ink)}
+
+/* ─── ANIMACIÓN (un solo momento autorizado) ─── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.slide.active .card{animation:fadeUp .48s cubic-bezier(.22,1,.36,1) both}
+.slide.active .card:nth-child(2){animation-delay:.07s}
+.slide.active .card:nth-child(3){animation-delay:.14s}
+.slide.active .card:nth-child(4){animation-delay:.21s}
+.slide.active .eq-block{animation:fadeUp .48s .2s both}
+.slide.active .sim-area,.slide.active .apuntes,.slide.active .prof-controls{animation:fadeUp .48s .1s both}
+.slide-full.active{animation:fadeUp .5s cubic-bezier(.22,1,.36,1)}
+/* Revisitar una diapositiva = ya la conocemos → reveal instantáneo,
+   sin repetir la entrada. */
+.slide.instant .card,.slide.instant .eq-block,.slide.instant .sim-area,
+.slide.instant .apuntes,.slide.instant .prof-controls,.slide-full.instant{animation:none!important}
+
+/* ─── NAVEGACIÓN INFERIOR ─── */
+.nav-bar{
+  position:fixed;bottom:0;left:0;right:0;z-index:30;
+  background:linear-gradient(0deg,rgba(245,240,228,.97) 58%,rgba(245,240,228,0));
+  padding:.6rem 2rem .85rem;
+  display:flex;justify-content:center;align-items:center;gap:.55rem;pointer-events:none;
+}
+.nav-bar>*{pointer-events:auto}
+.nav-btn{
+  background:var(--card);border:1px solid var(--line);color:var(--ink-2);
+  width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:.85rem;
+  display:flex;align-items:center;justify-content:center;
+  transition:background-color var(--fade),color var(--fade),border-color var(--fade),transform var(--press);
+}
+.nav-btn:active{transform:scale(.9)}
+.nav-dots{display:flex;gap:.3rem;padding:0 .4rem}
+.nav-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--line);
+  cursor:pointer;transform-origin:center;
+  transition:background-color var(--fade),transform var(--slide);border:none;
+}
+.nav-dot.active{background:var(--teal);transform:scaleX(2.85)}
+.slide-counter{font-size:.58rem;font-family:var(--mono);color:var(--ink-3);letter-spacing:.06em}
+.nav-module-label{font-size:.58rem;color:var(--teal-deep);background:var(--card);border:1px solid var(--line);padding:.14rem .55rem;border-radius:6px;font-weight:600}
+
+/* ─── TOOLTIP CANVAS ─── */
+.canvas-tooltip{
+  position:absolute;pointer-events:none;z-index:5;
+  background:rgba(251,248,240,.96);border:1px solid var(--line);
+  border-radius:6px;padding:.3rem .6rem;font-size:.62rem;
+  color:var(--ink-2);display:none;max-width:190px;box-shadow:var(--shadow);
+}
+.canvas-tooltip b{color:var(--teal-deep)}
+
+/* ─── TABLA INTERACTIVA ─── */
+.interactive-table{width:100%;border-collapse:collapse;font-size:.66rem}
+.interactive-table th{
+  color:var(--teal-deep);font-weight:700;text-align:left;
+  padding:.22rem .4rem;border-bottom:1px solid var(--line);
+  position:sticky;top:0;background:var(--card);z-index:1;
+  text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;
+}
+.interactive-table td{
+  padding:.18rem .4rem;border-bottom:1px solid var(--line-soft);
+  color:var(--ink-2);transition:background-color var(--fade),color var(--fade);
+}
+.interactive-table td:last-child{font-family:var(--mono);color:var(--ink);font-size:.62rem}
+.interactive-table tr{cursor:pointer;transition:background-color var(--fade),color var(--fade)}
+.interactive-table tr.highlight td{background:var(--teal-tint);color:var(--teal-deep)}
+.interactive-table .table-caption{font-size:.56rem;color:var(--ink-3);padding:.14rem .4rem;font-style:italic}
+
+/* ─── FIGURAS DE LIBRO ─── */
+.figure-pair{display:flex;gap:.6rem;height:100%;align-items:stretch}
+.figure-pair figure{
+  flex:1;display:flex;flex-direction:column;gap:.3rem;align-items:center;
+  justify-content:center;background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius-sm);padding:.4rem;min-width:0;
+}
+.figure-pair figure img{max-width:100%;max-height:66%;object-fit:contain;border-radius:4px}
+.figure-pair figcaption{font-size:.56rem;color:var(--ink-3);text-align:center;line-height:1.4;font-style:italic}
+.figure-pair figure .fig-num{
+  font-family:var(--mono);font-size:.54rem;font-weight:700;color:var(--teal-deep);
+  letter-spacing:.1em;
+}
+
+/* ─── HOVER SOLO PARA DISPOSITIVOS DE PRECISIÓN ─── */
+@media (hover:hover) and (pointer:fine){
+  .module-preview .mpill:hover{border-color:var(--teal);color:var(--teal-deep);transform:translateY(-1px)}
+  .theory .card .card-body .pill:hover{border-color:var(--teal);color:var(--teal-deep);background:var(--card)}
+  .nav-btn:hover{background:var(--teal);color:var(--paper);border-color:var(--teal)}
+  .module-tab:hover{color:var(--ink-2);background:var(--paper-3)}
+  .concept-flow .step:hover{border-color:var(--teal);color:var(--teal-deep)}
+  .slide-full .start-btn:hover{background:var(--teal-deep);box-shadow:0 8px 20px rgba(35,44,54,.22)}
+  .prof-controls button:hover{border-color:var(--teal);color:var(--teal-deep)}
+  .interactive-table tr:hover td{background:var(--teal-tint);color:var(--ink)}
+  .data-mini tr:hover td{background:var(--teal-tint);color:var(--ink)}
+  .theory .card:hover{border-color:#bdb09a}
+  .nav-dot:hover{background:var(--ink-3)}
+}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:820px){
+  .slide,.slide-full{padding:3.2rem .7rem 3.6rem}
+  .content-grid{grid-template-columns:1fr!important;gap:.55rem}
+  .slide-full h1{font-size:2rem}
+  .module-bar{padding:.3rem .7rem 0;gap:.15rem;overflow-x:auto}
+  .brand-mark{display:none}
+  .module-tab{font-size:.56rem;padding:.3rem .6rem .35rem;white-space:nowrap}
+  .module-tab .mod-badge{display:none}
+  .nav-bar{padding:.3rem .7rem .5rem}
+  .theory .card .card-hdr{font-size:.66rem}
+  .module-header .msub{display:none}
+  .prof-controls .readout{flex-shrink:1;max-width:100%}
+}
+@media(min-width:1800px){
+  .slide,.slide-full{padding:3.6rem 2.6rem 5rem}
+  .content-grid{gap:1rem}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  /* las entradas de slide conservan un fade de opacidad (comprensión), sin movimiento */
+  @keyframes fadeUp{from{opacity:0}to{opacity:1}}
+  .slide.active .card,.slide.active .eq-block,.slide.active .sim-area,.slide.active .apuntes,.slide.active .prof-controls,.slide-full.active{animation-duration:.3s!important;animation-delay:0s!important}
+}
+
+/* ── Adiciones específicas del capítulo 9 ── */
+.eq-block{position:relative;overflow-x:auto}
+.eq-block .eqno{position:absolute;right:.2rem;top:-.05rem;font-family:var(--mono);font-size:.6rem;color:var(--ink-3)}
+.table-caption{font-size:.56rem;color:var(--ink-3);padding:.2rem .3rem .1rem;font-style:italic}
+</style>
+</head>
+<body>
+<!-- ═══════════ MÓDULOS ═══════════ -->
+<nav class="module-bar" id="moduleBar">
+  <div class="brand-mark">
+    <span class="treatise">El cuerpo humano · capítulo 9</span>
+    <span class="book">Física del Cuerpo Humano — I. P. Herman</span>
+  </div>
+</nav>
+
+<!-- ═══════════ PORTADA ═══════════ -->
+<div class="slide-full active" data-slide="0" data-module="0">
+  <h1>
+    <span class="chapno">Capítulo 9</span>
+    Los pulmones y la respiración
+  </h1>
+  <p class="subtitle">Cómo una máquina de ~6 L de aire por minuto y un área de 80 m² de alvéolos oxigenan cada célula: la estructura del árbol bronquial, la física de los alvéolos y la tensión superficial, la mecánica de la inspiración y la espiración, los volúmenes pulmonares y su histéresis, el flujo de aire y el modelo mecánico, el ciclo respiratorio, el pulmón enfermo, la hipoxia de las grandes alturas y el trabajo necesario para respirar.</p>
+  <div class="rule"></div>
+  <div class="module-preview" id="modulePreview">
+    <span class="mpill" onclick="goModule(1)"><span class="ico">🌳</span> Estructura</span>
+    <span class="mpill" onclick="goModule(2)"><span class="ico">🫧</span> Los alvéolos</span>
+    <span class="mpill" onclick="goModule(3)"><span class="ico">🫁</span> Física de la respiración</span>
+    <span class="mpill" onclick="goModule(4)"><span class="ico">📏</span> Volúmenes pulmonares</span>
+    <span class="mpill" onclick="goModule(5)"><span class="ico">🌬️</span> Flujo de aire</span>
+    <span class="mpill" onclick="goModule(6)"><span class="ico">🔁</span> El ciclo respiratorio</span>
+    <span class="mpill" onclick="goModule(7)"><span class="ico">🚑</span> Pulmón enfermo</span>
+    <span class="mpill" onclick="goModule(8)"><span class="ico">🏔️</span> Altitud</span>
+    <span class="mpill" onclick="goModule(9)"><span class="ico">⚡</span> Trabajo de la respiración</span>
+  </div>
+  <button class="start-btn" onclick="goModule(1)">Comenzar la cátedra →</button>
+  <p class="book-ref">Physics of the Human Body — Irving P. Herman · Springer (2016)</p>
+</div>
+
+<!-- ═══════════ M1 · ESTRUCTURA ═══════════ -->
+<div class="slide" data-slide="1" data-module="1">
+  <div class="module-header">
+    <span class="mnum">9 · Intro</span>
+    <span class="mtitle">La respiración en números</span>
+    <span class="msub">Ventilación ~6 L/min · 12 / 20 / 60 respiraciones por minuto</span>
+    <span class="mslide-count">1 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🫁</span> El aire que respiramos</div>
+        <div class="card-body">
+          <p>Inspiramos \(\sim 6\ \text{L/min}\) de aire: la <strong>tasa de ventilación</strong> (comparable a los ~5–6 L/min de sangre por la circulación pulmonar). Como el aire tiene ~20 % de O₂, inhalamos ~1,2 L de O₂/min. La frecuencia respiratoria es de <span class="tag">12/min (hombres)</span>, <span class="tag">20/min (mujeres)</span> y <span class="tag">60/min (lactantes)</span>.</p>
+          <p>Respiramos ~<span class="tag">10 kg de aire/día</span>, con ~2 kg de O₂/día; los pulmones absorben al menos 0,5 kg de O₂/día (400 L) y exhalamos ~0,5 kg de vapor de agua/día.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🧪</span> Composición del aire</div>
+        <div class="card-body">
+          <p>El aire <strong>inspirado</strong> (seco, 2015): 78,084 % N₂ / 20,947 % O₂ / 0,934 % Ar / 0,04 % CO₂. El <strong>espirado</strong>: ~80 % N₂ / 16 % O₂ / 4 % CO₂ (sin contar vapor de agua ni argón).</p>
+          <p>Si el espirado tuviera poco o nada de oxígeno, no podríamos usarlo para el <span class="highlight">boca a boca</span> — pero sí sirve.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🏃</span> Consumo de oxígeno</div>
+        <div class="card-body">
+          <p>En reposo usamos ~0,2–0,3 L de O₂/min (\(dV_{\text{O}_2}/dt\)), aportados por los ~5–6 L de sangre/min. La tasa máxima (VO₂max) es <span class="tag">≈ 2,8 L/min</span> (condición promedio) y <span class="tag">≈ 4 L/min</span> (excelente). Las presiones respiratorias se miden como manométricas: <span class="tag">1 mmHg = 1,36 cmH₂O</span>.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-1">Cifras para abrir la clase: respiramos ~6 L/min y el corazón bombea ~5–6 L/min — coincidencia del diseño. Del aire inspirado solo ~1,2 L son O₂ y en reposo gastamos ~0,2–0,3 L O₂/min. El aire que exhalas aún tiene 16 % de O₂: por eso el boca a boca funciona. En el canvas compara las tres mezclas.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-composition" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">aire</span>
+        <label>mezcla <select id="cm_sel" onchange="drawComposition()">
+          <option value="insp" selected>Inspirado</option>
+          <option value="exp">Espirado</option>
+          <option value="viciado">Viciado (alvéolos)</option>
+        </select></label>
+        <span class="readout" id="cm_out">Inspirado · O₂ 20,947 %</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="2" data-module="1">
+  <div class="module-header">
+    <span class="mnum">9.1</span>
+    <span class="mtitle">El árbol bronquial: 23 generaciones</span>
+    <span class="msub">d(z) = 2^(−z/3)·d(0) · 2²⁴ ≈ 1,6×10⁸ vías aéreas</span>
+    <span class="mslide-count">2 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🌳</span> Bifurcación por 23 niveles</div>
+        <div class="card-body">
+          <p>El aire pasa por faringe, laringe y tráquea; esta se divide en bronquios derecho e izquierdo y sigue bifurcándose <strong>23 niveles</strong> (\(2^{24} = 1{,}6\times 10^8\) vías) hasta formar los <strong>alvéolos</strong>, las unidades operativas del pulmón.</p>
+          <p>El diámetro promedio cae con la generación como \(d(z) = 2^{-z/3}d(0)\) hasta z = 16: el diseño óptimo de un sistema ramificado de tubos en hidrodinámica.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📏</span> Tabla 9.1 · cuantificación</div>
+        <div class="card-body">
+          <table class="data-mini">
+            <tr><th>Ramificación</th><th>z</th><th>D (mm)</th><th>A_tot (cm²)</th><th>v (cm/s)</th></tr>
+            <tr><td>Tráquea</td><td>0</td><td>18,0</td><td>2,5</td><td>393</td></tr>
+            <tr><td>Bronquio principal</td><td>1</td><td>12,2</td><td>2,3</td><td>427</td></tr>
+            <tr><td>Bronquio lobar</td><td>2</td><td>8,3</td><td>2,1</td><td>462</td></tr>
+            <tr><td>Bronquio segmental</td><td>4</td><td>4,5</td><td>2,5</td><td>392</td></tr>
+            <tr><td>Bronquio terminal</td><td>8</td><td>1,86</td><td>7,0</td><td>144</td></tr>
+            <tr><td>Bronquiolo terminal</td><td>16</td><td>0,60</td><td>180</td><td>5,40</td></tr>
+            <tr><td>Conducto alveolar</td><td>20</td><td>0,45</td><td>1.600</td><td>0,60</td></tr>
+            <tr><td>Saco alveolar</td><td>23</td><td>0,41</td><td>12.000</td><td>0,09</td></tr>
+          </table>
+          <p class="table-caption">Se asume v = 1 L/s · el número de vías de cada generación es 2^z · datos de ambos pulmones.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🧭</span> Continuidad del flujo</div>
+        <div class="card-body">
+          <p>Por continuidad \(Q = u\,A\), al crecer el área total de 2,5 a 12.000 cm² la velocidad del aire cae de <span class="tag">393 cm/s</span> a <span class="tag">0,09 cm/s</span>. En los alvéolos el aire casi se detiene: la difusión tiene tiempo de oxigenar la sangre.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-2">La idea: el pulmón es un árbol que se bifurca 23 veces. La ley 2^(−z/3) dice que cada 3 generaciones el diámetro se reduce a la mitad. Al final, el área total es ~5.000 veces la de la tráquea y el aire pasa de 393 a 0,09 cm/s: «se detiene» para dejar trabajar a la difusión. Recorre z con el slider.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-tree" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">árbol bronquial</span>
+        <label>generación z <input type="range" id="tr_z" min="0" max="23" step="1" value="8" oninput="drawTree()"> <span id="tr_zv">8</span></label>
+        <span class="readout" id="tr_out">z = 8 · d ≈ 1,86 mm</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="3" data-module="1">
+  <div class="module-header">
+    <span class="mnum">9.1</span>
+    <span class="mtitle">Los alvéolos y el intercambio</span>
+    <span class="msub">3×10⁸ alvéolos · área 80 m² · factor ≈ 1.000 sobre la superficie del pulmón</span>
+    <span class="mslide-count">3 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🫧</span> Los alvéolos</div>
+        <div class="card-body">
+          <p>Hay <span class="tag">≈ 3×10⁸ alvéolos</span>, cada uno de ~0,2–0,3 mm de diámetro, con paredes de ~0,4 μm. Están bañados por los capilares pulmonares (que a su vez se ramifican en 17 órdenes, Tabla 9.2): el O₂ se difunde al glóbulo rojo y el CO₂ sale hacia el aire alveolar.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📐</span> 80 m² de área</div>
+        <div class="card-body">
+          <p>El área superficial alveolar total es <span class="tag">≈ 80 m²</span> (rango 50–100), contra solo ~0,1 m² de superficie externa de los pulmones: la subdivisión en alvéolos multiplica el área de contacto por casi <span class="tag">1.000</span>, y con ella la captación de O₂.</p>
+          <table class="data-mini">
+            <tr><th>Tabla 9.2 · orden</th><th>n vasos</th><th>L (mm)</th><th>d (mm)</th></tr>
+            <tr><td>1</td><td>1</td><td>90,5</td><td>30,0</td></tr>
+            <tr><td>5</td><td>66</td><td>17,9</td><td>3,65</td></tr>
+            <tr><td>10</td><td>17.560</td><td>2,10</td><td>0,351</td></tr>
+            <tr><td>13</td><td>471.300</td><td>0,65</td><td>0,086</td></tr>
+            <tr><td>17</td><td>3×10⁸</td><td>0,13</td><td>0,013</td></tr>
+          </table>
+          <p class="table-caption">Estructura de ramificación de la red arterial pulmonar.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🔄</span> El viaje del O₂ y del CO₂</div>
+        <div class="card-body">
+          <p>Presiones parciales (mmHg): en los alvéolos O₂ ≈ 105 (la atmósfera da 159 = 21 % de 760; el <strong>volumen muerto</strong> la baja); en el capilar pulmonar el O₂ sube de 40 a ≈ 100; en los tejidos es 40. El CO₂ alveolar ≈ 40; en el capilar baja de 46 a ≈ 40; en los tejidos es 46. La presión venosa sistémica de O₂ es ≈ 40 — y vuelve a 100 en los pulmones.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-3">El O₂ viaja por gradiente de presión parcial: 159 (aire) → 105 (alvéolo) → 40→100 (capilar) → 40 (tejido). El CO₂ va en reversa: 46 (tejido) → 40 (alvéolo). Elige el lugar del circuito en el canvas y mira las dos presiones; la clave de la adaptación a la altura (slide 21) es que la venosa no cambia.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-gas" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">intercambio</span>
+        <label>lugar <select id="gs_sel" onchange="drawGas()">
+          <option value="aire" selected>Aire</option>
+          <option value="alveolo">Alvéolos</option>
+          <option value="capilar">Capilar pulmonar</option>
+          <option value="arteria">Arteria sistémica</option>
+          <option value="tejido">Tejidos</option>
+          <option value="vena">Vena sistémica</option>
+        </select></label>
+        <span class="readout" id="gs_out">Aire · O₂ 159 mmHg · CO₂ 0,3</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M2 · LOS ALVÉOLOS ═══════════ -->
+<div class="slide" data-slide="4" data-module="2">
+  <div class="module-header">
+    <span class="mnum">9.2</span>
+    <span class="mtitle">La ley de Laplace en los alvéolos</span>
+    <span class="msub">ΔP = 2γ/R · sin surfactante, inflar cuesta 22 mmHg</span>
+    <span class="mslide-count">4 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🎈</span> Ley de Laplace (ec. 9.1–9.3)</div>
+        <div class="card-body">
+          <div class="eq-block"><span class="eqno">(9.1)</span>\[ \Delta P = \frac{2T}{R} \]</div>
+          <p>Para una esfera de radio \(R\), con \(T\) la tensión en las paredes. La fuente principal en los alvéolos está en las <strong>superficies</strong>: la tensión superficial \(\gamma\) (fuerza/longitud).</p>
+          <div class="eq-block"><span class="eqno">(9.2)</span>\[ \Delta P = P_{\text{in}} - P_{\text{out}} = \frac{4\gamma}{R} \]</div>
+          <p>Burbuja de jabón: ambas superficies contribuyen, \(T = 2\gamma\).</p>
+          <div class="eq-block"><span class="eqno">(9.3)</span>\[ \Delta P_{\text{alveolar}} = P_{\text{in}} - P_{\text{out}} = \frac{2\gamma}{R} \]</div>
+          <p>En el alvéolo solo importa la interfaz fluido/aire interna (mayor \(\gamma\) que la fluido/fluido externa).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">💧</span> La tensión superficial</div>
+        <div class="card-body">
+          <p>Para la interfaz agua/aire, \(\gamma_{\text{water}} \simeq 7{,}2\times 10^{-2}\ \text{N/m}\) (= 72 dina/cm). Con \(R = 0{,}05\ \text{mm}\) (alvéolo colapsado), la ec. (9.3) da \(\Delta P = 2{,}9\times 10^3\ \text{N/m}^2 = 22\ \text{mmHg}\) para poder inflarlo.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🫁</span> La fuerza del diafragma</div>
+        <div class="card-body">
+          <p>El diafragma del adulto tiene ~500 cm². La fuerza para expandir los alvéolos es \(F = \Delta P \cdot A \approx 150\ \text{N}\), lo que corresponde a <span class="tag">15 kg</span>. El surfactante la reduce más de un orden de magnitud: por eso la <span class="highlight">enfermedad de membrana hialina</span> (surfactante insuficiente) hace difícil respirar.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-4">La ley de Laplace es la ecuación central del capítulo: a menor radio, mayor presión. Para inflar un alvéolo colapsado de 0,05 mm sin surfactante hacen falta 22 mmHg, y el diafragma debería tirar con ~150 N — el peso de un niño pequeño. Con el surfactante, la respiración se vuelve trivial.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-laplace" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">Laplace</span>
+        <label>R <input type="range" id="lp_r" min="20" max="300" step="5" value="50" oninput="drawLaplace()"> <span id="lp_rv">50 µm</span></label>
+        <label>γ <select id="lp_g" onchange="drawLaplace()">
+          <option value="water" selected>Agua 7,2×10⁻² N/m</option>
+          <option value="lung">Surfactante 1×10⁻³ N/m</option>
+        </select></label>
+        <span class="readout" id="lp_out">ΔP = 22 mmHg · F ≈ 15 kg</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="5" data-module="2">
+  <div class="module-header">
+    <span class="mnum">9.2</span>
+    <span class="mtitle">La inestabilidad de las burbujas</span>
+    <span class="msub">La burbuja pequeña tiene más presión: al abrir el tapón, colapsa</span>
+    <span class="mslide-count">5 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🔗</span> Dos burbujas conectadas (Fig. 9.6)</div>
+        <div class="card-body">
+          <p>En equilibrio, la presión interna de cada burbuja es \(P_{\text{int}} = 4\gamma/R\). Si la #2 es la más pequeña, \(R_2 &lt; R_1\) implica \(P_2 &gt; P_1\). Al abrir el tapón, el aire fluye de la presión alta a la baja: de la <strong>pequeña a la grande</strong>.</p>
+          <p>La #2 pierde aire, se hace más pequeña y su presión de equilibrio <strong>aún aumenta</strong>; el flujo continúa hasta que <span class="tag">colapsa</span>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">⚠️</span> Si los alvéolos fueran así…</div>
+        <div class="card-body">
+          <p>El más grande de los cientos de millones de alvéolos crecería a expensas de todos los más pequeños, y el sistema sería <strong>inestable</strong>. El razonamiento es correcto; la suposición falsa: que \(\gamma\) no depende de \(R\).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🛟</span> La clave: γ(R)</div>
+        <div class="card-body">
+          <p>El surfactante de personas sanas (DPPC, dipalmitoil fosfatidilcolina) hace que \(\gamma(R)\) sea independiente de \(R\) de 0 hasta un tamaño crítico \(R_0\). El sistema se estabiliza cuando \(\gamma(R)\) crece con \(R\) más rápido que el propio \(R\) (slide siguiente).</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-5">Siente el problema antes de la solución: conecta dos burbujas y la grande devora a la pequeña. Pulsa ▶ y mira colapsar la #2 mientras la #1 crece. Un pulmón sin surfactante colapsaría igual — es lo que les pasa a los recién nacidos prematuros con membrana hialina.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-bubbles" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">inestabilidad</span>
+        <button id="bb_play" onclick="toggleBubbles()">▶</button>
+        <label>R₂/R₁ <input type="range" id="bb_r2" min="30" max="90" step="5" value="55" oninput="drawBubbles()"> <span id="bb_r2v">0,55</span></label>
+        <span class="readout" id="bb_out">P₂ > P₁ · al abrir, #2 colapsa</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="6" data-module="2">
+  <div class="module-header">
+    <span class="mnum">9.2</span>
+    <span class="mtitle">El surfactante: estabilidad y radio de equilibrio</span>
+    <span class="msub">γ(R) plano hasta R₀, sube después · R_eq ≈ √3·R₀</span>
+    <span class="mslide-count">6 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🧪</span> El modelo de γ(R) (ec. 9.4–9.6)</div>
+        <div class="card-body">
+          <p>La superficie se cubre de lipoproteína (tensión \(\gamma_{\text{pulmón}} = 1\times10^{-3}\ \text{N/m}\)) o de agua (\(\gamma_{\text{water}} = 7{,}2\times10^{-2}\ \text{N/m}\)). Con una monocapa exacta para \(R = R_0\):</p>
+          <div class="eq-block"><span class="eqno">(9.4)</span>\[ \gamma(R) = \gamma_{\text{pulmón}} \quad (R \le R_0) \]</div>
+          <div class="eq-block"><span class="eqno">(9.5)</span>\[ \gamma(R) = \frac{4\pi R_0^2 \gamma_p + (4\pi R^2 - 4\pi R_0^2)\gamma_w}{4\pi R^2} \quad (R &gt; R_0) \]</div>
+          <div class="eq-block"><span class="eqno">(9.6)</span>\[ \gamma(R) = \gamma_w - \frac{R_0^2}{R^2}(\gamma_w - \gamma_p) \quad (R &gt; R_0) \]</div>
+          <p>Para \(R \gg R_0\) tiende a \(\gamma_w\), a una tasa más rápida que \(R\): los alvéolos son estables.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">⚖️</span> Estabilidad (ec. 9.7–9.8)</div>
+        <div class="card-body">
+          <p>Con \(\Delta P = 2\gamma/R\) y el modelo (9.6), el equilibrio estable exige \(d(\Delta P)/dR = 0\):</p>
+          <div class="eq-block"><span class="eqno">(9.7)</span>\[ \frac{d(\Delta P)}{dR} = -\frac{2\gamma_w}{R^2} + \frac{6R_0^2}{R^4}(\gamma_w - \gamma_p) = 0 \]</div>
+          <div class="eq-block"><span class="eqno">(9.8)</span>\[ R_{\text{eq}} = \sqrt{\frac{3\gamma_w - \gamma_p}{\gamma_w}}\,R_0 \simeq \sqrt{3}\,R_0 \]</div>
+          <p>Como \(\gamma_w \gg \gamma_p\), el radio de equilibrio es ≈ \(\sqrt{3}\,R_0\).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📉</span> Surfactante vs. área</div>
+        <div class="card-body">
+          <p>La tensión superficial del extracto pulmonar baja de <span class="tag">5×10⁻² N/m</span> (50 dina/cm) a cero cuando el área de la película se encoge. Los alvéolos son típicamente estables a ~<span class="tag">1/4 de su tamaño máximo</span>.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-6">Dos funciones del surfactante: estabilizar (aplanar γ para R &lt; R₀ y subirla para R &gt; R₀) y ahorrarle fuerza al diafragma. Mueve R₀ en el canvas y mira la curva ΔP(R): el valle es el equilibrio estable, que cae en R_eq ≈ √3·R₀. Sin ese valle, la inestabilidad de la slide anterior ganaría.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-surfactant" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">surfactante</span>
+        <label>R₀ <input type="range" id="sf_r0" min="20" max="100" step="5" value="50" oninput="drawSurfactant()"> <span id="sf_r0v">50 µm</span></label>
+        <label>curva <select id="sf_sel" onchange="drawSurfactant()">
+          <option value="dp" selected>ΔP(R)</option>
+          <option value="gam">γ(R)</option>
+        </select></label>
+        <span class="readout" id="sf_out">R_eq ≈ 87 µm · d(ΔP)/dR = 0</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M3 · FÍSICA DE LA RESPIRACIÓN ═══════════ -->
+<div class="slide" data-slide="7" data-module="3">
+  <div class="module-header">
+    <span class="mnum">9.3</span>
+    <span class="mtitle">La pleura y la presión transpulmonar</span>
+    <span class="msub">Pleura visceral y parietal · intrapleural −4 a −6 mmHg</span>
+    <span class="mslide-count">7 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🎈</span> El saco pleural (Fig. 9.8)</div>
+        <div class="card-body">
+          <p>Cada pulmón está rodeado por un saco dentro de la cavidad torácica, como un globo lleno de líquido intrapleural. La pared interna (<strong>pleura visceral</strong>) se adhiere al pulmón; la externa (<strong>pleura parietal</strong>) a la pared torácica. La elasticidad del pulmón separa ambas membranas y crea una presión ligeramente <span class="tag">−4 a −6 mmHg</span> (subatmosférica).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🔗</span> Presión transpulmonar</div>
+        <div class="card-body">
+          <p>La «fuerza impulsora» del volumen pulmonar es la <strong>presión transpulmonar</strong> = \(P_{\text{alveolar}} - P_{\text{intrapleural}}\) (ambas manométricas). Mantiene los pulmones expandidos; si la pleura se perfora (neumotórax, Prob. 9.38), la presión se iguala con la atmósfera y el pulmón colapsa.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">⚖️</span> Balance de fuerzas (Fig. 9.10)</div>
+        <div class="card-body">
+          <p>En pre-inspiración: la atracción visceral→parietal más la fuerza hacia afuera de la presión subatmosférica del saco (~−4 mmHg) se equilibran con la tendencia del pulmón a contraerse por elasticidad. Durante la inspiración, ese equilibrio se rompe.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-7">La presión que importa es la transpulmonar: P_alveolar − P_pleura. El pulmón «cuelga» de esa diferencia. Analogía del puño en el globo (Fig. 9.8): el globo se infla no porque entre aire, sino porque la cavidad que lo rodea se hace más grande. Acerca P_pleura a cero con el slider y mira el colapso.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-pleura" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">pleura</span>
+        <label>P_intrapleural <input type="range" id="pl_pp" min="-10" max="0" step="0.5" value="-5" oninput="drawPleura()"> <span id="pl_ppv">−5 mmHg</span></label>
+        <span class="readout" id="pl_out">P_trans = 5 mmHg · pulmón expandido</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="8" data-module="3">
+  <div class="module-header">
+    <span class="mnum">9.3</span>
+    <span class="mtitle">Inspiración y espiración</span>
+    <span class="msub">El diafragma baja, las costillas suben, el aire entra</span>
+    <span class="mslide-count">8 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">📐</span> Dos mecanismos (Fig. 9.9)</div>
+        <div class="card-body">
+          <p>(1) El <strong>diafragma</strong> baja y alarga la cavidad torácica (el único usado en la respiración tranquila). La espiración tranquila es el retroceso elástico con el diafragma relajado; en la pesada, los músculos abdominales empujan el diafragma hacia arriba. (2) Las <strong>costillas</strong> se elevan (músculos del cuello) y aumentan el diámetro anteroposterior ~20 %.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">⬇️</span> Pasos de la inspiración (Fig. 9.11)</div>
+        <div class="card-body">
+          <p>Los músculos inspiratorios agrandan la caja → la pleura visceral y parietal se separan → \(P_{\text{lung}} - P_{\text{pleura}}\) pasa de ~−4 a <span class="tag">~−6 mmHg</span> (de 756 a 754 absolutos) → el pulmón se expande → la presión alveolar baja de ~0 a <span class="tag">~−1 mmHg</span> (de 760 a 759 absolutos) → el aire fluye de la boca hacia los pulmones.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🔄</span> Espiración normal = gratis</div>
+        <div class="card-body">
+          <p>No requiere contracción muscular: es el retroceso elástico del pulmón y la pared torácica. La contracción activa solo aparece en el ejercicio intenso, para espirar el aire viciado más rápido.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-8">Los números del ciclo: al inspirar la presión alveolar cae de 0 a −1 mmHg (760 → 759 absolutos) y con eso entran ~0,5 L en ~2 s. El diafragma es el músculo principal: al bajar, arrastra la pleura visceral hacia abajo y el pulmón se estira. La espiración normal no cuesta energía.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-breath" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">ciclo</span>
+        <button id="br_play" onclick="toggleBreath()">▶</button>
+        <label>ritmo <input type="range" id="br_rate" min="6" max="30" step="1" value="12" oninput="drawBreath()"> <span id="br_ratev">12 /min</span></label>
+        <span class="readout" id="br_out">P_alveolar 0 · P_pleura −5 · V = 2,2 L</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M4 · VOLÚMENES PULMONARES ═══════════ -->
+<div class="slide" data-slide="9" data-module="4">
+  <div class="module-header">
+    <span class="mnum">9.4</span>
+    <span class="mtitle">El espirómetro y los volúmenes pulmonares</span>
+    <span class="msub">V_T ≈ 1 L · CRF 2,2 L · CPT 6 L · CV 5 L · VR 1 L</span>
+    <span class="mslide-count">9 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">📏</span> Los volúmenes (Fig. 9.13)</div>
+        <div class="card-body">
+          <p>En respiración normal el pulmón oscila entre <span class="tag">3,2 L</span> (tras inspirar) y <span class="tag">2,2 L</span> (tras espirar). La diferencia es el <strong>volumen corriente</strong> \(V_T \approx 1\ \text{L}\). El volumen tras espirar normal es la <strong>CRF</strong>. Tras inspirar profundo: <strong>CPT</strong> ≈ 6 L (la supera el VRI). Tras espirar profundo: <strong>VR</strong> ≈ 1 L. La <strong>CV</strong> ≈ 5 L = CPT − VR; el <strong>VRE</strong> = CRF − VR.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🤰</span> Embarazo</div>
+        <div class="card-body">
+          <p>La tasa de inhalación aumenta ~<span class="tag">30–50 %</span> (más \(V_T\) y más frecuencia); el consumo de O₂ sube ~20–40 % para el feto, la placenta y los órganos de la madre.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🩺</span> Por qué importa</div>
+        <div class="card-body">
+          <p>La CV mide qué tan bien funcionan los pulmones (y cuánto puedes inflar globos). La CRF es el aire viciado que se mezcla con el nuevo. Existe espacio muerto: <span class="tag">0,15 L anatómico</span> (tráquea y bronquios) más el alveolar fisiológico. Con la edad la CPT no cambia, pero la CV cae.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-9">Este es el mapa de volúmenes que usaremos todo el capítulo. El «piso» de la respiración normal es la CRF (2,2 L); la CV (5 L) es tu margen de maniobra. Pulsa ▶ y mira el espirómetro dibujar los compartimentos; cambia a respiración profunda y ve crecer la amplitud.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-spiro" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">espirómetro</span>
+        <button id="sp_play" onclick="toggleSpiro()">▶</button>
+        <label>tipo <select id="sp_mode" onchange="drawSpiro()">
+          <option value="normal" selected>Respiración normal</option>
+          <option value="profunda">Respiración profunda</option>
+        </select></label>
+        <span class="readout" id="sp_out">V = 2,2 L (CRF)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="10" data-module="4">
+  <div class="module-header">
+    <span class="mnum">9.4</span>
+    <span class="mtitle">Curva P–V del pulmón e histéresis</span>
+    <span class="msub">Inflado y desinflado no coinciden: histéresis · C ≈ 0,2 L/cmH₂O</span>
+    <span class="mslide-count">10 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">📈</span> Presión–volumen (Fig. 9.12)</div>
+        <div class="card-body">
+          <p>El volumen depende de la presión transpulmonar. Las curvas de inflado y desinflado <strong>no coinciden</strong>: es la <span class="highlight">histéresis</span> (viscoelasticidad, Cap. 4). La <strong>compliancia</strong> es la pendiente, ~0,2 L/cmH₂O, y <strong>disminuye</strong> a presiones altas (pendiente decreciente).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">⚙️</span> Compliancia específica</div>
+        <div class="card-body">
+          <p>Para evaluar rendimiento se normaliza por un volumen característico (CRF, CV, CPT), el peso seco del pulmón o el peso corporal: la <strong>compliancia específica</strong>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🧱</span> Pared torácica + pulmón (Fig. 9.15)</div>
+        <div class="card-body">
+          <p>La elasticidad del tórax contribuye tanto como la del pulmón. Con los músculos relajados, en cada volumen la presión de relajación del conjunto es la <strong>suma</strong> de la del pulmón y la de la pared. La CRF queda donde las fuerzas se equilibran.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-10">Histéresis = memoria del material: inflar y desinflar no recorren la misma curva, como el caucho del Cap. 4. La pendiente local es la compliancia: cuanto más inflado, menos compliante. Recorre el ciclo con el slider y lee la pendiente en el readout.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-pvcurve" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">histéresis</span>
+        <label>ciclo <input type="range" id="pc_t" min="0" max="100" step="1" value="20" oninput="drawPVCurve()"> <span id="pc_tv">20 %</span></label>
+        <span class="readout" id="pc_out">inflando · C ≈ 0,20 L/cmH₂O</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="11" data-module="4">
+  <div class="module-header">
+    <span class="mnum">9.4</span>
+    <span class="mtitle">Espacio muerto, aire viciado y mezcla</span>
+    <span class="msub">α = 1/3 · β = 1/4 → aire viciado: 16,5 % O₂ / 3,5 % CO₂</span>
+    <span class="mslide-count">11 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🌀</span> El aire viciado (ec. 9.9–9.10)</div>
+        <div class="card-body">
+          <p>Inspiramos 80 % N₂ / 20 % O₂ / 0 % CO₂ y espiramos 80/16/4. Si el viciado es 80/x/y, con \(\alpha = V_T/V_{\text{total}}\) y \(\beta\) la fracción de O₂ absorbida:</p>
+          <div class="eq-block"><span class="eqno">(9.9)</span>\[ 16\% = \big[20\alpha - 20\alpha\beta + (1-\alpha)x\big]\% \]</div>
+          <div class="eq-block"><span class="eqno">(9.10)</span>\[ 4\% = \big[20\alpha\beta + (1-\alpha)y\big]\% \]</div>
+          <p>Con \(\alpha = 1/3\) y \(\beta = 1/4\): \(x = 16{,}5\) e \(y = 3{,}5\) → el viciado es 80 / 16,5 / 3,5. Sigue teniendo O₂ suficiente para el boca a boca.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🫁</span> Ventilación alveolar</div>
+        <div class="card-body">
+          <p>Del \(V_T\) solo \(V_T - V_d\) llega a los alvéolos: \(V_a = R(V_T - V_d)\), con el espacio muerto anatómico \(V_d = 0{,}15\ \text{L}\). La ventilación pulmonar es \(V_p = R\,V_T\).</p>
+          <table class="data-mini">
+            <tr><th>Tabla 9.3</th><th>R (/min)</th><th>V_T (L)</th></tr>
+            <tr><td>(i) Reposo, tranquila</td><td>12</td><td>0,5</td></tr>
+            <tr><td>(ii) Rápida y superficial</td><td>24</td><td>0,25</td></tr>
+            <tr><td>(iii) Muy rápida</td><td>40</td><td>0,15</td></tr>
+            <tr><td>(iv) Lenta y profunda</td><td>6</td><td>1,0</td></tr>
+            <tr><td>(v) Ejercicio, rápida</td><td>24</td><td>0,5</td></tr>
+            <tr><td>(vi) Ejercicio, profunda</td><td>12</td><td>1,0</td></tr>
+          </table>
+          <p class="table-caption">Patrones del Prob. 9.12: el (iii) es desaconsejable por mala ventilación alveolar.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">💬</span> El boca a boca funciona</div>
+        <div class="card-body">
+          <p>El aire viciado conserva 16,5 % de O₂: «claramente lo suficientemente oxigenado para ser útil durante la reanimación boca a boca».</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-11">Resuelve el rompecabezas con los dos sliders: α es cuánto aire nuevo entra en los pulmones (fracción del volumen) y β cuánto O₂ se absorbe. Con los valores del libro (α = 1/3, β = 1/4) la solución es 16,5 % O₂ y 3,5 % CO₂. La mezcla es un balance de masas, no magia.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-mix" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">mezcla</span>
+        <label>α <input type="range" id="mx_alpha" min="20" max="50" step="5" value="33" oninput="drawMix()"> <span id="mx_alphav">1/3</span></label>
+        <label>β <input type="range" id="mx_beta" min="10" max="40" step="5" value="25" oninput="drawMix()"> <span id="mx_betav">1/4</span></label>
+        <span class="readout" id="mx_out">viciado: O₂ 16,5 % · CO₂ 3,5 %</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M5 · FLUJO DE AIRE ═══════════ -->
+<div class="slide" data-slide="12" data-module="5">
+  <div class="module-header">
+    <span class="mnum">9.5.1</span>
+    <span class="mtitle">Compliancia y resistencia de las vías aéreas</span>
+    <span class="msub">C ≈ 0,2 L/cmH₂O · R_vías ≈ 2 cmH₂O/(L/s) · 80 % / 20 %</span>
+    <span class="mslide-count">12 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🫧</span> Compliancia</div>
+        <div class="card-body">
+          <p>La compliancia del pulmón es <span class="tag">≈ 0,2 L/cmH₂O</span> y baja a presiones de expansión altas (pendiente decreciente). La <strong>compliancia específica</strong> se normaliza por un volumen característico. La elasticidad del tórax suma con la del pulmón.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🚰</span> Resistencia de las vías</div>
+        <div class="card-body">
+          <p>\(R_{\text{vías}} \approx 2\ \text{cmH}_2\text{O}/(\text{L/s})\) en respiración normal, y baja al crecer el pulmón. Es ~<span class="tag">80 %</span> de la resistencia pulmonar total; el otro 20 % es la <strong>resistencia tisular</strong> (fuerzas viscosas del tórax y la pared). Por Poiseuille, \(R \propto L/r^4\): domina en los bronquios intermedios (Prob. 9.21).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">💪</span> Presiones máximas</div>
+        <div class="card-body">
+          <p>Hombres jóvenes: espiración <span class="tag">100–150 cmH₂O</span>, inspiración <span class="tag">−95 a −105</span>. Mujeres: espiración 60–95, inspiración −65 a −75. Muy útiles para inflar globos o succionar por pajillas largas (Prob. 9.27).</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-12">La resistencia NO está en la tráquea: está en los bronquios de tamaño intermedio (generaciones ~5–9), donde el radio pequeño aún no lo compensa el número de tubos. El canvas reproduce el Problema 9.21 con Poiseuille: busca la generación con la barra más alta y suma todas las resistencias.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-airres" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">resistencia</span>
+        <label>ver <select id="ar_sel" onchange="drawAirRes()">
+          <option value="r" selected>R por generación</option>
+          <option value="g">Conductancia 1/R</option>
+        </select></label>
+        <span class="readout" id="ar_out">R máxima en z ≈ 6</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="13" data-module="5">
+  <div class="module-header">
+    <span class="mnum">9.5.1</span>
+    <span class="mtitle">Presión media y flujo sinusoidal</span>
+    <span class="msub">ΔP_av = (2/π)·ΔP_max · Q_max = (π/2)·Q_av · Re ≈ 1.600</span>
+    <span class="mslide-count">13 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🌊</span> Medio ciclo senoidal (ec. 9.11–9.12)</div>
+        <div class="card-body">
+          <p>Modelamos la inhalación como medio ciclo de onda senoidal: \(\Delta P(t) = \Delta P_{\max}\sin(\pi t/T_{\text{half}})\), con \(T_{\text{half}} = 1/(2f)\). La presión promedio es</p>
+          <div class="eq-block"><span class="eqno">(9.11–9.12)</span>\[ \Delta P_{\text{av}} = \frac{1}{T}\int_0^T \Delta P_{\max}\sin\left(\frac{\pi t}{T}\right)dt = \frac{2}{\pi}\Delta P_{\max} \]</div>
+          <p>Para \(\Delta P_{\max} = 1{,}1\ \text{mmHg}\): \(\Delta P_{\text{av}} = 0{,}7\ \text{mmHg}\).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🚰</span> Flujo y resistencia</div>
+        <div class="card-body">
+          <p>Con \(V_{\text{in}} = 0{,}5\ \text{L}\): \(Q_{\text{av}} = 0{,}25\ \text{L/s}\) y \(Q_{\max} = (\pi/2)Q_{\text{av}} = 0{,}4\ \text{L/s}\). Si \(Q \propto \Delta P\), ambas tienen la misma dependencia temporal. La resistencia es</p>
+          <div class="eq-block">\[ R_{\text{flow}} = \frac{\Delta P}{Q} = \frac{0{,}7\ \text{mmHg}}{0{,}25\ \text{L/s}} = 3{,}7\times10^5\ \text{Pa·s/m}^3 \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🌀</span> ¿Laminar o turbulento?</div>
+        <div class="card-body">
+          <p>Tráquea: \(r = 9\ \text{mm}\), \(u_{\max} = Q_{\max}/A = 160\ \text{cm/s}\). Con \(\rho = 1{,}16\times10^{-3}\ \text{g/cm}^3\) y \(\eta = 2\times10^{-5}\ \text{Pa·s}\), \(Re = \rho u d/\eta \approx 1.600\) → <span class="tag">laminar</span> (y en fosas y faringe; algo de turbulencia por paredes no lisas). En la nariz el aire gira 90° y el flujo turbulento humedece y limpia el aire.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-13">La integral del medio seno produce el factor 2/π ≈ 0,64: la presión media es el 64 % de la máxima. Del flujo medio al máximo, el inverso π/2. Mueve ΔP_max y V_in y mira encadenarse Q_av, Q_max, R_flow y Re en el readout.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-sine" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">onda senoidal</span>
+        <label>ΔP_max <input type="range" id="sn_pmax" min="0.5" max="2.5" step="0.1" value="1.1" oninput="drawSine()"> <span id="sn_pmaxv">1,1 mmHg</span></label>
+        <label>V_in <input type="range" id="sn_vin" min="300" max="800" step="50" value="500" oninput="drawSine()"> <span id="sn_vinv">0,5 L</span></label>
+        <span class="readout" id="sn_out">ΔP_av 0,7 mmHg · Q_av 0,25 L/s</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="14" data-module="5">
+  <div class="module-header">
+    <span class="mnum">9.5.2</span>
+    <span class="mtitle">Modelo mecánico de la respiración</span>
+    <span class="msub">Compliancia en serie con inertancia, en paralelo con la resistencia</span>
+    <span class="mslide-count">14 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🧮</span> El circuito (Fig. 9.16b)</div>
+        <div class="card-body">
+          <p>Es un vaso de compliancia, \(V(t) = V_d + C_{\text{flow}}P(t)\) (elasticidad del pulmón), <strong>en serie</strong> con un elemento inercial (masa del aire), y <strong>en paralelo</strong> con un elemento resistivo (vías aéreas). Todo lo impulsa la presión de los <strong>músculos inspiratorios</strong>. La inertancia se desprecia salvo flujos grandes.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📈</span> Respuesta del modelo</div>
+        <div class="card-body">
+          <p>El llenado del «vaso» sube exponencialmente con constante de tiempo \(\tau = R\,C\) (≈ 0,4 s para los valores normales). Con \(C\) menor (fibrosis) o \(R\) mayor (asma), el aire entra más lento y el volumen corriente queda menor (Fig. 9.20).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🔗</span> Conexión con el trabajo</div>
+        <div class="card-body">
+          <p>El área bajo la curva P–V (Fig. 9.16a) es el trabajo: las regiones I + II son el trabajo elástico (compliancia) y el área III el extra para vencer la resistencia (causa la histéresis). Lo calcularemos en la slide 22.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-14">Un pulmón no se llena al instante: es un circuito RC. Sube R (resistencia de la vía) o baja C (compliancia) y mira cómo el volumen llega más tarde y más bajo. El readout da la constante de tiempo τ = R·C — el tiempo que tarda en completarse ~63 % del llenado.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-mech" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">modelo RC</span>
+        <label>R <input type="range" id="me_r" min="0.5" max="8" step="0.5" value="2" oninput="drawMech()"> <span id="me_rv">2 cmH₂O/(L·s)</span></label>
+        <label>C <input type="range" id="me_c" min="50" max="400" step="10" value="200" oninput="drawMech()"> <span id="me_cv">0,20 L/cmH₂O</span></label>
+        <span class="readout" id="me_out">τ = 0,40 s · V_pl ≈ 0,6 L</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M6 · EL CICLO RESPIRATORIO ═══════════ -->
+<div class="slide" data-slide="15" data-module="6">
+  <div class="module-header">
+    <span class="mnum">9.5.3</span>
+    <span class="mtitle">El ciclo inspiración/espiración</span>
+    <span class="msub">Volumen, presión pleural, flujo y presión alveolar vs. tiempo</span>
+    <span class="mslide-count">15 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">📉</span> Las cuatro trazas (Fig. 9.17)</div>
+        <div class="card-body">
+          <p>En un ciclo: el <strong>volumen</strong> sube y baja; la <strong>presión intrapleural</strong> va de −4 a −6 mmHg; el <strong>flujo</strong> es positivo al inspirar y negativo al espirar; la <strong>presión alveolar</strong> oscila levemente alrededor de 0. Si se omitiera la resistencia de las vías, la presión alveolar sería cero y la intrapleural seguiría la curva discontinua.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🔄</span> Dinámica del ciclo</div>
+        <div class="card-body">
+          <p>El flujo máximo ocurre a mitad de cada fase; el volumen máximo, al final de la inspiración; la presión intrapleural es más negativa durante la inspiración. De la resistencia se deduce \(R = \Delta P/Q\) (Prob. 9.32).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📐</span> De la traza al lazo (Fig. 9.18)</div>
+        <div class="card-body">
+          <p>Graficando V contra P en todos los instantes se obtienen <strong>lazos cerrados</strong> (el tiempo queda implícito). Son útiles porque el pulmón es un vaso de compliancia donde V y P están ligados — los vemos en la slide siguiente.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-15">El ciclo completo en un vistazo: la P_intrapleural se vuelve más negativa (−6) durante la inspiración y vuelve a −4; el flujo es el que cambia de signo. Pulsa ▶ y deja correr el ciclo: el volumen llega después que la presión — ese desfase es la resistencia de las vías.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-cycle" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">ciclo</span>
+        <button id="cy_play" onclick="toggleCycle()">▶</button>
+        <label>velocidad <input type="range" id="cy_speed" min="50" max="200" step="10" value="100" oninput="drawCycle()"> <span id="cy_speedv">×1</span></label>
+        <span class="readout" id="cy_out">inspiración · V en ascenso</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="16" data-module="6">
+  <div class="module-header">
+    <span class="mnum">9.5.3</span>
+    <span class="mtitle">Lazos P–V de la respiración</span>
+    <span class="msub">Normal · obstructivo · restrictivo · SDR</span>
+    <span class="mslide-count">16 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🔁</span> Lazos dinámicos (Fig. 9.18)</div>
+        <div class="card-body">
+          <p>Volumen contra presión pulmonar para todos los momentos del ciclo: trayectorias cíclicas cerradas. Las curvas crecientes son las <strong>estáticas</strong> (barra inferior = VR, barra superior = CRF); los lazos discontinuos son la respiración de \(V_T\) para cada condición.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📐</span> Lectura del lazo</div>
+        <div class="card-body">
+          <p>La pendiente de la curva estática = <span class="highlight">compliancia</span>; la anchura horizontal del lazo refleja la <span class="highlight">resistencia</span>. Obstructivo: lazo ancho y desplazado (R alta); restrictivo: lazo estrecho y vertical (C baja).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🫧</span> El SDR idiopático</div>
+        <div class="card-body">
+          <p>El lugar geométrico se desplaza a <strong>mayor presión</strong> por la falta de surfactante. En bebés prematuros la tensión superficial mínima es de <span class="tag">2×10⁻⁴ N/m</span>, frente a ≪ 0,5×10⁻⁴ N/m en pulmones normales.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-16">El lazo P–V es el «electrocardiograma» de la mecánica pulmonar: pendiente = compliancia, anchura = resistencia, desplazamiento = presión de trabajo. Compara las tres condiciones y el SDR en el canvas; pulsa ▶ para ver el ciclo dibujarse.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-pvloop" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">lazos P–V</span>
+        <button id="lv_play" onclick="togglePVLoop()">▶</button>
+        <label>condición <select id="lv_sel" onchange="drawPVLoop()">
+          <option value="normal" selected>Normal</option>
+          <option value="obstr">Obstructivo</option>
+          <option value="restr">Restrictivo</option>
+          <option value="sdr">SDR</option>
+        </select></label>
+        <span class="readout" id="lv_out">normal · C ≈ 0,2 L/cmH₂O</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M7 · PULMÓN ENFERMO ═══════════ -->
+<div class="slide" data-slide="17" data-module="7">
+  <div class="module-header">
+    <span class="mnum">9.5.4</span>
+    <span class="mtitle">Obstructivo vs. restrictivo</span>
+    <span class="msub">R alta (asma, bronquitis, enfisema) · C baja (fibrosis, SDR)</span>
+    <span class="mslide-count">17 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🚑</span> Dos familias de enfermedades</div>
+        <div class="card-body">
+          <p><strong>Obstructivas</strong>: obstrucción de vías → \(R\) alta y espiración limitada a frecuencias rápidas. Incluyen bronquitis crónica (moco excesivo), enfisema (agrandamiento y destrucción de las paredes alveolares) y asma (estrechamiento generalizado, a veces espontáneo). <strong>Restrictivas</strong>: expansión restringida → \(C\) baja; fibrosis pulmonar y SDR; menor CV pero la R por volumen no sube.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📉</span> Volumen inspirado (Fig. 9.20)</div>
+        <div class="card-body">
+          <p>El volumen inspirado es muy bajo si la compliancia es menor que la normal y/o la resistencia es mayor. En el <strong>enfisema</strong>, los pulmones se vuelven menos elásticos y más compliantes, y la R domina la respiración. En la <strong>fibrosis</strong>, la C cae por el tejido fibroso.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🫧</span> Causas de la obstrucción (Fig. 9.19)</div>
+        <div class="card-body">
+          <p>Secreciones excesivas, engrosamiento de la pared (edema o hipertrofia muscular) y anomalías externas (ganglios, edema, destrucción del tejido alveolar). En el enfisema las vías tienden a colapsar por pérdida de tracción radial (Fig. 9.22).</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-17">Regla mnemotécnica: obstructivo = cuesta <em>sacar</em> el aire (R alta); restrictivo = no <em>hay espacio</em> (C baja). En el canvas elige la condición y recorre el tiempo con el slider: el restrictivo llega rápido pero a poco volumen, el obstructivo sube lento.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-inspvol" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">llenado</span>
+        <label>condición <select id="ob_sel" onchange="drawInspVol()">
+          <option value="normal" selected>Normal</option>
+          <option value="restr">Restrictiva (C baja)</option>
+          <option value="obstr">Obstructiva (R alta)</option>
+        </select></label>
+        <label>t <input type="range" id="ob_t" min="0" max="40" step="1" value="10" oninput="drawInspVol()"> <span id="ob_tv">1,0 s</span></label>
+        <span class="readout" id="ob_out">V(t) normal ≈ 0,39 L</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="18" data-module="7">
+  <div class="module-header">
+    <span class="mnum">9.5.4</span>
+    <span class="mtitle">CVF y VEF₁</span>
+    <span class="msub">Normal 5,0 L / 80 % · Obstructivo 3,1 L / 42 % · Restrictivo 3,1 L / 90 %</span>
+    <span class="mslide-count">18 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">📐</span> Espiración forzada (Fig. 9.21)</div>
+        <div class="card-body">
+          <p>Tras una inspiración muy profunda se expulsa el aire lo más rápido posible. El volumen total exhalado es la <strong>capacidad vital forzada (CVF)</strong> y el volumen del primer segundo es el <strong>VEF₁</strong> (volumen espiratorio forzado en 1 s). Su relación VEF₁/CVF separa los patrones.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📊</span> Tres patrones</div>
+        <div class="card-body">
+          <p><span class="tag">Normal</span>: CVF = 5,0 L, VEF₁/CVF = 80 %. <span class="tag">Obstructivo</span>: CVF = 3,1 L, relación 42 % (flujos anormalmente bajos). <span class="tag">Restrictivo</span>: CVF = 3,1 L, relación 90 %. Las tasas de flujo espiratorio forzado (FEF) son 3,5 / 1,4 / 3,7 L/s (Prob. 9.31).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🧪</span> Cómo se mide</div>
+        <div class="card-body">
+          <p>Con un espirómetro de baja resistencia. La CVF puede ser un poco menor que la CV medida con espiración lenta. La relación VEF₁/CVF baja en la obstrucción porque el primer segundo no alcanza a vaciar el aire.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-18">El cociente VEF₁/CVF separa las dos familias: obstrucción → cociente bajo (42 %), porque el primer segundo no puede vaciar; restricción → cociente alto (90 %), porque se vacía rápido pero hay poco volumen. Mueve el slider del tiempo y fíjate en el punto del 1 s.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-fvc" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">espirometría</span>
+        <label>patrón <select id="fc_sel" onchange="drawFVC()">
+          <option value="normal" selected>Normal</option>
+          <option value="obstr">Obstructivo</option>
+          <option value="restr">Restrictivo</option>
+        </select></label>
+        <label>t <input type="range" id="fc_t" min="0" max="60" step="1" value="10" oninput="drawFVC()"> <span id="fc_tv">1,0 s</span></label>
+        <span class="readout" id="fc_out">VEF₁ = 4,0 L · VEF₁/CVF = 80 %</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M8 · ALTITUD ═══════════ -->
+<div class="slide" data-slide="19" data-module="8">
+  <div class="module-header">
+    <span class="mnum">9.5.5</span>
+    <span class="mtitle">La hipoxia y la fracción de O₂</span>
+    <span class="msub">Efectos por debajo de 19,5 % · hipoxia < ≈ 57 mmHg</span>
+    <span class="mslide-count">19 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">⚠️</span> La escala del O₂</div>
+        <div class="card-body">
+          <p>A nivel del mar, \(P_{\text{O}_2} = 161\ \text{mmHg}\) (21,2 kPa, ~20,9 % de O₂). Los efectos adversos empiezan cuando la fracción cae por debajo del <span class="tag">19,5 %</span>. A ~10 %: taquipnea y taquicardia, con deterioro de la atención y la coordinación. 6–10 %: náuseas, vómitos, letargo y pérdida de conciencia. Menos de 6 %: convulsiones → apnea → paro cardíaco.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🧠</span> El umbral crítico</div>
+        <div class="card-body">
+          <p>La <strong>hipoxia</strong> (falta de O₂ en los tejidos) ocurre por debajo de una presión parcial crítica de <span class="tag">≈ 57 mmHg</span> (7,5 kPa) con frecuencia respiratoria normal y relajada. Por encima, el metabolismo funciona bien.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🚗</span> Puede pasar a nivel del mar</div>
+        <div class="card-body">
+          <p>Cuando el aire no se renueva (habitaciones selladas, autos, burbujas de botes volcados — Prob. 9.42) o cuando la fracción es normal pero la presión parcial cae por la altura.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-19">El oxígeno se mide como fracción de la atmósfera o como presión parcial: P_O₂ = (fracción) × 760 mmHg. Baja la fracción con el slider y cruza las zonas de colores: el cuerpo aguanta hasta ~57 mmHg; por debajo vienen las convulsiones y el paro.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-hypoxia" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">hipoxia</span>
+        <label>O₂ <input type="range" id="hy_frac" min="2" max="21" step="0.5" value="21" oninput="drawHypoxia()"> <span id="hy_fracv">21 %</span></label>
+        <span class="readout" id="hy_out">P_O₂ = 160 mmHg · seguro</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="20" data-module="8">
+  <div class="module-header">
+    <span class="mnum">9.5.5</span>
+    <span class="mtitle">La presión atmosférica con la altura</span>
+    <span class="msub">P(h) = P₀·exp(−mgh/RT) · hipoxia a 8,25 km</span>
+    <span class="mslide-count">20 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">📉</span> La atmósfera (ec. 9.13–9.16)</div>
+        <div class="card-body">
+          <p>El cambio de presión con la altura, para una columna de aire de densidad \(\rho\):</p>
+          <div class="eq-block"><span class="eqno">(9.13)</span>\[ dP = -\rho g\,dz \]</div>
+          <div class="eq-block"><span class="eqno">(9.14)</span>\[ P = \frac{RT}{m}\,\rho \]</div>
+          <p>dividiendo (gas ideal, \(m\) masa molecular):</p>
+          <div class="eq-block"><span class="eqno">(9.15)</span>\[ \frac{dP}{P} = -\frac{mg}{RT}\,dz \]</div>
+          <div class="eq-block"><span class="eqno">(9.16)</span>\[ P(h) = P_{\text{nivel del mar}}\exp\left(-\frac{mg}{RT}\,h\right) \]</div>
+          <p>con \(m = 32\ \text{g/mol}\) (O₂) y \(T = 300\ \text{K}\).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🏔️</span> La hipoxia en altura</div>
+        <div class="card-body">
+          <p>Desde \(P_{\text{O}_2} = 161\ \text{mmHg}\), la hipoxia (57 mmHg) llega a <span class="tag">8,25 km</span> = 27.100 ft = 5,1 millas. El Everest (29.029 ft ≈ 8,85 km) queda en la frontera. Con la temperatura variable (ec. 9.21, Prob. 9.48) la hipoxia baja a 7,21 km:</p>
+          <div class="eq-block"><span class="eqno">(9.21)</span>\[ P(h) = P_0\left(\frac{T_0}{T_0 + \alpha h}\right)^{\frac{gm}{R\alpha}} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">✈️</span> Aviación</div>
+        <div class="card-body">
+          <p>Los aviones comerciales vuelan a ~10,7 km (35.000 ft): la presión cae tanto que la cabina se presuriza y hay mascarillas de O₂ por si se despresuriza (Prob. 9.45).</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-20">La presión cae exponencialmente, no lineal: cada ~8 km se divide por e. Para el O₂ (m = 32 g/mol) la hipoxia aparece a 8,25 km; en la cumbre del Everest la P_O₂ ≈ 53 mmHg — por debajo del umbral, por eso los alpinistas llevan oxígeno. Mueve el slider de altura.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-altitude" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">altura</span>
+        <label>h <input type="range" id="al_h" min="0" max="12000" step="100" value="8250" oninput="drawAltitude()"> <span id="al_hv">8,25 km</span></label>
+        <span class="readout" id="al_out">P_O₂ = 57 mmHg · hipoxia</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="21" data-module="8">
+  <div class="module-header">
+    <span class="mnum">9.5.5</span>
+    <span class="mtitle">A 2.500 m: comparar presiones</span>
+    <span class="msub">Tabla 9.4 · nivel del mar vs. 2.500 m</span>
+    <span class="mslide-count">21 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">📊</span> Tabla 9.4</div>
+        <div class="card-body">
+          <table class="data-mini">
+            <tr><th>Altitud</th><th>Nivel del mar</th><th>A 2.500 m</th></tr>
+            <tr><td>Presión atmosférica (total)</td><td>760</td><td>560</td></tr>
+            <tr><td>Presión atmosférica (O₂)</td><td>159</td><td>117</td></tr>
+            <tr><td>En los alvéolos (O₂)</td><td>105</td><td>77</td></tr>
+            <tr><td>Sangre arterial (O₂)</td><td>100</td><td>72</td></tr>
+            <tr><td>Sangre venosa (O₂)</td><td>40</td><td>40</td></tr>
+          </table>
+          <p class="table-caption">Presiones en mmHg (Prob. 9.49, a partir de los datos del texto).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📉</span> Qué se pierde</div>
+        <div class="card-body">
+          <p>A 2.500 m la presión total cae ~200 mmHg y la alveolar de O₂ baja de 105 a 77. La <strong>venosa no cambia</strong> (40): el cuerpo mantiene la extracción de oxígeno hasta el mismo piso.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🏃</span> Compensación (Prob. 9.49)</div>
+        <div class="card-body">
+          <p>Para el mismo flujo de O₂ a los tejidos, la sangre tendría que fluir ~30 % más rápido, o hay que respirar más (mayor frecuencia o \(V_T\)). La adaptación a la altura aumenta glóbulos rojos y hemoglobina.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-21">La presión venosa de O₂ es idéntica (40) a nivel del mar y a 2.500 m: el cuerpo extrae hasta el mismo piso; lo que baja es la «oferta» arterial (72 frente a 100). En el canvas compara las cinco barras y usa el select para resaltar cada fila.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-table94" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">Tabla 9.4</span>
+        <label>fila <select id="tb_sel" onchange="drawTable94()">
+          <option value="all" selected>Todas</option>
+          <option value="0">Total</option>
+          <option value="1">O₂ atmosférico</option>
+          <option value="2">O₂ alveolar</option>
+          <option value="3">O₂ arterial</option>
+          <option value="4">O₂ venoso</option>
+        </select></label>
+        <span class="readout" id="tb_out">total 760 → 560 mmHg</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M9 · TRABAJO DE LA RESPIRACIÓN ═══════════ -->
+<div class="slide" data-slide="22" data-module="9">
+  <div class="module-header">
+    <span class="mnum">9.6</span>
+    <span class="mtitle">El trabajo de la inspiración</span>
+    <span class="msub">W = V_t²/(2·C_flow) · 0,86 kcal/día</span>
+    <span class="mslide-count">22 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">⚡</span> Trabajo elástico (ec. 9.17–9.18)</div>
+        <div class="card-body">
+          <p>Con \(V = V_d + C_{\text{flow}}P\), tenemos \(P = \Delta V/C_{\text{flow}}\). El trabajo por ciclo de volumen corriente \(V_t\) es</p>
+          <div class="eq-block"><span class="eqno">(9.17)</span>\[ W = \int_0^{V_t} P\,d(\Delta V) = \frac{V_t^2}{2C_{\text{flow}}} \]</div>
+          <div class="eq-block"><span class="eqno">(9.18)</span>\[ \frac{dW}{dt} = f\,\frac{V_t^2}{2C_{\text{flow}}} \]</div>
+          <p>Es el área I + II de la Fig. 9.16a (compliancia); el área III es el extra para vencer la resistencia (viscosidad → histéresis).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🧮</span> Los números (ec. 9.19)</div>
+        <div class="card-body">
+          <p>Con \(f = 20/\text{min}\), \(V_t = 500\ \text{cm}^3\), \(C = 0{,}1\ \text{L/cmH}_2\text{O}\):</p>
+          <div class="eq-block"><span class="eqno">(9.19)</span>\[ \frac{dW}{dt} = \frac{(20/\text{min})(500\ \text{cm}^3)^2}{2\,(0{,}1\ \text{cm}^3/(\text{dina/cm}^2))} = 3{,}6\times10^3\ \text{J/día} = 0{,}86\ \text{kcal/día} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🫁</span> En espiración</div>
+        <div class="card-body">
+          <p>Normalmente no se realiza trabajo mecánico al espirar (retroceso elástico). En la <strong>respiración forzada</strong> sí se trabaja para contraer los pulmones durante la espiración.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-22">El trabajo de respirar es el área de un triángulo: V_t²/(2C). Sube con el cuadrado del volumen corriente y baja con la compliancia. Mueve V_t, C y f y mira la tasa diaria; la resistencia (área III) no está incluida aquí — la vemos en la slide siguiente.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-work" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">trabajo</span>
+        <label>V_t <input type="range" id="wr_vt" min="300" max="1000" step="50" value="500" oninput="drawWork()"> <span id="wr_vtv">500 cm³</span></label>
+        <label>C <input type="range" id="wr_c" min="50" max="300" step="10" value="100" oninput="drawWork()"> <span id="wr_cv">0,10 L/cmH₂O</span></label>
+        <label>f <input type="range" id="wr_f" min="10" max="40" step="1" value="20" oninput="drawWork()"> <span id="wr_fv">20 /min</span></label>
+        <span class="readout" id="wr_out">dW/dt = 0,86 kcal/día</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="23" data-module="9">
+  <div class="module-header">
+    <span class="mnum">9.6</span>
+    <span class="mtitle">Eficiencia metabólica y espiración forzada</span>
+    <span class="msub">dE/dt = dW/dt / ε · ~1–2 % de la BMR</span>
+    <span class="mslide-count">23 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🔋</span> Eficiencia (ec. 9.20)</div>
+        <div class="card-body">
+          <p>Con eficiencia muscular \(\varepsilon = 5\)–\(10\,\%\):</p>
+          <div class="eq-block"><span class="eqno">(9.20)</span>\[ \frac{dE}{dt} = \frac{dW/dt}{\varepsilon} = \frac{0{,}86\ \text{kcal/día}}{0{,}05} = 17\ \text{kcal/día} \]</div>
+          <p>≈ 1 % de la BMR (quizás ~2 % real: \(\varepsilon\) más cerca de 3 % y otros efectos). La nariz aporta ~la mitad del trabajo. En ejercicio intenso, respirar puede consumir <span class="tag">25 %</span> de la energía total.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🧱</span> Rápida vs. lenta</div>
+        <div class="card-body">
+          <p>Respirar rápido y superficial cuesta más por la <strong>resistencia</strong> del flujo; lento y profundo cuesta más por la <strong>elasticidad</strong> (compliancia). Ambas cuestan más que la respiración normal — el patrón Lamaze del parto.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🚨</span> Espiración forzada (Fig. 9.23)</div>
+        <div class="card-body">
+          <p>La presión intrapleural y alveolar suben lo mismo (<span class="tag">+38 cmH₂O</span>), ambas positivas (+30 y +38). En algún punto de la vía la presión baja de +30 y <strong>comprime la vía</strong> (a +19 cmH₂O), aumentando la resistencia. En la respiración normal, la presión de la vía siempre excede a la intrapleural.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-23">Del trabajo mecánico (0,86 kcal/día) al metabólico hay un factor 1/ε. Con ε = 5 %: 17 kcal/día — el 1 % de tu metabolismo basal. Sube ε con el slider y mira encogerse el costo. El detalle final: en la espiración forzada la propia vía aérea se comprime y se frena sola.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-eff" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">eficiencia</span>
+        <label>ε <input type="range" id="ef_ep" min="3" max="10" step="1" value="5" oninput="drawEff()"> <span id="ef_epv">5 %</span></label>
+        <span class="readout" id="ef_out">dE/dt = 17 kcal/día · ~1 % BMR</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ NAVEGACIÓN ═══════════ -->
+<nav class="nav-bar">
+  <button class="nav-btn" onclick="prevSlide()" aria-label="Anterior">‹</button>
+  <div class="nav-dots" id="navDots"></div>
+  <button class="nav-btn" onclick="nextSlide()" aria-label="Siguiente">›</button>
+  <span class="slide-counter" id="slideCounter">1 / 24</span>
+  <span class="nav-module-label" id="navModuleLabel">Inicio</span>
+</nav>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   MOTOR DE PRESENTACIÓN · capítulo 9 · Física del Cuerpo Humano
+   Navegación · KaTeX · redibujado de sims
+   ═══════════════════════════════════════════════════════════ */
+'use strict';
+
+/* ── Total de diapositivas y módulos ── */
+const TOTAL = 24;
+const MODULES = [
+  {id:0, name:'Inicio',                  slides:[0],                  ico:'🏠'},
+  {id:1, name:'Estructura',              slides:[1,2,3],              ico:'🌳'},
+  {id:2, name:'Los alvéolos',            slides:[4,5,6],              ico:'🫧'},
+  {id:3, name:'Física de la respiración',slides:[7,8],                ico:'🫁'},
+  {id:4, name:'Volúmenes pulmonares',    slides:[9,10,11],            ico:'📏'},
+  {id:5, name:'Flujo de aire',           slides:[12,13,14],           ico:'🌬️'},
+  {id:6, name:'El ciclo respiratorio',   slides:[15,16],              ico:'🔁'},
+  {id:7, name:'Pulmón enfermo',          slides:[17,18],              ico:'🚑'},
+  {id:8, name:'Altitud',                 slides:[19,20,21],           ico:'🏔️'},
+  {id:9, name:'Trabajo de la respiración',slides:[22,23],             ico:'⚡'},
+];
+
+let current = 0;
+
+/* ── Texto por defecto de los apuntes (para restaurar en revisita) ── */
+const infoTexts = {};
+document.querySelectorAll('.apuntes .a-text[id]').forEach(el=>{
+  infoTexts[el.id] = el.innerHTML;
+});
+
+/* ── Navegación ── */
+function moduleOf(i){ for (const m of MODULES) if (m.slides.includes(i)) return m; return MODULES[0]; }
+
+function dots(){
+  const host = document.getElementById('navDots');
+  if (!host) return;
+  host.innerHTML = '';
+  for (let i=0;i<TOTAL;i++){
+    const b = document.createElement('button');
+    b.className = 'nav-dot';
+    if (i===0) b.classList.add('active');
+    b.title = 'Diapositiva '+(i+1);
+    b.setAttribute('aria-label','Ir a diapositiva '+(i+1));
+    b.addEventListener('click',()=>go(i));
+    host.appendChild(b);
+  }
+}
+
+function setMPills(active){
+  document.querySelectorAll('.mpill').forEach(p=>{
+    const m = (p.getAttribute('onclick')||'').match(/goModule\((\d+)\)/);
+    p.classList.toggle('active', m && +m[1]===active);
+  });
+}
+
+/* ── Pestañas de módulo en la barra superior ── */
+function buildModuleTabs(){
+  const bar = document.getElementById('moduleBar');
+  if (!bar) return;
+  MODULES.forEach(m=>{
+    if (m.id===0) return;
+    const t = document.createElement('button');
+    t.className = 'module-tab';
+    t.innerHTML = '<span class="mod-badge">'+m.id+'</span>'+m.ico+' '+m.name;
+    t.setAttribute('onclick','goModule('+m.id+')');
+    t.setAttribute('aria-label','Módulo '+m.id+': '+m.name);
+    bar.appendChild(t);
+  });
+}
+function updateTabs(id){
+  document.querySelectorAll('.module-tab').forEach(t=>{
+    const mid = (t.getAttribute('onclick')||'').match(/goModule\((\d+)\)/);
+    t.classList.toggle('active', mid && +mid[1]===id);
+  });
+}
+
+const _entranceSeen = new Set();
+function go(n){
+  if (n===undefined || isNaN(n)) return;
+  n = Math.max(0, Math.min(TOTAL-1, n));
+  // Restaurar los apuntes que las simulaciones hayan reescrito
+  document.querySelectorAll('.apuntes .a-text[id]').forEach(el=>{
+    if (infoTexts[el.id]) el.innerHTML = infoTexts[el.id];
+  });
+  document.querySelectorAll('.slide,.slide-full').forEach(s=>{
+    s.classList.toggle('active', +s.dataset.slide===n);
+  });
+  // Primera visita: reveal. Revisita: instantáneo (no insistir).
+  const cur = document.querySelector('.slide.active,.slide-full.active');
+  if (cur) {
+    if (!_entranceSeen.has(n)) _entranceSeen.add(n);
+    else cur.classList.add('instant');
+  }
+  current = n;
+  document.querySelectorAll('#navDots .nav-dot').forEach((d,i)=>d.classList.toggle('active', i===n));
+  const sc = document.getElementById('slideCounter');
+  if (sc) sc.textContent = (n+1)+' / '+TOTAL;
+  const ml = document.getElementById('navModuleLabel');
+  if (ml) ml.textContent = moduleOf(n).name;
+  const mid = moduleOf(n).id;
+  setMPills(mid);
+  updateTabs(mid);
+  requestAnimationFrame(()=>{ redrawSlide(n); });
+  // La slide recién activada (display:none→flex) puede no tener layout aún
+  // cuando corre el rAF; el guard `!cv.clientWidth` corta y quedaría sin
+  // dibujar. Reintento tras asentar layout, solo si seguimos en esta slide.
+  setTimeout(()=>{ if (current===n) redrawSlide(n); }, 120);
+}
+window.go = go;
+
+function nextSlide(){ go(current+1); }
+function prevSlide(){ go(current-1); }
+function goModule(id){ const m = MODULES.find(x=>x.id===id); if (m) go(m.slides[0]); }
+window.nextSlide = nextSlide;
+window.prevSlide = prevSlide;
+window.goModule = goModule;
+
+/* ── Motor de amortiguación frame-rate independent ── */
+window.__damp = function(v, t, r, dt) { return v + (t - v) * (1 - Math.exp(-r * dt)); };
+
+/* ═══════════════════════════════════════════════════════════
+   HELPERS ANATÓMICOS 2D (window.AB) — heredados de los capítulos 1–6
+   ═══════════════════════════════════════════════════════════ */
+window.AB = (function(){
+  const PAL = {
+    paper:'#f5f0e4', card:'#fbf8f0', ink:'#232c36', ink2:'#43505c', ink3:'#6b7885',
+    line:'#cfc3a9', sagittal:'#5d4fa8',
+    bone:'#cfc4ae', boneEdge:'#b6a67f', boneDark:'#9b8a64',
+    muscle:'#c14b4b', muscleEdge:'#a92a1e',
+    tendon:'#e8d8c8', skin:'#e9c49f', skinEdge:'#d9a77c',
+    teal:'#0d6e64', tealLight:'#3aa89c', amber:'#9a5b00', blood:'#a92a1e',
+    good:'#2d7d4f', warn:'#b86a1e',
+  };
+  function setup(cv, w, h){
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = Math.max(1, Math.round(w*dpr));
+    cv.height = Math.max(1, Math.round(h*dpr));
+    cv.style.width = w+'px'; cv.style.height = h+'px';
+    const ctx = cv.getContext('2d');
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,w,h);
+    ctx.lineCap='round'; ctx.lineJoin='round';
+    return ctx;
+  }
+  function fmt(x, d){
+    d = d===undefined?1:d;
+    let s = Number(x).toFixed(d).replace(/\.0+$/,'').replace('.',',');
+    if (s===''||s==='-') s='0';
+    return s;
+  }
+  function text(ctx, s, x, y, o){
+    o = o||{};
+    ctx.font = (o.weight?o.weight+' ':'')+(o.size?o.size+'px ':'13px ')+'Karla, sans-serif';
+    ctx.fillStyle = o.color || PAL.ink;
+    ctx.textAlign = o.align || 'center';
+    ctx.textBaseline = o.base || 'middle';
+    ctx.fillText(s, x, y);
+  }
+  function arrow(ctx, x0,y0, x1,y1, o){
+    o = o||{};
+    const head = o.head===undefined?8:o.head;
+    const ang = Math.atan2(y1-y0, x1-x0);
+    ctx.strokeStyle = o.color||PAL.teal; ctx.fillStyle = o.color||PAL.teal;
+    ctx.lineWidth = o.width||2.5;
+    ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x1,y1);
+    ctx.lineTo(x1-head*Math.cos(ang-0.45), y1-head*Math.sin(ang-0.45));
+    ctx.lineTo(x1-head*Math.cos(ang+0.45), y1-head*Math.sin(ang+0.45));
+    ctx.closePath(); ctx.fill();
+  }
+  function dashed(ctx, x0,y0,x1,y1, o){
+    o = o||{};
+    ctx.strokeStyle = o.color||PAL.ink3; ctx.lineWidth = o.width||1.2;
+    ctx.setLineDash([4,4]); ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke(); ctx.setLineDash([]);
+  }
+  function bone(ctx, x0,y0,x1,y1, o){
+    o = o||{};
+    const w = o.width||10;
+    ctx.strokeStyle = o.edge||PAL.boneEdge; ctx.lineWidth = w;
+    ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+    ctx.strokeStyle = o.fill||PAL.bone; ctx.lineWidth = w-3;
+    ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+    if (o.joint!==false){ joint(ctx, x0,y0, w/2, {r:Math.max(2,w/2-3)}); }
+    if (o.jointEnd){ joint(ctx, x1,y1, w/2, {r:Math.max(2,w/2-3)}); }
+  }
+  function joint(ctx, x,y,r, o){
+    o = o||{};
+    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2);
+    ctx.fillStyle = o.fill||'#f5f0e4'; ctx.fill();
+    ctx.lineWidth = o.lw||2.2; ctx.strokeStyle = o.color||PAL.teal; ctx.stroke();
+    ctx.beginPath(); ctx.arc(x,y,Math.max(1.5,r*0.38),0,Math.PI*2);
+    ctx.fillStyle = o.color||PAL.teal; ctx.fill();
+  }
+  function muscle(ctx, ax,ay,bx,by, o){
+    o = o||{};
+    const w0 = o.w0||9, w1 = o.w1||4;
+    const ang = Math.atan2(by-ay, bx-ax);
+    const perp = ang + Math.PI/2;
+    const dx = Math.cos(perp), dy = Math.sin(perp);
+    const cx = (ax+bx)/2, cy = (ay+by)/2;
+    const bow = o.bow||0;
+    ctx.beginPath();
+    ctx.moveTo(ax + dx*w0/2, ay + dy*w0/2);
+    ctx.quadraticCurveTo(cx + dx*(bow+(w0+w1)/4), cy + dy*(bow+(w0+w1)/4), bx + dx*w1/2, by + dy*w1/2);
+    ctx.quadraticCurveTo(cx - dx*(w0+w1)/4, cy - dy*(w0+w1)/4, ax - dx*w0/2, ay - dy*w0/2);
+    ctx.closePath();
+    ctx.fillStyle = o.fill||PAL.muscle; ctx.fill();
+    ctx.lineWidth = o.lw||1.5; ctx.strokeStyle = o.edge||PAL.muscleEdge; ctx.stroke();
+  }
+  function tendon(ctx, ax,ay,bx,by, o){
+    o = o||{};
+    const w = o.width||3.5;
+    const ang = Math.atan2(by-ay,bx-ax);
+    const px = Math.cos(ang+Math.PI/2), py = Math.sin(ang+Math.PI/2);
+    ctx.beginPath();
+    ctx.moveTo(ax+px*w/2, ay+py*w/2); ctx.lineTo(bx+px*w/2, by+py*w/2);
+    ctx.lineTo(bx-px*w/2, by-py*w/2); ctx.lineTo(ax-px*w/2, ay-py*w/2);
+    ctx.closePath();
+    ctx.fillStyle = o.fill||PAL.tendon; ctx.fill();
+    ctx.lineWidth = 1; ctx.strokeStyle = o.edge||'#c8b49a'; ctx.stroke();
+  }
+  function limbSkin(ctx, x0,y0,x1,y1, w, o){
+    o = o||{};
+    const ang = Math.atan2(y1-y0,x1-x0);
+    const px = Math.cos(ang+Math.PI/2), py = Math.sin(ang+Math.PI/2);
+    ctx.beginPath();
+    ctx.moveTo(x0+px*w/2,y0+py*w/2); ctx.lineTo(x1+px*w/2,y1+py*w/2);
+    ctx.arc(x1,y1,w/2,ang-Math.PI/2,ang+Math.PI/2);
+    ctx.lineTo(x0-px*w/2,y0-py*w/2);
+    ctx.arc(x0,y0,w/2,ang+Math.PI/2,ang+Math.PI*1.5);
+    ctx.closePath();
+    ctx.fillStyle = o.fill||PAL.skin; ctx.fill();
+    ctx.lineWidth = o.lw||1.4; ctx.strokeStyle = o.edge||PAL.skinEdge; ctx.stroke();
+  }
+  function hand(ctx, x,y, r, o){
+    o = o||{};
+    ctx.fillStyle = o.fill||PAL.skin; ctx.strokeStyle = o.edge||PAL.skinEdge; ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    for (let i=-2;i<=2;i++){
+      ctx.beginPath(); ctx.arc(x+i*r*0.42, y-r*0.55, r*0.26, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+    }
+  }
+  function foot(ctx, x,y, ang, o){
+    o = o||{};
+    const L = o.len||54, h = o.h||20;
+    ctx.save(); ctx.translate(x,y); ctx.rotate(ang);
+    ctx.beginPath();
+    ctx.moveTo(-L*0.35, -h*0.25);
+    ctx.quadraticCurveTo(-L*0.5, h*0.1, -L*0.2, h*0.42);
+    ctx.quadraticCurveTo(L*0.2, h*0.55, L*0.62, h*0.3);
+    ctx.quadraticCurveTo(L*0.75, -h*0.15, L*0.55, -h*0.35);
+    ctx.quadraticCurveTo(0, -h*0.5, -L*0.35, -h*0.25);
+    ctx.closePath();
+    ctx.fillStyle = o.fill||PAL.skin; ctx.fill();
+    ctx.lineWidth = 1.4; ctx.strokeStyle = o.edge||PAL.skinEdge; ctx.stroke();
+    ctx.restore();
+  }
+  function triangle(ctx, x, y, size, o){
+    o = o||{};
+    ctx.beginPath(); ctx.moveTo(x, y-size*0.5); ctx.lineTo(x-size*0.5, y+size*0.5); ctx.lineTo(x+size*0.5, y+size*0.5); ctx.closePath();
+    ctx.fillStyle = o.color||PAL.amber; ctx.fill();
+  }
+  return {PAL, setup, fmt, text, arrow, dashed, bone, joint, muscle, tendon, limbSkin, hand, foot, triangle};
+})();
+const fmt = window.AB.fmt;
+
+function el(id){ return document.getElementById(id); }
+function num(id){ const e = el(id); return e ? parseFloat(e.value) : 0; }
+
+/* ── Formato español de miles (punto) con decimal (coma) ── */
+function espan(x, d){
+  d=d===undefined?0:d;
+  let s=Number(x).toFixed(d), neg=s.startsWith('-');
+  if(neg) s=s.slice(1);
+  const parts=s.split('.'), ip=parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+  let out=ip;
+  if(parts.length>1 && parts[1]!=='') out+=','+parts[1];
+  return (neg?'-':'')+out;
+}
+
+
+
+/* ═══════════════════════════════════════════════════════════
+   SIMULACIONES DEL CAPÍTULO 9 — Los pulmones y la respiración
+   23 sims canvas · una por slide de contenido
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Estado global de las simulaciones animadas ── */
+window.__bbPlaying=false; window.__bbT=0; window.__bbR1=undefined; window.__bbR2=undefined; // burbujas
+window.__brPlaying=false; window.__brT=0;  // ciclo respiración
+window.__spPlaying=false; window.__spT=0; window.__spHist=[];   // espirómetro
+window.__cyPlaying=false; window.__cyT=0; window.__cyHist=[];   // ciclo (4 trazas)
+window.__lvPlaying=false; window.__lvT=0;  // lazo P–V
+
+/* ═══════════════════════════════════════════════════════════
+   S1 · Composición del aire: inspirado / espirado / viciado
+   ═══════════════════════════════════════════════════════════ */
+function drawComposition(){
+  const cv=el('sim-composition'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const sel=el('cm_sel')?el('cm_sel').value:'insp';
+  const MIX={
+    insp:{name:'Inspirado',  n2:78.084,o2:20.947,co2:0.04},
+    exp:{name:'Espirado',    n2:79.9,  o2:16.0,  co2:4.0},
+    viciado:{name:'Viciado (alvéolos)', n2:80.0, o2:16.5, co2:3.5},
+  };
+  const m=MIX[sel];
+  const gases=[['N₂',m.n2,AB.PAL.teal],['O₂',m.o2,AB.PAL.blood],['CO₂',m.co2,AB.PAL.amber]];
+  // barra apilada principal
+  const bx=w*0.08, by=h*0.20, bw=w*0.72, bh=h*0.30;
+  let x0=bx;
+  gases.forEach(g=>{
+    const fw=bw*g[1]/100;
+    ctx.fillStyle=g[2];
+    ctx.fillRect(x0,by,fw,bh);
+    if (fw>18) AB.text(ctx,espan(g[1],g[1]<1?2:1)+' %', x0+fw/2, by+bh/2, {size:10,weight:'700',color:'#fbf8f0'});
+    x0+=fw;
+  });
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.strokeRect(bx,by,bw,bh);
+  AB.text(ctx,m.name+' · '+(100-m.n2-m.o2-m.co2>0?'+ otros':'')+' ≈ 100 %', w/2, by-14, {size:11,weight:'700',color:AB.PAL.ink});
+  // comparativa O₂ entre las tres mezclas
+  const lx=w*0.08, gw=(w*0.84)/3, gy=h*0.62, gmax=h*0.20;
+  const keys=['insp','exp','viciado'];
+  AB.text(ctx,'Fracción de O₂ (%)', w/2, gy-10, {size:8,color:AB.PAL.ink3});
+  keys.forEach((k,i)=>{
+    const o2=MIX[k].o2;
+    const cx=lx+gw*i+gw/2;
+    const bh2=Math.max(4, o2/21*gmax);
+    ctx.fillStyle=k===sel?AB.PAL.blood:'rgba(169,42,30,.35)';
+    ctx.fillRect(cx-14, gy-bh2, 28, bh2);
+    ctx.strokeStyle=k===sel?AB.PAL.blood:'rgba(169,42,30,.35)';
+    ctx.strokeRect(cx-14, gy-bh2, 28, bh2);
+    AB.text(ctx,espan(o2,1)+' %', cx, gy-bh2-8, {size:8,weight:k===sel?'700':'400',color:k===sel?AB.PAL.blood:AB.PAL.ink3});
+    AB.text(ctx,MIX[k].name, cx, gy+14, {size:7,color:k===sel?AB.PAL.ink:AB.PAL.ink3});
+  });
+  AB.text(ctx,'El espirado conserva 16 % de O₂: sirve para el boca a boca', w/2, h*0.93, {size:8,color:AB.PAL.ink3});
+  const out=el('cm_out');
+  if (out) out.textContent=m.name+' · O₂ '+espan(m.o2,1)+' % · CO₂ '+espan(m.co2,1)+' %';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S2 · Árbol bronquial: Tabla 9.1 + ley d = 2^(−z/3)·d(0)
+   ═══════════════════════════════════════════════════════════ */
+function drawTree(){
+  const cv=el('sim-tree'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const z=Math.max(0,Math.min(23,Math.round(num('tr_z')||8)));
+  const vz=el('tr_zv'); if (vz) vz.textContent=z;
+  const TAB=[[0,18.0,2.5,393],[1,12.2,2.3,427],[2,8.3,2.1,462],[4,4.5,2.5,392],[8,1.86,7.0,144],[16,0.60,180,5.40],[20,0.45,1600,0.60],[23,0.41,12000,0.09]];
+  function tabAt(zv){
+    if (zv<=0) return TAB[0];
+    if (zv>=23) return TAB[TAB.length-1];
+    let i=0; while(i<TAB.length-1 && TAB[i+1][0]<=zv) i++;
+    const a=TAB[i], b=TAB[i+1], t=(zv-a[0])/(b[0]-a[0]);
+    const lg=(x,y)=>Math.exp(Math.log(x)+(Math.log(y)-Math.log(x))*t);
+    return [zv, lg(a[1],b[1]), lg(a[2],b[2]), lg(a[3],b[3])];
+  }
+  const r=tabAt(z), d=r[1], A=r[2], v=r[3];
+  // árbol binario (profundidad visible acotada)
+  const depth=Math.min(z,5);
+  const rootX=w*0.16, rootY=h*0.16, tipX=w*0.78, tipY=h*0.84;
+  function branch(x,y,dx,dy,lvl){
+    const wd=Math.max(1.5, 26*Math.pow(0.62,lvl));
+    ctx.strokeStyle=lvl%2?AB.PAL.bone:AB.PAL.boneDark;
+    ctx.lineWidth=wd;
+    ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+dx,y+dy); ctx.stroke();
+    if (lvl<depth){
+      const spread=0.30;
+      branch(x+dx,y+dy, dx*(0.62-spread), dy+Math.abs(dx)*spread*2.4, lvl+1);
+      branch(x+dx,y+dy, dx*(0.62-spread), dy-Math.abs(dx)*spread*2.4, lvl+1);
+    }
+  }
+  branch(rootX,rootY, tipX-rootX, tipY-rootY, 0);
+  AB.text(ctx,'tráquea · z 0', rootX-6, rootY-10, {size:7,color:AB.PAL.ink3});
+  AB.text(ctx,'alvéolos · z 23', w*0.86, h*0.90, {size:7,color:AB.PAL.ink3});
+  AB.text(ctx,'2^'+z+' ≈ '+espan(Math.pow(2,z),0)+' vías', w*0.72, h*0.10, {size:9,weight:'700',color:AB.PAL.teal});
+  // panel de las tres curvas (escala log)
+  const lx=w*0.06, lw=w*0.62, gy=h*0.55, gH=h*0.32;
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.strokeRect(lx,gy,lw,gH);
+  const curves=[['d (mm)',0,'#0d6e64'],['A (cm²)',1,'#a92a1e'],['v (cm/s)',2,'#9a5b00']];
+  let lo=Math.log10(0.4), hi=Math.log10(13000);
+  curves.forEach(c=>{
+    ctx.strokeStyle=c[2]; ctx.lineWidth=1.6; ctx.beginPath();
+    for(let zv=0;zv<=23;zv++){
+      const rr=tabAt(zv), val=rr[c[1]+1];
+      const x=lx+zv/23*lw, y=gy+gH-(Math.log10(val)-lo)/(hi-lo)*gH;
+      zv?ctx.lineTo(x,y):ctx.moveTo(x,y);
+    }
+    ctx.stroke();
+    AB.text(ctx,c[0], lx+lw+5, gy+gH*(1-(Math.log10(tabAt(23)[c[1]+1])-lo)/(hi-lo)), {size:7,align:'left',color:c[2]});
+  });
+  // marcador z actual
+  const mx=lx+z/23*lw;
+  AB.dashed(ctx,mx,gy,mx,gy+gH,{color:AB.PAL.ink,width:1.4});
+  AB.text(ctx,'z = '+z, mx, gy-6, {size:8,weight:'700',color:AB.PAL.ink});
+  AB.text(ctx,'escala log', lx+lw/2, gy-14, {size:7,color:AB.PAL.ink3});
+  const out=el('tr_out');
+  if (out) out.textContent='z = '+z+' · d ≈ '+espan(d,2)+' mm · A ≈ '+espan(A,0)+' cm² · v ≈ '+espan(v,1)+' cm/s · 2^'+z+' vías';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S3 · El viaje del O₂ y del CO₂ por el circuito
+   ═══════════════════════════════════════════════════════════ */
+function drawGas(){
+  const cv=el('sim-gas'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const sel=el('gs_sel')?el('gs_sel').value:'aire';
+  const ST={
+    aire:['Aire',159,0.3],
+    alveolo:['Alvéolos',105,40],
+    capilar:['Capilar pulmonar',100,40,true],
+    arteria:['Arteria sistémica',100,40],
+    tejido:['Tejidos',40,46],
+    vena:['Vena sistémica',40,46],
+  };
+  const keys=['aire','alveolo','capilar','arteria','tejido','vena'];
+  const cx=w*0.5, cy=h*0.32, step=(w*0.82)/(keys.length);
+  // camino: aire → alvéolo → capilar → arteria → tejido → vena
+  keys.forEach((k,i)=>{
+    const x=w*0.09+step*i;
+    const on=k===sel;
+    ctx.fillStyle=on?AB.PAL.tealLight:AB.PAL.line;
+    ctx.beginPath(); ctx.arc(x,cy,on?17:14,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle=on?AB.PAL.teal:AB.PAL.ink3; ctx.lineWidth=on?2.4:1.2; ctx.stroke();
+    if (on) AB.text(ctx,ST[k][0], x, cy, {size:8,weight:'700',color:AB.PAL.ink});
+    if (i<keys.length-1){
+      AB.arrow(ctx, x+17, cy, x+step-17, cy, {color:on?AB.PAL.blood:AB.PAL.ink3,width:1.6,head:6});
+    }
+  });
+  // barras de presiones del lugar seleccionado
+  const st=ST[sel];
+  const gy=h*0.55, gmax=h*0.22, gscale=160;
+  const rows=[['O₂',st[1],AB.PAL.blood, st[3]?'40→100':'', 40],['CO₂',st[2],AB.PAL.amber, st[3]?'46→40':'', 0.3]];
+  rows.forEach(r=>{
+    const lx=w*0.16, bw=Math.max(3, r[1]/gscale*(w*0.62));
+    ctx.fillStyle=r[2]; ctx.fillRect(lx,gy,bw,gmax*0.5);
+    ctx.strokeStyle=AB.PAL.line; ctx.strokeRect(lx,gy,w*0.62,gmax*0.5);
+    AB.text(ctx,r[0], lx-10, gy+gmax*0.25, {size:9,weight:'700',align:'left',color:r[2]});
+    AB.text(ctx,(r[3]||'')+' → '+espan(r[1],0)+' mmHg', lx+bw+6, gy+gmax*0.25, {size:8,align:'left',color:AB.PAL.ink});
+    // referencia del otro extremo (venoso sistémico para O₂)
+    if (r[0]==='O₂'){
+      AB.dashed(ctx,lx,gy+gmax*0.75,lx+w*0.62,gy+gmax*0.75,{color:AB.PAL.ink3,width:1});
+      AB.text(ctx,'venoso sistémico ≈ 40 mmHg', lx, gy+gmax*0.75+10, {size:7,align:'left',color:AB.PAL.ink3});
+    }
+    gy+=gmax*0.62;
+  });
+  AB.text(ctx,'El O₂ fluye 159 → 40 mmHg; el CO₂ 0,3 → 46 mmHg', w/2, h*0.90, {size:8,color:AB.PAL.ink3});
+  const out=el('gs_out');
+  if (out) out.textContent=st[0]+' · O₂ '+espan(st[1],0)+' mmHg · CO₂ '+espan(st[2],1);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S4 · Ley de Laplace en un alvéolo: ΔP = 2γ/R
+   ═══════════════════════════════════════════════════════════ */
+function drawLaplace(){
+  const cv=el('sim-laplace'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const R=Math.max(20,Math.min(300,num('lp_r')||50));       // µm
+  const vr=el('lp_rv'); if (vr) vr.textContent=espan(R,0)+' µm';
+  const gam=(el('lp_g')?el('lp_g').value:'water')==='water'?7.2e-2:1e-3;
+  const Rm=R*1e-6;
+  const dP=2*gam/Rm;                          // Pa
+  const dPmmHg=dP/133.322;
+  const F=dP*0.05;                            // A=500 cm² = 0.05 m²
+  // alvéolo
+  const cx=w*0.30, cy=h*0.42;
+  const rad=Math.max(6,Math.min(120, R/2.6));
+  ctx.beginPath(); ctx.arc(cx,cy,rad,0,Math.PI*2);
+  ctx.fillStyle=gam>0.01?'rgba(169,42,30,.10)':'rgba(13,110,100,.14)';
+  ctx.fill();
+  ctx.strokeStyle=gam>0.01?AB.PAL.blood:AB.PAL.teal; ctx.lineWidth=2.4; ctx.stroke();
+  AB.text(ctx,'R = '+espan(R,0)+' µm', cx, cy, {size:10,weight:'700',color:AB.PAL.ink});
+  AB.text(ctx,gam>0.01?'interfaz agua/aire':'con surfactante', cx, cy+14, {size:7,color:AB.PAL.ink3});
+  // flechas de presión hacia afuera
+  for(let a=0;a<6;a++){
+    const ang=a/6*Math.PI*2;
+    const x0=cx+Math.cos(ang)*rad*0.9, y0=cy+Math.sin(ang)*rad*0.9;
+    const x1=cx+Math.cos(ang)*(rad*0.9+16), y1=cy+Math.sin(ang)*(rad*0.9+16);
+    AB.arrow(ctx,x0,y0,x1,y1,{color:AB.PAL.blood,width:1.8,head:6});
+  }
+  // manómetro ΔP
+  const gx=w*0.62, gy=h*0.20, gw=w*0.30, gmax=h*0.55, Pmax=Math.max(30,dPmmHg*1.1);
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.strokeRect(gx,gy,gw,gmax);
+  const bh=Math.max(3, dPmmHg/Pmax*gmax);
+  ctx.fillStyle=AB.PAL.amber; ctx.fillRect(gx,gy+gmax-bh,gw,bh);
+  AB.text(ctx,'ΔP', gx+gw/2, gy-10, {size:9,weight:'700',color:AB.PAL.amber});
+  AB.text(ctx,espan(dPmmHg,1)+' mmHg', gx+gw/2, gy+gmax-bh/2, {size:10,weight:'700',color:'#fbf8f0'});
+  AB.text(ctx,espan(Pmax,0)+' mmHg', gx+gw/2, gy+gmax+12, {size:7,color:AB.PAL.ink3});
+  // fuerza del diafragma
+  const fx=w*0.62, fy=h*0.70, fw=w*0.30, fmax=h*0.16, Fmax=200;
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.strokeRect(fx,fy,fw,fmax);
+  ctx.fillStyle=AB.PAL.teal; ctx.fillRect(fx,fy+fmax-Math.max(2,F/Fmax*fmax),fw,Math.max(2,F/Fmax*fmax));
+  AB.text(ctx,'F ≈ '+espan(F/9.81,0)+' kg (diafragma)', fx+fw/2, fy+fmax+14, {size:8,color:AB.PAL.teal});
+  const out=el('lp_out');
+  if (out) out.textContent='ΔP = '+espan(dPmmHg,0)+' mmHg · F ≈ '+espan(F/9.81,0)+' kg';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S5 · Dos burbujas conectadas: la grande devora a la pequeña
+   ═══════════════════════════════════════════════════════════ */
+function toggleBubbles(){
+  window.__bbPlaying=!window.__bbPlaying;
+  const b=el('bb_play'); if (b) b.textContent=window.__bbPlaying?'⏸':'▶';
+  if (window.__bbPlaying){ window.__bbT=0; window.__bbR1=undefined; window.__bbR2=undefined; }
+  drawBubbles();
+}
+function drawBubbles(){
+  const cv=el('sim-bubbles'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const R1=70;
+  const ratio=Math.max(0.3,Math.min(0.9,(num('bb_r2')||55)/100));
+  const vr=el('bb_r2v'); if (vr) vr.textContent=espan(ratio,2);
+  const initR2=R1*ratio;
+  let r1, r2;
+  if (window.__bbPlaying){
+    r1=window.__bbR1!==undefined?window.__bbR1:R1;
+    r2=window.__bbR2!==undefined?window.__bbR2:initR2;
+    const dt=Math.min(0.06, window.__bbDt||0.016);
+    if (r2>1.5){
+      const P1=2/r1, P2=2/r2;
+      const flow=Math.min(4e5, Math.max(0,(P2-P1))*3e6);
+      let V2=(4/3)*Math.PI*Math.pow(r2,3);
+      V2=Math.max(1, V2-flow*dt);
+      r2=Math.cbrt(V2*3/(4*Math.PI));
+      const Vtot=(4/3)*Math.PI*(Math.pow(R1,3)+Math.pow(initR2,3));
+      r1=Math.cbrt((Vtot-V2)*3/(4*Math.PI));
+    }
+    window.__bbR1=r1; window.__bbR2=r2;
+  } else { r1=R1; r2=initR2; }
+  const cy=h*0.45;
+  const x1=w*0.26, x2=w*0.74;
+  // tubo conector
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=5;
+  ctx.beginPath(); ctx.moveTo(x1,cy); ctx.lineTo(x2,cy); ctx.stroke();
+  ctx.strokeStyle=AB.PAL.paper; ctx.lineWidth=2.4;
+  ctx.beginPath(); ctx.moveTo(x1,cy); ctx.lineTo(x2,cy); ctx.stroke();
+  // válvula central
+  const vx=(x1+x2)/2;
+  if (!window.__bbPlaying){
+    ctx.strokeStyle=AB.PAL.ink; ctx.lineWidth=2.6;
+    ctx.beginPath(); ctx.moveTo(vx-9,cy-16); ctx.lineTo(vx+9,cy-16); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(vx-9,cy+16); ctx.lineTo(vx+9,cy+16); ctx.stroke();
+    AB.text(ctx,'tapón cerrado', vx, cy-26, {size:8,weight:'700',color:AB.PAL.ink});
+  } else {
+    AB.text(ctx,'abierta →', vx, cy-22, {size:8,weight:'700',color:AB.PAL.blood});
+    for (let i=0;i<6;i++){
+      const t=i/6;
+      const x=Math.max(x1+20, vx-60+ t*46);
+      AB.arrow(ctx, x+8, cy, x-8, cy, {color:AB.PAL.blood,width:2,head:6});
+    }
+  }
+  // burbuja 1 (grande, teal) y burbuja 2 (pequeña, sangre)
+  ctx.fillStyle=AB.PAL.tealLight+'55';
+  ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=2.4;
+  ctx.beginPath(); ctx.arc(x1,cy,Math.min(150,r1),0,Math.PI*2); ctx.fill(); ctx.stroke();
+  AB.text(ctx,'#1', x1, cy, {size:9,weight:'700',color:AB.PAL.ink});
+  AB.text(ctx,'P₁ = 2γ/R₁', x1, cy+16, {size:7,color:AB.PAL.ink3});
+  ctx.fillStyle='rgba(169,42,30,.35)';
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2.4;
+  ctx.beginPath(); ctx.arc(x2,cy,Math.max(2.5,Math.min(110,r2)),0,Math.PI*2); ctx.fill(); ctx.stroke();
+  if (r2<=3){
+    AB.text(ctx,'colapsada', x2, cy+16, {size:8,weight:'700',color:AB.PAL.blood});
+  } else {
+    AB.text(ctx,'#2', x2, cy, {size:9,weight:'700',color:AB.PAL.ink});
+    AB.text(ctx,'P₂ = 4γ/R₂ > P₁', x2, cy+16, {size:7,color:AB.PAL.ink3});
+  }
+  const out=el('bb_out');
+  if (out) out.textContent=window.__bbPlaying
+    ? (r2<=3?'#2 colapsada · P₁ ≈ 2γ/R₁':'fluyendo #2 → #1 · R₂ = '+espan(r2,0)+' px')
+    : 'P₂ > P₁ · al abrir, #2 colapsa';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S6 · Surfactante: γ(R) y ΔP(R) con equilibrio en √3·R₀
+   ═══════════════════════════════════════════════════════════ */
+function drawSurfactant(){
+  const cv=el('sim-surfactant'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const R0=Math.max(20,Math.min(100,num('sf_r0')||50));
+  const vr=el('sf_r0v'); if (vr) vr.textContent=espan(R0,0)+' µm';
+  const mode=el('sf_sel')?el('sf_sel').value:'dp';
+  const gp=1e-3, gw=7.2e-2;
+  const Req=R0*Math.sqrt(3);
+  // curvas sobre R ∈ [0, 4R0]
+  const Rmax=4*R0;
+  const lx=w*0.08, lw=w*0.76, gy=h*0.14, gH=h*0.64;
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.strokeRect(lx,gy,lw,gH);
+  let ymax, ymin, lo=0, hi;
+  if (mode==='dp'){
+    // ΔP en mmHg: 2γ/R con R en m
+    const f=R=>2*(R<=R0?gp:gw-(R0*R0/(R*R))*(gw-gp))/(R*1e-6)/133.322;
+    hi=2*(gw)/(R0*0.5*1e-6)/133.322;  // valor en R=0.5R0
+    hi=Math.min(60, hi);
+    const Y=P=>gy+gH-(P-lo)/(hi-lo)*gH;
+    ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=2.2; ctx.beginPath();
+    for(let i=0;i<=180;i++){
+      const R=R0*0.1+i/180*(Rmax-R0*0.1);
+      const x=lx+(R-0)/Rmax*lw, y=Y(f(R));
+      i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+    }
+    ctx.stroke();
+    for(let i=1;i<=4;i++){ const R=R0*0.1+i/180*(Rmax-R0*0.1); if(f(R)>hi) break; }
+    AB.text(ctx,'ΔP = 2γ(R)/R (mmHg)', lx+lw/2, gy-10, {size:8,color:AB.PAL.teal});
+    // marcadores R0 y Req
+    AB.dashed(ctx,lx+R0/Rmax*lw,gy,lx+R0/Rmax*lw,gy+gH,{color:AB.PAL.amber,width:1.4});
+    AB.text(ctx,'R₀', lx+R0/Rmax*lw, gy+gH+12, {size:7,color:AB.PAL.amber});
+    AB.dashed(ctx,lx+Req/Rmax*lw,gy,lx+Req/Rmax*lw,gy+gH,{color:AB.PAL.blood,width:1.4});
+    AB.text(ctx,'R_eq ≈ √3·R₀', lx+Req/Rmax*lw, gy+gH+12, {size:7,color:AB.PAL.blood});
+    AB.text(ctx,'R (µm)', lx+lw/2, gy+gH+22, {size:7,color:AB.PAL.ink3});
+  } else {
+    const f=R=>R<=R0?gp:gw-(R0*R0/(R*R))*(gw-gp);
+    hi=gw*1.05;
+    const Y=v=>gy+gH-(v-lo)/(hi-lo)*gH;
+    ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=2.2; ctx.beginPath();
+    for(let i=0;i<=180;i++){
+      const R=R0*0.1+i/180*(Rmax-R0*0.1);
+      const x=lx+(R-0)/Rmax*lw, y=Y(f(R));
+      i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+    }
+    ctx.stroke();
+    AB.text(ctx,'γ(R) en N/m', lx+lw/2, gy-10, {size:8,color:AB.PAL.teal});
+    AB.dashed(ctx,lx+R0/Rmax*lw,gy,lx+R0/Rmax*lw,gy+gH,{color:AB.PAL.amber,width:1.4});
+    AB.text(ctx,'R₀', lx+R0/Rmax*lw, gy+gH+12, {size:7,color:AB.PAL.amber});
+    AB.text(ctx,'plana para R < R₀ · sube a γ_agua', lx+lw/2, gy+gH+12, {size:7,color:AB.PAL.ink3});
+  }
+  // escala vertical
+  for(let i=0;i<=4;i++){
+    const y=gy+gH*(1-i/4);
+    AB.text(ctx,espan(lo+(hi-lo)*i/4, mode==='dp'?0:3), lx-6, y, {size:7,align:'right',color:AB.PAL.ink3});
+  }
+  const out=el('sf_out');
+  if (out) out.textContent='R_eq ≈ '+espan(Req,0)+' µm · d(ΔP)/dR = 0';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S7 · Pleura y presión transpulmonar
+   ═══════════════════════════════════════════════════════════ */
+function drawPleura(){
+  const cv=el('sim-pleura'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const Pp=Math.max(-10,Math.min(0,num('pl_pp')||-5));
+  const vp=el('pl_ppv'); if (vp) vp.textContent=espan(Pp,0)+' mmHg';
+  const Pt=0-Pp;                       // P_alveolar − P_pleura (alveolar ≈ 0)
+  const cx=w*0.36, cy=h*0.44;
+  const base=Math.min(95, 40+Pt*9);    // radio del pulmón
+  const ring=base+16;                  // cavidad torácica
+  // cavidad torácica (pared)
+  ctx.strokeStyle=AB.PAL.boneEdge; ctx.lineWidth=5;
+  ctx.beginPath(); ctx.arc(cx,cy,ring+8,0,Math.PI*2); ctx.stroke();
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.beginPath(); ctx.arc(cx,cy,ring,0,Math.PI*2); ctx.stroke();
+  // líquido intrapleural (anillo)
+  ctx.fillStyle=AB.PAL.tealLight+'44';
+  ctx.beginPath(); ctx.arc(cx,cy,ring,0,Math.PI*2); ctx.fill();
+  // pulmón
+  ctx.fillStyle=AB.PAL.blood+'22';
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2.4;
+  ctx.beginPath(); ctx.arc(cx,cy,base,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  AB.text(ctx,'pulmón', cx, cy, {size:9,weight:'700',color:AB.PAL.ink});
+  AB.text(ctx,'V ∝ P_trans', cx, cy+14, {size:7,color:AB.PAL.ink3});
+  // flechas del saco
+  const a=-Math.PI/3;
+  const r0=(base+ring)/2;
+  AB.arrow(ctx, cx+Math.cos(a)*ring, cy+Math.sin(a)*ring, cx+Math.cos(a)*base, cy+Math.sin(a)*base, {color:AB.PAL.teal,width:2,head:6});
+  AB.arrow(ctx, cx+Math.cos(a)*base, cy+Math.sin(a)*base, cx+Math.cos(a)*ring, cy+Math.sin(a)*ring, {color:AB.PAL.amber,width:2,head:6});
+  AB.text(ctx,'atracción visceral↔parietal', cx+Math.cos(a)*r0, cy+Math.sin(a)*r0-8, {size:7,color:AB.PAL.ink3});
+  // lectura de presiones
+  const gx=w*0.66, gy=h*0.18, gw=w*0.26, gmax=h*0.55, P0=10;
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.strokeRect(gx,gy,gw,gmax);
+  const rows=[['P_pleura',Pp,AB.PAL.amber,-10,0],['P_trans',Pt,AB.PAL.teal,0,10]];
+  let y=gy+gmax*0.14;
+  rows.forEach(r=>{
+    const [name,val,col,lo,hi]=r;
+    AB.text(ctx,name, gx+gw/2, y-8, {size:8,color:AB.PAL.ink});
+    const bh=Math.max(2,(val-lo)/(hi-lo)*gmax*0.22);
+    ctx.fillStyle=col; ctx.fillRect(gx,y,Math.min(gw,bh),gmax*0.22);
+    ctx.strokeStyle=AB.PAL.line; ctx.strokeRect(gx,y,gw,gmax*0.22);
+    AB.text(ctx,espan(val,1)+' mmHg', gx+gw/2, y+gmax*0.11, {size:8,weight:'700',color:'#fbf8f0'});
+    y+=gmax*0.30;
+  });
+  const out=el('pl_out');
+  if (out) out.textContent='P_trans = '+espan(Pt,1)+' mmHg · pulmón '+(Pt<2?'colapsado':'expandido');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S8 · Ciclo inspiración/espiración: diafragma y presiones
+   ═══════════════════════════════════════════════════════════ */
+function toggleBreath(){
+  window.__brPlaying=!window.__brPlaying;
+  const b=el('br_play'); if (b) b.textContent=window.__brPlaying?'⏸':'▶';
+  if (window.__brPlaying) window.__brT=0;
+  drawBreath();
+}
+function drawBreath(){
+  const cv=el('sim-breath'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const rate=Math.max(6,Math.min(30,num('br_rate')||12));
+  const vr=el('br_ratev'); if (vr) vr.textContent=espan(rate,0)+' /min';
+  const T=60/rate;
+  const p=(window.__brT%T)/T;                    // fase 0..1
+  const insp=p<0.5;
+  const u=insp?p/0.5:(1-p)/0.5;                  // 0→1 en cada mitad
+  const s=Math.sin(Math.PI*u);                   // 0→1→0
+  const V=2.2+0.5*s;                             // L (FRC 2.2 + Vt 0.5)
+  const Ppl=insp?(-4-2*s):(-4-2*s);              // −4 → −6 (sube el gradiente al inspirar)
+  const Pa=insp?(-1*s):0;                        // −1 al inspirar, 0 al espirar
+  const dx=h*0.52-8*s;                           // descenso del diafragma
+  // caja torácica
+  const tx=w*0.14, ty=h*0.10, tw=w*0.40, th=h*0.66;
+  ctx.strokeStyle=AB.PAL.boneEdge; ctx.lineWidth=4;
+  ctx.strokeRect(tx,ty,tw,th);
+  // pulmones
+  const lw2=tw*0.26, lh2=(th*0.72)*(0.9+0.12*s);
+  ctx.fillStyle=AB.PAL.blood+'33';
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.ellipse(tx+tw*0.30, ty+th*0.38, lw2, lh2, 0, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.ellipse(tx+tw*0.70, ty+th*0.38, lw2, lh2, 0, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+  // tráquea
+  ctx.strokeStyle=AB.PAL.ink3; ctx.lineWidth=3;
+  ctx.beginPath(); ctx.moveTo(tx+tw/2, ty-6); ctx.lineTo(tx+tw/2, ty+th*0.18); ctx.stroke();
+  // diafragma (arco)
+  ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=3;
+  ctx.beginPath(); ctx.moveTo(tx, ty+th+8); ctx.quadraticCurveTo(tx+tw/2, ty+th+8+dx, tx+tw, ty+th+8); ctx.stroke();
+  AB.text(ctx, insp?'inspiración':'espiración', tx+tw/2, ty-14, {size:10,weight:'700',color:insp?AB.PAL.teal:AB.PAL.amber});
+  AB.text(ctx,'diafragma '+(insp?'desciende':'asciende'), tx+tw/2, ty+th+26, {size:7,color:AB.PAL.teal});
+  // panel de presiones
+  const gx=w*0.60, gy=h*0.12, gw=w*0.32, gmax=h*0.62;
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.strokeRect(gx,gy,gw,gmax);
+  const rows=[['P_alveolar (mmHg)',Pa,-1,1,AB.PAL.blood],['P_pleura (mmHg)',Ppl,-8,0,AB.PAL.amber],['V (L)',V,0,3,AB.PAL.teal]];
+  let y=gy+gmax*0.10;
+  rows.forEach(r=>{
+    const [name,val,lo,hi,col]=r;
+    AB.text(ctx,name, gx+gw/2, y-8, {size:7,color:AB.PAL.ink});
+    const bx=gx+gw*0.12, bw=gw*0.76;
+    ctx.fillStyle=AB.PAL.line; ctx.fillRect(bx,y,bw,gmax*0.18);
+    ctx.fillStyle=col;
+    const frac=Math.max(0,Math.min(1,(val-lo)/(hi-lo)));
+    ctx.fillRect(bx,y,bw*frac,gmax*0.18);
+    AB.text(ctx,espan(val,1), gx+gw/2, y+gmax*0.09, {size:8,weight:'700',color:AB.PAL.ink});
+    AB.text(ctx,espan(lo,0)+'|'+espan(hi,0), gx+gw*0.05, y+gmax*0.09, {size:6,align:'left',color:AB.PAL.ink3});
+    y+=gmax*0.26;
+  });
+  const out=el('br_out');
+  if (out) out.textContent='P_alveolar '+espan(Pa,1)+' · P_pleura '+espan(Ppl,1)+' · V = '+espan(V,1)+' L · '+(insp?'inspiración':'espiración');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S9 · Espirómetro: volúmenes pulmonares y espiriograma
+   ═══════════════════════════════════════════════════════════ */
+function toggleSpiro(){
+  window.__spPlaying=!window.__spPlaying;
+  const b=el('sp_play'); if (b) b.textContent=window.__spPlaying?'⏸':'▶';
+  if (window.__spPlaying) window.__spT=0;
+  window.__spHist=[];
+  drawSpiro();
+}
+function drawSpiro(){
+  const cv=el('sim-spiro'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const mode=el('sp_mode')?el('sp_mode').value:'normal';
+  const T=4;
+  const p=(window.__spT%T)/T;
+  let V;
+  if (mode==='normal') V=2.2+1.0*Math.sin(Math.PI*p)*Math.sin(Math.PI*p);      // 2,2 ↔ 3,2
+  else V=1.6+3.9*Math.sin(Math.PI*p)*Math.sin(Math.PI*p);                      // profunda: 1,6 ↔ 5,5
+  if (window.__spPlaying||window.__spHist.length){
+    window.__spHist.push(V);
+    if (window.__spHist.length>260) window.__spHist.shift();
+  } else { window.__spHist=[V]; }
+  // bandas de compartimentos
+  const lx=w*0.08, lw=w*0.78, gy=h*0.12, gH=h*0.60, Vmin=0, Vmax=6;
+  const Y=v=>gy+gH*(1-(v-Vmin)/(Vmax-Vmin));
+  const bands=[['VR 1 L',1,AB.PAL.ink3],['VRE',1,2.2,AB.PAL.ink3],['respiración normal',2.2,3.2,AB.PAL.teal],['VRI',3.2,6,AB.PAL.amber]];
+  bands.forEach(bd=>{
+    if (bd.length===4){
+      ctx.fillStyle=bd[3]+'22';
+      ctx.fillRect(lx,Y(bd[2]),lw,Y(bd[1])-Y(bd[2]));
+      AB.text(ctx,bd[0], lx+6, (Y(bd[1])+Y(bd[2]))/2, {size:7,align:'left',color:bd[3]});
+    } else {
+      const [name,val,col]=bd;
+      AB.dashed(ctx,lx,Y(val),lx+lw,Y(val),{color:col,width:1});
+      AB.text(ctx,name, lx+6, Y(val)-4, {size:7,align:'left',color:col});
+    }
+  });
+  AB.dashed(ctx,lx,Y(5),lx+lw,Y(5),{color:AB.PAL.ink3,width:1});
+  AB.text(ctx,'CPT 6 L', lx+6, Y(5)-4, {size:7,align:'left',color:AB.PAL.ink3});
+  AB.dashed(ctx,lx,Y(2.2),lx+lw,Y(2.2),{color:AB.PAL.ink3,width:1});
+  AB.text(ctx,'CRF 2,2 L', lx+lw-6, Y(2.2)+4, {size:7,align:'right',color:AB.PAL.ink3});
+  // traza
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2.2; ctx.beginPath();
+  const hist=window.__spHist;
+  for(let i=0;i<hist.length;i++){
+    const x=lx+lw-i/(hist.length-1)*lw;
+    const y=Y(hist[i]);
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  }
+  ctx.stroke();
+  AB.text(ctx,'volumen pulmonar (L) · V_t = '+(mode==='normal'?'1,0':'3,9')+' L', w/2, h*0.86, {size:8,color:AB.PAL.ink3});
+  const out=el('sp_out');
+  if (out) out.textContent='V = '+espan(V,1)+' L · '+mode;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S10 · Curva P–V del pulmón con histéresis
+   ═══════════════════════════════════════════════════════════ */
+function drawPVCurve(){
+  const cv=el('sim-pvcurve'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const t=Math.max(0,Math.min(100,num('pc_t')||20));
+  const vt=el('pc_tv'); if (vt) vt.textContent=espan(t,0)+' %';
+  const infl=t<=50;
+  const u=infl?t/50:(100-t)/50;
+  const P0=2, P1=16;
+  const P=infl?P0+(P1-P0)*u:P1-(P1-P0)*u;
+  const Vstatic=P=>5.8*(1-Math.exp(-P/9));
+  const hyst=0.30*Math.sin(Math.PI*u);
+  const V=(infl?Vstatic(P)-hyst:Vstatic(P)+hyst);
+  const C=5.8/9*Math.exp(-P/9);
+  // ejes
+  const lx=w*0.10, lw=w*0.72, gy=h*0.14, gH=h*0.60, Pmax=20, Vmax=6;
+  const X=p=>lx+p/Pmax*lw, Y=v=>gy+gH*(1-v/Vmax);
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.beginPath(); ctx.moveTo(lx,gy); ctx.lineTo(lx,gy+gH); ctx.lineTo(lx+lw,gy+gH); ctx.stroke();
+  AB.text(ctx,'P_transpulmonar (cmH₂O)', lx+lw/2, gy+gH+20, {size:7,color:AB.PAL.ink3});
+  AB.text(ctx,'V (L)', lx-8, gy, {size:7,color:AB.PAL.ink3});
+  // curvas de inflado y desinflado
+  function plot(off,color){
+    ctx.strokeStyle=color; ctx.lineWidth=1.8; ctx.beginPath();
+    for(let i=0;i<=120;i++){
+      const pp=P0+(P1-P0)*i/120;
+      const vv=Vstatic(pp)+(off?0.30*Math.sin(Math.PI*i/120):-0.30*Math.sin(Math.PI*i/120));
+      const x=X(pp), y=Y(vv);
+      i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+    }
+    ctx.stroke();
+  }
+  plot(true, AB.PAL.amber);
+  plot(false, AB.PAL.teal);
+  AB.text(ctx,'inflado', X(P1)+6, Y(0.6), {size:7,color:AB.PAL.teal});
+  AB.text(ctx,'desinflado', X(P1)+6, Y(0.9), {size:7,color:AB.PAL.amber});
+  // punto actual + tangente (compliancia)
+  const px=X(P), py=Y(V);
+  ctx.beginPath(); ctx.arc(px,py,5,0,Math.PI*2);
+  ctx.fillStyle=AB.PAL.blood; ctx.fill(); ctx.strokeStyle='#fbf8f0'; ctx.lineWidth=1.5; ctx.stroke();
+  const ang=Math.atan2(-C*(Vmax/gH)*80, (1/(Pmax/lw))*C*6);
+  const L=40;
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=1.6;
+  ctx.beginPath(); ctx.moveTo(px-Math.cos(ang)*L, py+Math.sin(ang)*L); ctx.lineTo(px+Math.cos(ang)*L, py-Math.sin(ang)*L); ctx.stroke();
+  AB.text(ctx,'pendiente = C ≈ '+espan(C,2)+' L/cmH₂O', px+10, py-12, {size:7,color:AB.PAL.blood});
+  const out=el('pc_out');
+  if (out) out.textContent=(infl?'inflando · ':'desinflando · ')+'C ≈ '+espan(C,2)+' L/cmH₂O';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S11 · Mezcla: aire inspirado + viciado → balance (ec. 9.9–9.10)
+   ═══════════════════════════════════════════════════════════ */
+function drawMix(){
+  const cv=el('sim-mix'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const A=(num('mx_alpha')||33)/100, B=(num('mx_beta')||25)/100;
+  const va=el('mx_alphav'); if (va) va.textContent=espan(A,2);
+  const vb=el('mx_betav'); if (vb) vb.textContent=espan(B,2);
+  let x=(16-20*A+20*A*B)/(1-A);
+  let y=(4-20*A*B)/(1-A);
+  x=Math.max(0,x); y=Math.max(0,y);
+  // dos barras apiladas: inspirado y viciado
+  const bar=(label, bx, by, bw, bh, o2, co2, n2, col)=>{
+    ctx.fillStyle=AB.PAL.teal; ctx.fillRect(bx,by,bw*n2/100,bh);
+    ctx.fillStyle=AB.PAL.blood; ctx.fillRect(bx+bw*n2/100,by,bw*o2/100,bh);
+    ctx.fillStyle=AB.PAL.amber; ctx.fillRect(bx+bw*(n2+o2)/100,by,bw*co2/100,bh);
+    ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2; ctx.strokeRect(bx,by,bw,bh);
+    AB.text(ctx,label, bx+bw/2, by-10, {size:8,weight:'700',color:AB.PAL.ink});
+    if (o2>5) AB.text(ctx,espan(o2,1)+' % O₂', bx+bw*n2/100+bw*o2/200, by+bh/2, {size:8,weight:'700',color:'#fbf8f0'});
+  };
+  const bx=w*0.12, bw=w*0.76, by=h*0.30, bh=h*0.16;
+  bar('Inspirado (80/20/0)', bx, by, bw, bh, 20.9, 0.04, 79.0);
+  bar('Viciado (80/x/y)', bx, by+bh+0.14*h, bw, bh, x, y, 80);
+  // caja de mezcla entre ambos
+  const mx=w*0.5, my=by+bh+0.14*h;
+  ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=1.4;
+  ctx.beginPath(); ctx.moveTo(w*0.05,my+bh/2); ctx.lineTo(bx-10,my+bh/2); ctx.moveTo(bx+bw+10,my+bh/2); ctx.lineTo(w*0.95,my+bh/2); ctx.stroke();
+  AB.text(ctx,'mezcla con el residual (α = '+espan(A,2)+', β = '+espan(B,2)+')', w/2, my+bh+18, {size:8,color:AB.PAL.teal});
+  // ecuaciones resueltas
+  AB.text(ctx,'(1−α)x = 16 − 20α(1−β)  ·  (1−α)y = 4 − 20αβ', w/2, h*0.80, {size:8,color:AB.PAL.ink3});
+  const out=el('mx_out');
+  if (out) out.textContent='viciado: O₂ '+espan(x,1)+' % · CO₂ '+espan(y,1)+' %';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S12 · Resistencia de las vías aéreas por generación (Weibel)
+   ═══════════════════════════════════════════════════════════ */
+function drawAirRes(){
+  const cv=el('sim-airres'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const mode=el('ar_sel')?el('ar_sel').value:'r';
+  const D=[1.80,1.22,0.83,0.56,0.45,0.35,0.28,0.23,0.186,0.154,0.130,0.109,0.095,0.082,0.074,0.066,0.060,0.054,0.050,0.047,0.045,0.043,0.041,0.041]; // cm
+  const L=[12.0,4.8,1.9,0.76,1.27,1.07,0.90,0.76,0.64,0.54,0.46,0.39,0.33,0.27,0.23,0.20,0.165,0.141,0.117,0.099,0.083,0.070,0.059,0.050]; // cm
+  const eta=2e-5;
+  const Rgen=[];
+  for(let z=0;z<24;z++){
+    const d=D[z]*1e-2, l=L[z]*1e-2;
+    const Rs=8*eta*l/(Math.PI*Math.pow(d/2,4));
+    Rgen.push(Rs/Math.pow(2,z));
+  }
+  const total=Rgen.reduce((s,r)=>s+r,0);
+  let zmax=0; Rgen.forEach((r,i)=>{ if(r>Rgen[zmax]) zmax=i; });
+  const lx=w*0.06, lw=w*0.62, gy=h*0.12, gH=h*0.62;
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.strokeRect(lx,gy,lw,gH);
+  const M=Math.max(...Rgen);
+  const val=r=>mode==='r'?r:1/(r||1e-9);
+  const Vmax=Math.max(...Rgen.map(val));
+  Rgen.forEach((r,i)=>{
+    const v=val(r);
+    const bw=(lw-10)/24, x=lx+4+i*bw;
+    const bh=Math.max(1.5, v/Vmax*(gH-14));
+    ctx.fillStyle=i===zmax?AB.PAL.blood:(mode==='r'?AB.PAL.teal:AB.PAL.amber);
+    ctx.fillRect(x,gy+gH-8-bh,bw-1.5,bh);
+    if (i%2===0) AB.text(ctx,String(i), x+bw/2, gy+gH+6, {size:5.5,color:AB.PAL.ink3});
+  });
+  AB.text(ctx,'z máxima: '+zmax+' (bronquios intermedios)', w/2, h*0.86, {size:8,weight:'700',color:AB.PAL.blood});
+  AB.text(ctx,'generación z', lx+lw/2, gy+gH+14, {size:7,color:AB.PAL.ink3});
+  AB.text(ctx,mode==='r'?'R_z (rel.)':'conductancia 1/R (rel.)', lx+lw/2, gy-8, {size:7,color:AB.PAL.ink3});
+  const out=el('ar_out');
+  if (out) out.textContent='máx en z ≈ '+zmax+' · Σ R('+espan(total*1.0197e-5,2)+' cmH₂O/(L/s)) · libro R_vías ≈ 2';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S13 · Medio ciclo senoidal: ΔP, Q, R_flow y Re
+   ═══════════════════════════════════════════════════════════ */
+function drawSine(){
+  const cv=el('sim-sine'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const dPm=Math.max(0.5,Math.min(2.5,num('sn_pmax')||1.1));
+  const vin=Math.max(300,Math.min(800,num('sn_vin')||500));
+  const vp=el('sn_pmaxv'); if (vp) vp.textContent=espan(dPm,1)+' mmHg';
+  const vv=el('sn_vinv'); if (vv) vv.textContent=espan(vin/1000,1)+' L';
+  const f=15/60;                       // 15/min
+  const Thalf=1/(2*f);                 // 2 s
+  const dPa=2/Math.PI*dPm;
+  const Qa=vin/1000/Thalf;
+  const Qm=Math.PI/2*Qa;
+  const Rf=dPa*133.322/(Qa*1e-3);
+  const u=Qm*1000/2.545;               // cm/s en tráquea
+  const Re=10.44*u;
+  const lx=w*0.08, lw=w*0.78, gy=h*0.14, gH=h*0.56;
+  const X=t=>lx+t/Thalf*lw, Y=(v,vmax)=>gy+gH/2-gH/2*(v/vmax);
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.strokeRect(lx,gy,lw,gH);
+  AB.dashed(ctx,lx,gy+gH/2,lx+lw,gy+gH/2,{color:AB.PAL.ink3,width:1});
+  AB.text(ctx,'0', lx-6, gy+gH/2, {size:7,color:AB.PAL.ink3});
+  // ΔP(t) y Q(t) superpuestos (misma forma)
+  ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=2.2; ctx.beginPath();
+  for(let i=0;i<=100;i++){
+    const t=Thalf*i/100;
+    const x=X(t), y=Y(dPm*Math.sin(Math.PI*i/100), dPm);
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  }
+  ctx.stroke();
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=1.6; ctx.beginPath();
+  for(let i=0;i<=100;i++){
+    const t=Thalf*i/100;
+    const x=X(t), y=Y(Qm*Math.sin(Math.PI*i/100), Qm);
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  }
+  ctx.stroke();
+  AB.text(ctx,'ΔP(t) (mmHg)', lx+lw*0.5, gy+8, {size:7,color:AB.PAL.teal});
+  AB.text(ctx,'Q(t) (L/s)', lx+lw*0.72, gy+8, {size:7,color:AB.PAL.blood});
+  // ΔP_av
+  const yav=Y(dPa, dPm);
+  AB.dashed(ctx,lx,yav,lx+lw,yav,{color:AB.PAL.amber,width:1.4});
+  AB.text(ctx,'ΔP_av = 2/π·ΔP_max', lx+6, yav-5, {size:7,align:'left',color:AB.PAL.amber});
+  AB.text(ctx,'T_media = 1/(2f) = 2 s', lx+lw/2, gy+gH+16, {size:7,color:AB.PAL.ink3});
+  const out=el('sn_out');
+  if (out) out.textContent='ΔP_av '+espan(dPa,1)+' mmHg · Q_av '+espan(Qa,2)+' L/s · Q_max '+espan(Qm,2)+' · R '+espan(Rf/1e5,2)+'×10⁵ · Re ≈ '+espan(Re,0);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S14 · Modelo mecánico RC del llenado pulmonar
+   ═══════════════════════════════════════════════════════════ */
+function drawMech(){
+  const cv=el('sim-mech'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const R=Math.max(0.5,Math.min(8,num('me_r')||2));
+  const Cl=Math.max(0.05,Math.min(0.4,(num('me_c')||200)/1000));
+  const vr=el('me_rv'); if (vr) vr.textContent=espan(R,1)+' cmH₂O/(L·s)';
+  const vc=el('me_cv'); if (vc) vc.textContent=espan(Cl,2)+' L/cmH₂O';
+  const tau=R*Cl;
+  const Vpl=Cl*2.1;
+  // circuito esquemático
+  const cx=w*0.20, cy=h*0.22;
+  ctx.strokeStyle=AB.PAL.ink3; ctx.lineWidth=2.4;
+  ctx.beginPath(); ctx.moveTo(w*0.05,cy); ctx.lineTo(w*0.36,cy); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(w*0.36,cy); ctx.lineTo(w*0.36,cy+h*0.18); ctx.stroke();
+  ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=3;
+  ctx.beginPath(); ctx.arc(cx,cy,16,0,Math.PI*2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx-16,cy); ctx.lineTo(cx-16,cy+h*0.18); ctx.moveTo(cx+16,cy); ctx.lineTo(cx+16,cy+h*0.18); ctx.stroke();
+  AB.text(ctx,'C', cx, cy, {size:8,weight:'700',color:AB.PAL.teal});
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=3;
+  ctx.beginPath(); ctx.rect(cx-26,cy-14,52,28); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx-26,cy); ctx.lineTo(cx+26,cy); ctx.stroke();
+  AB.text(ctx,'R', cx, cy-18, {size:8,weight:'700',color:AB.PAL.blood});
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=2.4;
+  ctx.beginPath(); ctx.moveTo(cx+26,cy+h*0.18); ctx.lineTo(cx,cy+h*0.18); ctx.lineTo(cx,cy+h*0.26); ctx.moveTo(cx,cy+h*0.26); ctx.lineTo(cx,cy+h*0.40); ctx.stroke();
+  AB.text(ctx,'P_músculos', cx, cy+h*0.48, {size:7,color:AB.PAL.ink3});
+  // curva exponencial
+  const lx=w*0.08, lw=w*0.76, gy=h*0.55, gH=h*0.30;
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.strokeRect(lx,gy,lw,gH);
+  ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=2.2; ctx.beginPath();
+  for(let i=0;i<=120;i++){
+    const t=i/120*4;
+    const x=lx+i/120*lw, y=gy+gH*(1-Vpl*(1-Math.exp(-t/tau))/(Vpl*1.1));
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  }
+  ctx.stroke();
+  AB.dashed(ctx,lx,gy+gH*0.15,lx+lw,gy+gH*0.15,{color:AB.PAL.amber,width:1.2});
+  AB.text(ctx,'V_pl ≈ '+espan(Vpl,2)+' L', lx+lw/2, gy+gH*0.12, {size:7,color:AB.PAL.amber});
+  const t63=tau;
+  const x63=lx+t63/4*lw;
+  AB.dashed(ctx,x63,gy,x63,gy+gH,{color:AB.PAL.ink3,width:1.2});
+  AB.text(ctx,'τ = '+espan(tau,2)+' s', x63, gy+10, {size:7,color:AB.PAL.ink});
+  AB.text(ctx,'V(t) = V_pl(1 − e^(−t/τ)) · tiempo (s)', w/2, h*0.93, {size:8,color:AB.PAL.ink3});
+  const out=el('me_out');
+  if (out) out.textContent='τ = '+espan(tau,2)+' s · V_pl ≈ '+espan(Vpl,2)+' L';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S15 · El ciclo respiratorio: 4 trazas simultáneas
+   ═══════════════════════════════════════════════════════════ */
+function toggleCycle(){
+  window.__cyPlaying=!window.__cyPlaying;
+  const b=el('cy_play'); if (b) b.textContent=window.__cyPlaying?'⏸':'▶';
+  if (window.__cyPlaying) window.__cyT=0;
+  window.__cyHist=[];
+  drawCycle();
+}
+function drawCycle(){
+  const cv=el('sim-cycle'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const spd=(num('cy_speed')||100)/100;
+  const vs=el('cy_speedv'); if (vs) vs.textContent='×'+espan(spd,1);
+  const T=5/spd;
+  const p=(window.__cyT%T)/T;
+  const insp=p<0.5;
+  const u=insp?p/0.5:(1-p)/0.5;
+  const s=Math.sin(Math.PI*u);
+  const V=0.5*s;                 // volumen sobre CRF
+  const Ppl=-4-2*s;
+  const Pa=insp?-0.8*s:0;
+  const Q=Math.PI*s;
+  // histórico (últimos ~1,2 ciclos)
+  if (window.__cyPlaying||window.__cyHist.length){
+    window.__cyHist.push({p,V,Ppl,Pa,Q});
+    if (window.__cyHist.length>240) window.__cyHist.shift();
+  } else { window.__cyHist=[{p,V,Ppl,Pa,Q}]; }
+  const panels=[
+    ['Volumen (L)', 'V', 0, 0.6, AB.PAL.teal],
+    ['P_intrapleural', 'Ppl', -7, -3, AB.PAL.amber],
+    ['Flujo (L/s)', 'Q', -3.2, 3.2, AB.PAL.blood],
+    ['P_alveolar', 'Pa', -1.2, 0.4, AB.PAL.ink],
+  ];
+  const ph=h/4, py=0, pw=w*0.86, px=w*0.07, pgw=pw*0.86;
+  panels.forEach((pn,i)=>{
+    const [name,key,lo,hi,col]=pn;
+    const y=ph*i+8, gh=ph-20;
+    ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1;
+    ctx.strokeRect(px,y,pgw,gh);
+    ctx.fillStyle=AB.PAL.line; ctx.fillRect(px,y,pgw,10);
+    AB.text(ctx,name, px+4, y+5, {size:7,align:'left',color:AB.PAL.ink});
+    const Y=v=>y+gh-(v-lo)/(hi-lo)*gh;
+    ctx.strokeStyle=col; ctx.lineWidth=1.8; ctx.beginPath();
+    const hist=window.__cyHist;
+    for(let j=0;j<hist.length;j++){
+      const x=px+pgw-j/(hist.length-1)*pgw;
+      const yy=Y(hist[j][key]);
+      j?ctx.lineTo(x,yy):ctx.moveTo(x,yy);
+    }
+    ctx.stroke();
+    AB.text(ctx,espan(lo,1), px-4, y+gh, {size:6,align:'right',color:AB.PAL.ink3});
+    AB.text(ctx,espan(hi,1), px-4, y, {size:6,align:'right',color:AB.PAL.ink3});
+  });
+  AB.text(ctx,(insp?'inspiración':'espiración')+' · ciclo '+espan(T,1)+' s', w/2, h*0.96, {size:8,weight:'700',color:insp?AB.PAL.teal:AB.PAL.amber});
+  const out=el('cy_out');
+  if (out) out.textContent=(insp?'inspiración · V en ascenso':'espiración · V en descenso');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S16 · Lazos P–V: normal, obstructivo, restrictivo y SDR
+   ═══════════════════════════════════════════════════════════ */
+function togglePVLoop(){
+  window.__lvPlaying=!window.__lvPlaying;
+  const b=el('lv_play'); if (b) b.textContent=window.__lvPlaying?'⏸':'▶';
+  if (window.__lvPlaying) window.__lvT=0;
+  drawPVLoop();
+}
+function drawPVLoop(){
+  const cv=el('sim-pvloop'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const cond=el('lv_sel')?el('lv_sel').value:'normal';
+  const CC={
+    normal:{Vmax:6,k:11.5,FRC:2.2,Vt:0.8,h:1.5,label:'C ≈ 0,2 L/cmH₂O'},
+    obstr:{Vmax:6.5,k:14,FRC:3.8,Vt:0.6,h:4.2,label:'R alta · lazo ancho'},
+    restr:{Vmax:3.5,k:6,FRC:1.5,Vt:0.5,h:1.0,label:'C baja · pendiente fuerte'},
+    sdr:{Vmax:5,k:17,FRC:1.8,Vt:0.6,h:2.2,label:'falta surfactante · P alta'},
+  };
+  const c=CC[cond];
+  const Vstat=P=>c.Vmax*(1-Math.exp(-P/c.k));
+  const Pstat=V=>-c.k*Math.log(1-V/c.Vmax);
+  const T=5;
+  const p=(window.__lvT%T)/T;
+  const insp=p<0.5;
+  const u=insp?p/0.5:(1-p)/0.5;
+  const V=c.FRC+c.Vt*(1-Math.cos(Math.PI*u))/2;
+  const P=Pstat(V)+(insp?+1:-1)*c.h*Math.sin(Math.PI*u);
+  // ejes
+  const lx=w*0.10, lw=w*0.72, gy=h*0.14, gH=h*0.62, Pmax=32, Vmax=6.5;
+  const X=P0=>lx+P0/Pmax*lw, Y=v=>gy+gH*(1-v/Vmax);
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.beginPath(); ctx.moveTo(lx,gy); ctx.lineTo(lx,gy+gH); ctx.lineTo(lx+lw,gy+gH); ctx.stroke();
+  AB.text(ctx,'P (cmH₂O)', lx+lw/2, gy+gH+20, {size:7,color:AB.PAL.ink3});
+  AB.text(ctx,'V (L)', lx-6, gy, {size:7,color:AB.PAL.ink3});
+  // curva estática
+  ctx.setLineDash([5,4]);
+  ctx.strokeStyle=AB.PAL.ink3; ctx.lineWidth=1.5; ctx.beginPath();
+  for(let i=0;i<=120;i++){
+    const pp=0.5+i/120*Pmax;
+    const x=X(pp), y=Y(Vstat(pp));
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  }
+  ctx.stroke();
+  ctx.setLineDash([]);
+  AB.text(ctx,'estática', lx+lw*0.70, Y(4.5), {size:6.5,color:AB.PAL.ink3});
+  // lazo dinámico
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2.2; ctx.beginPath();
+  for(let i=0;i<=80;i++){
+    const uu=i/80;
+    const insp2=uu<=0.5;
+    const q=insp2?uu/0.5:(1-uu)/0.5;
+    const VV=c.FRC+c.Vt*(1-Math.cos(Math.PI*q))/2;
+    const PP=Pstat(VV)+(insp2?+1:-1)*c.h*Math.sin(Math.PI*q);
+    const x=X(PP), y=Y(VV);
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  }
+  ctx.closePath(); ctx.stroke();
+  ctx.fillStyle='rgba(169,42,30,.08)'; ctx.fill();
+  // marcadores FRC y tope
+  AB.dashed(ctx,lx,Y(c.FRC),lx+lw,Y(c.FRC),{color:AB.PAL.amber,width:1.2});
+  AB.text(ctx,'CRF '+espan(c.FRC,1)+' L', lx+lw-4, Y(c.FRC)+4, {size:7,align:'right',color:AB.PAL.amber});
+  AB.dashed(ctx,lx,Y(c.FRC+c.Vt),lx+lw,Y(c.FRC+c.Vt),{color:AB.PAL.teal,width:1.2});
+  AB.text(ctx,'CRF+V_T '+espan(c.FRC+c.Vt,1)+' L', lx+4, Y(c.FRC+c.Vt)-4, {size:7,align:'left',color:AB.PAL.teal});
+  // punto actual
+  const px=X(P), py=Y(V);
+  ctx.beginPath(); ctx.arc(px,py,5,0,Math.PI*2);
+  ctx.fillStyle=AB.PAL.blood; ctx.fill(); ctx.strokeStyle='#fbf8f0'; ctx.lineWidth=1.5; ctx.stroke();
+  const out=el('lv_out');
+  if (out) out.textContent=cond==='normal'?'normal · '+c.label:(cond==='obstr'?c.label:(cond==='restr'?c.label:'SDR · '+c.label));
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S17 · Volumen inspirado: normal vs. restrictivo vs. obstructivo
+   ═══════════════════════════════════════════════════════════ */
+function drawInspVol(){
+  const cv=el('sim-inspvol'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const cond=el('ob_sel')?el('ob_sel').value:'normal';
+  const t=Math.max(0,Math.min(40,num('ob_t')||10))/10;
+  const vt=el('ob_tv'); if (vt) vt.textContent=espan(t,1)+' s';
+  const MOD={
+    normal:{C:0.2,R:2,Vpl:0.42,label:'Normal · C 0,2 · R 2'},
+    restr:{C:0.1,R:2,Vpl:0.21,label:'Restrictiva · C 0,1'},
+    obstr:{C:0.2,R:6,Vpl:0.42,label:'Obstructiva · R 6'},
+  };
+  const lx=w*0.08, lw=w*0.78, gy=h*0.12, gH=h*0.60, tmax=4, Vmax=0.55;
+  const X=t0=>lx+t0/tmax*lw, Y=v=>gy+gH*(1-v/Vmax);
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.strokeRect(lx,gy,lw,gH);
+  ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=2; ctx.beginPath();
+  for(let i=0;i<=120;i++){
+    const tt=i/120*tmax;
+    const x=X(tt), y=Y(MOD.normal.Vpl*(1-Math.exp(-tt/(MOD.normal.R*MOD.normal.C))));
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  }
+  ctx.stroke();
+  ctx.strokeStyle=AB.PAL.amber; ctx.lineWidth=2; ctx.beginPath();
+  for(let i=0;i<=120;i++){
+    const tt=i/120*tmax;
+    const x=X(tt), y=Y(MOD.restr.Vpl*(1-Math.exp(-tt/(MOD.restr.R*MOD.restr.C))));
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  }
+  ctx.stroke();
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2; ctx.beginPath();
+  for(let i=0;i<=120;i++){
+    const tt=i/120*tmax;
+    const x=X(tt), y=Y(MOD.obstr.Vpl*(1-Math.exp(-tt/(MOD.obstr.R*MOD.obstr.C))));
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  }
+  ctx.stroke();
+  // leyenda + cursor
+  let ly=h*0.14;
+  [['Normal',AB.PAL.teal],['Restrictiva',AB.PAL.amber],['Obstructiva',AB.PAL.blood]].forEach(lg=>{
+    ctx.fillStyle=lg[1]; ctx.fillRect(lx+lw*0.66,ly,12,8);
+    AB.text(ctx,lg[0], lx+lw*0.66+16, ly+4, {size:7,align:'left',color:lg[1],weight:lg[0]===MOD[cond].label.split(' · ')[0]?'700':'400'});
+    ly+=14;
+  });
+  const cx2=X(t);
+  ctx.setLineDash([4,3]); ctx.strokeStyle=AB.PAL.ink; ctx.lineWidth=1.3;
+  ctx.beginPath(); ctx.moveTo(cx2,gy); ctx.lineTo(cx2,gy+gH); ctx.stroke(); ctx.setLineDash([]);
+  AB.text(ctx,'t = '+espan(t,1)+' s', cx2, gy+10, {size:7,color:AB.PAL.ink});
+  AB.text(ctx,'V (L)', lx-6, gy, {size:7,color:AB.PAL.ink3});
+  AB.text(ctx,'tiempo (s)', lx+lw/2, gy+gH+16, {size:7,color:AB.PAL.ink3});
+  const m=MOD[cond];
+  const Vt=m.Vpl*(1-Math.exp(-t/(m.R*m.C)));
+  const out=el('ob_out');
+  if (out) out.textContent='V(t) '+cond+' ≈ '+espan(Vt,2)+' L';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S18 · CVF y VEF₁: espirometría forzada
+   ═══════════════════════════════════════════════════════════ */
+function drawFVC(){
+  const cv=el('sim-fvc'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const pat=el('fc_sel')?el('fc_sel').value:'normal';
+  const t=Math.max(0,Math.min(60,num('fc_t')||10))/10;
+  const vt=el('fc_tv'); if (vt) vt.textContent=espan(t,1)+' s';
+  const P={
+    normal:{CVF:5.0,VEF1:4.0,tau:0.621,label:'Normal',col:AB.PAL.teal},
+    obstr:{CVF:3.1,VEF1:1.302,tau:1.837,label:'Obstructivo',col:AB.PAL.blood},
+    restr:{CVF:3.1,VEF1:2.79,tau:0.434,label:'Restrictivo',col:AB.PAL.amber},
+  };
+  const lx=w*0.08, lw=w*0.78, gy=h*0.12, gH=h*0.62, tmax=6, Vmax=5.5;
+  const X=t0=>lx+t0/tmax*lw, Y=v=>gy+gH*(1-v/Vmax);
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.strokeRect(lx,gy,lw,gH);
+  Object.keys(P).forEach((k,i)=>{
+    const p=P[k];
+    ctx.strokeStyle=p.col; ctx.lineWidth=2; ctx.beginPath();
+    for(let j=0;j<=150;j++){
+      const tt=j/150*tmax;
+      const x=X(tt), y=Y(p.CVF*(1-Math.exp(-tt/p.tau)));
+      j?ctx.lineTo(x,y):ctx.moveTo(x,y);
+    }
+    ctx.stroke();
+  });
+  // cursor del 1 s
+  const x1=X(1);
+  ctx.setLineDash([4,3]); ctx.strokeStyle=AB.PAL.ink; ctx.lineWidth=1.3;
+  ctx.beginPath(); ctx.moveTo(x1,gy); ctx.lineTo(x1,gy+gH); ctx.stroke(); ctx.setLineDash([]);
+  AB.text(ctx,'1 s', x1, gy+10, {size:7,weight:'700',color:AB.PAL.ink});
+  // marcadores VEF₁ por patrón
+  Object.keys(P).forEach((k,i)=>{
+    const p=P[k];
+    const y1=Y(p.VEF1);
+    AB.dashed(ctx,x1,y1,lx+lw,y1,{color:p.col,width:1.2});
+    AB.text(ctx,espan(p.VEF1,1)+' L', x1+4, y1-3, {size:7,align:'left',color:p.col,weight:k===pat?'700':'400'});
+  });
+  AB.text(ctx,'VEF₁/CVF', lx+lw-4, gy+14, {size:7,align:'right',color:AB.PAL.ink3});
+  const p=P[pat];
+  const ratio=p.VEF1/p.CVF*100;
+  const out=el('fc_out');
+  if (out) out.textContent='VEF₁ = '+espan(p.VEF1,1)+' L · VEF₁/CVF = '+espan(ratio,0)+' % · '+p.label;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S19 · Hipoxia: fracción de O₂ y presión parcial
+   ═══════════════════════════════════════════════════════════ */
+function drawHypoxia(){
+  const cv=el('sim-hypoxia'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const frac=Math.max(2,Math.min(21,num('hy_frac')||21));
+  const vf=el('hy_fracv'); if (vf) vf.textContent=espan(frac,1)+' %';
+  const PO2=frac/100*760, kPa=PO2*0.133322;
+  const gy=h*0.14, gH=h*0.62, gx=w*0.14, gw=w*0.34;
+  const zones=[['< 6 %',6,AB.PAL.blood],['6–10 %',10,AB.PAL.warn],['10–19,5 %',19.5,'#b8a83a'],['> 19,5 %',21,'#2d7d4f']];
+  let zy=gy;
+  zones.forEach(z=>{
+    const zh=gH*(z[1]-2)/(21-2);
+    ctx.fillStyle=z[2]+'88';
+    ctx.fillRect(gx,zy,gw,zh);
+    AB.text(ctx,z[0], gx+gw/2, zy+zh/2, {size:8,color:AB.PAL.ink,weight:'700'});
+    zy+=zh;
+  });
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.strokeRect(gx,gy,gw,gH);
+  // umbral 57 mmHg (7,5 %)
+  const y57=gy+gH*(19.5-7.5)/(19.5-2);
+  AB.dashed(ctx,gx,y57,gx+gw,y57,{color:AB.PAL.ink,width:1.6});
+  AB.text(ctx,'hipoxia ≈ 57 mmHg', gx+gw+6, y57, {size:7,align:'left',color:AB.PAL.ink});
+  // marcador actual
+  const ycur=gy+gH*(19.5-frac)/(19.5-2);
+  ctx.beginPath(); ctx.moveTo(gx-8,ycur); ctx.lineTo(gx,ycur-6); ctx.lineTo(gx,ycur+6); ctx.closePath(); ctx.fill();
+  ctx.fillStyle=AB.PAL.blood; ctx.fill();
+  ctx.beginPath(); ctx.arc(gx+gw,ycur,5,0,Math.PI*2); ctx.fillStyle=AB.PAL.blood; ctx.fill();
+  AB.text(ctx,espan(frac,1)+' % O₂ · P_O₂ = '+espan(PO2,0)+' mmHg = '+espan(kPa,1)+' kPa', w*0.68, h*0.30, {size:9,weight:'700',color:AB.PAL.ink});
+  let zona=frac>=19.5?'seguro (sin efectos)':(frac>=10?'deterioro de la atención y coordinación':(frac>=6?'náuseas, letargo, pérdida de conciencia':'convulsiones → apnea → paro'));
+  AB.text(ctx,'Efecto: '+zona, w*0.68, h*0.40, {size:8,color:AB.PAL.ink3});
+  AB.text(ctx,'P_O₂ = (fracción/100) × 760 mmHg', w/2, h*0.90, {size:8,color:AB.PAL.ink3});
+  const out=el('hy_out');
+  if (out) out.textContent='P_O₂ = '+espan(PO2,0)+' mmHg · '+zona;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S20 · Altitud: caída exponencial de la presión
+   ═══════════════════════════════════════════════════════════ */
+function drawAltitude(){
+  const cv=el('sim-altitude'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const hh=Math.max(0,Math.min(12000,num('al_h')||8250));
+  const vh=el('al_hv'); if (vh) vh.textContent=espan(hh/1000,2)+' km';
+  const PO2=161*Math.exp(-hh/7946);
+  const Ptot=760*Math.exp(-hh/8767);
+  const lx=w*0.08, lw=w*0.70, gy=h*0.14, gH=h*0.58, hmax=12000, Pmax=170;
+  const X=h0=>lx+h0/hmax*lw, Y=p=>gy+gH*(1-p/Pmax);
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.strokeRect(lx,gy,lw,gH);
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2.2; ctx.beginPath();
+  for(let i=0;i<=120;i++){
+    const h0=i/120*hmax;
+    const x=X(h0), y=Y(161*Math.exp(-h0/7946));
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  }
+  ctx.stroke();
+  AB.text(ctx,'P_O₂(h) = 161·e^(−h/7.946 km)', lx+lw/2, gy-8, {size:7,color:AB.PAL.blood});
+  // línea de hipoxia
+  const y57=Y(57);
+  AB.dashed(ctx,lx,y57,lx+lw,y57,{color:AB.PAL.amber,width:1.5});
+  AB.text(ctx,'hipoxia 57 mmHg', lx+lw+4, y57, {size:7,align:'left',color:AB.PAL.amber});
+  // marcadores 8,25 y 8,85 km
+  const x825=X(8250), x885=X(8850);
+  AB.dashed(ctx,x825,gy,x825,gy+gH,{color:AB.PAL.ink3,width:1});
+  AB.text(ctx,'8,25 km', x825, gy+gH+12, {size:7,color:AB.PAL.ink3});
+  AB.dashed(ctx,x885,gy,x885,gy+gH,{color:AB.PAL.ink,width:1});
+  AB.text(ctx,'Everest 8,85', x885, gy+10, {size:6.5,color:AB.PAL.ink});
+  // punto actual
+  const px=X(hh), py=Y(PO2);
+  ctx.beginPath(); ctx.arc(px,py,5,0,Math.PI*2);
+  ctx.fillStyle=AB.PAL.blood; ctx.fill(); ctx.strokeStyle='#fbf8f0'; ctx.lineWidth=1.5; ctx.stroke();
+  AB.text(ctx,'h = '+espan(hh/1000,2)+' km', px, py-12, {size:8,weight:'700',color:AB.PAL.blood});
+  // panel de lectura
+  AB.text(ctx,'P_O₂ = '+espan(PO2,0)+' mmHg', w*0.84, h*0.30, {size:9,weight:'700',color:AB.PAL.blood});
+  AB.text(ctx,'P_total = '+espan(Ptot,0)+' mmHg', w*0.84, h*0.38, {size:8,color:AB.PAL.ink3});
+  AB.text(ctx,'hipoxia '+(PO2<57?'SÍ · por debajo':'no · por encima'), w*0.84, h*0.46, {size:8,color:PO2<57?AB.PAL.blood:AB.PAL.good});
+  AB.text(ctx,'altitud (km)', lx+lw/2, gy+gH+20, {size:7,color:AB.PAL.ink3});
+  const out=el('al_out');
+  if (out) out.textContent='P_O₂ = '+espan(PO2,0)+' mmHg · '+(PO2<57?'hipoxia':'seguro');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S21 · Tabla 9.4: nivel del mar vs. 2.500 m
+   ═══════════════════════════════════════════════════════════ */
+function drawTable94(){
+  const cv=el('sim-table94'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const sel=el('tb_sel')?el('tb_sel').value:'all';
+  const rows=[['Presión total',760,560],['O₂ atmosférico',159,117],['O₂ alveolar',105,77],['O₂ arterial',100,72],['O₂ venoso',40,40]];
+  const lx=w*0.08, lw=w*0.66, gy=h*0.12, gH=h*0.64, Pmax=800;
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.strokeRect(lx,gy,lw,gH);
+  rows.forEach((r,i)=>{
+    const on=sel==='all'||sel===String(i);
+    const y=gy+i/rows.length*gH, bh=gH/rows.length*0.62;
+    const yc=y+(gH/rows.length-bh)/2;
+    AB.text(ctx,r[0], lx-6, yc+bh/2, {size:7.5,align:'right',color:on?AB.PAL.ink:AB.PAL.ink3});
+    [['nivel del mar',r[1],AB.PAL.teal],['2.500 m',r[2],AB.PAL.amber]].forEach((b,j)=>{
+      const bx=lx+lw*0.16+j*lw*0.30;
+      ctx.fillStyle=b[2]+(on?'':'44');
+      ctx.fillRect(bx,yc,Math.max(3, b[1]/Pmax*lw*0.26),bh);
+      ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1;
+      ctx.strokeRect(bx,yc,lw*0.26,bh);
+      AB.text(ctx,espan(b[1],0), bx+lw*0.13, yc+bh/2, {size:7.5,weight:'700',color:on?'#fbf8f0':AB.PAL.ink3});
+      if (i===0) AB.text(ctx,b[0], bx+lw*0.13, yc-6, {size:6.5,color:AB.PAL.ink3});
+    });
+    AB.text(ctx,on?'':r[0], lx+lw+4, yc+bh/2, {size:7,align:'left',color:AB.PAL.ink3});
+  });
+  AB.text(ctx,'mmHg', lx+lw*0.16, gy-8, {size:7,color:AB.PAL.teal});
+  AB.text(ctx,'mmHg', lx+lw*0.46, gy-8, {size:7,color:AB.PAL.amber});
+  const out=el('tb_out');
+  if (out) out.textContent='total 760 → 560 mmHg · venoso se mantiene en 40';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S22 · Trabajo de la inspiración: W = V_t²/(2C)
+   ═══════════════════════════════════════════════════════════ */
+function drawWork(){
+  const cv=el('sim-work'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const Vt=Math.max(300,Math.min(1000,num('wr_vt')||500));
+  const Cl=Math.max(0.05,Math.min(0.3,(num('wr_c')||100)/1000));
+  const f=Math.max(10,Math.min(40,num('wr_f')||20));
+  const vv=el('wr_vtv'); if (vv) vv.textContent=espan(Vt,0)+' cm³';
+  const vc=el('wr_cv'); if (vc) vc.textContent=espan(Cl,2)+' L/cmH₂O';
+  const vf=el('wr_fv'); if (vf) vf.textContent=espan(f,0)+' /min';
+  const W_erg=Math.pow(Vt,2)/(2*Cl);   // CGS: cm³, cm³/(dina/cm²)
+  const W_J=W_erg/1e7;
+  const dWdt=W_J*f*1440;               // J/día
+  const kcal=dWdt/4184;
+  // triángulo P–V
+  const lx=w*0.08, lw=w*0.56, gy=h*0.16, gH=h*0.56;
+  const Vmax=Vt/1000*1.15, Pmax=Vmax/Cl*1.15;
+  const X=v=>lx+v/Vmax*lw, Y=p=>gy+gH-p/Pmax*gH;
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.beginPath(); ctx.moveTo(lx,gy+gH); ctx.lineTo(lx,gy); ctx.lineTo(lx+lw,gy+gH); ctx.stroke();
+  AB.text(ctx,'P = ΔV/C', lx-6, gy, {size:7,color:AB.PAL.ink3});
+  AB.text(ctx,'V_t', lx+lw, gy+gH+6, {size:7,color:AB.PAL.ink3});
+  ctx.fillStyle='rgba(13,110,100,.18)';
+  ctx.beginPath(); ctx.moveTo(lx,gy+gH); ctx.lineTo(lx+lw,gy+gH); ctx.lineTo(lx+lw,gy+gH-(Vt/1000)/Vmax*gH); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(lx,gy+gH); ctx.lineTo(lx+lw,gy+gH); ctx.lineTo(lx+lw,gy+gH-(Vt/1000)/Vmax*gH); ctx.closePath(); ctx.stroke();
+  AB.text(ctx,'área = V_t²/(2C)', lx+lw/2, gy+gH-10, {size:8,color:AB.PAL.teal});
+  // lecturas
+  const bx=w*0.72, bw=w*0.22;
+  const items=[['W (por respiración)',W_J,'J',AB.PAL.teal],['Tasa mecánica',dWdt,'J/día',AB.PAL.amber],['Tasa mecánica',kcal,'kcal/día',AB.PAL.blood]];
+  let y=h*0.16;
+  items.forEach(it=>{
+    ctx.fillStyle=it[3]; ctx.fillRect(bx,y,bw*0.7,12);
+    AB.text(ctx,it[0], bx, y+6, {size:7,align:'left',color:AB.PAL.ink});
+    AB.text(ctx,espan(it[2],it[2]==='J'||it[2]==='J/día'?1:2)+' '+it[1], bx+bw*0.7+6, y+6, {size:8,align:'left',weight:'700',color:it[3]});
+    y+=26;
+  });
+  AB.text(ctx,'dW/dt = f·V_t²/(2C) · con C = 0,1 L/cmH₂O → 0,86 kcal/día', w/2, h*0.92, {size:8,color:AB.PAL.ink3});
+  const out=el('wr_out');
+  if (out) out.textContent='dW/dt = '+espan(kcal,2)+' kcal/día';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S23 · Eficiencia metabólica y espiración forzada
+   ═══════════════════════════════════════════════════════════ */
+function drawEff(){
+  const cv=el('sim-eff'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const ep=Math.max(3,Math.min(10,num('ef_ep')||5));
+  const ve=el('ef_epv'); if (ve) ve.textContent=espan(ep,0)+' %';
+  const dWdt=0.86;
+  const dEdt=dWdt/(ep/100);
+  const pctBMR=dEdt/1800*100;
+  // panel 1: mecánico vs metabólico
+  const lx=w*0.06, lw=w*0.40, gy=h*0.18, gH=h*0.50, maxV=Math.max(25,dEdt*1.2);
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.strokeRect(lx,gy,lw,gH);
+  const bar=(name,val,col)=>{
+    const y=gy+gH*0.30;
+    ctx.fillStyle=col; ctx.fillRect(lx,y,Math.max(3,val/maxV*lw),gH*0.28);
+    ctx.strokeStyle=AB.PAL.line; ctx.strokeRect(lx,y,lw,gH*0.28);
+    AB.text(ctx,name, lx+4, y+gH*0.14, {size:7.5,align:'left',color:AB.PAL.ink});
+    AB.text(ctx,espan(val,1)+' kcal/día', lx+Math.max(3,val/maxV*lw)+6, y+gH*0.14, {size:8,align:'left',weight:'700',color:col});
+    gy+=gH*0.36;
+  };
+  bar('Trabajo mecánico (ε = 100 %)', dWdt, AB.PAL.teal);
+  bar('Costo metabólico', dEdt, AB.PAL.blood);
+  ctx.fillStyle=AB.PAL.warn;
+  ctx.fillRect(lx,gy,Math.max(3,(dEdt-dWdt)/maxV*lw),gH*0.28);
+  ctx.strokeStyle=AB.PAL.line; ctx.strokeRect(lx,gy,lw,gH*0.28);
+  AB.text(ctx,'Calor perdido (1−ε)', lx+4, gy+gH*0.14, {size:7.5,align:'left',color:AB.PAL.ink});
+  AB.text(ctx,espan(dEdt-dWdt,1)+' kcal/día', lx+Math.max(3,(dEdt-dWdt)/maxV*lw)+6, gy+gH*0.14, {size:8,align:'left',weight:'700',color:AB.PAL.warn});
+  AB.text(ctx,'dE/dt = dW/dt / ε', lx+lw/2, h*0.90, {size:8,color:AB.PAL.ink3});
+  // panel 2: espiración forzada
+  const gx=w*0.55, gw=w*0.38, gy2=h*0.14, gH2=h*0.62, Pmax=45;
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.strokeRect(gx,gy2,gw,gH2);
+  AB.text(ctx,'Espiración forzada (cmH₂O)', gx+gw/2, gy2-8, {size:7.5,color:AB.PAL.ink});
+  const marks=[[38,'alveolar',AB.PAL.blood],[30,'intrapleural',AB.PAL.teal],[19,'colapso de la vía',AB.PAL.warn]];
+  marks.forEach(m=>{
+    const y=gy2+gH2*(1-m[0]/Pmax);
+    AB.dashed(ctx,gx,y,gx+gw,y,{color:m[2],width:1.4});
+    AB.text(ctx,m[0]+' · '+m[1], gx+gw+4, y, {size:7,align:'left',color:m[2]});
+    AB.text(ctx,String(m[0]), gx-4, y, {size:7,align:'right',color:m[2]});
+  });
+  AB.text(ctx,'0', gx-4, gy2+gH2, {size:7,align:'right',color:AB.PAL.ink3});
+  const out=el('ef_out');
+  if (out) out.textContent='dE/dt = '+espan(dEdt,0)+' kcal/día · ~'+espan(pctBMR,0)+' % BMR';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Mapa de redibujado (una draw por slide de contenido)
+   ═══════════════════════════════════════════════════════════ */
+function redrawSlide(n){
+  const fns = {
+    1: ()=>window.drawComposition && drawComposition(),
+    2: ()=>window.drawTree && drawTree(),
+    3: ()=>window.drawGas && drawGas(),
+    4: ()=>window.drawLaplace && drawLaplace(),
+    5: ()=>window.drawBubbles && drawBubbles(),
+    6: ()=>window.drawSurfactant && drawSurfactant(),
+    7: ()=>window.drawPleura && drawPleura(),
+    8: ()=>window.drawBreath && drawBreath(),
+    9: ()=>window.drawSpiro && drawSpiro(),
+    10: ()=>window.drawPVCurve && drawPVCurve(),
+    11: ()=>window.drawMix && drawMix(),
+    12: ()=>window.drawAirRes && drawAirRes(),
+    13: ()=>window.drawSine && drawSine(),
+    14: ()=>window.drawMech && drawMech(),
+    15: ()=>window.drawCycle && drawCycle(),
+    16: ()=>window.drawPVLoop && drawPVLoop(),
+    17: ()=>window.drawInspVol && drawInspVol(),
+    18: ()=>window.drawFVC && drawFVC(),
+    19: ()=>window.drawHypoxia && drawHypoxia(),
+    20: ()=>window.drawAltitude && drawAltitude(),
+    21: ()=>window.drawTable94 && drawTable94(),
+    22: ()=>window.drawWork && drawWork(),
+    23: ()=>window.drawEff && drawEff(),
+  };
+  if (fns[n]) fns[n]();
+}
+window.redrawSlide = redrawSlide;
+
+/* ── Teclado ── */
+document.addEventListener('keydown', e=>{
+  if (/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return;
+  if (e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){ e.preventDefault(); nextSlide(); }
+  else if (e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); prevSlide(); }
+  else if (e.key==='Home'){ e.preventDefault(); go(0); }
+  else if (e.key==='End'){ e.preventDefault(); go(TOTAL-1); }
+});
+
+/* ── Bucle de animación ── */
+let __lastTs=0;
+function animLoop(ts){
+  const dt=Math.min(0.06, ((ts-__lastTs)||0)/1000);
+  __lastTs=ts;
+  if (current===5 && window.__bbPlaying){ window.__bbT=(window.__bbT||0)+dt; window.__bbDt=dt; drawBubbles(); }
+  if (current===8 && window.__brPlaying){ window.__brT=(window.__brT||0)+dt; drawBreath(); }
+  if (current===9 && window.__spPlaying){ window.__spT=(window.__spT||0)+dt; drawSpiro(); }
+  if (current===15 && window.__cyPlaying){ window.__cyT=(window.__cyT||0)+dt; drawCycle(); }
+  if (current===16 && window.__lvPlaying){ window.__lvT=(window.__lvT||0)+dt; drawPVLoop(); }
+  requestAnimationFrame(animLoop);
+}
+requestAnimationFrame(animLoop);
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  dots();
+  buildModuleTabs();
+  if (window.renderMathInElement) renderMathInElement(document.body, {
+    delimiters:[
+      {left:'\\(',right:'\\)',display:false},
+      {left:'\\[',right:'\\]',display:true}
+    ],
+    throwOnError:false
+  });
+  requestAnimationFrame(()=>redrawSlide(0));
+});
+
+</script>
+</body>
+</html>

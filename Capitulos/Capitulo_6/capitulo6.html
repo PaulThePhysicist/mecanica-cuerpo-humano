@@ -1,0 +1,3016 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Capítulo 6 — Metabolismo: Energía, Calor, Trabajo y Potencia del Cuerpo. Física del Cuerpo Humano, I. P. Herman (2016). Presentación universitaria interactiva en español.">
+<title>Capítulo 6 · Metabolismo — Física del Cuerpo Humano</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,600&family=Karla:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   METABOLISMO — design system (continuidad con caps. 1–5)
+   Papel marfil · tinta · tinta fisiológica (teal / sangre / ámbar)
+   Serif académica (Source Serif 4) + grotesca (Karla) + mono técnica
+   ═══════════════════════════════════════════════════════════════ */
+:root{
+  --paper:#f5f0e4;
+  --paper-2:#eee7d6;
+  --paper-3:#e8dfc9;
+  --card:#fbf8f0;
+  --ink:#232c36;
+  --ink-2:#43505c;
+  --ink-3:#6b7885;
+  --line:#cfc3a9;
+  --line-soft:#e2d9c4;
+  --teal:#0d6e64;
+  --teal-deep:#0a5a52;
+  --teal-tint:rgba(13,110,100,.10);
+  --blood:#a92a1e;
+  --blood-deep:#8c1f16;
+  --blood-tint:rgba(169,42,30,.10);
+  --amber:#9a5b00;
+  --amber-deep:#7c4900;
+  --amber-tint:#fbf2dc;
+  --sagittal:#5d4fa8;
+  --coronal:#2d7d4f;
+  --transverse:#b86a1e;
+  --bone:#b6a67f;
+  --serif:'Source Serif 4',Georgia,'Times New Roman',serif;
+  --sans:'Karla',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,'Cascadia Mono',monospace;
+  --radius:12px;
+  --radius-sm:8px;
+  --shadow:0 1px 2px rgba(35,44,54,.05),0 8px 22px rgba(35,44,54,.07);
+  /* ── curvas de movimiento ── */
+  --ease-out:cubic-bezier(.23,1,.32,1);
+  --ease-in-out:cubic-bezier(.77,0,.175,1);
+  --ease-drawer:cubic-bezier(.32,.72,0,1);
+  --press:160ms var(--ease-out);
+  --fade:200ms var(--ease-out);
+  --slide:250ms var(--ease-out);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:clamp(16px,1.32vw,21px)}
+body{
+  font-family:var(--sans);color:var(--ink);background-color:var(--paper);
+  background-image:linear-gradient(rgba(35,44,54,.028) 1px,transparent 1px);
+  background-size:100% 44px;
+  overflow:hidden;height:100dvh;user-select:none;line-height:1.5;
+}
+::selection{background:rgba(13,110,100,.18)}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+
+/* ─── BRAND STRIP + MODULE TABS ─── */
+.module-bar{
+  position:fixed;top:0;left:0;right:0;z-index:30;
+  background:linear-gradient(180deg,rgba(245,240,228,.97) 68%,rgba(245,240,228,0));
+  padding:0 1.6rem;display:flex;gap:.4rem;align-items:flex-end;
+  pointer-events:none;
+}
+.module-bar>*{pointer-events:auto}
+.brand-mark{
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:0 1.2rem .55rem 0;margin-right:auto;flex-shrink:0;
+}
+.brand-mark .treatise{font-family:var(--serif);font-weight:600;font-size:.74rem;letter-spacing:.01em;color:var(--ink)}
+.brand-mark .book{font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.module-tab{
+  background:var(--paper-2);border:1px solid var(--line);border-bottom:none;
+  color:var(--ink-3);padding:.42rem 1.05rem .5rem;border-radius:9px 9px 0 0;
+  font-size:.64rem;font-weight:600;cursor:pointer;
+  transition:color var(--fade),background-color var(--fade),border-color var(--fade),box-shadow var(--slide);
+  letter-spacing:.02em;
+  display:flex;align-items:center;gap:.42rem;margin-bottom:1px;
+}
+.module-tab:active{transform:scale(.97)}
+.module-tab.active{
+  background:var(--card);border-color:var(--line);color:var(--teal-deep);
+  box-shadow:0 -1px 0 var(--card),0 -3px 0 var(--teal);
+  margin-bottom:0;padding-bottom:.55rem;
+}
+.module-tab .mod-badge{
+  font-size:.55rem;background:var(--card);border:1px solid var(--line);
+  padding:.06rem .4rem;border-radius:4px;color:var(--ink-3);font-weight:700;
+}
+.module-tab.active .mod-badge{background:var(--teal);border-color:var(--teal);color:var(--paper)}
+
+/* ─── SLIDES ─── */
+.slides{position:relative;z-index:1;height:100dvh}
+.slide,.slide-full{
+  display:none;width:100%;height:100dvh;
+  padding:3.4rem 2rem 4.6rem;overflow-y:auto;position:relative;
+}
+.slide.active,.slide-full.active{display:flex;flex-direction:column}
+.slide::-webkit-scrollbar-track{background:transparent}
+
+/* ─── PORTADA ─── */
+.slide-full{align-items:center;justify-content:center;text-align:center}
+.slide-full::before{
+  content:"";position:absolute;top:0;left:0;right:0;
+  height:5px;
+  background:linear-gradient(90deg,var(--teal) 0 25%,var(--blood) 25% 50%,var(--amber) 50% 75%,var(--sagittal) 75% 100%);
+}
+.slide-full h1{
+  font-family:var(--serif);font-size:clamp(2.1rem,4.6vw,3.9rem);font-weight:700;
+  letter-spacing:-.035em;line-height:1.06;max-width:18ch;
+  margin:1.4rem auto 1.1rem;
+}
+.slide-full h1 .chapno{
+  display:block;font-family:var(--sans);font-size:clamp(.72rem,1.1vw,1rem);
+  font-weight:700;letter-spacing:.42em;text-transform:uppercase;
+  color:var(--teal-deep);margin-bottom:1.15rem;
+}
+.slide-full h1 .vol{
+  font-style:italic;font-weight:600;color:var(--ink-2);
+}
+.slide-full .subtitle{
+  font-size:clamp(.86rem,1.3vw,1.05rem);color:var(--ink-2);max-width:62ch;
+  line-height:1.65;margin:0 auto;
+}
+.slide-full .rule{width:88px;height:1px;background:var(--line);margin:1.6rem auto}
+.module-preview{display:flex;gap:.55rem;flex-wrap:wrap;justify-content:center}
+.module-preview .mpill{
+  background:var(--card);border:1px solid var(--line);border-radius:999px;
+  padding:.42rem 1.05rem;font-size:.72rem;color:var(--ink-2);
+  transition:color var(--fade),border-color var(--fade),background-color var(--fade),transform var(--press);
+  cursor:pointer;display:flex;align-items:center;gap:.4rem;font-weight:600;
+}
+.module-preview .mpill:active{transform:translateY(-1px) scale(.96)}
+.module-preview .mpill.active{background:var(--teal);border-color:var(--teal-deep);color:var(--paper)}
+.module-preview .mpill .ico{font-size:.9rem}
+.slide-full .start-btn{
+  margin-top:1.9rem;background:var(--teal);color:var(--paper);
+  border:1px solid var(--teal-deep);padding:.78rem 2.4rem;border-radius:8px;
+  font-size:.95rem;font-weight:700;cursor:pointer;
+  transition:background-color var(--fade),box-shadow var(--slide),transform var(--press);
+  letter-spacing:.02em;
+}
+.slide-full .start-btn:active{transform:scale(.97)}
+.slide-full .book-ref{margin-top:2.2rem;font-size:.66rem;color:var(--ink-3);font-style:italic}
+
+/* ─── MODULE HEADER ─── */
+.module-header{
+  display:flex;align-items:baseline;gap:.7rem;margin-bottom:.8rem;flex-shrink:0;
+  padding-bottom:.6rem;border-bottom:1px solid var(--line);
+}
+.module-header .mnum{
+  font-family:var(--mono);font-size:.66rem;font-weight:700;letter-spacing:.08em;
+  color:var(--teal-deep);background:var(--teal-tint);padding:.24rem .7rem;border-radius:6px;
+  border:1px solid rgba(13,110,100,.22);
+}
+.module-header .mtitle{
+  font-family:var(--serif);font-size:1.42rem;font-weight:700;letter-spacing:-.01em;color:var(--ink);
+}
+.module-header .msub{font-size:.68rem;color:var(--ink-3);margin-left:auto;font-style:italic}
+.module-header .mslide-count{
+  font-size:.6rem;color:var(--ink-3);font-family:var(--mono);background:var(--paper-2);
+  padding:.16rem .5rem;border-radius:4px;border:1px solid var(--line-soft);
+}
+
+/* ─── CONTENT GRID ─── */
+.content-grid{
+  display:grid;grid-template-columns:1.12fr .88fr;
+  grid-template-rows:1fr auto;gap:.8rem;flex:1;min-height:0;
+}
+.content-grid.single-col{grid-template-columns:1fr}
+
+/* ─── TEORÍA ─── */
+.theory{
+  overflow-y:auto;line-height:1.5;display:flex;flex-direction:column;gap:.6rem;
+  padding-right:.2rem;
+}
+.theory .card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:.7rem .85rem;box-shadow:var(--shadow);transition:border-color var(--slide),box-shadow var(--slide);cursor:default;
+}
+.theory .card.active{border-color:rgba(13,110,100,.5);box-shadow:var(--shadow)}
+.theory .card .card-hdr{
+  display:flex;align-items:center;gap:.5rem;font-size:.7rem;
+  font-weight:700;color:var(--teal-deep);text-transform:uppercase;letter-spacing:.09em;
+  margin-bottom:.4rem;
+}
+.theory .card .card-hdr .icon{font-size:.92rem}
+.theory .card .card-body{font-size:.78rem;color:var(--ink-2);line-height:1.58;max-width:72ch}
+.theory .card .card-body p{margin-bottom:.3rem}
+.theory .card .card-body p:last-child{margin-bottom:0}
+.theory .card .card-body strong{color:var(--ink);font-weight:700}
+.theory .card .card-body .tag{
+  display:inline-block;font-size:.64rem;font-weight:700;font-family:var(--mono);
+  padding:.06rem .45rem;border-radius:4px;background:var(--teal-tint);color:var(--teal-deep);
+  border:1px solid rgba(13,110,100,.22);margin:0 .08rem;line-height:1.4;
+}
+.theory .card .card-body .row{
+  display:flex;gap:.35rem;flex-wrap:wrap;margin:.3rem 0;
+}
+.theory .card .card-body .pill{
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:.66rem;padding:.2rem .55rem;border-radius:6px;
+  background:var(--paper);border:1px solid var(--line);color:var(--ink-2);
+  transition:color var(--fade),border-color var(--fade),background-color var(--fade),transform var(--press);
+  cursor:pointer;line-height:1.45;
+}
+.theory .card .card-body .pill:active{transform:scale(.96)}
+.theory .card .card-body .pill b{color:var(--ink)}
+.theory .card .card-body .highlight{color:var(--ink);font-weight:600}
+.theory .card .card-body .pill.active{background:var(--teal);border-color:var(--teal-deep);color:var(--paper)}
+
+/* ─── ECUACIONES ─── */
+.eq-block{
+  background:var(--paper-2);border:1px solid var(--line-soft);border-radius:var(--radius-sm);
+  padding:.38rem .6rem;margin:.3rem 0;font-size:.86rem;text-align:center;
+}
+.eq-block .katex{color:var(--ink)}
+
+/* ─── CONCEPT FLOW ─── */
+.concept-flow{
+  display:flex;align-items:center;justify-content:center;gap:.3rem;
+  padding:.35rem;background:var(--paper-2);border-radius:var(--radius-sm);
+  border:1px solid var(--line);margin-top:.15rem;flex-shrink:0;
+}
+.concept-flow .step{
+  font-size:.64rem;font-weight:600;color:var(--ink-3);text-align:center;
+  padding:.26rem .4rem;border-radius:6px;background:var(--card);flex:1;
+  border:1px solid transparent;transition:color var(--fade),border-color var(--fade),background-color var(--fade),transform var(--press);cursor:pointer;
+}
+.concept-flow .step.done{color:var(--teal-deep);border-color:rgba(13,110,100,.35);background:var(--teal-tint)}
+.concept-flow .arrow{color:var(--line);font-size:.75rem;flex-shrink:0}
+.concept-flow .step:active{transform:scale(.96)}
+
+/* ─── CAJA DE APUNTES (detalle del docente) ─── */
+.apuntes{
+  background:var(--amber-tint);border:1px solid rgba(154,91,0,.3);border-radius:8px;
+  padding:.6rem .75rem;margin-top:.4rem;font-size:.7rem;line-height:1.5;flex-shrink:0;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.4);
+}
+.apuntes .a-hdr{
+  display:flex;align-items:center;gap:.4rem;font-weight:700;
+  color:var(--amber-deep);margin-bottom:.2rem;letter-spacing:.03em;
+}
+.apuntes .a-text{color:#5d460f}
+.apuntes .a-text strong{color:#4a3709}
+
+/* ─── PANEL DE SIMULACIÓN ─── */
+.sim-area{
+  background:var(--paper-3);border:1px solid var(--line);border-radius:var(--radius);
+  position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;
+  min-height:200px;box-shadow:inset 0 2px 8px rgba(35,44,54,.06);
+}
+.sim-area canvas.sim{width:100%;height:100%;display:block}
+.sim-col{display:flex;flex-direction:column;gap:.55rem;min-height:0;overflow-y:auto}
+.sim-col .sim-area{flex:1 1 auto}
+.sim-placeholder{text-align:center;color:var(--ink-3);padding:1rem}
+.sim-placeholder .ico{font-size:2rem;display:block;opacity:.4;margin-bottom:.3rem}
+.sim-placeholder p{font-size:.75rem}
+
+/* ─── BARRA DE CONTROL ─── */
+.prof-controls{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:.42rem .8rem;display:flex;align-items:center;gap:.6rem;
+  font-size:.68rem;color:var(--ink-2);min-height:36px;flex-wrap:wrap;
+}
+.prof-controls .badge{
+  padding:.18rem .55rem;border-radius:6px;background:var(--teal-tint);
+  color:var(--teal-deep);font-family:var(--mono);font-size:.62rem;font-weight:700;
+  border:1px solid rgba(13,110,100,.22);flex-shrink:0;
+}
+.prof-controls label{display:flex;align-items:center;gap:.3rem;cursor:pointer;flex-shrink:0;font-size:.64rem}
+.prof-controls input[type="range"]{width:74px;accent-color:var(--teal);}
+.prof-controls input[type="number"]{width:58px;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:.14rem .3rem;font-size:.66rem;color:var(--ink);font-family:var(--mono)}
+.prof-controls select{
+  background:var(--card);color:var(--ink);border:1px solid var(--line);
+  border-radius:6px;padding:.18rem .4rem;font-size:.64rem;cursor:pointer;
+}
+.prof-controls button{
+  background:var(--paper);border:1px solid var(--line);color:var(--ink-2);
+  padding:.22rem .6rem;border-radius:6px;cursor:pointer;font-size:.64rem;
+  transition:border-color var(--fade),color var(--fade),background-color var(--fade),transform var(--press);font-weight:600;
+}
+.prof-controls button:active{transform:scale(.96)}
+.prof-controls .readout{
+  font-family:var(--mono);font-size:.68rem;color:var(--teal-deep);font-weight:700;
+  background:var(--teal-tint);border:1px solid rgba(13,110,100,.22);
+  padding:.14rem .5rem;border-radius:6px;margin-left:auto;flex-shrink:0;
+}
+
+/* ─── TABLAS MINI ─── */
+.data-mini{font-size:.66rem;width:100%;border-collapse:collapse}
+.data-mini th{
+  color:var(--teal-deep);font-weight:700;text-align:left;padding:.18rem .3rem;
+  border-bottom:1px solid var(--line);text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;
+}
+.data-mini td{padding:.16rem .3rem;border-bottom:1px solid var(--line-soft);color:var(--ink-2)}
+.data-mini td:last-child{font-family:var(--mono);color:var(--ink);font-size:.62rem}
+.data-mini tr{cursor:pointer}
+.data-mini .table-caption{font-size:.56rem;color:var(--ink-3);padding:.14rem .3rem;font-style:italic}
+.data-mini td b{color:var(--ink)}
+
+/* ─── ANIMACIÓN (un solo momento autorizado) ─── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.slide.active .card{animation:fadeUp .48s cubic-bezier(.22,1,.36,1) both}
+.slide.active .card:nth-child(2){animation-delay:.07s}
+.slide.active .card:nth-child(3){animation-delay:.14s}
+.slide.active .card:nth-child(4){animation-delay:.21s}
+.slide.active .eq-block{animation:fadeUp .48s .2s both}
+.slide.active .sim-area,.slide.active .apuntes,.slide.active .prof-controls{animation:fadeUp .48s .1s both}
+.slide-full.active{animation:fadeUp .5s cubic-bezier(.22,1,.36,1)}
+/* Revisitar una diapositiva = ya la conocemos → reveal instantáneo,
+   sin repetir la entrada. */
+.slide.instant .card,.slide.instant .eq-block,.slide.instant .sim-area,
+.slide.instant .apuntes,.slide.instant .prof-controls,.slide-full.instant{animation:none!important}
+
+/* ─── NAVEGACIÓN INFERIOR ─── */
+.nav-bar{
+  position:fixed;bottom:0;left:0;right:0;z-index:30;
+  background:linear-gradient(0deg,rgba(245,240,228,.97) 58%,rgba(245,240,228,0));
+  padding:.6rem 2rem .85rem;
+  display:flex;justify-content:center;align-items:center;gap:.55rem;pointer-events:none;
+}
+.nav-bar>*{pointer-events:auto}
+.nav-btn{
+  background:var(--card);border:1px solid var(--line);color:var(--ink-2);
+  width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:.85rem;
+  display:flex;align-items:center;justify-content:center;
+  transition:background-color var(--fade),color var(--fade),border-color var(--fade),transform var(--press);
+}
+.nav-btn:active{transform:scale(.9)}
+.nav-dots{display:flex;gap:.3rem;padding:0 .4rem}
+.nav-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--line);
+  cursor:pointer;transform-origin:center;
+  transition:background-color var(--fade),transform var(--slide);border:none;
+}
+.nav-dot.active{background:var(--teal);transform:scaleX(2.85)}
+.slide-counter{font-size:.58rem;font-family:var(--mono);color:var(--ink-3);letter-spacing:.06em}
+.nav-module-label{font-size:.58rem;color:var(--teal-deep);background:var(--card);border:1px solid var(--line);padding:.14rem .55rem;border-radius:6px;font-weight:600}
+
+/* ─── TOOLTIP CANVAS ─── */
+.canvas-tooltip{
+  position:absolute;pointer-events:none;z-index:5;
+  background:rgba(251,248,240,.96);border:1px solid var(--line);
+  border-radius:6px;padding:.3rem .6rem;font-size:.62rem;
+  color:var(--ink-2);display:none;max-width:190px;box-shadow:var(--shadow);
+}
+.canvas-tooltip b{color:var(--teal-deep)}
+
+/* ─── TABLA INTERACTIVA ─── */
+.interactive-table{width:100%;border-collapse:collapse;font-size:.66rem}
+.interactive-table th{
+  color:var(--teal-deep);font-weight:700;text-align:left;
+  padding:.22rem .4rem;border-bottom:1px solid var(--line);
+  position:sticky;top:0;background:var(--card);z-index:1;
+  text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;
+}
+.interactive-table td{
+  padding:.18rem .4rem;border-bottom:1px solid var(--line-soft);
+  color:var(--ink-2);transition:background-color var(--fade),color var(--fade);
+}
+.interactive-table td:last-child{font-family:var(--mono);color:var(--ink);font-size:.62rem}
+.interactive-table tr{cursor:pointer;transition:background-color var(--fade),color var(--fade)}
+.interactive-table tr.highlight td{background:var(--teal-tint);color:var(--teal-deep)}
+.interactive-table .table-caption{font-size:.56rem;color:var(--ink-3);padding:.14rem .4rem;font-style:italic}
+
+/* ─── FIGURAS DE LIBRO ─── */
+.figure-pair{display:flex;gap:.6rem;height:100%;align-items:stretch}
+.figure-pair figure{
+  flex:1;display:flex;flex-direction:column;gap:.3rem;align-items:center;
+  justify-content:center;background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius-sm);padding:.4rem;min-width:0;
+}
+.figure-pair figure img{max-width:100%;max-height:66%;object-fit:contain;border-radius:4px}
+.figure-pair figcaption{font-size:.56rem;color:var(--ink-3);text-align:center;line-height:1.4;font-style:italic}
+.figure-pair figure .fig-num{
+  font-family:var(--mono);font-size:.54rem;font-weight:700;color:var(--teal-deep);
+  letter-spacing:.1em;
+}
+
+/* ─── HOVER SOLO PARA DISPOSITIVOS DE PRECISIÓN ─── */
+@media (hover:hover) and (pointer:fine){
+  .module-preview .mpill:hover{border-color:var(--teal);color:var(--teal-deep);transform:translateY(-1px)}
+  .theory .card .card-body .pill:hover{border-color:var(--teal);color:var(--teal-deep);background:var(--card)}
+  .nav-btn:hover{background:var(--teal);color:var(--paper);border-color:var(--teal)}
+  .module-tab:hover{color:var(--ink-2);background:var(--paper-3)}
+  .concept-flow .step:hover{border-color:var(--teal);color:var(--teal-deep)}
+  .slide-full .start-btn:hover{background:var(--teal-deep);box-shadow:0 8px 20px rgba(35,44,54,.22)}
+  .prof-controls button:hover{border-color:var(--teal);color:var(--teal-deep)}
+  .interactive-table tr:hover td{background:var(--teal-tint);color:var(--ink)}
+  .data-mini tr:hover td{background:var(--teal-tint);color:var(--ink)}
+  .theory .card:hover{border-color:#bdb09a}
+  .nav-dot:hover{background:var(--ink-3)}
+}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:820px){
+  .slide,.slide-full{padding:3.2rem .7rem 3.6rem}
+  .content-grid{grid-template-columns:1fr!important;gap:.55rem}
+  .slide-full h1{font-size:2rem}
+  .module-bar{padding:.3rem .7rem 0;gap:.15rem;overflow-x:auto}
+  .brand-mark{display:none}
+  .module-tab{font-size:.56rem;padding:.3rem .6rem .35rem;white-space:nowrap}
+  .module-tab .mod-badge{display:none}
+  .nav-bar{padding:.3rem .7rem .5rem}
+  .theory .card .card-hdr{font-size:.66rem}
+  .module-header .msub{display:none}
+}
+@media(min-width:1800px){
+  .slide,.slide-full{padding:3.6rem 2.6rem 5rem}
+  .content-grid{gap:1rem}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  /* las entradas de slide conservan un fade de opacidad (comprensión), sin movimiento */
+  @keyframes fadeUp{from{opacity:0}to{opacity:1}}
+  .slide.active .card,.slide.active .eq-block,.slide.active .sim-area,.slide.active .apuntes,.slide.active .prof-controls,.slide-full.active{animation-duration:.3s!important;animation-delay:0s!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ MÓDULOS ═══════════ -->
+<nav class="module-bar" id="moduleBar">
+  <div class="brand-mark">
+    <span class="treatise">El cuerpo humano · capítulo 6</span>
+    <span class="book">Física del Cuerpo Humano — I. P. Herman</span>
+  </div>
+</nav>
+
+<!-- ═══════════ PORTADA ═══════════ -->
+<div class="slide-full active" data-slide="0" data-module="0">
+  <h1>
+    <span class="chapno">Capítulo 6</span>
+    Metabolismo: Energía, Calor, Trabajo y Potencia
+  </h1>
+  <p class="subtitle">Cómo el cuerpo convierte los alimentos en trabajo y en calor: el balance energético de la primera ley, el contenido energético de los combustibles corporales, las moléculas de almacenamiento (ATP, fosfágenos, glucógeno y grasa), las tasas metabólicas basal y de actividad, la eficiencia del trabajo mecánico, los cuatro modos de pérdida de calor y la regulación de la temperatura corporal.</p>
+  <div class="rule"></div>
+  <div class="module-preview" id="modulePreview">
+    <span class="mpill" onclick="goModule(1)"><span class="ico">🔥</span> Energía · Calor</span>
+    <span class="mpill" onclick="goModule(2)"><span class="ico">🍩</span> Combustibles</span>
+    <span class="mpill" onclick="goModule(3)"><span class="ico">🔋</span> Almacenamiento</span>
+    <span class="mpill" onclick="goModule(4)"><span class="ico">💤</span> Tasa basal</span>
+    <span class="mpill" onclick="goModule(5)"><span class="ico">🏃</span> Locomoción</span>
+    <span class="mpill" onclick="goModule(6)"><span class="ico">⚙️</span> Trabajo · Potencia</span>
+    <span class="mpill" onclick="goModule(7)"><span class="ico">❄️</span> Pérdida de calor</span>
+    <span class="mpill" onclick="goModule(8)"><span class="ico">🌡️</span> Temperatura</span>
+  </div>
+  <button class="start-btn" onclick="goModule(1)">Comenzar la cátedra →</button>
+  <p class="book-ref">Physics of the Human Body — Irving P. Herman · Springer (2016)</p>
+</div>
+
+<!-- ═══════════ M1 · ENERGÍA Y CALOR ═══════════ -->
+<div class="slide" data-slide="1" data-module="1">
+  <div class="module-header">
+    <span class="mnum">6.1</span>
+    <span class="mtitle">Conservación de la energía y balance del cuerpo</span>
+    <span class="msub">Primera ley: la energía no se crea ni se destruye</span>
+    <span class="mslide-count">1 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">⚖️</span> La primera ley de la termodinámica</div>
+        <div class="card-body">
+          <p>El cuerpo obedece la <strong>conservación de la energía</strong>. La variación de energía interna es el calor neto <em>menos</em> el trabajo:</p>
+          <div class="eq-block">\[ \Delta U = Q - W \qquad \text{(eq. 6.1)} \]</div>
+          <p>Para el cuerpo, la fuente de calor es el <strong>metabolismo</strong> (\(Q_{\text{met}}\)) y la pérdida hacia el entorno es \(Q_{\text{loss}}\):</p>
+          <div class="eq-block">\[ \Delta U = Q_{\text{met}} + Q_{\text{loss}} - W \qquad \text{(eq. 6.2)} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🕰️</span> En estado estacionario</div>
+        <div class="card-body">
+          <p>Si la energía interna no cambia (\(\Delta U = 0\)), todo el metabolismo debe repartirse entre <strong>trabajo mecánico</strong> y <strong>calor</strong>:</p>
+          <div class="eq-block">\[ \frac{dU}{dt} = \frac{dQ_{\text{met}}}{dt} + \frac{dQ_{\text{loss}}}{dt} - \frac{dW}{dt} = 0 \qquad \text{(eq. 6.3)} \]</div>
+          <p>La regla de los signos: <span class="tag">\(dQ_{\text{loss}}/dt &lt; 0\)</span> porque el cuerpo <strong>pierde</strong> calor; <span class="tag">\(dW/dt &gt; 0\)</span> cuando el cuerpo <strong>hace</strong> trabajo sobre el mundo.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">💡</span> Casi todo termina en calor</div>
+        <div class="card-body">
+          <p>Del <span class="tag">80 al 100 %</span> del metabolismo se convierte en calor (la eficiencia mecánica suele ser menor del 20 %). El calor se disipa por <strong>radiación, convección, conducción y evaporación</strong> (módulo 7).</p>
+          <p>La masa corporal almacena energía interna: <span class="tag">\(c_{\text{b}} = 0,83\) kcal/kg-°C</span>. Subir 1 °C a una persona de 100 kg cuesta ≈ <span class="highlight">83 kcal — el contenido de una rebanada de pan</span>.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-1">El concepto central del capítulo: el metabolismo es la «entrada» energética y casi todo sale como calor. Ajusta en el canvas la fracción de energía que se convierte en trabajo mecánico y observa cómo el resto —el grueso— debe perderse como calor para que ΔU = 0.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-balance" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">balance</span>
+        <label>trabajo <input type="range" id="bl_w" min="0" max="40" step="1" value="20" oninput="drawBalance()"> <span id="bl_wv">20 %</span></label>
+        <span class="readout" id="bl_out">W = 20 % · calor = 80 %</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="2" data-module="1">
+  <div class="module-header">
+    <span class="mnum">6.1</span>
+    <span class="mtitle">Unidades de potencia y conducción de calor</span>
+    <span class="msub">Vatios, calorías y la ley de Fourier</span>
+    <span class="mslide-count">2 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🔢</span> Potencias del cuerpo · Tabla 6.1</div>
+        <div class="card-body">
+          <table class="data-mini">
+            <tr><th>Unidad</th><th>Equivalencia</th></tr>
+            <tr><td>Vatio (W)</td><td>1 J/s</td></tr>
+            <tr><td>100 W</td><td>1,43 kcal/min</td></tr>
+            <tr><td>1 hp</td><td>746 W = 642 kcal/h</td></tr>
+            <tr><td>Caloría (cal)</td><td>4,184 J</td></tr>
+          </table>
+          <p>La <strong>tasa metabólica basal</strong> de una persona de 70 kg es ≈ <span class="tag">81 W</span> — del orden de una bombilla incandescente de 100 W.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🌡️</span> La conducción: ley de Fourier</div>
+        <div class="card-body">
+          <p>El flujo de calor por conducción es proporcional a la conductividad térmica \(K\) y al gradiente de temperatura:</p>
+          <div class="eq-block">\[ -\frac{1}{A}\frac{dQ}{dt} = K\frac{dT}{dx} \qquad \text{(eq. 6.6)} \]</div>
+          <p>Con un espesor \(d\) y un coeficiente \(h = K/d\), se escribe <span class="tag">\((1/A)dQ/dt = h\,\Delta T\)</span> (eq. 6.7) — la misma forma que usaremos para radiación y convección.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🔥</span> Las máquinas son más eficientes</div>
+        <div class="card-body">
+          <p>Una máquina térmica entre \(T_c = 293\) K y \(T_h = 310\) K tiene una eficiencia de Carnot máxima:</p>
+          <div class="eq-block">\[ \varepsilon = 1 - \frac{T_c}{T_h} \approx 5{,}5\,\% \]</div>
+          <p>El cuerpo «logra» ≈ <span class="highlight">25 %</span>: la maquinaria muscular trabaja con un mecanismo distinto (el ATP), no con un motor de calor entre dos reservorios.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-2">Dato para el aula: el cuerpo humano «es» una bombilla de ~80–100 W. Juega con el grosor del aislante en el canvas: el aire quieto es un pésimo conductor (K pequeñísimo) — por eso la ropa abriga atrapando aire, no por el tejido en sí.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-heat" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">conducción</span>
+        <label>material <select id="he_mat" onchange="drawHeat()">
+          <option value="0.009246">Aire · 0,009</option>
+          <option value="0.0796">Algodón · 0,080</option>
+          <option value="0.19" selected>Grasa · 0,190</option>
+          <option value="0.335">Piel fría · 0,335</option>
+          <option value="0.642">Músculo · 0,642</option>
+        </select></label>
+        <label>grosor <input type="range" id="he_d" min="1" max="20" step="1" value="3" oninput="drawHeat()"> <span id="he_dv">3 mm</span></label>
+        <span class="readout" id="he_out">Q/A ≈ 2153 W/m²</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M2 · COMBUSTIBLES ═══════════ -->
+<div class="slide" data-slide="3" data-module="2">
+  <div class="module-header">
+    <span class="mnum">6.2</span>
+    <span class="mtitle">Contenido de energía de los combustibles</span>
+    <span class="msub">La oxidación de la glucosa y de la grasa</span>
+    <span class="mslide-count">3 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🍬</span> Oxidación de la glucosa</div>
+        <div class="card-body">
+          <p>La combustión completa de la glucosa libera <strong>686 kcal por mol</strong> (eq. 6.8):</p>
+          <div class="eq-block">\[ \text{C}_6\text{H}_{12}\text{O}_6 + 6\,\text{O}_2 \rightarrow 6\,\text{CO}_2 + 6\,\text{H}_2\text{O} + 686\ \text{kcal} \]</div>
+          <p>Por gramo: <span class="tag">686 kcal / 180 g ≈ 3,8 kcal/g</span>. El cociente respiratorio RER = CO₂/O₂ = <span class="tag">1,0</span>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🥑</span> Oxidación del ácido palmítico</div>
+        <div class="card-body">
+          <p>La grasa es el combustible más denso: el palmítico libera <strong>2397 kcal por mol</strong> (eq. 6.9):</p>
+          <div class="eq-block">\[ \text{CH}_3(\text{CH}_2)_{14}\text{COOH} + 23\,\text{O}_2 \rightarrow 16\,\text{CO}_2 + 16\,\text{H}_2\text{O} + 2397\ \text{kcal} \]</div>
+          <p>Por gramo: <span class="tag">2397 / 256 g ≈ 9,3 kcal/g</span>. RER = CO₂/O₂ = <span class="tag">16/23 ≈ 0,7</span>. Las <strong>proteínas</strong> quedan en <span class="tag">RER ≈ 0,8</span>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🫁</span> El equivalente calórico del O₂</div>
+        <div class="card-body">
+          <p>Por litro de O₂ consumido (Tabla 6.2): carbohidrato ≈ <span class="tag">5,05 kcal/L</span>, grasa ≈ <span class="tag">4,74 kcal/L</span>, proteína ≈ <span class="tag">4,46 kcal/L</span>. La oxidación pura de glucosa da 686/134,4 ≈ <span class="tag">5,5 kcal/L</span>. Medir el O₂ consumido es medir la tasa metabólica (calorimetría indirecta).</p>
+          <p>El <strong>RER</strong> (cociente respiratorio) revela <em>qué</em> combustible se quema: <span class="tag">1,0</span> solo carbohidratos, <span class="tag">0,7</span> solo grasas.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-3">Regla mnemotécnica: <strong>grasa ≈ 9 kcal/g, carbohidrato ≈ proteína ≈ 4 kcal/g</strong>. Por eso el cuerpo elige almacenar energía como grasa: el doble de calorías por gramo, y sin agua. Pulsa ▶ para ver la reacción de oxidación.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-ox" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">oxidación</span>
+        <label>combustible <select id="ox_fuel" onchange="drawOx()">
+          <option value="glucosa" selected>Glucosa · 3,8 kcal/g</option>
+          <option value="palmitico">Palmítico · 9,3 kcal/g</option>
+        </select></label>
+        <button id="ox_play" onclick="toggleOx()">▶</button>
+        <span class="readout" id="ox_out">C₆H₁₂O₆ + 6 O₂ → 6 CO₂ + 6 H₂O + 686 kcal</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="4" data-module="2">
+  <div class="module-header">
+    <span class="mnum">6.2</span>
+    <span class="mtitle">Valores de Atwater y el donut estándar</span>
+    <span class="msub">Cuánta energía «metabolizable» hay realmente</span>
+    <span class="mslide-count">4 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🏷️</span> Factores de Atwater (netos) · Tabla 6.2</div>
+        <div class="card-body">
+          <table class="data-mini">
+            <tr><th>Macronutriente</th><th>kcal/g neto</th></tr>
+            <tr><td>Carbohidrato</td><td>4,02</td></tr>
+            <tr><td>Proteína</td><td>4,20</td></tr>
+            <tr><td>Etanol</td><td>7,00</td></tr>
+            <tr><td>Grasa</td><td>8,98</td></tr>
+          </table>
+          <p>Son valores <strong>netos</strong> (energía metabolizable ME): la digestión y la absorción no son 100 % eficientes.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🍩</span> El donut estándar de Entenmann's</div>
+        <div class="card-body">
+          <p>18 g de grasa + 29 g de carbohidrato + 2 g de proteína:</p>
+          <div class="eq-block">\[ 18\times 9 + 29\times 4 + 2\times 4 = 162 + 116 + 8 = 286 \approx 280\ \text{kcal} \]</div>
+          <p>El valor declarado es <span class="tag">280 kcal</span>: la diferencia se explica por el redondeo de los gramos al entero más cercano (Problema 6.11).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">⚗️</span> Balance de reservas (eq. 6.10–6.12)</div>
+        <div class="card-body">
+          <p>La velocidad de cambio de las reservas energéticas es la ingesta metabolizable menos el metabolismo:</p>
+          <div class="eq-block">\[ \frac{dR}{dt} = \frac{d(\text{ME})}{dt} - \frac{dQ_{\text{met}}}{dt} \]</div>
+          <p>Con eficiencia \(k \approx 0{,}90\) por debajo del mantenimiento y \(0{,}75\) por encima: <span class="highlight">el cuerpo es más «derrochador» cuando ya está en superávit</span>.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-4">El donut estándar es el «ladrillo» de este capítulo: se usa como unidad para quemar calorías, comparar dietas y resolver problemas. En el canvas verás cuánto de sus 286 kcal viene de cada macronutriente: la grasa aporta más de la mitad.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-donut" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">donut</span>
+        <button id="dn_play" onclick="toggleDonut()">▶</button>
+        <span class="readout" id="dn_out">grasa 162 · carb 116 · prot 8 kcal</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M3 · ALMACENAMIENTO ═══════════ -->
+<div class="slide" data-slide="5" data-module="3">
+  <div class="module-header">
+    <span class="mnum">6.3</span>
+    <span class="mtitle">El ATP: la moneda energética</span>
+    <span class="msub">Una molécula pequeña, un puente entre comida y trabajo</span>
+    <span class="mslide-count">5 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🧬</span> Estructura y reacción</div>
+        <div class="card-body">
+          <p>El <strong>ATP</strong> = adenina + ribosa + <strong>tres grupos fosfato</strong>. La hidrólisis del último fosfato libera energía (eq. 6.13):</p>
+          <div class="eq-block">\[ \text{ATP} + \text{H}_2\text{O} \rightarrow \text{ADP} + \text{P}_i + \text{energía} \]</div>
+          <p>La energía libre de la hidrólisis es de <span class="tag">7 a 14 kcal/mol</span>; en la célula se usa típicamente <span class="tag">12–14 kcal/mol</span>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🔁</span> Del combustible al ATP</div>
+        <div class="card-body">
+          <p>Oxidar una glucosa rinde ≈ <strong>30 mol de ATP</strong>:</p>
+          <div class="eq-block">\[ 30\ \text{mol ATP} \times 14{,}0\ \frac{\text{kcal}}{\text{mol}} = 420\ \text{kcal} \qquad \text{(eq. 6.14)} \]</div>
+          <p>La glucosa en sí aporta 686 kcal (eq. 6.15: 180 g × 3,8):</p>
+          <div class="eq-block">\[ \frac{420}{686} \approx 61\text{–}65\,\% \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🤔</span> ¿Por qué el ATP importa tanto?</div>
+        <div class="card-body">
+          <p>Almacena <strong>poca energía por gramo</strong> comparado con la grasa, pero la entrega <em>inmediatamente</em> donde se necesita. El ATP en el cuerpo es de solo <span class="tag">~0,2 mol</span>: se recicla miles de veces al día (ADP → ATP → ADP…).</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-5">El ATP es el «intermediario» entre la comida y el músculo. La eficiencia del 61–65 % es alta porque el cuerpo captura una fracción grande de la energía química de la glucosa en forma de ATP. Pulsa ▶ para ver la hidrólisis que suelta el tercer fosfato.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-atp" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">ATP</span>
+        <label>ΔG <input type="range" id="at_g" min="7" max="14" step="0.5" value="14" oninput="drawAtp()"> <span id="at_gv">14</span></label>
+        <button id="at_play" onclick="toggleAtp()">▶</button>
+        <span class="readout" id="at_out">ATP + H₂O → ADP + Pᵢ + 14 kcal/mol</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="6" data-module="3">
+  <div class="module-header">
+    <span class="mnum">6.3</span>
+    <span class="mtitle">Los sistemas de energía del músculo</span>
+    <span class="msub">Fosfágenos, glucólisis anaeróbica y aeróbica</span>
+    <span class="mslide-count">6 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🔋</span> Cuatro pasos de la energía</div>
+        <div class="card-body">
+          <p><strong>Paso 1 — ATP almacenado:</strong> suficiente para <span class="tag">8 sacudidas</span>, ≈ 3 s (media carrera de 50 m).</p>
+          <p><strong>Paso 2 — Fosfocreatina (PCr):</strong> ADP + PCr → ATP + Cr. Añade ≈ <span class="tag">100 sacudidas</span> (8–10 s, los primeros 50 m de un sprint). Sistema fosfágeno: ≈ 4 mol ATP/min.</p>
+          <p><strong>Paso 3 — Glucólisis anaeróbica:</strong> 3 mol ATP/glucosa, ≈ 2,5 mol ATP/min, <span class="tag">600 sacudidas</span> (1,3–1,6 min, el 400 m).</p>
+          <p><strong>Paso 4 — Aeróbico:</strong> 30–32 mol ATP/glucosa en las mitocondrias (ciclo de Krebs + cadena transportadora de electrones). Alimenta el <span class="tag">maratón</span>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📊</span> Capacidad y potencia · Tabla 6.8</div>
+        <div class="card-body">
+          <table class="data-mini">
+            <tr><th>Sistema</th><th>Tasa (mol/min)</th><th>Total (mol)</th></tr>
+            <tr><td>Fosfágenos</td><td>3,6</td><td>0,7</td></tr>
+            <tr><td>Glucólisis</td><td>1,6–2,5</td><td>1,2</td></tr>
+            <tr><td>Aeróbico</td><td>1,0</td><td>90</td></tr>
+          </table>
+          <p><strong>Potencia vs capacidad:</strong> los fosfágenos son muy rápidos pero diminutos; el aeróbico es lento pero prácticamente ilimitado (grasa ≈ 90 mol ATP).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🏟️</span> Cada carrera, su sistema</div>
+        <div class="card-body">
+          <p>Elige una prueba en el canvas: el cuerpo <em>suma</em> sistemas — nunca son excluyentes, pero domina el que cubre la potencia necesaria.</p>
+          <div class="row">
+            <span class="pill">100 m · fosfágenos</span>
+            <span class="pill">400 m · + glucólisis</span>
+            <span class="pill">1500 m · glucólisis + aeróbico</span>
+            <span class="pill">Maratón · aeróbico</span>
+          </div>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-6">El contraste clave: los fosfágenos entregan <strong>3,6 mol ATP/min</strong> pero solo 0,7 mol en total (dura 8–10 s); el aeróbico entrega solo 1,0 mol/min pero 90 mol en total. Es el dilema potencia-duración resuelto por la evolución.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-systems" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">sistemas</span>
+        <label>prueba <select id="sy_race" onchange="drawSystems()">
+          <option value="100">100 m · fosfágenos</option>
+          <option value="400" selected>400 m · + glucólisis</option>
+          <option value="1500">1500 m · mixto</option>
+          <option value="maraton">Maratón · aeróbico</option>
+        </select></label>
+        <button id="sy_play" onclick="toggleSystems()">▶</button>
+        <span class="readout" id="sy_out">400 m: fosfágenos + glucólisis</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="7" data-module="3">
+  <div class="module-header">
+    <span class="mnum">6.3</span>
+    <span class="mtitle">Reservas de energía del cuerpo</span>
+    <span class="msub">Cuánto duran el glucógeno y la grasa</span>
+    <span class="mslide-count">7 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🛢️</span> Reservas corporales · Tabla 6.10</div>
+        <div class="card-body">
+          <table class="data-mini">
+            <tr><th>Reserva</th><th>Masa (g)</th><th>Energía (kcal)</th></tr>
+            <tr><td>Glucógeno hepático</td><td>110</td><td>451</td></tr>
+            <tr><td>Glucógeno muscular</td><td>500</td><td>2050</td></tr>
+            <tr><td>Grasa</td><td>7961</td><td>74833</td></tr>
+          </table>
+          <p>La grasa almacena ≈ <span class="highlight">100 veces</span> más energía que los carbohidratos: es la reserva a largo plazo.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">⏳</span> ¿Cuánto dura cada reserva?</div>
+        <div class="card-body">
+          <p>A la tasa basal (~1680 kcal/día): el glucógeno (hígado + músculo) dura ≈ <span class="tag">1,5 días</span>; la grasa, ≈ <span class="tag">45 días</span>.</p>
+          <p>En la <strong>inanición</strong> (Fig. 6.14) se quema primero el glucógeno —cubre medio día—, después la grasa, y al final las proteínas: la muerte sobreviene cuando se agota ≈ la mitad de las proteínas, imprescindibles para la función celular.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🏅</span> Deportes y recuperación</div>
+        <div class="card-body">
+          <p>Las Tablas 6.11–6.15 clasifican el aporte de cada sistema según el deporte; la Tabla 6.16 da los tiempos de recuperación: reponer fosfágenos es cuestión de minutos; resintetizar glucógeno, de horas a un par de días.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-7">Haz notar la asimetría: <strong>hígado 451 kcal + músculo 2050 kcal</strong> frente a <strong>grasa 74833 kcal</strong>. Sube la tasa metabólica en el canvas: los días de glucógeno se desploman, pero la grasa sigue aguantando semanas.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-reserves" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">reservas</span>
+        <label>tasa metabólica <input type="range" id="rs_f" min="0.5" max="5" step="0.1" value="1" oninput="drawReserves()"> <span id="rs_fv">1,0×</span></label>
+        <span class="readout" id="rs_out">grasa ≈ 45 días a la BMR</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M4 · TASA BASAL ═══════════ -->
+<div class="slide" data-slide="8" data-module="4">
+  <div class="module-header">
+    <span class="mnum">6.4</span>
+    <span class="mtitle">La tasa metabólica basal (BMR)</span>
+    <span class="msub">El «suelo» de gasto del cuerpo en reposo</span>
+    <span class="mslide-count">8 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">💤</span> Qué es y cuánto vale</div>
+        <div class="card-body">
+          <p>Persona de 70 kg: <span class="tag">BMR ≈ 1680 kcal/día</span> = <span class="tag">70 kcal/h</span> = <span class="tag">81 W</span> — «una bombilla de 100 W».</p>
+          <p>Cinco condiciones para medirla: reposo absoluto, <strong>en ayunas</strong>, despierto, en <strong>termoneutralidad</strong> (≈ 28 °C, sin tiritar ni sudar) y en reposo físico y mental. La BMR cambia ≈ <span class="tag">10–13 % por cada °C</span> de fiebre.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🫀</span> ¿Quién gasta en reposo? · Tabla 6.17</div>
+        <div class="card-body">
+          <table class="data-mini">
+            <tr><th>Órgano</th><th>% del gasto en reposo</th></tr>
+            <tr><td>Hígado · bazo</td><td>27 %</td></tr>
+            <tr><td>Cerebro</td><td>19 %</td></tr>
+            <tr><td>Músculo</td><td>18 %</td></tr>
+            <tr><td>Riñón</td><td>10 %</td></tr>
+            <tr><td>Corazón</td><td>7 %</td></tr>
+            <tr><td>Resto</td><td>19 %</td></tr>
+          </table>
+          <p>El cerebro pesa el 2 % de la masa y gasta el 19 % de la energía en reposo.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-8">El músculo en reposo gasta poco (18 %) pero es la masa que «enciendes» al moverte; el cerebro es carísimo. El donut muestra el reparto del gasto basal — úsalo para explicar por qué el hígado es el mayor consumidor en reposo.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-organs" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">gasto basal</span>
+        <button id="or_play" onclick="toggleOrgans()">▶</button>
+        <span class="readout" id="or_out">hígado · bazo 27 %</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="9" data-module="4">
+  <div class="module-header">
+    <span class="mnum">6.4</span>
+    <span class="mtitle">La ley de Kleiber y Harris–Benedict</span>
+    <span class="msub">Cómo escala la BMR con la masa corporal</span>
+    <span class="mslide-count">9 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🐭🐘</span> La ley de Kleiber (eq. 6.19)</div>
+        <div class="card-body">
+          <div class="eq-block">\[ \text{BMR} = c\, m_{\text{b}}^{3/4} \qquad (c \approx 90\ \text{kcal/kg}^{3/4}\text{-día}) \]</div>
+          <p>Del ratón (20 g) al elefante (5000 kg) la BMR escala con la masa elevada a <strong>3/4</strong>, no linealmente (Tabla 6.18): ratón <span class="tag">3</span>, mujer 55 kg <span class="tag">1260</span>, hombre 65 kg <span class="tag">1500</span>, elefante <span class="tag">70000</span> kcal/día.</p>
+          <p>Hay debate entre \(m^{3/4}\) (redes fractales de transporte) y \(m^{2/3}\) (superficie).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🧮</span> Ecuaciones de Harris–Benedict</div>
+        <div class="card-body">
+          <p>Con masa \(m_{\text{b}}\) (kg), altura \(H\) (cm) y edad \(Y\) (años):</p>
+          <div class="eq-block">\[ \text{Hombres: BMR} = 66{,}47 + 13{,}75\,m_{\text{b}} + 5{,}00\,H - 6{,}76\,Y \qquad \text{(eq. 6.28)} \]</div>
+          <div class="eq-block">\[ \text{Mujeres: BMR} = 655{,}10 + 9{,}56\,m_{\text{b}} + 1{,}85\,H - 4{,}68\,Y \qquad \text{(eq. 6.29)} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🤰</span> Embarazo y edad</div>
+        <div class="card-body">
+          <p>La BMR <strong>disminuye con la edad</strong> (Tablas 6.19–6.20) — una razón del aumento de peso con los años. El embarazo añade <span class="tag">+200 a 250 kcal/día</span> al final de la gestación.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-9">La ley de Kleiber es un «hecho escalar» fascinante: mueve el ratón por la escala logarítmica en el canvas. Nota que la línea de pendiente 3/4 es más plana que la pendiente 1 (masa): <strong>los animales grandes son metabólicamente más eficientes por kg</strong>.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-kleiber" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">escalado</span>
+        <label>masa <input type="range" id="kl_m" min="1" max="100" step="1" value="70" oninput="drawKleiber()"> <span id="kl_mv">70 kg</span></label>
+        <span class="readout" id="kl_out">BMR ≈ 1500·(m/65)^0,75</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M5 · LOCOMOCIÓN ═══════════ -->
+<div class="slide" data-slide="10" data-module="5">
+  <div class="module-header">
+    <span class="mnum">6.4</span>
+    <span class="mtitle">Tasas metabólicas durante actividades</span>
+    <span class="msub">Tabla 6.21: de dormir a correr</span>
+    <span class="mslide-count">10 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🗒️</span> Actividad vs tasa metabólica · Tabla 6.21</div>
+        <div class="card-body">
+          <table class="data-mini">
+            <tr><th>Actividad</th><th>kcal/h</th><th>W</th><th>O₂ (L/min)</th></tr>
+            <tr><td>Durmiendo</td><td>71</td><td>83</td><td>0,24</td></tr>
+            <tr><td>Sentado</td><td>103</td><td>120</td><td>0,34</td></tr>
+            <tr><td>De pie</td><td>108</td><td>125</td><td>0,36</td></tr>
+            <tr><td>Caminar 5 km/h</td><td>228</td><td>265</td><td>0,76</td></tr>
+            <tr><td>Ciclismo 15 km/h</td><td>344</td><td>400</td><td>1,13</td></tr>
+            <tr><td>Natación moderada</td><td>400</td><td>465</td><td>1,32</td></tr>
+            <tr><td>Fútbol</td><td>500</td><td>580</td><td>1,65</td></tr>
+            <tr><td>Subir escaleras</td><td>589</td><td>685</td><td>1,96</td></tr>
+            <tr><td>Baloncesto</td><td>688</td><td>800</td><td>2,28</td></tr>
+            <tr><td>Ciclista de carreras</td><td>1400</td><td>1600</td><td>4,62</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🫁</span> Calorimetría y VO₂ máx</div>
+        <div class="card-body">
+          <p>La tasa metabólica se mide por <strong>calorimetría directa</strong> (calor liberado) o <strong>indirecta</strong> (consumo de O₂ y producción de CO₂, con el RER para elegir el equivalente calórico).</p>
+          <p>Estudiantes: <span class="tag">44–50</span> (M) y <span class="tag">38–42</span> (F) mL/kg-min; atletas de élite <span class="tag">70–80</span>. El VO₂ máx limita todo lo aeróbico.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-10">La tabla 6.21 es de las más útiles del capítulo: es la base para calcular cuánto cuesta cada actividad en kcal. El canvas la convierte en barras: el rango va de 71 kcal/h durmiendo a 1400 en un ciclista profesional — 20 veces más.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-act" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">actividad</span>
+        <label>actividad <select id="ac_act" onchange="drawAct()">
+          <option value="0">Durmiendo · 71</option>
+          <option value="1" selected>Sentado · 103</option>
+          <option value="2">De pie · 108</option>
+          <option value="3">Caminar 5 km/h · 228</option>
+          <option value="4">Ciclismo 15 km/h · 344</option>
+          <option value="5">Natación moderada · 400</option>
+          <option value="6">Fútbol · 500</option>
+          <option value="7">Subir escaleras · 589</option>
+          <option value="8">Baloncesto · 688</option>
+          <option value="9">Ciclista carreras · 1400</option>
+        </select></label>
+        <span class="readout" id="ac_out">103 kcal/h · 120 W · 0,34 L O₂/min</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="11" data-module="5">
+  <div class="module-header">
+    <span class="mnum">6.4</span>
+    <span class="mtitle">El costo de caminar y de correr</span>
+    <span class="msub">Por qué preferimos correr a altas velocidades</span>
+    <span class="mslide-count">11 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🥾</span> Costo por metro recorrido</div>
+        <div class="card-body">
+          <p>Caminar cuesta ≈ <span class="tag">2,13 J/kg-m</span> a 1,2 m/s (2,6 mph), <span class="tag">2,49</span> a 1,8 y <span class="tag">3,93</span> a 2,4 m/s (5,4 mph). Por encima de 3 m/s la curva se vuelve <strong>muy superlineal</strong>.</p>
+          <p>Correr en llano cuesta ≈ <span class="tag">4,2 J/kg-m</span> para no entrenados, <strong>independiente de la velocidad</strong>; los entrenados gastan ≈ <span class="tag">6 % menos</span>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🏃</span> El cruce caminar ↔ correr</div>
+        <div class="card-body">
+          <p>A 2,4 m/s correr requiere ≈ <strong>14 % menos potencia</strong> que caminar: el costo baja de 3,93 a ≈ <span class="tag">3,40 J/kg-m</span>. Por eso, superada la velocidad óptima de marcha, <span class="highlight">se prefiere el trote</span>.</p>
+          <p>Moverse horizontalmente cuesta ≈ <span class="tag">2,8 J/kg-m</span>; <strong>verticalmente</strong>, ≈ <span class="tag">30 J/kg-m</span> (11 veces más).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">⛰️</span> Cuestas y eficiencia</div>
+        <div class="card-body">
+          <p>Subir exige ≈ <span class="tag">2,7×</span> el aumento de energía potencial → eficiencia ≈ <span class="tag">36 %</span>. Bajar requiere menos potencia que en llano en ≈ 50 % de la disminución de energía potencial (el músculo frena: trabajo negativo).</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-11">Pregunta de examen favorita: «¿por qué corro en lugar de caminar si voy rápido?» La respuesta es el cruce de curvas: correr tiene un costo por metro <em>plano</em> (4,2 J/kg-m), caminar crece con la velocidad. En el canvas muévelo por encima de ~2 m/s.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-locom" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">locomoción</span>
+        <label>velocidad <input type="range" id="lo_v" min="1" max="6" step="0.1" value="2" oninput="drawLocom()"> <span id="lo_vv">2,0 m/s</span></label>
+        <span class="readout" id="lo_out">a 2,0 m/s: caminar ≈ 4,2 J/kg-m</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="12" data-module="5">
+  <div class="module-header">
+    <span class="mnum">6.4</span>
+    <span class="mtitle">Protocolo de Bruce y el efecto del viento</span>
+    <span class="msub">La prueba de esfuerzo en caminadora</span>
+    <span class="mslide-count">12 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🦶</span> El protocolo de Bruce · Tabla 6.24</div>
+        <div class="card-body">
+          <table class="data-mini">
+            <tr><th>Etapa</th><th>V (mph)</th><th>Pendiente</th><th>Tiempo (min)</th></tr>
+            <tr><td>I</td><td>1,7</td><td>10 %</td><td>1–3</td></tr>
+            <tr><td>II</td><td>2,5</td><td>12 %</td><td>4–6</td></tr>
+            <tr><td>III</td><td>3,4</td><td>14 %</td><td>7–9</td></tr>
+            <tr><td>IV</td><td>4,2</td><td>16 %</td><td>10–12</td></tr>
+            <tr><td>V</td><td>5,0</td><td>18 %</td><td>13–15</td></tr>
+          </table>
+          <p>Con ECG continuo; cada 3 min sube velocidad y pendiente hasta el agotamiento. Alternativa: protocolo de <strong>Naughton</strong> (velocidad fija, pendiente 2,5 % → 20 %).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🧮</span> El cálculo de la etapa V</div>
+        <div class="card-body">
+          <p>Varón de 75 kg a 5 mph (2,23 m/s) y 18 %: la tasa es la suma de la BMR, el movimiento horizontal y la cuesta (factor 2,7):</p>
+          <div class="eq-block">\[ \text{TM} \approx 100 + (2{,}4 + 22{,}8\sin\theta)\,m_{\text{b}} v \approx 1570\ \text{kcal/h} \]</div>
+          <p>Solo carbohidratos: \(1570/5{,}05 = 311\) L/h = <span class="tag">5,2 L O₂/min</span>. La cuesta domina el gasto (1068 kcal/h de 1469).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">💨</span> El viento · Tabla 6.25</div>
+        <div class="card-body">
+          <p>Correr contra el viento exige más potencia, que crece <strong>como el cuadrado de la velocidad del viento</strong> (\(w^2\)). La resistencia del aire ≈ <span class="tag">8 %</span> de las necesidades de un corredor de media distancia y hasta <span class="tag">15 %</span> para un velocista.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-12">El ejemplo de la etapa V es un problema tipo: suma <strong>BMR + horizontal + cuesta</strong>. El término de la cuesta (\(22,8\sin\theta\)) domina — de ahí que la pendiente sea la variable crítica de la prueba. El canvas calcula las 5 etapas.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-bruce" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">Bruce</span>
+        <label>etapa <input type="range" id="br_s" min="1" max="5" step="1" value="3" oninput="drawBruce()"> <span id="br_sv">III</span></label>
+        <span class="readout" id="br_out">Etapa III: TM ≈ 940 kcal/h</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="13" data-module="5">
+  <div class="module-header">
+    <span class="mnum">6.4</span>
+    <span class="mtitle">MET y factores de actividad</span>
+    <span class="msub">Escalar la TM desde la BMR</span>
+    <span class="mslide-count">13 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🎚️</span> Factor de actividad y MET</div>
+        <div class="card-body">
+          <div class="eq-block">\[ \text{TM} = f \cdot \text{BMR} \qquad \text{(eq. 6.32)} \]</div>
+          <p>El <strong>MET</strong>: un cuerpo promedio consume <span class="tag">3,5 mL/kg-min × MET</span>. Se cumple aproximadamente <span class="tag">\(\text{MET} \sim f/1{,}5\)</span> (quizá \(1{,}2\) para actividades moderadas).</p>
+          <p>Ejemplos de \(f\): acostado <span class="tag">1,05</span>, tejer <span class="tag">1,20</span>, cartas <span class="tag">1,48</span>, billar <span class="tag">3,02</span>, vals <span class="tag">4,22</span>, marcha militar <span class="tag">5,08</span>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🏋️</span> Valores de MET · Tablas 6.26–6.30</div>
+        <div class="card-body">
+          <table class="data-mini">
+            <tr><th>Actividad</th><th>MET</th></tr>
+            <tr><td>Descanso, sentado</td><td>1,0</td></tr>
+            <tr><td>Vestirse, lavarse</td><td>2,0</td></tr>
+            <tr><td>Barrer, cocinar</td><td>1,5–3,0</td></tr>
+            <tr><td>Caminar 3,5 mph</td><td>5,5</td></tr>
+            <tr><td>Ciclismo 9,7 mph</td><td>5,0</td></tr>
+            <tr><td>Trotar 5 mph</td><td>7,5</td></tr>
+            <tr><td>Correr 12 mph</td><td>20</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">⛏️</span> El factor diario promedio</div>
+        <div class="card-body">
+          <p>\(f_{\text{av}}\): 1,55–2,10 según ocupación (ONU); el minero escocés de 1950 alcanzó <span class="tag">2,5× BMR</span> en promedio y 4,3× en horas de trabajo (Tabla 6.31). El <strong>techo metabólico</strong> humano sostenido es ≈ <span class="tag">2,0–2,5× BMR</span> — superado solo por atletas (Tour de Francia ≈ 4,3).</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-13">El MET convierte «lo que hago» en «kcal que gasto»: TM = 3,5·m·MET. Un MET de 5,5 (caminar rápido) en un alumno de 70 kg son ≈ 400 kcal/h. Usa el canvas para comparar actividades y su factor frente a la BMR.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-met" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">MET</span>
+        <label>actividad <select id="me_act" onchange="drawMet()">
+          <option value="1">Sentado · 1,0</option>
+          <option value="2">Vestirse · 2,0</option>
+          <option value="3">Ducharse · 3,5</option>
+          <option value="4">Caminar 2,5 mph · 3,0</option>
+          <option value="5">Caminar 3,5 mph · 5,5</option>
+          <option value="6">Trotar 5 mph · 7,5</option>
+          <option value="7">Correr 8,5 mph · 12</option>
+          <option value="8" selected>Correr 12 mph · 20</option>
+        </select></label>
+        <span class="readout" id="me_out">MET 20 · 70 kg → ≈ 1470 kcal/h</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M6 · TRABAJO Y POTENCIA ═══════════ -->
+<div class="slide" data-slide="14" data-module="6">
+  <div class="module-header">
+    <span class="mnum">6.5</span>
+    <span class="mtitle">Trabajo mecánico y eficiencia</span>
+    <span class="msub">Trabajo interno, externo, positivo y negativo</span>
+    <span class="mslide-count">14 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🏋️</span> Trabajo externo e interno</div>
+        <div class="card-body">
+          <p>Levantar un objeto es <strong>trabajo externo</strong>; elevar el centro de masa del propio cuerpo alrededor de las articulaciones es <strong>trabajo interno</strong> (Fig. 6.10).</p>
+          <p>Las contracciones <strong>concéntricas</strong> hacen trabajo (mecánico) positivo; las <strong>excéntricas</strong>, trabajo negativo. Caminar en llano exige cantidades iguales de ambos; subir, más positivo; bajar, más negativo.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🎯</span> Tres eficiencias (¡cuidado con la definición!)</div>
+        <div class="card-body">
+          <p><strong>Metabólica/muscular:</strong> trabajo mecánico total ÷ trabajo metabólico. <strong>Mecánica:</strong> trabajo total (interno + externo) ÷ costo metabólico por encima del reposo. <strong>Del trabajo:</strong> trabajo externo ÷ costo metabólico extra. Para nosotros, simplemente:</p>
+          <div class="eq-block">\[ \varepsilon = \frac{\text{trabajo mecánico}}{\text{tasa metabólica}} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📉</span> La eficiencia es baja · Tablas 6.32–6.33</div>
+        <div class="card-body">
+          <table class="data-mini">
+            <tr><th>Actividad</th><th>Eficiencia</th></tr>
+            <tr><td>Ciclismo (nivelado)</td><td>19 % · 24–34 %</td></tr>
+            <tr><td>Vagoneteo</td><td>17 %</td></tr>
+            <tr><td>Patinaje sobre hielo</td><td>11 %</td></tr>
+            <tr><td>Máquina escaladora</td><td>23 %</td></tr>
+            <tr><td>Natación libre</td><td>2,9–7,4 %</td></tr>
+            <tr><td>Caminar horizontal</td><td>20–35 %</td></tr>
+            <tr><td>Palear arena</td><td>3 %</td></tr>
+          </table>
+          <p>Referencias: máquina de vapor <span class="tag">17 %</span>, motor de gasolina <span class="tag">38 %</span>.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-14">«¿A dónde va el resto?» → <strong>a calor</strong>: del 80 al 100 % del metabolismo termina como calor. Por eso un trabajador físico de ~500 kcal de trabajo al día necesita dietas de +2500 kcal. El canvas muestra la fracción que se vuelve calor.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-eff" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">eficiencia</span>
+        <button id="ef_play" onclick="toggleEff()">▶</button>
+        <span class="readout" id="ef_out">ciclismo 19 % · 81 % → calor</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="15" data-module="6">
+  <div class="module-header">
+    <span class="mnum">6.5</span>
+    <span class="mtitle">Potencia máxima y duración</span>
+    <span class="msub">Menos duración, más potencia: el costo de lo anaeróbico</span>
+    <span class="mslide-count">15 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">⚡</span> Potencia vs duración · Tabla 6.35</div>
+        <div class="card-body">
+          <table class="data-mini">
+            <tr><th>Potencia</th><th>Duración</th><th>Energía total</th></tr>
+            <tr><td>2 hp · 1500 W</td><td>6 s</td><td>9,0 kJ · 2,2 kcal</td></tr>
+            <tr><td>1 hp · 750 W</td><td>1 min</td><td>45 kJ · 10,8 kcal</td></tr>
+            <tr><td>0,35 hp · 260 W</td><td>35 min</td><td>546 kJ · 130 kcal</td></tr>
+            <tr><td>0,2 hp · 150 W</td><td>5 h</td><td>2700 kJ · 645 kcal</td></tr>
+            <tr><td>0,1 hp · 75 W</td><td>Jornada 8 h</td><td>2160 kJ · 516 kcal</td></tr>
+          </table>
+          <p>Los <strong>procesos anaeróbicos</strong> permiten potencias altas por poco tiempo; a largo plazo manda el aeróbico.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🏁</span> Récords mundiales · Tabla 6.34</div>
+        <div class="card-body">
+          <p>La velocidad media de carrera cae con la distancia por las <strong>limitaciones de captación de O₂</strong>: 100 m <span class="tag">10,44 m/s</span>, 400 m <span class="tag">9,26</span>, 1500 m <span class="tag">7,28</span>, 10 km <span class="tag">6,34</span>, maratón <span class="tag">5,72</span>, 100 km <span class="tag">4,46</span>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🎂</span> La edad</div>
+        <div class="card-body">
+          <p>El rendimiento máximo se sostiene hasta ≈ <span class="tag">35 años</span> y luego decae (Figs. 6.11–6.12). Los tiempos ganadores de Atenas 1896 los alcanzan hoy corredores de ≈ 60 años.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-15">Muestra el trade-off: <strong>2 hp durante 6 s vs 0,1 hp durante una jornada</strong>. La energía total (el área bajo la curva) es comparable, pero la potencia pico exige el combustible anaeróbico que no puede sostenerse. La escala logarítmica del canvas lo deja claro.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-power" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">potencia</span>
+        <label>duración <input type="range" id="pw_d" min="1" max="60" step="1" value="12" oninput="drawPower()"> <span id="pw_dv">12 s</span></label>
+        <span class="readout" id="pw_out">≈ 12 s · P ≈ 690 W</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="16" data-module="6">
+  <div class="module-header">
+    <span class="mnum">6.5</span>
+    <span class="mtitle">¿Cómo «quemar» la comida? Peso corporal</span>
+    <span class="msub">La dona estándar como moneda</span>
+    <span class="mslide-count">16 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🍩</span> Quemar la dona de 280 kcal</div>
+        <div class="card-body">
+          <p>Sentado se queman ≈ <span class="tag">103 kcal/h</span>. Jugando al baloncesto, ≈ <span class="tag">688 kcal/h</span> → el exceso es 585 kcal/h:</p>
+          <div class="eq-block">\[ \frac{280\ \text{kcal}}{585\ \text{kcal/h}} = 0{,}48\ \text{h} = 29\ \text{min} \qquad \text{(eq. 6.33)} \]</div>
+          <p>Caminando (228 kcal/h, exceso 125):</p>
+          <div class="eq-block">\[ \frac{280}{125} = 2{,}24\ \text{h} = 2\ \text{h}\ 14\ \text{min} \qquad \text{(eq. 6.34)} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">⚖️</span> Regla de Wishnofsky</div>
+        <div class="card-body">
+          <p>Cambiar la ingesta metabólica en <span class="tag">3500 kcal</span> ≈ ganar o perder <span class="tag">1 libra</span> (≈ ¾ grasa + ¼ músculo). Un déficit de 1000 kcal/día → ≈ <span class="tag">110 g de grasa/día ≈ 2 lb/semana</span> — el límite práctico de cualquier dieta.</p>
+          <p>El contenido energético real del cambio de peso varía con sexo y edad (hombres ≈ 2480 kcal/lb; mujeres ≈ 3380).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🚰</span> El engaño de las dietas rápidas</div>
+        <div class="card-body">
+          <p>Los primeros días se quema <strong>glucógeno</strong> y su agua asociada: 1000 kcal ≈ 1 kg de pérdida total (≈ 1 kcal por gramo perdido). Al pasar a oxidar grasa, el mismo déficit pierde solo 110 g — de ahí la <strong>meseta</strong> que desanima a quienes hacen dieta.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-16">El consejo de Micawber: ingreso 2000, gasto 2100 → felicidad; ingreso 2000, gasto 1900 → miseria. El canvas muestra cuánto tiempo cuesta cada actividad «pagar» la dona: baloncesto 29 min, caminata 2 h 14 min.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-burn" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">quemar 280 kcal</span>
+        <label>actividad <select id="bn_act" onchange="drawBurn()">
+          <option value="103">Sentado · 103 kcal/h</option>
+          <option value="228">Caminar 5 km/h · 228</option>
+          <option value="344">Ciclismo 15 km/h · 344</option>
+          <option value="400">Natación moderada · 400</option>
+          <option value="500">Fútbol · 500</option>
+          <option value="688" selected>Baloncesto · 688</option>
+        </select></label>
+        <button id="bn_play" onclick="toggleBurn()">▶</button>
+        <span class="readout" id="bn_out">baloncesto: 29 min</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M7 · PÉRDIDA DE CALOR ═══════════ -->
+<div class="slide" data-slide="17" data-module="7">
+  <div class="module-header">
+    <span class="mnum">6.6</span>
+    <span class="mtitle">Los cuatro modos de pérdida de calor</span>
+    <span class="msub">Radiación, convección, conducción y evaporación</span>
+    <span class="mslide-count">17 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">⚠️</span> ¿Por qué importa perder calor?</div>
+        <div class="card-body">
+          <p>Todo el metabolismo acaba en calor. Sin pérdida, la temperatura subiría a:</p>
+          <div class="eq-block">\[ \frac{dT}{dt} = \frac{\text{BMR}}{m_{\text{b}} c_{\text{b}}} = \frac{70\ \text{kcal/h}}{58\ \text{kcal/°C}} = 1{,}2\,^\circ\text{C/h} \qquad \text{(eqs. 6.35–6.36)} \]</div>
+          <p>Capacidad calorífica del cuerpo: <span class="tag">\(C = 0,83 \times 70 = 58\) kcal/°C</span>. ¡+1,2 °C cada hora — necesitamos disipar!</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📋</span> El reparto en reposo</div>
+        <div class="card-body">
+          <p><strong>Radiación</strong> (cuerpo negro): <span class="tag">54–60 %</span> · <strong>Convección + conducción</strong>: <span class="tag">≈ 25 %</span> · <strong>Evaporación del sudor</strong>: <span class="tag">≈ 7 %</span> · <strong>Respiración</strong>: <span class="tag">≈ 14 %</span>.</p>
+          <p>Total en reposo: ≈ <span class="tag">1,5 kcal/min</span>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🏃</span> Durante ejercicio intenso</div>
+        <div class="card-body">
+          <p>La pérdida sube a ≈ <span class="tag">15 kcal/min</span>. La radiación se mantiene (0,8 kcal/min, pero solo ≈ 5 % del total); la convección pasa a 2,2 (15 %); <strong>el sudor domina: 12 mL/min ≈ 80 %</strong>.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-17">Los modos de pérdida son física pura; la biología solo modula sus magnitudes (vasodilatación, sudor, ropa). Mueve el deslizador de actividad en el canvas: en reposo domina la radiación; al correr, el sudor se lleva el 80 %.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-loss" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">modos</span>
+        <label>actividad <input type="range" id="ls_f" min="0" max="1" step="0.01" value="0" oninput="drawLoss()"> <span id="ls_fv">reposo</span></label>
+        <span class="readout" id="ls_out">total ≈ 1,5 kcal/min · radiación domina</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="18" data-module="7">
+  <div class="module-header">
+    <span class="mnum">6.6</span>
+    <span class="mtitle">Pérdida por radiación</span>
+    <span class="msub">La ley de Stefan–Boltzmann y el pico de Planck</span>
+    <span class="mslide-count">18 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🌅</span> Radiación de cuerpo negro</div>
+        <div class="card-body">
+          <p>El flujo total emitido depende de \(T^4\) (ley de Stefan):</p>
+          <div class="eq-block">\[ R = \varepsilon\sigma T^4 \qquad \sigma = 5{,}67\times 10^{-8}\ \text{W/m}^2\text{-K}^4 \qquad \text{(eq. 6.39)} \]</div>
+          <p>La emisión de la piel a 34 °C (307 K) es de <span class="tag">505 W/m²</span> (ε = 1). El pico del espectro cae en la <strong>ley de Wien</strong>:</p>
+          <div class="eq-block">\[ \lambda_{\text{pico}} (\mu\text{m}) = \frac{2898}{T (\text{K})} \qquad \text{(eq. 6.38)} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🧮</span> El balance radiativo (eqs. 6.41–6.44)</div>
+        <div class="card-body">
+          <p>La piel emite <span class="tag">932 W</span> (\(1{,}85\ \text{m}^2\) × 505) y recibe de la habitación a 24 °C (297 K) <span class="tag">816 W</span>:</p>
+          <div class="eq-block">\[ -\Big(\frac{dQ}{dt}\Big)_r = 932 - 816 = 116\ \text{W} \]</div>
+          <p>Linealizada (eq. 6.53): \(-\dot{Q}_r \approx h_r A\,(T_{\text{skin}} - T_{\text{room}})\) con <span class="tag">\(h_r = 5{,}6\) kcal/m²-h-°C</span>. El cuerpo humano y las paredes irradian en el <strong>infrarrojo medio (≈ 10 μm)</strong>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🪞</span> Emisividad · Tabla 6.38</div>
+        <div class="card-body">
+          <p>La <strong>piel humana</strong> tiene ε ≈ <span class="tag">0,95–0,99</span> en infrarrojo; el papel de aluminio ≈ <span class="tag">0,08</span> (por eso la manta térmica refleja). Al aire libre se suman el sol, el cielo y el suelo (Tablas 6.39–6.41).</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-18">El pico de Planck a 300 K está en 10 μm: la termografía «ve» esa banda. La red a T⁴ explica por qué una pared a 0 °C enfría más que el aire a 24 °C: la potencia es muy sensible a la temperatura absoluta.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-rad" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">radiación</span>
+        <label>T ambiente <input type="range" id="ra_t" min="0" max="40" step="1" value="24" oninput="drawRad()"> <span id="ra_tv">24 °C</span></label>
+        <span class="readout" id="ra_out">pérdida neta ≈ 116 W</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="19" data-module="7">
+  <div class="module-header">
+    <span class="mnum">6.6</span>
+    <span class="mtitle">Convección, conducción y la ropa</span>
+    <span class="msub">El viento, el Clo y el intercambio a contracorriente</span>
+    <span class="mslide-count">19 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">💨</span> Convección y sensación térmica</div>
+        <div class="card-body">
+          <p>En aire quieto y ropa normal, <span class="tag">\(h_c \approx 2{,}3\) kcal/m²-h-°C</span> (menor que \(h_r\)). Desnudo: <span class="tag">\(h_c = 8{,}3\sqrt{w}\)</span> W/m²-°C con \(w\) en m/s (eq. 6.62). El viento aumenta \(h_c\): de ahí el <strong>wind chill</strong> (eq. 6.64), la temperatura «que se siente».</p>
+          <div class="eq-block">\[ T_{\text{wc}} = 13{,}12 + 0{,}6215\,T - 11{,}37\,w^{0{,}16} + 0{,}3965\,T\,w^{0{,}16} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🧥</span> Aislamiento y Clo · Tabla 6.44</div>
+        <div class="card-body">
+          <p>El <strong>aislamiento</strong> \(I = 1/h_t = d/K\). <span class="tag">1 Clo</span> = 0,155 m²-°C/W (traje normal). Desnudo = 0 Clo; trabajo ligero ≈ 0,6; traje polar ≈ 3–4. La ropa humana aísla ≈ <span class="tag">0,25 °C-m²/W por cm</span>.</p>
+          <p>Conducción por el brazo en agua a 4 °C (2 min): ≈ <span class="tag">118 W → 3,4 kcal</span>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🫀</span> Intercambio a contracorriente</div>
+        <div class="card-body">
+          <p>En las extremidades, arterias y venas cercanas intercambian calor: la sangre venosa (fría) recibe calor de la arterial (caliente) <strong>antes</strong> de llegar a la piel → se pierde menos. Con frío se usan venas profundas (ahorrar); con calor, superficiales (disipar). Esto da manos frías en invierno y protege los testículos.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-19">Dos controles del cuerpo sobre la convección: la ropa (la «capa» que decides) y el flujo sanguíneo superficial (vasodilatación/constricción). En el canvas combina viento y Clo para ver quién gana la batalla térmica.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-conv" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">convección</span>
+        <label>viento <input type="range" id="cv_w" min="0" max="10" step="0.5" value="2" oninput="drawConv()"> <span id="cv_wv">2 m/s</span></label>
+        <label>ropa <input type="range" id="cv_c" min="0" max="4" step="0.1" value="1" oninput="drawConv()"> <span id="cv_cv">1,0 Clo</span></label>
+        <span class="readout" id="cv_out">h_c ≈ 11,7 W/m²-°C</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="20" data-module="7">
+  <div class="module-header">
+    <span class="mnum">6.6</span>
+    <span class="mtitle">Evaporación: sudor y respiración</span>
+    <span class="msub">El modo de emergencia para el calor</span>
+    <span class="mslide-count">20 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">💧</span> El calor de vaporización</div>
+        <div class="card-body">
+          <p>Evaporar <strong>1 L de agua</strong> cuesta <span class="tag">540 kcal</span>. Sudar solo enfría si el sudor <em>se evapora</em> (secarse con la toalla no enfría). En reposo, ≈ <span class="tag">7 kcal/h</span>; al correr, se pueden evaporar <strong>más de 1 L/h</strong>. Tenemos <span class="tag">3–10 millones</span> de glándulas sudoríparas.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🫁</span> La respiración (eq. 6.70)</div>
+        <div class="card-body">
+          <p>Inspiramos aire frío y seco; exhalamos aire caliente y saturado. Dos términos: calentar el aire inspirado y evaporar agua en los pulmones (con \(c_{p,\text{air}} = 2{,}4\times 10^{-4}\) kcal/g-°C y \(H_{\text{evap}} = 0{,}54\) kcal/g).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🥵</span> El índice de calor</div>
+        <div class="card-body">
+          <p>A 32 °C se <em>siente</em> 35 °C con 50 % de humedad, 43 °C con 75 % y <span class="tag">56 °C con 100 %</span>: la humedad frena la evaporación. A partir de ≈ <span class="tag">35 °C de bulbo húmedo</span> el cuerpo ya no se puede enfriar solo evaporando. Advertencias: precaución 27–32 °C, peligro extremo &gt; 54 °C.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-20">El sudor es la «válvula de escape» de mayor capacidad: 12 mL/min durante ejercicio intenso. La humedad relativa es el enemigo: a 100 % de HR la evaporación se detiene y el cuerpo hierve por dentro. Mueve la humedad en el canvas.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-sweat" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">evaporación</span>
+        <label>humedad <input type="range" id="sw_h" min="0" max="100" step="5" value="50" oninput="drawSweat()"> <span id="sw_hv">50 %</span></label>
+        <button id="sw_play" onclick="toggleSweat()">▶</button>
+        <span class="readout" id="sw_out">32 °C + 50 % HR → se siente 35 °C</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M8 · TEMPERATURA CORPORAL ═══════════ -->
+<div class="slide" data-slide="21" data-module="8">
+  <div class="module-header">
+    <span class="mnum">6.7</span>
+    <span class="mtitle">La temperatura corporal y su control</span>
+    <span class="msub">36,5–37,5 °C, sin importar el entorno</span>
+    <span class="mslide-count">21 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🌡️</span> Valores normales</div>
+        <div class="card-body">
+          <p>Núcleo: <span class="tag">36,5–37,5 °C</span>; sube ≈ 0,5 °C durante la vigilia. El recto marca ≈ <span class="tag">0,4 °C más</span> que la boca. La anestesia baja ≈ 1 °C. La piel está a ≈ 34 °C (307 K); el núcleo a 37 °C (310 K).</p>
+          <p>Temperatura promedio: <span class="tag">\(T_{\text{av}} = 0{,}80\,T_{\text{core}} + 0{,}20\,T_{\text{skin}}\)</span>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🛡️</span> El cuerpo es muy bueno regulando</div>
+        <div class="card-body">
+          <p>Desnudo, mantiene el núcleo entre 36 y 38 °C con ambientes de <span class="tag">21 a 54 °C</span> en aire seco (Fig. 6.20). Con ejercicio:</p>
+          <div class="eq-block">\[ T_{\text{core}}\ (^\circ\text{C}) = 36{,}5 + 3{,}0 \times \frac{\text{consumo de O}_2}{\text{consumo máx.}} \qquad \text{(eq. 6.71)} \]</div>
+          <p>Cada <span class="tag">+1 °C</span> de temperatura corporal aumenta la producción de calor ≈ 13 %.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🚨</span> Los límites</div>
+        <div class="card-body">
+          <p>Exposición limitada al aire caliente y al agua fría (Figs. 6.21–6.22): cuanto mayor la desviación de la temperatura, menor el tiempo tolerable. La <strong>fibrilación ventricular</strong> aparece cuando el núcleo cae por debajo de ≈ <span class="tag">27–28 °C</span> (hipotermia).</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-21">La curva de producción de calor vs temperatura ambiente (Fig. 6.24) resume el control: abajo de la crítica \(T_c = 26\) °C se tiritando; en la termoneutral se minimiza el gasto; arriba de \(T_h\) domina la evaporación. El canvas la dibuja.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-thermo" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">termorregulación</span>
+        <label>T ambiente <input type="range" id="th_t" min="0" max="45" step="1" value="20" oninput="drawThermo()"> <span id="th_tv">20 °C</span></label>
+        <span class="readout" id="th_out">termogénesis: tiritando</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="22" data-module="8">
+  <div class="module-header">
+    <span class="mnum">6.7</span>
+    <span class="mtitle">El modelo de flujo de calor en el cuerpo</span>
+    <span class="msub">Núcleo → piel → ropa → aire</span>
+    <span class="mslide-count">22 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🧱</span> Regiones en serie · Fig. 6.26</div>
+        <div class="card-body">
+          <p>Cada región es una placa; entre dos regiones adyacentes (eq. 6.72):</p>
+          <div class="eq-block">\[ (T_1 - T_2) = -I_{12}\,\frac{1}{A}\frac{dQ}{dt} \qquad I_{12} = \frac{1}{h_{x,12}} \qquad \text{(eqs. 6.72–6.73)} \]</div>
+          <p>El aislamiento del tejido varía de <span class="tag">0,03</span> (calor) a <span class="tag">0,10 m²-°C/W</span> (frío) en adultos; en bebés es la mitad.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🧊</span> Las tres caídas de temperatura</div>
+        <div class="card-body">
+          <p>Núcleo→piel (aislamiento tisular \(I_t\), eq. 6.74); piel→ropa (\(I_c\), ropa o pelaje, eq. 6.75); ropa→aire (\(I_a\), el aire quieto, eq. 6.76). Cada caída vale \(I \times \dot{Q}/A\).</p>
+          <p>La ropa humana aísla ≈ <span class="tag">0,25 °C-m²/W por cm</span> (Tabla 6.44).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🌡️</span> Temperaturas internas · Tabla 6.45</div>
+        <div class="card-body">
+          <p>Piel <span class="tag">32–35 °C</span>, riñón 36,85, estómago/recto 37,0, cerebro y útero 37,3. Las del corazón y los pulmones coinciden en ≈ 0,1 °C. En hipotermia, el recto responde <strong>lento</strong> y puede «mentir» ~1 °C por encima del corazón.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-22">Cierre conceptual: los cuatro modos de pérdida (radiación, convección, conducción, evaporación) son <em>términos</em> de un mismo flujo \(\dot{Q}\) que cae por tres aislantes en serie. Baja la temperatura ambiente en el canvas: el gradiente se hace empinado y la piel se enfría.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-core" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">modelo en serie</span>
+        <label>T aire <input type="range" id="co_t" min="-10" max="40" step="1" value="20" oninput="drawCore()"> <span id="co_tv">20 °C</span></label>
+        <label>ropa <input type="range" id="co_c" min="0" max="4" step="0.1" value="1" oninput="drawCore()"> <span id="co_cv">1,0 Clo</span></label>
+        <span class="readout" id="co_out">T_piel ≈ 32,9 °C · q ≈ 42 W/m²</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ NAVEGACIÓN ═══════════ -->
+<nav class="nav-bar">
+  <button class="nav-btn" onclick="prevSlide()" aria-label="Anterior">‹</button>
+  <div class="nav-dots" id="navDots"></div>
+  <button class="nav-btn" onclick="nextSlide()" aria-label="Siguiente">›</button>
+  <span class="slide-counter" id="slideCounter">1 / 23</span>
+  <span class="nav-module-label" id="navModuleLabel">Inicio</span>
+</nav>
+
+<div class="canvas-tooltip" id="canvasTooltip"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   MOTOR DE PRESENTACIÓN · capítulo 6 · Física del Cuerpo Humano
+   Navegación · KaTeX · redibujado de sims
+   ═══════════════════════════════════════════════════════════ */
+'use strict';
+
+/* ── Total de diapositivas y módulos ── */
+const TOTAL = 23;
+const MODULES = [
+  {id:0, name:'Inicio',              slides:[0],                ico:'🏠'},
+  {id:1, name:'Energía · Calor',     slides:[1,2],              ico:'🔥'},
+  {id:2, name:'Combustibles',        slides:[3,4],              ico:'🍩'},
+  {id:3, name:'Almacenamiento',      slides:[5,6,7],            ico:'🔋'},
+  {id:4, name:'Tasa basal',          slides:[8,9],              ico:'💤'},
+  {id:5, name:'Locomoción',          slides:[10,11,12,13],      ico:'🏃'},
+  {id:6, name:'Trabajo · Potencia',  slides:[14,15,16],         ico:'⚙️'},
+  {id:7, name:'Pérdida de calor',    slides:[17,18,19,20],      ico:'❄️'},
+  {id:8, name:'Temperatura',         slides:[21,22],            ico:'🌡️'},
+];
+let current = 0;
+
+/* ── Texto por defecto de los apuntes (para restaurar en revisita) ── */
+const infoTexts = {};
+document.querySelectorAll('.apuntes .a-text[id]').forEach(el=>{
+  infoTexts[el.id] = el.innerHTML;
+});
+
+/* ── Navegación ── */
+function moduleOf(i){ for (const m of MODULES) if (m.slides.includes(i)) return m; return MODULES[0]; }
+
+function dots(){
+  const host = document.getElementById('navDots');
+  if (!host) return;
+  host.innerHTML = '';
+  for (let i=0;i<TOTAL;i++){
+    const b = document.createElement('button');
+    b.className = 'nav-dot';
+    if (i===0) b.classList.add('active');
+    b.title = 'Diapositiva '+(i+1);
+    b.setAttribute('aria-label','Ir a diapositiva '+(i+1));
+    b.addEventListener('click',()=>go(i));
+    host.appendChild(b);
+  }
+}
+
+function setMPills(active){
+  document.querySelectorAll('.mpill').forEach(p=>{
+    const m = (p.getAttribute('onclick')||'').match(/goModule\((\d+)\)/);
+    p.classList.toggle('active', m && +m[1]===active);
+  });
+}
+
+/* ── Pestañas de módulo en la barra superior ── */
+function buildModuleTabs(){
+  const bar = document.getElementById('moduleBar');
+  if (!bar) return;
+  MODULES.forEach(m=>{
+    if (m.id===0) return;
+    const t = document.createElement('button');
+    t.className = 'module-tab';
+    t.innerHTML = '<span class="mod-badge">'+m.id+'</span>'+m.ico+' '+m.name;
+    t.setAttribute('onclick','goModule('+m.id+')');
+    t.setAttribute('aria-label','Módulo '+m.id+': '+m.name);
+    bar.appendChild(t);
+  });
+}
+function updateTabs(id){
+  document.querySelectorAll('.module-tab').forEach(t=>{
+    const mid = (t.getAttribute('onclick')||'').match(/goModule\((\d+)\)/);
+    t.classList.toggle('active', mid && +mid[1]===id);
+  });
+}
+
+const _entranceSeen = new Set();
+function go(n){
+  if (n===undefined || isNaN(n)) return;
+  n = Math.max(0, Math.min(TOTAL-1, n));
+  // Restaurar los apuntes que las simulaciones hayan reescrito
+  document.querySelectorAll('.apuntes .a-text[id]').forEach(el=>{
+    if (infoTexts[el.id]) el.innerHTML = infoTexts[el.id];
+  });
+  document.querySelectorAll('.slide,.slide-full').forEach(s=>{
+    s.classList.toggle('active', +s.dataset.slide===n);
+  });
+  // Primera visita: reveal. Revisita: instantáneo (no insistir).
+  const cur = document.querySelector('.slide.active,.slide-full.active');
+  if (cur) {
+    if (!_entranceSeen.has(n)) _entranceSeen.add(n);
+    else cur.classList.add('instant');
+  }
+  current = n;
+  document.querySelectorAll('#navDots .nav-dot').forEach((d,i)=>d.classList.toggle('active', i===n));
+  const sc = document.getElementById('slideCounter');
+  if (sc) sc.textContent = (n+1)+' / '+TOTAL;
+  const ml = document.getElementById('navModuleLabel');
+  if (ml) ml.textContent = moduleOf(n).name;
+  const mid = moduleOf(n).id;
+  setMPills(mid);
+  updateTabs(mid);
+  requestAnimationFrame(()=>{ redrawSlide(n); });
+  // La slide recién activada (display:none→flex) puede no tener layout aún
+  // cuando corre el rAF; el guard `!cv.clientWidth` corta y quedaría sin
+  // dibujar. Reintento tras asentar layout, solo si seguimos en esta slide.
+  setTimeout(()=>{ if (current===n) redrawSlide(n); }, 120);
+}
+window.go = go;
+
+function nextSlide(){ go(current+1); }
+function prevSlide(){ go(current-1); }
+function goModule(id){ const m = MODULES.find(x=>x.id===id); if (m) go(m.slides[0]); }
+window.nextSlide = nextSlide;
+window.prevSlide = prevSlide;
+window.goModule = goModule;
+
+/* ── Redibujar la simulación activa ── */
+function redrawSlide(n){
+  const fns = {
+    1: ()=>window.drawBalance && drawBalance(),
+    2: ()=>window.drawHeat && drawHeat(),
+    3: ()=>window.drawOx && drawOx(),
+    4: ()=>window.drawDonut && drawDonut(),
+    5: ()=>window.drawAtp && drawAtp(),
+    6: ()=>window.drawSystems && drawSystems(),
+    7: ()=>window.drawReserves && drawReserves(),
+    8: ()=>window.drawOrgans && drawOrgans(),
+    9: ()=>window.drawKleiber && drawKleiber(),
+    10: ()=>window.drawAct && drawAct(),
+    11: ()=>window.drawLocom && drawLocom(),
+    12: ()=>window.drawBruce && drawBruce(),
+    13: ()=>window.drawMet && drawMet(),
+    14: ()=>window.drawEff && drawEff(),
+    15: ()=>window.drawPower && drawPower(),
+    16: ()=>window.drawBurn && drawBurn(),
+    17: ()=>window.drawLoss && drawLoss(),
+    18: ()=>window.drawRad && drawRad(),
+    19: ()=>window.drawConv && drawConv(),
+    20: ()=>window.drawSweat && drawSweat(),
+    21: ()=>window.drawThermo && drawThermo(),
+    22: ()=>window.drawCore && drawCore(),
+  };
+  if (fns[n]) fns[n]();
+}
+window.redrawSlide = redrawSlide;
+
+/* ── Teclado ── */
+document.addEventListener('keydown', e=>{
+  if (/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return;
+  if (e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){ e.preventDefault(); nextSlide(); }
+  else if (e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); prevSlide(); }
+  else if (e.key==='Home'){ e.preventDefault(); go(0); }
+  else if (e.key==='End'){ e.preventDefault(); go(TOTAL-1); }
+});
+
+/* ── Motor de amortiguación frame-rate independent ── */
+window.__damp = function(v, t, r, dt) { return v + (t - v) * (1 - Math.exp(-r * dt)); };
+
+/* ═══════════════════════════════════════════════════════════
+   HELPERS ANATÓMICOS 2D (window.AB) — heredados de los capítulos 1–5
+   ═══════════════════════════════════════════════════════════ */
+window.AB = (function(){
+  const PAL = {
+    paper:'#f5f0e4', card:'#fbf8f0', ink:'#232c36', ink2:'#43505c', ink3:'#6b7885',
+    bone:'#cfc4ae', boneEdge:'#b6a67f', boneDark:'#9b8a64',
+    muscle:'#c14b4b', muscleEdge:'#a92a1e',
+    tendon:'#e8d8c8', skin:'#e9c49f', skinEdge:'#d9a77c',
+    teal:'#0d6e64', tealLight:'#3aa89c', amber:'#9a5b00', blood:'#a92a1e',
+    good:'#2d7d4f', warn:'#b86a1e',
+  };
+  function setup(cv, w, h){
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = Math.max(1, Math.round(w*dpr));
+    cv.height = Math.max(1, Math.round(h*dpr));
+    cv.style.width = w+'px'; cv.style.height = h+'px';
+    const ctx = cv.getContext('2d');
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,w,h);
+    ctx.lineCap='round'; ctx.lineJoin='round';
+    return ctx;
+  }
+  function fmt(x, d){
+    d = d===undefined?1:d;
+    let s = Number(x).toFixed(d).replace(/\.0+$/,'').replace('.',',');
+    if (s===''||s==='-') s='0';
+    return s;
+  }
+  function text(ctx, s, x, y, o){
+    o = o||{};
+    ctx.font = (o.weight?o.weight+' ':'')+(o.size?o.size+'px ':'13px ')+'Karla, sans-serif';
+    ctx.fillStyle = o.color || PAL.ink;
+    ctx.textAlign = o.align || 'center';
+    ctx.textBaseline = o.base || 'middle';
+    ctx.fillText(s, x, y);
+  }
+  function arrow(ctx, x0,y0, x1,y1, o){
+    o = o||{};
+    const head = o.head===undefined?8:o.head;
+    const ang = Math.atan2(y1-y0, x1-x0);
+    ctx.strokeStyle = o.color||PAL.teal; ctx.fillStyle = o.color||PAL.teal;
+    ctx.lineWidth = o.width||2.5;
+    ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x1,y1);
+    ctx.lineTo(x1-head*Math.cos(ang-0.45), y1-head*Math.sin(ang-0.45));
+    ctx.lineTo(x1-head*Math.cos(ang+0.45), y1-head*Math.sin(ang+0.45));
+    ctx.closePath(); ctx.fill();
+  }
+  function dashed(ctx, x0,y0,x1,y1, o){
+    o = o||{};
+    ctx.strokeStyle = o.color||PAL.ink3; ctx.lineWidth = o.width||1.2;
+    ctx.setLineDash([4,4]); ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke(); ctx.setLineDash([]);
+  }
+  function bone(ctx, x0,y0,x1,y1, o){
+    o = o||{};
+    const w = o.width||10;
+    ctx.strokeStyle = o.edge||PAL.boneEdge; ctx.lineWidth = w;
+    ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+    ctx.strokeStyle = o.fill||PAL.bone; ctx.lineWidth = w-3;
+    ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+    if (o.joint!==false){ joint(ctx, x0,y0, w/2, {r:Math.max(2,w/2-3)}); }
+    if (o.jointEnd){ joint(ctx, x1,y1, w/2, {r:Math.max(2,w/2-3)}); }
+  }
+  function joint(ctx, x,y,r, o){
+    o = o||{};
+    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2);
+    ctx.fillStyle = o.fill||'#f5f0e4'; ctx.fill();
+    ctx.lineWidth = o.lw||2.2; ctx.strokeStyle = o.color||PAL.teal; ctx.stroke();
+    ctx.beginPath(); ctx.arc(x,y,Math.max(1.5,r*0.38),0,Math.PI*2);
+    ctx.fillStyle = o.color||PAL.teal; ctx.fill();
+  }
+  function muscle(ctx, ax,ay,bx,by, o){
+    o = o||{};
+    const w0 = o.w0||9, w1 = o.w1||4;
+    const ang = Math.atan2(by-ay, bx-ax);
+    const perp = ang + Math.PI/2;
+    const dx = Math.cos(perp), dy = Math.sin(perp);
+    const cx = (ax+bx)/2, cy = (ay+by)/2;
+    const bow = o.bow||0;
+    ctx.beginPath();
+    ctx.moveTo(ax + dx*w0/2, ay + dy*w0/2);
+    ctx.quadraticCurveTo(cx + dx*(bow+(w0+w1)/4), cy + dy*(bow+(w0+w1)/4), bx + dx*w1/2, by + dy*w1/2);
+    ctx.quadraticCurveTo(cx - dx*(w0+w1)/4, cy - dy*(w0+w1)/4, ax - dx*w0/2, ay - dy*w0/2);
+    ctx.closePath();
+    ctx.fillStyle = o.fill||PAL.muscle; ctx.fill();
+    ctx.lineWidth = o.lw||1.5; ctx.strokeStyle = o.edge||PAL.muscleEdge; ctx.stroke();
+  }
+  function tendon(ctx, ax,ay,bx,by, o){
+    o = o||{};
+    const w = o.width||3.5;
+    const ang = Math.atan2(by-ay,bx-ax);
+    const px = Math.cos(ang+Math.PI/2), py = Math.sin(ang+Math.PI/2);
+    ctx.beginPath();
+    ctx.moveTo(ax+px*w/2, ay+py*w/2); ctx.lineTo(bx+px*w/2, by+py*w/2);
+    ctx.lineTo(bx-px*w/2, by-py*w/2); ctx.lineTo(ax-px*w/2, ay-py*w/2);
+    ctx.closePath();
+    ctx.fillStyle = o.fill||PAL.tendon; ctx.fill();
+    ctx.lineWidth = 1; ctx.strokeStyle = o.edge||'#c8b49a'; ctx.stroke();
+  }
+  function limbSkin(ctx, x0,y0,x1,y1, w, o){
+    o = o||{};
+    const ang = Math.atan2(y1-y0,x1-x0);
+    const px = Math.cos(ang+Math.PI/2), py = Math.sin(ang+Math.PI/2);
+    ctx.beginPath();
+    ctx.moveTo(x0+px*w/2,y0+py*w/2); ctx.lineTo(x1+px*w/2,y1+py*w/2);
+    ctx.arc(x1,y1,w/2,ang-Math.PI/2,ang+Math.PI/2);
+    ctx.lineTo(x0-px*w/2,y0-py*w/2);
+    ctx.arc(x0,y0,w/2,ang+Math.PI/2,ang+Math.PI*1.5);
+    ctx.closePath();
+    ctx.fillStyle = o.fill||PAL.skin; ctx.fill();
+    ctx.lineWidth = o.lw||1.4; ctx.strokeStyle = o.edge||PAL.skinEdge; ctx.stroke();
+  }
+  function hand(ctx, x,y, r, o){
+    o = o||{};
+    ctx.fillStyle = o.fill||PAL.skin; ctx.strokeStyle = o.edge||PAL.skinEdge; ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    for (let i=-2;i<=2;i++){
+      ctx.beginPath(); ctx.arc(x+i*r*0.42, y-r*0.55, r*0.26, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+    }
+  }
+  function foot(ctx, x,y, ang, o){
+    o = o||{};
+    const L = o.len||54, h = o.h||20;
+    ctx.save(); ctx.translate(x,y); ctx.rotate(ang);
+    ctx.beginPath();
+    ctx.moveTo(-L*0.35, -h*0.25);
+    ctx.quadraticCurveTo(-L*0.5, h*0.1, -L*0.2, h*0.42);
+    ctx.quadraticCurveTo(L*0.2, h*0.55, L*0.62, h*0.3);
+    ctx.quadraticCurveTo(L*0.75, -h*0.15, L*0.55, -h*0.35);
+    ctx.quadraticCurveTo(0, -h*0.5, -L*0.35, -h*0.25);
+    ctx.closePath();
+    ctx.fillStyle = o.fill||PAL.skin; ctx.fill();
+    ctx.lineWidth = 1.4; ctx.strokeStyle = o.edge||PAL.skinEdge; ctx.stroke();
+    ctx.restore();
+  }
+  function triangle(ctx, x, y, size, o){
+    o = o||{};
+    ctx.beginPath(); ctx.moveTo(x, y-size*0.5); ctx.lineTo(x-size*0.5, y+size*0.5); ctx.lineTo(x+size*0.5, y+size*0.5); ctx.closePath();
+    ctx.fillStyle = o.color||PAL.amber; ctx.fill();
+  }
+  return {PAL, setup, fmt, text, arrow, dashed, bone, joint, muscle, tendon, limbSkin, hand, foot, triangle};
+})();
+const fmt = window.AB.fmt;
+
+function el(id){ return document.getElementById(id); }
+function num(id){ const e = el(id); return e ? parseFloat(e.value) : 0; }
+
+/* ── Formato español de miles (punto) con decimal (coma) ── */
+function espan(x, d){
+  d=d===undefined?0:d;
+  let s=Number(x).toFixed(d), neg=s.startsWith('-');
+  if(neg) s=s.slice(1);
+  const parts=s.split('.'), ip=parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+  let out=ip;
+  if(parts.length>1 && parts[1]!=='') out+=','+parts[1];
+  return (neg?'-':'')+out;
+}
+
+/* ── Estado global de las simulaciones animadas ── */
+window.__oxPlaying=false; window.__oxT=0;
+window.__dnPlaying=false; window.__dnT=0;
+window.__atPlaying=false; window.__atT=0;
+window.__syPlaying=false; window.__syT=0;
+window.__orPlaying=false; window.__orT=0;
+window.__efPlaying=false; window.__efT=0;
+window.__bnPlaying=false; window.__bnT=0;
+window.__swPlaying=false; window.__swT=0;
+
+/* ═══════════════════════════════════════════════════════════
+   S1 · Balance energético del cuerpo
+   ═══════════════════════════════════════════════════════════ */
+function drawBalance(){
+  const cv=el('sim-balance'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const wf=num('bl_w')||20;
+  const wv=el('bl_wv'); if (wv) wv.textContent=wf+' %';
+  const bx=w*0.12, bw=w*0.76, by=h*0.20, bh=h*0.30;
+  // entrada metabólica
+  ctx.fillStyle=AB.PAL.teal; ctx.fillRect(bx,by,bw,bh);
+  AB.text(ctx,'Q_met · metabolismo (100 %)', bx+bw/2, by+bh/2, {size:10,weight:'700',color:'#fbf8f0'});
+  AB.text(ctx,'Q_met', bx+bw/2, by-14, {size:9,weight:'700',color:AB.PAL.teal});
+  // desglose
+  const y2=h*0.60, b2h=h*0.26;
+  const wf2=bw*wf/100, hf2=bw-wf2;
+  ctx.fillStyle=AB.PAL.teal; ctx.fillRect(bx,y2,wf2,b2h);
+  ctx.fillStyle=AB.PAL.blood; ctx.fillRect(bx+wf2,y2,hf2,b2h);
+  AB.text(ctx,'W · trabajo', bx+wf2/2, y2+b2h/2, {size:9,weight:'700',color:'#fbf8f0'});
+  AB.text(ctx,'Q_loss · calor', bx+wf2+hf2/2, y2+b2h/2, {size:9,weight:'700',color:'#fbf8f0'});
+  AB.text(ctx,'trabajo '+wf+' %', bx-8, y2+b2h/2, {size:8,color:AB.PAL.ink2,align:'right'});
+  AB.text(ctx,'calor '+(100-wf)+' %', bx-8, y2+b2h+bh*0.12, {size:8,color:AB.PAL.ink2,align:'right'});
+  AB.text(ctx,'ΔU = Q_met − Q_loss − W = 0 (estado estacionario)', w/2, h*0.94, {size:9,weight:'700',color:AB.PAL.ink});
+  const out=el('bl_out');
+  if (out) out.textContent='W = '+wf+' % · calor = '+(100-wf)+' %';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S2 · Conducción: dos placas y un aislante
+   ═══════════════════════════════════════════════════════════ */
+function drawHeat(){
+  const cv=el('sim-heat'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const K=parseFloat(el('he_mat')?el('he_mat').value:0.19);
+  const d=Math.max(1,num('he_d')||3);
+  const dv=el('he_dv'); if (dv) dv.textContent=espan(d,0)+' mm';
+  const TH=34, TC=0;
+  const flux=K*TH/(d/1000); // W/m²
+  // placas
+  const x1=w*0.16, x2=w*0.84;
+  const grad=ctx.createLinearGradient(x1,0,x2,0);
+  grad.addColorStop(0,AB.PAL.blood); grad.addColorStop(1,'#5b93a8');
+  ctx.fillStyle=grad; ctx.fillRect(x1,h*0.24,x2-x1,h*0.34);
+  ctx.fillStyle=AB.PAL.ink3;
+  ctx.fillRect(x1,h*0.24,6,h*0.34);
+  ctx.fillRect(x2-6,h*0.24,6,h*0.34);
+  // flecha de flujo
+  const arrowW=Math.min(70, 6+Math.log10(1+flux)*9);
+  AB.arrow(ctx, x1+20, h*0.62, x1+20+arrowW, h*0.62, {color:AB.PAL.teal,width:3});
+  AB.text(ctx,'flujo de calor', x1+20+arrowW/2, h*0.62+16, {size:8,color:AB.PAL.teal});
+  AB.text(ctx,'T_caliente = 34 °C (piel)', x1, h*0.20, {size:8,color:AB.PAL.blood});
+  AB.text(ctx,'T_frío = 0 °C', x2, h*0.20, {size:8,color:'#5b93a8'});
+  AB.text(ctx,'Q/A = K·ΔT/d = '+espan(flux,0)+' W/m²', w/2, h*0.82, {size:11,weight:'700',color:AB.PAL.ink});
+  AB.text(ctx,'K = '+espan(K,4)+' W/m-°C · grosor d = '+espan(d,0)+' mm', w/2, h*0.90, {size:8,color:AB.PAL.ink3});
+  AB.text(ctx,'grasa 3 mm: ~2000 W/m² · aire 3 mm: ~100 W/m²', w/2, h*0.965, {size:7,color:AB.PAL.ink3});
+  const out=el('he_out');
+  if (out) out.textContent='Q/A ≈ '+espan(flux,0)+' W/m²';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S3 · Oxidación de glucosa / palmítico
+   ═══════════════════════════════════════════════════════════ */
+function toggleOx(){
+  window.__oxPlaying=!window.__oxPlaying;
+  if (window.__oxPlaying) window.__oxT=0;
+  const b=el('ox_play'); if (b) b.textContent=window.__oxPlaying?'⏸':'▶';
+  drawOx();
+}
+function drawOx(){
+  const cv=el('sim-ox'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const fuel=el('ox_fuel')?el('ox_fuel').value:'glucosa';
+  const D=fuel==='palmitico'
+    ? {kcal:2397, perG:9.3, rer:0.7, o2:23, co2:16, f1:'C₁₆H₃₂O₂', f2:'+ 23 O₂', f3:'16 CO₂ + 16 H₂O', kcalL:'4,70'}
+    : {kcal:686, perG:3.8, rer:1.0, o2:6, co2:6, f1:'C₆H₁₂O₆', f2:'+ 6 O₂', f3:'6 CO₂ + 6 H₂O', kcalL:'5,05'};
+  const ph=(window.__oxT||0)%1;
+  // línea de reacción
+  const yR=h*0.22;
+  AB.text(ctx,D.f1, w*0.18, yR, {size:12,weight:'700',color:AB.PAL.ink});
+  AB.text(ctx,D.f2, w*0.34, yR, {size:11,color:AB.PAL.teal});
+  AB.text(ctx,'→', w*0.47, yR, {size:12,weight:'700',color:AB.PAL.ink3});
+  AB.text(ctx,D.f3, w*0.60, yR, {size:11,color:AB.PAL.ink3});
+  AB.text(ctx,'+ '+espan(D.kcal,0)+' kcal', w*0.79, yR, {size:12,weight:'700',color:AB.PAL.blood});
+  // moléculas animadas: O2 → productos
+  const n=D.o2;
+  const lx=w*0.20, rx=w*0.78;
+  for (let i=0;i<n;i++){
+    const t=((ph*2+i/n)%1);
+    const x=lx+(rx-lx)*Math.min(1,t);
+    const yy=h*0.40+(i%2?14:-14);
+    ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.arc(x,yy,7,0,7); ctx.stroke();
+    AB.text(ctx,'O₂', x, yy, {size:7,color:AB.PAL.teal});
+  }
+  for (let i=0;i<D.co2;i++){
+    const t=Math.max(0,((ph*2+i/n-0.5)));
+    const x=lx+(rx-lx)*Math.min(1,t);
+    const yy=h*0.58+(i%2?14:-14);
+    ctx.strokeStyle=AB.PAL.ink3; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.arc(x,yy,7,0,7); ctx.stroke();
+    AB.text(ctx,'CO₂', x, yy, {size:7,color:AB.PAL.ink3});
+  }
+  AB.text(ctx,'O₂ consumido', (lx+rx)/2, h*0.40-24, {size:8,color:AB.PAL.teal});
+  AB.text(ctx,'CO₂ producido', (lx+rx)/2, h*0.58-24, {size:8,color:AB.PAL.ink3});
+  // panel de densidad energética
+  const by=h*0.70, bw=w*0.74, bx=w*0.13;
+  const maxPerG=9.3;
+  AB.text(ctx,'densidad energética (kcal/g)', bx+bw/2, by-12, {size:9,weight:'700',color:AB.PAL.ink});
+  const rows=[['glucosa',3.8,AB.PAL.teal],['palmítico',9.3,AB.PAL.blood]];
+  rows.forEach((r,i)=>{
+    const y=by+i*30;
+    ctx.fillStyle=r[2]; ctx.fillRect(bx,y,bw*r[1]/maxPerG,18);
+    AB.text(ctx,r[0]+' · '+espan(r[1],1)+' kcal/g', bx+bw*r[1]/maxPerG+8, y+9, {size:8,color:r[2],align:'left'});
+  });
+  AB.text(ctx,'RER: glucosa 1,0 · palmítico 0,7 · proteína 0,8', w/2, by+74, {size:8,color:AB.PAL.ink3});
+  const out=el('ox_out');
+  if (out) out.textContent=(fuel==='palmitico'?'C₁₆H₃₂O₂ + 23 O₂ → 16 CO₂ + 16 H₂O + 2397 kcal':'C₆H₁₂O₆ + 6 O₂ → 6 CO₂ + 6 H₂O + 686 kcal');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S4 · Desglose del donut estándar
+   ═══════════════════════════════════════════════════════════ */
+function toggleDonut(){
+  window.__dnPlaying=!window.__dnPlaying;
+  if (window.__dnPlaying) window.__dnT=0;
+  const b=el('dn_play'); if (b) b.textContent=window.__dnPlaying?'⏸':'▶';
+  drawDonut();
+}
+function drawDonut(){
+  const cv=el('sim-donut'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const data=[['grasa',18,162,AB.PAL.amber],['carbohidrato',29,116,AB.PAL.teal],['proteína',2,8,AB.PAL.blood]];
+  const active=Math.floor((window.__dnT||0)*1.5)%3;
+  // donut dibujado como aro con cuñas
+  const cx=w*0.22, cy=h*0.34, R=Math.min(58,h*0.22), r=R*0.5;
+  let a0=-Math.PI/2;
+  data.forEach((d,i)=>{
+    const frac=d[2]/286;
+    const a1=a0+frac*2*Math.PI;
+    ctx.beginPath();
+    ctx.arc(cx,cy,R,a0,a1);
+    ctx.arc(cx,cy,r,a1,a0,true);
+    ctx.closePath();
+    ctx.fillStyle=i===active?d[3]: (i===active-0.5?d[3]:'rgba(107,120,133,.25)');
+    if (i===active) ctx.fillStyle=d[3];
+    else ctx.fillStyle='rgba(107,120,133,.22)';
+    ctx.fill();
+    ctx.strokeStyle='#f5f0e4'; ctx.lineWidth=2; ctx.stroke();
+    a0=a1;
+  });
+  AB.text(ctx,'286 ≈ 280 kcal', cx, cy, {size:10,weight:'700',color:AB.PAL.ink});
+  // barras
+  const bx=w*0.52, bw=w*0.42, by=h*0.12;
+  data.forEach((d,i)=>{
+    const y=by+i*26;
+    ctx.fillStyle=i===active?d[3]:AB.PAL.ink3;
+    ctx.fillRect(bx,y,bw*d[2]/162,16);
+    AB.text(ctx,d[0]+' '+d[1]+' g · '+d[2]+' kcal', bx+bw+6, y+8, {size:8,color:i===active?d[3]:AB.PAL.ink2,align:'left'});
+  });
+  const pct=(data[active][2]/286*100);
+  AB.text(ctx,data[active][0]+': '+espan(pct,1)+' % de las kcal', bx, by+82, {size:9,weight:'700',color:data[active][3],align:'left'});
+  AB.text(ctx,'18×9 + 29×4 + 2×4 = 286', w/2, h*0.94, {size:9,weight:'700',color:AB.PAL.ink});
+  const out=el('dn_out');
+  if (out) out.textContent=data[active][0]+' '+data[active][1]+' g → '+data[active][2]+' kcal';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S5 · Hidrólisis del ATP
+   ═══════════════════════════════════════════════════════════ */
+function toggleAtp(){
+  window.__atPlaying=!window.__atPlaying;
+  if (window.__atPlaying) window.__atT=0;
+  const b=el('at_play'); if (b) b.textContent=window.__atPlaying?'⏸':'▶';
+  drawAtp();
+}
+function drawAtp(){
+  const cv=el('sim-atp'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const G=num('at_g')||14;
+  const gv=el('at_gv'); if (gv) gv.textContent=espan(G,1);
+  const ph=(window.__atT||0)%1;
+  const split=ph>0.45;
+  const cx=w*0.34, cy=h*0.34;
+  // adenina + ribosa
+  ctx.fillStyle=AB.PAL.sagittal; ctx.fillRect(cx-52,cy-14,26,28);
+  AB.text(ctx,'A', cx-39, cy, {size:9,color:'#fbf8f0'});
+  ctx.fillStyle=AB.PAL.ink3; ctx.fillRect(cx-26,cy-9,24,18);
+  AB.text(ctx,'Ribosa', cx-14, cy, {size:8,color:'#fbf8f0'});
+  // fosfatos
+  const px0=cx+8;
+  const Px=[px0,px0+26,px0+52];
+  Px.forEach((px,i)=>{
+    const isLast=i===2;
+    const x=split&&isLast?px+40:px;
+    ctx.fillStyle=isLast?(split?AB.PAL.blood:AB.PAL.amber):AB.PAL.teal;
+    ctx.beginPath(); ctx.arc(x,cy,12,0,7); ctx.fill();
+    ctx.strokeStyle=AB.PAL.ink3; ctx.lineWidth=1.4; ctx.stroke();
+    AB.text(ctx,'P', x, cy, {size:9,weight:'700',color:'#fbf8f0'});
+    if (i<2){ ctx.strokeStyle=AB.PAL.ink3; ctx.lineWidth=2.4; ctx.beginPath(); ctx.moveTo(x+12,cy); ctx.lineTo(Px[i+1]-12-(i===1&&split?40:0),cy); ctx.stroke(); }
+  });
+  // agua entrando
+  const hx=split?w*0.66:w*0.55, hy=cy-44;
+  AB.text(ctx,'H₂O', hx, hy, {size:9,color:AB.PAL.teal});
+  AB.arrow(ctx,hx-14,hy+2,hx-14,hy-14,{color:AB.PAL.teal,width:2});
+  if (split){
+    AB.text(ctx,'+ energía', w*0.66, cy+34, {size:11,weight:'700',color:AB.PAL.blood});
+    const glow=Math.min(22, G*1.5);
+    ctx.fillStyle='rgba(169,42,30,.15)';
+    ctx.beginPath(); ctx.arc(w*0.66,cy+18,glow,0,7); ctx.fill();
+    AB.text(ctx,'ΔG = '+espan(G,1)+' kcal/mol', w/2, h*0.70, {size:11,weight:'700',color:AB.PAL.blood});
+  } else {
+    AB.text(ctx,'ATP → ADP + Pᵢ', w/2, h*0.70, {size:11,weight:'700',color:AB.PAL.teal});
+  }
+  AB.text(ctx,'7–14 kcal/mol · típico 12–14', w/2, h*0.82, {size:8,color:AB.PAL.ink3});
+  AB.text(ctx,split?'¡se suelta el tercer fosfato!':'esperando H₂O…', w/2, h*0.92, {size:8,color:AB.PAL.ink2});
+  const out=el('at_out');
+  if (out) out.textContent='ATP + H₂O → ADP + Pᵢ + '+espan(G,1)+' kcal/mol';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S6 · Sistemas de energía según la prueba
+   ═══════════════════════════════════════════════════════════ */
+function toggleSystems(){
+  window.__syPlaying=!window.__syPlaying;
+  if (window.__syPlaying) window.__syT=0;
+  const b=el('sy_play'); if (b) b.textContent=window.__syPlaying?'⏸':'▶';
+  drawSystems();
+}
+function drawSystems(){
+  const cv=el('sim-systems'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const race=el('sy_race')?el('sy_race').value:'400';
+  const RACES={
+    '100':{t:10,   name:'100 m', tw:'8 sacudidas', s:[1,0,0]},
+    '400':{t:45,   name:'400 m', tw:'600 sacudidas', s:[1,1,0]},
+    '1500':{t:210, name:'1500 m', tw:'~', s:[1,1,1]},
+    'maraton':{t:7800, name:'Maratón', tw:'∞', s:[1,1,1]},
+  };
+  const R=RACES[race]||RACES['400'];
+  const ph=(window.__syT||0)%1;
+  // perfil de tasa de ATP en el tiempo
+  const gx=w*0.12, g2=w*0.95, gy=h*0.14, g0=h*0.52;
+  const X=t=>gx+(g2-gx)*t/7800;
+  const Y=p=>g0-(g0-gy)*p/4;
+  ctx.strokeStyle=AB.PAL.ink3; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(gx,gy); ctx.lineTo(gx,g0); ctx.lineTo(g2,g0); ctx.stroke();
+  AB.text(ctx,'tasa de ATP (mol/min)', gx+4, gy+2, {size:8,color:AB.PAL.ink3,align:'left'});
+  AB.text(ctx,'tiempo desde el inicio', (gx+g2)/2, g0+14, {size:8,color:AB.PAL.ink3});
+  AB.text(ctx,'1 s', gx-4, g0+14, {size:7,color:AB.PAL.ink3});
+  AB.text(ctx,'30 min', g2-22, g0+14, {size:7,color:AB.PAL.ink3});
+  // fosfágenos: pico que decae
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2.4;
+  ctx.beginPath();
+  for (let i=0;i<=100;i++){ const t=15*i/100; const p=3.6*Math.exp(-t/4); const x=X(t),y=Y(p); i?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+  ctx.stroke();
+  AB.text(ctx,'fosfágenos', X(6), gy-8, {size:8,color:AB.PAL.blood});
+  // glucólisis: meseta que aparece y decae
+  ctx.strokeStyle=AB.PAL.amber; ctx.lineWidth=2.4;
+  ctx.beginPath();
+  for (let i=0;i<=200;i++){ const t=180*i/200; const p=2.0*(t>10?1:0)*Math.exp(-(t-10)/90); const x=X(t),y=Y(p); i?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+  ctx.stroke();
+  AB.text(ctx,'glucólisis anaeróbica', X(70), Y(1.6)+2, {size:8,color:AB.PAL.amber});
+  // aeróbico: rampa que se sostiene
+  ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=2.6;
+  ctx.beginPath();
+  for (let i=0;i<=200;i++){ const t=600*i/200; const p=1.0*(1-Math.exp(-t/40)); const x=X(t),y=Y(p); i?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+  ctx.stroke();
+  AB.text(ctx,'aeróbico', X(500), Y(1.0)+10, {size:8,color:AB.PAL.teal});
+  // marcador de la prueba
+  const mark=Math.min(X(R.t),g2-2);
+  ctx.fillStyle=AB.PAL.ink;
+  ctx.beginPath(); ctx.arc(mark,gy-4,4,0,7); ctx.fill();
+  AB.dashed(ctx,mark,gy,mark,g0,{color:'rgba(35,44,54,.35)'});
+  // sistema dominante
+  const ph2=(window.__syT||0)*4%4;
+  const systems=[['fosfágenos · 3,6 mol/min',AB.PAL.blood],['glucólisis · 1,6–2,5',AB.PAL.amber],['aeróbico · 1,0',AB.PAL.teal],['capacidad: 0,7 / 1,2 / 90 mol',AB.PAL.ink]];
+  const y0=h*0.62;
+  systems.forEach((s,i)=>{
+    const y=y0+i*24;
+    if (i===Math.floor(ph2)){ ctx.fillStyle='rgba(13,110,100,.10)'; ctx.fillRect(gx-6,y-10,g2-gx+12,22); }
+    AB.text(ctx,s[0], gx, y, {size:9,weight:'700',color:s[1],align:'left'});
+  });
+  AB.text(ctx,R.name+' · '+R.tw, w/2, h*0.95, {size:9,weight:'700',color:AB.PAL.ink});
+  const out=el('sy_out');
+  if (out) out.textContent=R.name+': fosfágenos'+(R.s[1]?' + glucólisis':'')+(R.s[2]&&race!=='400'?' + aeróbico':'');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S7 · Reservas de energía
+   ═══════════════════════════════════════════════════════════ */
+function drawReserves(){
+  const cv=el('sim-reserves'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const f=num('rs_f')||1;
+  const fv=el('rs_fv'); if (fv) fv.textContent=espan(f,1)+'×';
+  const BMR=1680*f;
+  const data=[
+    ['glucógeno hepático',451,AB.PAL.amber],
+    ['glucógeno muscular',2050,AB.PAL.teal],
+    ['grasa',74833,AB.PAL.blood],
+  ];
+  const maxD=data[2][1]/BMR;
+  const bx=w*0.14, bw=w*0.72, by=h*0.16;
+  data.forEach((d,i)=>{
+    const days=d[1]/BMR;
+    const hgt=Math.min(bw*0.5, 8+days/maxD*(bw*0.42));
+    const y=by+i*44;
+    ctx.fillStyle=d[2]; ctx.fillRect(bx,y,hgt,18);
+    AB.text(ctx,d[0], bx, y-8, {size:8,color:AB.PAL.ink2,align:'left'});
+    AB.text(ctx,espan(days,days>=10?0:1)+' días', bx+hgt+8, y+9, {size:9,weight:'700',color:d[2],align:'left'});
+  });
+  AB.text(ctx,'a '+espan(BMR,0)+' kcal/día', w/2, h*0.92, {size:9,weight:'700',color:AB.PAL.ink});
+  AB.text(ctx,'hepático 110 g · muscular 500 g · grasa 7961 g', w/2, h*0.97, {size:7,color:AB.PAL.ink3});
+  const out=el('rs_out');
+  if (out) out.textContent='grasa ≈ '+espan(data[2][1]/BMR,0)+' días a '+espan(BMR,0)+' kcal/día';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S8 · Gasto basal por órgano
+   ═══════════════════════════════════════════════════════════ */
+function toggleOrgans(){
+  window.__orPlaying=!window.__orPlaying;
+  if (window.__orPlaying) window.__orT=0;
+  const b=el('or_play'); if (b) b.textContent=window.__orPlaying?'⏸':'▶';
+  drawOrgans();
+}
+function drawOrgans(){
+  const cv=el('sim-organs'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const data=[['hígado · bazo',27,AB.PAL.blood],['cerebro',19,AB.PAL.sagittal],['músculo',18,AB.PAL.muscle],['riñón',10,AB.PAL.amber],['corazón',7,AB.PAL.teal],['resto',19,AB.PAL.ink3]];
+  const active=Math.floor((window.__orT||0)*1.4)%6;
+  // dona
+  const cx=w*0.30, cy=h*0.44, R=Math.min(66,h*0.30), r=R*0.55;
+  let a0=-Math.PI/2;
+  data.forEach((d,i)=>{
+    const a1=a0+d[1]/100*2*Math.PI;
+    ctx.beginPath();
+    ctx.arc(cx,cy,R,a0,a1); ctx.arc(cx,cy,r,a1,a0,true);
+    ctx.closePath();
+    ctx.fillStyle=i===active?d[2]:'rgba(107,120,133,.25)';
+    ctx.fill();
+    ctx.strokeStyle='#f5f0e4'; ctx.lineWidth=2; ctx.stroke();
+    a0=a1;
+  });
+  AB.text(ctx,'BMR', cx, cy-8, {size:10,weight:'700',color:AB.PAL.ink});
+  AB.text(ctx,'= 1680 kcal/día', cx, cy+12, {size:8,color:AB.PAL.ink3});
+  // leyenda
+  const lx=w*0.56, ly=h*0.12;
+  data.forEach((d,i)=>{
+    const y=ly+i*24;
+    if (i===active){ ctx.fillStyle='rgba(13,110,100,.10)'; ctx.fillRect(lx-8,y-9,w*0.38,20); }
+    ctx.fillStyle=d[2]; ctx.fillRect(lx,y,14,12);
+    AB.text(ctx,d[0]+' · '+d[1]+' %', lx+22, y+6, {size:8,color:i===active?d[2]:AB.PAL.ink2,align:'left'});
+  });
+  const out=el('or_out');
+  if (out) out.textContent=data[active][0]+' '+data[active][1]+' %';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S9 · Ley de Kleiber en escala log-log
+   ═══════════════════════════════════════════════════════════ */
+function drawKleiber(){
+  const cv=el('sim-kleiber'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const m=Math.pow(10, num('kl_m')/100*5.4 - 1.7); // 0.02 → 5000 (log)
+  const mv=el('kl_mv'); if (mv) mv.textContent=(m>=100?espan(m,0):(m<1?espan(m*1000,0)+' g':espan(m,1)))+' kg';
+  const BMR=1500*Math.pow(m/65,0.75);
+  const gx=w*0.14, g2=w*0.94, gy=h*0.14, g0=h*0.78;
+  const L=(x,a,b)=>Math.log(x/a)/Math.log(b/a);
+  const Xm=mm=>gx+(g2-gx)*L(mm,0.02,5000);
+  const Yb=b=>g0-(g0-gy)*L(b,3,70000);
+  ctx.strokeStyle=AB.PAL.ink3; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(gx,gy); ctx.lineTo(gx,g0); ctx.lineTo(g2,g0); ctx.stroke();
+  AB.text(ctx,'BMR (kcal/día, log)', gx+4, gy+2, {size:8,color:AB.PAL.ink3,align:'left'});
+  AB.text(ctx,'masa m_b (kg, log)', (gx+g2)/2, g0+14, {size:8,color:AB.PAL.ink3});
+  AB.text(ctx,'0,02', gx-6, g0+14, {size:7,color:AB.PAL.ink3});
+  AB.text(ctx,'5000', g2-18, g0+14, {size:7,color:AB.PAL.ink3});
+  AB.text(ctx,'3', gx-4, g0+6, {size:7,color:AB.PAL.ink3});
+  AB.text(ctx,'70000', gx-34, gy+6, {size:7,color:AB.PAL.ink3});
+  // línea m^1 (referencia, pendiente 1 a través del hombre)
+  ctx.strokeStyle='rgba(35,44,54,.25)'; ctx.lineWidth=1.4; ctx.setLineDash([4,3]);
+  ctx.beginPath(); ctx.moveTo(Xm(0.02),Yb(1500*0.02/65)); ctx.lineTo(Xm(5000),Yb(1500*5000/65)); ctx.stroke(); ctx.setLineDash([]);
+  AB.text(ctx,'m_b^1', gx+16, gy+18, {size:7,color:'rgba(35,44,54,.5)',align:'left'});
+  // línea m^3/4
+  ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=2.2;
+  ctx.beginPath();
+  for (let i=0;i<=100;i++){ const mm=Math.exp(Math.log(0.02)+Math.log(250000)*i/100); const x=Xm(mm),y=Yb(1500*Math.pow(mm/65,0.75)); i?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+  ctx.stroke();
+  AB.text(ctx,'m_b^3/4 · Kleiber', g2-10, gy+16, {size:7,color:AB.PAL.teal,align:'right'});
+  // puntos de especies
+  const pts=[['ratón',0.02,3],['mujer',55,1260],['hombre',65,1500],['elefante',5000,70000]];
+  pts.forEach(p=>{
+    ctx.fillStyle=AB.PAL.blood;
+    ctx.beginPath(); ctx.arc(Xm(p[1]),Yb(p[2]),4,0,7); ctx.fill();
+    AB.text(ctx,p[0], Xm(p[1])+6, Yb(p[2])-6, {size:7,color:AB.PAL.ink2,align:'left'});
+  });
+  // punto actual
+  ctx.fillStyle=AB.PAL.amber;
+  ctx.beginPath(); ctx.arc(Xm(m),Yb(BMR),5,0,7); ctx.fill();
+  AB.dashed(ctx,Xm(m),Yb(BMR),Xm(m),g0,{color:AB.PAL.amber});
+  AB.text(ctx,espan(BMR,0)+' kcal/día', Xm(m)+8, Yb(BMR)+14, {size:9,weight:'700',color:AB.PAL.amber,align:'left'});
+  AB.text(ctx,'BMR = c·m^3/4 (c ≈ 90)', w/2, h*0.92, {size:9,weight:'700',color:AB.PAL.teal});
+  const out=el('kl_out');
+  if (out) out.textContent='m = '+espan(m,1)+' kg → BMR ≈ '+espan(BMR,0)+' kcal/día';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S10 · Actividades (Tabla 6.21)
+   ═══════════════════════════════════════════════════════════ */
+function drawAct(){
+  const cv=el('sim-act'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const DATA=[
+    ['Durmiendo',71,83,0.24],['Sentado',103,120,0.34],['De pie',108,125,0.36],
+    ['Caminar 5 km/h',228,265,0.76],['Ciclismo 15 km/h',344,400,1.13],
+    ['Natación moderada',400,465,1.32],['Fútbol',500,580,1.65],
+    ['Subir escaleras',589,685,1.96],['Baloncesto',688,800,2.28],
+    ['Ciclista de carreras',1400,1600,4.62],
+  ];
+  const idx=Math.min(DATA.length-1, parseInt((el('ac_act')?el('ac_act').value:1),10)||1);
+  const D=DATA[idx];
+  const maxK=1400;
+  const bx=w*0.12, bw=w*0.70, by=h*0.14, bh=h*0.52;
+  DATA.forEach((d,i)=>{
+    const x=bx+i*(bw/DATA.length);
+    const hbar=Math.max(6, d[1]/maxK*bh);
+    ctx.fillStyle=i===idx?AB.PAL.teal:'rgba(107,120,133,.28)';
+    ctx.fillRect(x+2,by+bh-hbar,(bw/DATA.length)-4,hbar);
+    if (i%2===0){ AB.text(ctx,d[0].split(' ')[0], x+(bw/DATA.length)/2, by+bh-hbar-8, {size:6.5,color:i===idx?AB.PAL.teal:AB.PAL.ink3}); }
+  });
+  AB.text(ctx,D[0]+': '+espan(D[1],0)+' kcal/h · '+espan(D[2],0)+' W · '+espan(D[3],2)+' L O₂/min', w/2, h*0.84, {size:11,weight:'700',color:AB.PAL.teal});
+  AB.text(ctx,'rango: 71 → 1400 kcal/h (×20)', w/2, h*0.92, {size:8,color:AB.PAL.ink3});
+  const out=el('ac_out');
+  if (out) out.textContent=D[0]+' · '+D[1]+' kcal/h · '+D[2]+' W · '+D[3]+' L O₂/min';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S11 · Costo de caminar y correr
+   ═══════════════════════════════════════════════════════════ */
+function drawLocom(){
+  const cv=el('sim-locom'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const v=num('lo_v')||2;
+  const vv=el('lo_vv'); if (vv) vv.textContent=espan(v,1)+' m/s';
+  // costo por metro
+  function cWalk(x){
+    if (x<1.2) return 2.13;
+    if (x>2.4) return 3.93+ (x-2.4)*6;
+    return 2.13+(3.93-2.13)*(x-1.2)/1.2;
+  }
+  const cRun=3.40;
+  const gx=w*0.13, g2=w*0.95, gy=h*0.14, g0=h*0.78;
+  const X=x=>gx+(g2-gx)*x/6;
+  const Y=p=>g0-(g0-gy)*p/30;
+  ctx.strokeStyle=AB.PAL.ink3; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(gx,gy); ctx.lineTo(gx,g0); ctx.lineTo(g2,g0); ctx.stroke();
+  AB.text(ctx,'potencia metabólica (W/kg)', gx+4, gy+2, {size:8,color:AB.PAL.ink3,align:'left'});
+  AB.text(ctx,'velocidad (m/s)', (gx+g2)/2, g0+14, {size:8,color:AB.PAL.ink3});
+  AB.text(ctx,'1', gx-4, g0+14, {size:7,color:AB.PAL.ink3});
+  AB.text(ctx,'6', g2-8, g0+14, {size:7,color:AB.PAL.ink3});
+  // caminar
+  ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=2.4;
+  ctx.beginPath();
+  for (let i=0;i<=200;i++){ const x=6*i/200; const y=x*cWalk(x); const px=X(x),py=Y(y); i?ctx.lineTo(px,py):ctx.moveTo(px,py); }
+  ctx.stroke();
+  AB.text(ctx,'caminar', X(1.0), Y(1.0*cWalk(1.0))+12, {size:8,color:AB.PAL.teal});
+  // correr
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2.4;
+  ctx.beginPath();
+  for (let i=0;i<=200;i++){ const x=6*i/200; const y=x*cRun; const px=X(x),py=Y(y); i?ctx.lineTo(px,py):ctx.moveTo(px,py); }
+  ctx.stroke();
+  AB.text(ctx,'correr (3,40 J/kg-m)', X(3.4), Y(3.4*cRun)-10, {size:8,color:AB.PAL.blood});
+  // cruce ~2,05 m/s
+  const vc=2.05;
+  ctx.fillStyle=AB.PAL.amber;
+  ctx.beginPath(); ctx.arc(X(vc),Y(vc*cWalk(vc)),4,0,7); ctx.fill();
+  AB.dashed(ctx,X(vc),gy,X(vc),g0,{color:AB.PAL.amber});
+  AB.text(ctx,'cruce ≈ 2,1 m/s', X(vc), gy+10, {size:7,color:AB.PAL.amber});
+  // punto actual
+  const walkCheap=cWalk(v)*v <= cRun*v;
+  const useGait=walkCheap&&v<vc ? 'caminar' : (v>vc?'correr':'caminar');
+  const cost=useGait==='correr'?cRun:cWalk(v);
+  ctx.fillStyle=walkCheap&&v<vc?AB.PAL.teal:AB.PAL.blood;
+  ctx.beginPath(); ctx.arc(X(v),Y(cost*v),5,0,7); ctx.fill();
+  AB.dashed(ctx,X(v),Y(cost*v),X(v),g0,{color:'rgba(35,44,54,.35)'});
+  AB.text(ctx,espan(cost,2)+' J/kg-m', X(v)+8, Y(cost*v)+14, {size:9,weight:'700',color:useGait==='correr'?AB.PAL.blood:AB.PAL.teal,align:'left'});
+  AB.text(ctx,'a '+espan(v,1)+' m/s conviene '+useGait, w/2, h*0.90, {size:9,weight:'700',color:AB.PAL.ink});
+  const out=el('lo_out');
+  if (out) out.textContent='a '+espan(v,1)+' m/s: '+useGait+' ≈ '+espan(cost,2)+' J/kg-m';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S12 · Protocolo de Bruce
+   ═══════════════════════════════════════════════════════════ */
+function drawBruce(){
+  const cv=el('sim-bruce'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const stages=[
+    {n:'I',mph:1.7,gr:0.10},{n:'II',mph:2.5,gr:0.12},{n:'III',mph:3.4,gr:0.14},
+    {n:'IV',mph:4.2,gr:0.16},{n:'V',mph:5.0,gr:0.18},
+  ];
+  const s=Math.min(4,Math.max(0,Math.round(num('br_s')||3)-1));
+  const sv=el('br_sv'); if (sv) sv.textContent=stages[s].n;
+  function tm(st){
+    const v=st.mph*0.447;
+    const sin=Math.sin(st.gr*Math.PI/2); // θ=gr·90° → 18 % → 16,2° → sin ≈ 0,28
+    return 100+(2.4+22.8*sin)*75*v;
+  }
+  const maxTM=tm(stages[4]);
+  const bx=w*0.14, bw=w*0.60, by=h*0.16, bh=h*0.56;
+  const barW=bw/5;
+  stages.forEach((st,i)=>{
+    const t=tm(st);
+    const hb=Math.max(10,t/maxTM*bh);
+    const x=bx+i*barW;
+    ctx.fillStyle=i===s?AB.PAL.teal:'rgba(107,120,133,.30)';
+    ctx.fillRect(x+3,by+bh-hb,barW-6,hb);
+    ctx.fillStyle=i===s?AB.PAL.teal:AB.PAL.ink3;
+    AB.text(ctx,st.n, x+barW/2, by+bh-hb-10, {size:8,weight:'700'});
+  });
+  AB.text(ctx,'TM (kcal/h) · varón de 75 kg', bx+bw/2, by-10, {size:9,weight:'700',color:AB.PAL.ink});
+  AB.text(ctx,'0', bx-6, by+bh+6, {size:7,color:AB.PAL.ink3});
+  AB.text(ctx,espan(maxTM,0), bx-6, by, {size:7,color:AB.PAL.ink3});
+  const t=tm(stages[s]);
+  const vo2=t/5.05;
+  AB.text(ctx,'Etapa '+stages[s].n+': '+espan(t,0)+' kcal/h', w/2, h*0.78, {size:11,weight:'700',color:AB.PAL.teal});
+  AB.text(ctx,'= '+espan(vo2,1)+' L O₂/min (solo carbohidratos)', w/2, h*0.85, {size:8,color:AB.PAL.ink2});
+  AB.text(ctx,'100 + (2,4 + 22,8·sinθ)·75·v', w/2, h*0.93, {size:8,color:AB.PAL.ink3});
+  const out=el('br_out');
+  if (out) out.textContent='Etapa '+stages[s].n+': TM ≈ '+espan(t,0)+' kcal/h · '+espan(vo2,1)+' L O₂/min';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S13 · MET
+   ═══════════════════════════════════════════════════════════ */
+function drawMet(){
+  const cv=el('sim-met'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const MET=parseFloat((el('me_act')?el('me_act').value:1))||1;
+  const m=70;
+  const kcalh=3.5*m*MET/1000*5*60;
+  const vo2=3.5*MET;
+  const gx=w*0.12, g2=w*0.95, gy=h*0.16, g0=h*0.72;
+  const X=p=>gx+(g2-gx)*p/20;
+  ctx.strokeStyle=AB.PAL.ink3; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(gx,gy); ctx.lineTo(gx,g0); ctx.lineTo(g2,g0); ctx.stroke();
+  AB.text(ctx,'MET', gx+4, gy+2, {size:8,color:AB.PAL.ink3,align:'left'});
+  AB.text(ctx,'0', gx-6, g0+6, {size:7,color:AB.PAL.ink3});
+  AB.text(ctx,'20', g2-10, g0+6, {size:7,color:AB.PAL.ink3});
+  // barra MET
+  ctx.fillStyle=AB.PAL.teal;
+  ctx.fillRect(gx,g0-Math.min(MET,20)/20*(g0-gy),X(MET)-gx,Math.min(MET,20)/20*(g0-gy));
+  ctx.fillStyle=AB.PAL.blood;
+  ctx.beginPath(); ctx.arc(X(MET),g0-Math.min(MET,20)/20*(g0-gy),5,0,7); ctx.fill();
+  AB.dashed(ctx,X(MET),gy,X(MET),g0,{color:AB.PAL.blood});
+  AB.text(ctx,'MET '+espan(MET,1), X(MET), g0+16, {size:9,weight:'700',color:AB.PAL.blood});
+  AB.text(ctx,'VO₂ = 3,5·MET = '+espan(vo2,1)+' mL/kg-min', w/2, h*0.80, {size:9,weight:'700',color:AB.PAL.teal});
+  AB.text(ctx,'70 kg → '+espan(kcalh,0)+' kcal/h', w/2, h*0.88, {size:9,weight:'700',color:AB.PAL.ink});
+  AB.text(ctx,'TM = f·BMR · MET ≈ f/1,5', w/2, h*0.95, {size:8,color:AB.PAL.ink3});
+  const out=el('me_out');
+  if (out) out.textContent='MET '+espan(MET,1)+' · 70 kg → ≈ '+espan(kcalh,0)+' kcal/h';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S14 · Eficiencia del trabajo mecánico
+   ═══════════════════════════════════════════════════════════ */
+function toggleEff(){
+  window.__efPlaying=!window.__efPlaying;
+  if (window.__efPlaying) window.__efT=0;
+  const b=el('ef_play'); if (b) b.textContent=window.__efPlaying?'⏸':'▶';
+  drawEff();
+}
+function drawEff(){
+  const cv=el('sim-eff'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const data=[
+    ['natación libre',5,AB.PAL.ink3],['patinaje hielo',11,AB.PAL.ink3],
+    ['remo',15,AB.PAL.ink3],['vagoneteo',17,AB.PAL.ink3],['máq. vapor',17,AB.PAL.sagittal],
+    ['ciclismo cuesta',19,AB.PAL.teal],['escaladora',23,AB.PAL.teal],
+    ['ciclismo nivelado',29,AB.PAL.teal],['caminar horiz.',27,AB.PAL.teal],
+    ['gasolina',38,AB.PAL.blood],
+  ];
+  const active=Math.floor((window.__efT||0)*1.6)%data.length;
+  const maxE=40;
+  const bx=w*0.16, bw=w*0.70, by=h*0.10, bh=h*0.015;
+  data.forEach((d,i)=>{
+    const y=by+i*22;
+    ctx.fillStyle=i===active?d[2]:'rgba(107,120,133,.30)';
+    ctx.fillRect(bx,y,bw*d[1]/maxE,10);
+    AB.text(ctx,d[0], bx-8, y+5, {size:7.5,color:i===active?d[2]:AB.PAL.ink3,align:'right'});
+    AB.text(ctx,d[1]+' %', bx+bw*d[1]/maxE+4, y+5, {size:7.5,weight:'700',color:i===active?d[2]:AB.PAL.ink2,align:'left'});
+  });
+  const eff=data[active][1];
+  AB.text(ctx,data[active][0]+' ε = '+eff+' % → '+(100-eff)+' % se vuelve calor', w/2, h*0.90, {size:10,weight:'700',color:data[active][2]});
+  AB.text(ctx,'casi todo el metabolismo termina como calor', w/2, h*0.96, {size:8,color:AB.PAL.ink3});
+  const out=el('ef_out');
+  if (out) out.textContent=data[active][0]+' '+eff+' % · '+(100-eff)+' % → calor';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S15 · Potencia máxima vs duración
+   ═══════════════════════════════════════════════════════════ */
+function drawPower(){
+  const cv=el('sim-power'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const PTS=[[1500,6],[750,60],[260,2100],[150,18000],[75,28800]];
+  const d=Math.pow(10, 0.778 + (num('pw_d')-1)/59*4.22); // 6s → 100000s log
+  const dv=el('pw_dv'); if (dv) dv.textContent=(d<60?espan(d,0)+' s':(d<3600?espan(d/60,1)+' min':espan(d/3600,1)+' h'));
+  function iP(t){
+    for (let i=1;i<PTS.length;i++){
+      const [p0,t0]=PTS[i-1],[p1,t1]=PTS[i];
+      if (t>=t0&&t<=t1){
+        return p0*Math.pow(p1/p0,Math.log(t/t0)/Math.log(t1/t0));
+      }
+    }
+    return t<PTS[0][1]?PTS[0][0]:PTS[PTS.length-1][0];
+  }
+  const P=iP(d);
+  const gx=w*0.14, g2=w*0.94, gy=h*0.14, g0=h*0.78;
+  const L=(x,a,b)=>Math.log(x/a)/Math.log(b/a);
+  const X=t=>gx+(g2-gx)*L(t,6,100000);
+  const Y=p=>g0-(g0-gy)*L(p,75,1500);
+  ctx.strokeStyle=AB.PAL.ink3; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(gx,gy); ctx.lineTo(gx,g0); ctx.lineTo(g2,g0); ctx.stroke();
+  AB.text(ctx,'potencia (W, log)', gx+4, gy+2, {size:8,color:AB.PAL.ink3,align:'left'});
+  AB.text(ctx,'duración (log)', (gx+g2)/2, g0+14, {size:8,color:AB.PAL.ink3});
+  AB.text(ctx,'6 s', gx-6, g0+14, {size:7,color:AB.PAL.ink3});
+  AB.text(ctx,'100 ks', g2-22, g0+14, {size:7,color:AB.PAL.ink3});
+  // curva
+  ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=2.6;
+  ctx.beginPath();
+  for (let i=0;i<=200;i++){ const t=Math.exp(Math.log(6)+Math.log(100000/6)*i/200); const x=X(t),y=Y(iP(t)); i?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+  ctx.stroke();
+  // puntos
+  PTS.forEach(p=>{ ctx.fillStyle=AB.PAL.blood; ctx.beginPath(); ctx.arc(X(p[1]),Y(p[0]),4,0,7); ctx.fill(); });
+  // punto actual
+  ctx.fillStyle=AB.PAL.amber;
+  ctx.beginPath(); ctx.arc(X(d),Y(P),5,0,7); ctx.fill();
+  AB.dashed(ctx,X(d),Y(P),X(d),g0,{color:AB.PAL.amber});
+  AB.text(ctx,'P ≈ '+espan(P,0)+' W · E ≈ '+espan(P*d/1000,0)+' kJ', X(d)+8, Y(P)+16, {size:9,weight:'700',color:AB.PAL.amber,align:'left'});
+  AB.text(ctx,'anaeróbico → alto, breve · aeróbico → bajo, sostenible', w/2, h*0.90, {size:8,color:AB.PAL.ink3});
+  const out=el('pw_out');
+  if (out) out.textContent=(d<60?espan(d,0)+' s':(d<3600?espan(d/60,1)+' min':espan(d/3600,1)+' h'))+' · P ≈ '+espan(P,0)+' W';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S16 · Quemar la dona
+   ═══════════════════════════════════════════════════════════ */
+function toggleBurn(){
+  window.__bnPlaying=!window.__bnPlaying;
+  if (window.__bnPlaying) window.__bnT=0;
+  const b=el('bn_play'); if (b) b.textContent=window.__bnPlaying?'⏸':'▶';
+  drawBurn();
+}
+function drawBurn(){
+  const cv=el('sim-burn'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const TM=parseFloat((el('bn_act')?el('bn_act').value:688))||688;
+  const idle = TM<=103;
+  const excess=idle?1:(TM-103);
+  const hours=280/excess;
+  const ph=idle?0:Math.min(1,(window.__bnT||0)%1);
+  // donut que se «consume»
+  const cx=w*0.28, cy=h*0.34, R=Math.min(52,h*0.24);
+  ctx.fillStyle=AB.PAL.amber;
+  ctx.beginPath(); ctx.arc(cx,cy,R*(1-ph*0.35),0,7); ctx.fill();
+  ctx.fillStyle='#a87d2e';
+  ctx.beginPath(); ctx.arc(cx,cy,R*(0.45-ph*0.2),0,7); ctx.fill();
+  AB.text(ctx,'280 kcal', cx, cy, {size:9,weight:'700',color:'#fbf8f0'});
+  AB.text(ctx,'consumido '+espan(ph*100,0)+' %', cx, cy+R+22, {size:8,color:AB.PAL.amber});
+  // barra de progreso
+  const bx=w*0.52, bw=w*0.42, by=h*0.18;
+  ctx.fillStyle='rgba(107,120,133,.2)'; ctx.fillRect(bx,by,bw,16);
+  ctx.fillStyle=AB.PAL.teal; ctx.fillRect(bx,by,bw*ph,16);
+  AB.text(ctx,espan(ph*280,0)+' / 280 kcal', bx+bw/2, by+8, {size:8,weight:'700',color:'#fbf8f0'});
+  // tiempo
+  const mins=hours*60;
+  const mm=Math.floor(mins), ss=Math.round((mins-mm)*60);
+  AB.text(ctx,TM+' kcal/h → exceso '+(idle?'—':espan(excess,0)+' kcal/h'), w/2, h*0.52, {size:9,weight:'700',color:AB.PAL.ink});
+  AB.text(ctx,'tiempo: '+(idle?'nunca (sin exceso)':mm+' min '+(ss<10?'0':'')+ss+' s'), w/2, h*0.62, {size:11,weight:'700',color:AB.PAL.teal});
+  AB.text(ctx,'sentado serían 280/0 → nunca', w/2, h*0.72, {size:8,color:AB.PAL.ink3});
+  const out=el('bn_out');
+  if (out) out.textContent=idle?'sentado: nunca':(mm>=60?mm/60>=1&&mm%60!==0?mm+' min':espan(mm/60,1)+' h':'')+' ('+espan(mins,0)+' min)';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S17 · Los 4 modos de pérdida de calor
+   ═══════════════════════════════════════════════════════════ */
+function drawLoss(){
+  const cv=el('sim-loss'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const f=num('ls_f')||0;
+  const fv=el('ls_fv'); if (fv) fv.textContent=f<0.2?'reposo':(f<0.6?'moderado':'intenso');
+  // reparto por modo (Capitulo_6.tex §6.6): reposo 54–60/25/7/14 %, intenso ~5/15/80 %
+  const rad=0.8;
+  const conv=0.375+1.825*f;   // 0,375 kcal/min (25 %) en reposo → 2,2 kcal/min intenso
+  const swt=0.105+11.895*f;   // 0,105 kcal/min (7 %) en reposo → 12,0 kcal/min intenso
+  const br=0.21-0.21*f;       // 0,21 kcal/min (14 %) en reposo → ~0 en intenso
+  const total=rad+conv+swt+br;
+  // barras apiladas
+  const bx=w*0.12, bw=w*0.60, by=h*0.20, bh=h*0.34;
+  const segs=[['radiación',rad,AB.PAL.teal],['convección',conv,AB.PAL.sagittal],['sudor',swt,AB.PAL.blood],['respiración',br,AB.PAL.amber]];
+  let acc=0;
+  segs.forEach(s=>{
+    ctx.fillStyle=s[2];
+    ctx.fillRect(bx,by+bh*acc,bw,bh*s[1]/total);
+    acc+=s[1]/total;
+  });
+  ctx.strokeStyle=AB.PAL.ink3; ctx.lineWidth=1.2; ctx.strokeRect(bx,by,bw,bh);
+  AB.text(ctx,'total ≈ '+espan(total,1)+' kcal/min', bx+bw+10, by+bh/2, {size:9,weight:'700',color:AB.PAL.ink,align:'left'});
+  // leyenda con flechas
+  segs.forEach((s,i)=>{
+    const y=h*0.66+i*22;
+    ctx.fillStyle=s[2]; ctx.fillRect(w*0.14,y,14,12);
+    AB.text(ctx,s[0]+' · '+espan(s[1]/total*100,0)+' %', w*0.22, y+6, {size:8,color:AB.PAL.ink2,align:'left'});
+  });
+  // figura: cilindro humano
+  const hx=w*0.80, hy=h*0.52, hw=w*0.10, hh=h*0.30;
+  ctx.fillStyle=AB.PAL.skin;
+  ctx.beginPath(); ctx.ellipse(hx,hy-hh/2,hw/2,hh/2,0,0,7); ctx.fill();
+  ctx.strokeStyle=AB.PAL.skinEdge; ctx.stroke();
+  ctx.beginPath(); ctx.arc(hx,hy-hh/2-hw*0.18,hw*0.34,0,7); ctx.fill(); ctx.stroke();
+  AB.text(ctx,'cuerpo', hx, hy-hh/2-hw*0.5, {size:7,color:AB.PAL.ink3});
+  AB.arrow(ctx,hx,hy-hh/2-8,hx+hw*0.9,hy-hh/2-26,{color:AB.PAL.teal,width:2});
+  AB.arrow(ctx,hx+hw/2+8,hy,hx+hw/2+30,hy,{color:AB.PAL.sagittal,width:2});
+  const dom=segs.reduce((a,b)=>a[1]>b[1]?a:b);
+  const out=el('ls_out');
+  if (out) out.textContent='total ≈ '+espan(total,1)+' kcal/min · domina '+dom[0];
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S18 · Radiación de cuerpo negro
+   ═══════════════════════════════════════════════════════════ */
+function drawRad(){
+  const cv=el('sim-rad'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const Troom=273+Math.max(0,Math.min(40,num('ra_t')||24));
+  const tv=el('ra_tv'); if (tv) tv.textContent=espan(Troom-273,0)+' °C';
+  const Tskin=307;
+  const sig=5.67e-8;
+  const A=1.85;
+  const Remit=sig*Math.pow(Tskin,4)*A;
+  const Rgain=sig*Math.pow(Troom,4)*A;
+  const net=Remit-Rgain;
+  // espectro de Planck
+  const gx=w*0.12, g2=w*0.95, gy=h*0.14, g0=h*0.62;
+  const X=l=>gx+(g2-gx)*l/40;
+  const Ymax=1;
+  function planck(l,T){
+    const a=2*6.626e-34*3e8*3e8;
+    const b=6.626e-34*3e8/(1.381e-23*T);
+    return a/(Math.pow(l*1e-6,5)*(Math.exp(b/(l*1e-6))-1));
+  }
+  const skinPeak=planck(9.7,Tskin);
+  function trace(T,col,lw){
+    ctx.strokeStyle=col; ctx.lineWidth=lw||2.2;
+    ctx.beginPath();
+    for (let i=0;i<=300;i++){ const l=0.2+39.8*i/300; const x=X(l),y=g0-(g0-gy)*planck(l,T)/skinPeak; i?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+    ctx.stroke();
+  }
+  ctx.strokeStyle=AB.PAL.ink3; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(gx,gy); ctx.lineTo(gx,g0); ctx.lineTo(g2,g0); ctx.stroke();
+  AB.text(ctx,'intensidad (λ,T)', gx+4, gy+2, {size:8,color:AB.PAL.ink3,align:'left'});
+  AB.text(ctx,'λ (μm)', (gx+g2)/2, g0+14, {size:8,color:AB.PAL.ink3});
+  AB.text(ctx,'0', gx-4, g0+14, {size:7,color:AB.PAL.ink3});
+  AB.text(ctx,'40', g2-12, g0+14, {size:7,color:AB.PAL.ink3});
+  trace(Tskin,AB.PAL.teal,2.6);
+  trace(Troom,AB.PAL.amber,2.2);
+  AB.text(ctx,'piel 307 K (34 °C)', gx+10, gy+16, {size:8,color:AB.PAL.teal,align:'left'});
+  AB.text(ctx,'ambiente '+espan(Troom-273,0)+' °C', gx+10, gy+30, {size:8,color:AB.PAL.amber,align:'left'});
+  // pico de Wien
+  const lpk=2898/Tskin;
+  ctx.fillStyle=AB.PAL.blood;
+  ctx.beginPath(); ctx.arc(X(lpk),g0-(g0-gy)*planck(lpk,Tskin)/skinPeak,4,0,7); ctx.fill();
+  AB.dashed(ctx,X(lpk),gy,X(lpk),g0,{color:AB.PAL.blood});
+  AB.text(ctx,'pico ≈ 9,4 μm', X(lpk), gy+8, {size:7,color:AB.PAL.blood});
+  // números
+  AB.text(ctx,'emite '+espan(Remit,0)+' W · recibe '+espan(Rgain,0)+' W', w/2, h*0.72, {size:9,color:AB.PAL.ink2});
+  AB.text(ctx,net>0?('pérdida neta ≈ '+espan(net,0)+' W'):('ganancia neta ≈ '+espan(-net,0)+' W'), w/2, h*0.80, {size:12,weight:'700',color:net>0?AB.PAL.teal:AB.PAL.blood});
+  AB.text(ctx,'R = εσT⁴ · ε_piel ≈ 0,95 · A = 1,85 m²', w/2, h*0.90, {size:8,color:AB.PAL.ink3});
+  const out=el('ra_out');
+  if (out) out.textContent=(net>0?'pérdida neta':'ganancia neta')+' ≈ '+espan(Math.abs(net),0)+' W';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S19 · Convección, viento y ropa
+   ═══════════════════════════════════════════════════════════ */
+function drawConv(){
+  const cv=el('sim-conv'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const wind=num('cv_w')||2;
+  const wv=el('cv_wv'); if (wv) wv.textContent=espan(wind,1)+' m/s';
+  const clo=num('cv_c')||1;
+  const cvv=el('cv_cv'); if (cvv) cvv.textContent=espan(clo,1)+' Clo';
+  const Tair=20;
+  const hc=8.3*Math.sqrt(wind); // W/m²-°C
+  const loss=hc*(34-Tair);
+  const Iclothes=0.155*clo;
+  const qcond=(37-Tair)/(0.05+Iclothes+0.08);
+  // panel izquierdo: convección
+  const px1=w*0.05, pw1=w*0.44, py1=h*0.12;
+  ctx.strokeStyle=AB.PAL.ink3; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(px1,py1); ctx.lineTo(px1,h*0.80); ctx.lineTo(px1+pw1,h*0.80); ctx.stroke();
+  AB.text(ctx,'h_c (W/m²-°C)', px1+4, py1+2, {size:8,color:AB.PAL.ink3,align:'left'});
+  const X1=hc=>px1+(px1+pw1)*hc/27;
+  ctx.fillStyle=AB.PAL.sagittal; ctx.fillRect(px1,py1+30,X1(hc)-px1,h*0.5);
+  AB.text(ctx,espan(hc,1), X1(hc)+6, py1+30+h*0.25, {size:9,weight:'700',color:AB.PAL.sagittal,align:'left'});
+  AB.text(ctx,'convección: h_c = 8,3√w', px1+pw1/2, h*0.86, {size:8,color:AB.PAL.sagittal});
+  AB.text(ctx,'pérdida ≈ '+espan(loss,0)+' W/m²', px1+pw1/2, h*0.93, {size:8,color:AB.PAL.ink2});
+  // panel derecho: conducción a través de la ropa
+  const px2=w*0.56, pw2=w*0.40, py2=h*0.12;
+  ctx.strokeStyle=AB.PAL.ink3; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(px2,py2); ctx.lineTo(px2,h*0.80); ctx.lineTo(px2+pw2,h*0.80); ctx.stroke();
+  AB.text(ctx,'flujo con ropa (W/m²)', px2+4, py2+2, {size:8,color:AB.PAL.ink3,align:'left'});
+  ctx.fillStyle=AB.PAL.amber; ctx.fillRect(px2,py2+30,px2+pw2,qcond/400*h*0.5);
+  AB.text(ctx,espan(qcond,0), px2+8, py2+30+qcond/400*h*0.5+14, {size:9,weight:'700',color:AB.PAL.amber,align:'left'});
+  AB.text(ctx,'q = ΔT/(0,05 + 0,155·Clo + 0,08)', px2+pw2/2, h*0.86, {size:7.5,color:AB.PAL.amber});
+  // sensación térmica
+  const wkm=wind*3.6;
+  const Twc=Tair>=0&&wkm>=1?13.12+0.6215*Tair-11.37*Math.pow(wkm,0.16)+0.3965*Tair*Math.pow(wkm,0.16):Tair;
+  AB.text(ctx,'wind chill: '+espan(Twc,1)+' °C (T_aire 20 °C)', w/2, h*0.96, {size:8,weight:'700',color:AB.PAL.blood});
+  const out=el('cv_out');
+  if (out) out.textContent='h_c ≈ '+espan(hc,1)+' W/m²-°C · q_ropa ≈ '+espan(qcond,0)+' W/m²';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S20 · Evaporación y humedad
+   ═══════════════════════════════════════════════════════════ */
+function toggleSweat(){
+  window.__swPlaying=!window.__swPlaying;
+  if (window.__swPlaying) window.__swT=0;
+  const b=el('sw_play'); if (b) b.textContent=window.__swPlaying?'⏸':'▶';
+  drawSweat();
+}
+function drawSweat(){
+  const cv=el('sim-sweat'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const RH=num('sw_h')||50;
+  const hv=el('sw_hv'); if (hv) hv.textContent=RH+' %';
+  // índice de calor a 32 °C
+  const HI=RH<=50?32+3*RH/50 : (RH<=75?35+8*(RH-50)/25 : (RH<=100?43+13*(RH-75)/25 : 56));
+  const evap=Math.max(0.05,1-RH/105);
+  const ph=(window.__swT||0)%1;
+  // gota que evapora
+  const cx=w*0.24, cy=h*0.30;
+  const dropR=Math.min(26,h*0.12)*(1-evap*0.5)*(0.9+0.2*Math.sin(ph*Math.PI*2));
+  ctx.fillStyle='rgba(45,125,79,'+(0.5+0.3*Math.sin(ph*Math.PI*2))+')';
+  ctx.beginPath(); ctx.ellipse(cx,cy,dropR,dropR*1.25,0,0,7); ctx.fill();
+  // vapor subiendo
+  for (let i=0;i<4;i++){
+    const vy=cy-30-(ph*40+i*12)%50;
+    ctx.fillStyle='rgba(107,120,133,.4)';
+    ctx.beginPath(); ctx.arc(cx+(i%2?10:-6),vy,4+evap*3,0,7); ctx.fill();
+  }
+  AB.text(ctx,'sudor', cx, cy+dropR*1.6+10, {size:8,color:AB.PAL.ink2});
+  AB.text(ctx,'evaporación: '+espan(evap*100,0)+' %', cx, cy+dropR*1.6+24, {size:8,weight:'700',color:AB.PAL.good});
+  // termómetro de sensación
+  const tx=w*0.56, tw=w*0.34, ty=h*0.16, th=h*0.56;
+  ctx.strokeStyle=AB.PAL.ink3; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(tx,ty); ctx.lineTo(tx,ty+th); ctx.stroke();
+  const Y=T=>ty+th-(T-30)/(60-30)*th;
+  ctx.fillStyle=AB.PAL.blood;
+  ctx.fillRect(tx-6,Y(HI),12,ty+th-Y(HI));
+  AB.text(ctx,'32 °C real', tx, ty+th+14, {size:8,color:AB.PAL.ink2});
+  AB.text(ctx,HI>45?'peligro extremo':(HI>41?'peligro':(HI>32?'precaución extrema':'precaución')), w/2, h*0.82, {size:9,weight:'700',color:AB.PAL.blood});
+  AB.text(ctx,HI<=40?('se siente '+espan(HI,0)+' °C'):('¡se siente '+espan(HI,0)+' °C!'), w/2, h*0.90, {size:11,weight:'700',color:AB.PAL.blood});
+  AB.text(ctx,'540 kcal por L de agua evaporada', w/2, h*0.97, {size:8,color:AB.PAL.ink3});
+  const out=el('sw_out');
+  if (out) out.textContent='32 °C + '+RH+' % HR → se siente '+espan(HI,0)+' °C';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S21 · Producción de calor vs temperatura ambiente
+   ═══════════════════════════════════════════════════════════ */
+function drawThermo(){
+  const cv=el('sim-thermo'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const T=Math.max(0,Math.min(45,num('th_t')||20));
+  const tv=el('th_tv'); if (tv) tv.textContent=espan(T,0)+' °C';
+  const Tc=26, Th=33;
+  function H(x){
+    if (x<Tc) return 7+ (Tc-x)*0.35;
+    if (x<Th) return 1;
+    return 1+ (x-Th)*0.55;
+  }
+  const gx=w*0.13, g2=w*0.95, gy=h*0.14, g0=h*0.76;
+  const X=x=>gx+(g2-gx)*x/45;
+  const Y=p=>g0-(g0-gy)*Math.min(p,9)/9;
+  ctx.strokeStyle=AB.PAL.ink3; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(gx,gy); ctx.lineTo(gx,g0); ctx.lineTo(g2,g0); ctx.stroke();
+  AB.text(ctx,'producción de calor (rel.)', gx+4, gy+2, {size:8,color:AB.PAL.ink3,align:'left'});
+  AB.text(ctx,'T ambiente (°C)', (gx+g2)/2, g0+14, {size:8,color:AB.PAL.ink3});
+  AB.text(ctx,'0', gx-4, g0+14, {size:7,color:AB.PAL.ink3});
+  AB.text(ctx,'45', g2-12, g0+14, {size:7,color:AB.PAL.ink3});
+  // zona termoneutral
+  ctx.fillStyle='rgba(13,110,100,.10)';
+  ctx.fillRect(X(Tc),gy,X(Th)-X(Tc),g0-gy);
+  // curva
+  ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=2.6;
+  ctx.beginPath();
+  for (let i=0;i<=300;i++){ const x=45*i/300; const px=X(x),py=Y(H(x)); i?ctx.lineTo(px,py):ctx.moveTo(px,py); }
+  ctx.stroke();
+  AB.text(ctx,'tiritar', X(8), Y(H(8)), {size:8,color:AB.PAL.teal});
+  AB.text(ctx,'termoneutral', (X(Tc)+X(Th))/2, gy+12, {size:8,color:AB.PAL.teal});
+  AB.text(ctx,'evaporación', X(40), Y(H(40))+12, {size:8,color:AB.PAL.blood});
+  AB.dashed(ctx,X(Tc),gy,X(Tc),g0,{color:AB.PAL.ink3});
+  AB.text(ctx,'T_c=26', X(Tc), g0+14, {size:7,color:AB.PAL.ink3});
+  AB.text(ctx,'T_h≈33', X(Th), g0+14, {size:7,color:AB.PAL.ink3});
+  // punto actual
+  const ht=H(T);
+  ctx.fillStyle=AB.PAL.blood;
+  ctx.beginPath(); ctx.arc(X(T),Y(ht),5,0,7); ctx.fill();
+  AB.dashed(ctx,X(T),Y(ht),X(T),g0,{color:AB.PAL.blood});
+  const state=T<Tc?'termogénesis: tiritando':(T<Th?'zona termoneutral: gasto mínimo':'calor: domina la evaporación');
+  AB.text(ctx,state, w/2, h*0.86, {size:10,weight:'700',color:AB.PAL.blood});
+  AB.text(ctx,'metabolismo de cumbre ≈ 7× el ayuno', w/2, h*0.94, {size:8,color:AB.PAL.ink3});
+  const out=el('th_out');
+  if (out) out.textContent=state;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S22 · Modelo en serie: núcleo → piel → ropa → aire
+   ═══════════════════════════════════════════════════════════ */
+function drawCore(){
+  const cv=el('sim-core'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const Tair=Math.max(-10,Math.min(40,num('co_t')||20));
+  const tv=el('co_tv'); if (tv) tv.textContent=espan(Tair,0)+' °C';
+  const clo=num('co_c')||1;
+  const cvv=el('co_cv'); if (cvv) cvv.textContent=espan(clo,1)+' Clo';
+  const Tcore=37;
+  const It=0.05, Ia=0.08, Ic=0.155*clo;
+  const q=(Tcore-Tair)/(It+Ic+Ia);
+  const Tskin=Tcore-It*q;
+  const Tcloth=Tskin-Ic*q;
+  // regiones
+  const zones=[['núcleo',Tcore,AB.PAL.blood],['piel',Tskin,AB.PAL.teal],['ropa',Tcloth,AB.PAL.amber],['aire',Tair,AB.PAL.sagittal]];
+  const n=4, zx=w*0.16, zw=w*0.68, zy=h*0.18, zh=h*0.52;
+  zones.forEach((z,i)=>{
+    const x=zx+i*zw/n;
+    ctx.fillStyle=z[2]+'22';
+    ctx.fillRect(x,zy,zw/n+1,zh);
+    ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+    ctx.strokeRect(x,zy,zw/n,zh);
+    AB.text(ctx,z[0], x+zw/(2*n), zy-12, {size:8,weight:'700',color:z[2]});
+  });
+  // perfil de temperatura
+  ctx.strokeStyle=AB.PAL.ink; ctx.lineWidth=2.6;
+  ctx.beginPath();
+  const pts=[['núcleo',Tcore],['piel',Tskin],['ropa',Tcloth],['aire',Tair]];
+  pts.forEach((p,i)=>{
+    const x=zx+zw*(i+0.5)/n;
+    const y=zy+zh-(p[1]-(-15))/(55-(-15))*zh;
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  });
+  ctx.stroke();
+  // puntos
+  pts.forEach((p,i)=>{
+    const x=zx+zw*(i+0.5)/n;
+    const y=zy+zh-(p[1]-(-15))/(55-(-15))*zh;
+    ctx.fillStyle=AB.PAL.ink;
+    ctx.beginPath(); ctx.arc(x,y,4,0,7); ctx.fill();
+    AB.text(ctx,espan(p[1],1)+' °C', x, y-12, {size:8,weight:'700',color:AB.PAL.ink});
+  });
+  // flujo
+  AB.arrow(ctx, zx+zw/2, zy+zh+12, zx+zw/2+40, zy+zh+12, {color:AB.PAL.blood,width:2.4});
+  AB.text(ctx,'q ≈ '+espan(q,0)+' W/m²', zx+zw/2+46, zy+zh+12, {size:8,weight:'700',color:AB.PAL.blood,align:'left'});
+  AB.text(ctx,'T_núcleo − T_piel = I_t·q', w/2, h*0.84, {size:9,weight:'700',color:AB.PAL.teal});
+  AB.text(ctx,'aislamientos: tejido 0,05 · ropa 0,155·Clo · aire 0,08', w/2, h*0.92, {size:7.5,color:AB.PAL.ink3});
+  const out=el('co_out');
+  if (out) out.textContent='T_piel ≈ '+espan(Tskin,1)+' °C · q ≈ '+espan(q,0)+' W/m²';
+}
+
+/* ── Bucle de animación (marco-tiempo independiente) ── */
+let __lastTs=0;
+function animLoop(ts){
+  const dt=Math.min(0.06, ((ts-__lastTs)||0)/1000);
+  __lastTs=ts;
+  if (current===3 && window.__oxPlaying){ window.__oxT=(window.__oxT||0)+dt*0.5; drawOx(); }
+  if (current===4 && window.__dnPlaying){ window.__dnT=(window.__dnT||0)+dt*0.8; drawDonut(); }
+  if (current===5 && window.__atPlaying){ window.__atT=(window.__atT||0)+dt*0.5; drawAtp(); }
+  if (current===6 && window.__syPlaying){ window.__syT=(window.__syT||0)+dt*0.6; drawSystems(); }
+  if (current===8 && window.__orPlaying){ window.__orT=(window.__orT||0)+dt*0.7; drawOrgans(); }
+  if (current===14 && window.__efPlaying){ window.__efT=(window.__efT||0)+dt*0.6; drawEff(); }
+  if (current===16 && window.__bnPlaying){ window.__bnT=(window.__bnT||0)+dt*0.05; drawBurn(); }
+  if (current===20 && window.__swPlaying){ window.__swT=(window.__swT||0)+dt*1.2; drawSweat(); }
+  requestAnimationFrame(animLoop);
+}
+requestAnimationFrame(animLoop);
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  dots();
+  buildModuleTabs();
+  if (window.renderMathInElement) renderMathInElement(document.body, {
+    delimiters:[
+      {left:'\\(',right:'\\)',display:false},
+      {left:'\\[',right:'\\]',display:true}
+    ],
+    throwOnError:false
+  });
+  requestAnimationFrame(()=>redrawSlide(0));
+});
+
+</script>
+</body>
+</html>

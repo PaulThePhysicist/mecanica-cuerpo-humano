@@ -1,0 +1,2967 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>⚖️</text></svg>">
+<meta name="description" content="Capítulo 2 — La Estática del Cuerpo. Física del Cuerpo Humano, I. P. Herman (2016). Presentación universitaria interactiva en español.">
+<title>Capítulo 2 · La Estática del Cuerpo — Física del Cuerpo Humano</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,600&family=Karla:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   LA ESTÁTICA DEL CUERPO — design system (continuidad con capítulo 1)
+   Papel marfil · tinta · tinta fisiológica (teal / sangre / ámbar)
+   Serif académica (Source Serif 4) + grotesca (Karla) + mono técnica
+   ═══════════════════════════════════════════════════════════════ */
+:root{
+  --paper:#f5f0e4;
+  --paper-2:#eee7d6;
+  --paper-3:#e8dfc9;
+  --card:#fbf8f0;
+  --ink:#232c36;
+  --ink-2:#43505c;
+  --ink-3:#6b7885;
+  --line:#cfc3a9;
+  --line-soft:#e2d9c4;
+  --teal:#0d6e64;
+  --teal-deep:#0a5a52;
+  --teal-tint:rgba(13,110,100,.10);
+  --blood:#a92a1e;
+  --blood-deep:#8c1f16;
+  --blood-tint:rgba(169,42,30,.10);
+  --amber:#9a5b00;
+  --amber-deep:#7c4900;
+  --amber-tint:#fbf2dc;
+  --sagittal:#5d4fa8;
+  --coronal:#2d7d4f;
+  --transverse:#b86a1e;
+  --bone:#b6a67f;
+  --serif:'Source Serif 4',Georgia,'Times New Roman',serif;
+  --sans:'Karla',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,'Cascadia Mono',monospace;
+  --radius:12px;
+  --radius-sm:8px;
+  --shadow:0 1px 2px rgba(35,44,54,.05),0 8px 22px rgba(35,44,54,.07);
+  /* ── curvas de movimiento ── */
+  --ease-out:cubic-bezier(.23,1,.32,1);
+  --ease-in-out:cubic-bezier(.77,0,.175,1);
+  --ease-drawer:cubic-bezier(.32,.72,0,1);
+  --press:160ms var(--ease-out);
+  --fade:200ms var(--ease-out);
+  --slide:250ms var(--ease-out);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:clamp(16px,1.32vw,21px)}
+body{
+  font-family:var(--sans);color:var(--ink);background-color:var(--paper);
+  background-image:linear-gradient(rgba(35,44,54,.028) 1px,transparent 1px);
+  background-size:100% 44px;
+  overflow:hidden;height:100dvh;user-select:none;line-height:1.5;
+}
+::selection{background:rgba(13,110,100,.18)}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+
+/* ─── BRAND STRIP + MODULE TABS ─── */
+.module-bar{
+  position:fixed;top:0;left:0;right:0;z-index:30;
+  background:linear-gradient(180deg,rgba(245,240,228,.97) 68%,rgba(245,240,228,0));
+  padding:0 1.6rem;display:flex;gap:.4rem;align-items:flex-end;
+  pointer-events:none;
+}
+.module-bar>*{pointer-events:auto}
+.brand-mark{
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:0 1.2rem .55rem 0;margin-right:auto;flex-shrink:0;
+}
+.brand-mark .treatise{font-family:var(--serif);font-weight:600;font-size:.74rem;letter-spacing:.01em;color:var(--ink)}
+.brand-mark .book{font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.module-tab{
+  background:var(--paper-2);border:1px solid var(--line);border-bottom:none;
+  color:var(--ink-3);padding:.42rem 1.05rem .5rem;border-radius:9px 9px 0 0;
+  font-size:.64rem;font-weight:600;cursor:pointer;
+  transition:color var(--fade),background-color var(--fade),border-color var(--fade),box-shadow var(--slide);
+  letter-spacing:.02em;
+  display:flex;align-items:center;gap:.42rem;margin-bottom:1px;
+}
+.module-tab:active{transform:scale(.97)}
+.module-tab.active{
+  background:var(--card);border-color:var(--line);color:var(--teal-deep);
+  box-shadow:0 -1px 0 var(--card),0 -3px 0 var(--teal);
+  margin-bottom:0;padding-bottom:.55rem;
+}
+.module-tab .mod-badge{
+  font-size:.55rem;background:var(--card);border:1px solid var(--line);
+  padding:.06rem .4rem;border-radius:4px;color:var(--ink-3);font-weight:700;
+}
+.module-tab.active .mod-badge{background:var(--teal);border-color:var(--teal);color:var(--paper)}
+
+/* ─── SLIDES ─── */
+.slides{position:relative;z-index:1;height:100dvh}
+.slide,.slide-full{
+  display:none;width:100%;height:100dvh;
+  padding:3.4rem 2rem 4.6rem;overflow-y:auto;position:relative;
+}
+.slide.active,.slide-full.active{display:flex;flex-direction:column}
+.slide::-webkit-scrollbar-track{background:transparent}
+
+/* ─── PORTADA ─── */
+.slide-full{align-items:center;justify-content:center;text-align:center}
+.slide-full::before{
+  content:"";position:absolute;top:0;left:0;right:0;
+  height:5px;
+  background:linear-gradient(90deg,var(--teal) 0 25%,var(--blood) 25% 50%,var(--amber) 50% 75%,var(--sagittal) 75% 100%);
+}
+.slide-full h1{
+  font-family:var(--serif);font-size:clamp(2.1rem,4.6vw,3.9rem);font-weight:700;
+  letter-spacing:-.035em;line-height:1.06;max-width:15ch;
+  margin:1.4rem auto 1.1rem;
+}
+.slide-full h1 .chapno{
+  display:block;font-family:var(--sans);font-size:clamp(.72rem,1.1vw,1rem);
+  font-weight:700;letter-spacing:.42em;text-transform:uppercase;
+  color:var(--teal-deep);margin-bottom:1.15rem;
+}
+.slide-full h1 .vol{
+  font-style:italic;font-weight:600;color:var(--ink-2);
+}
+.slide-full .subtitle{
+  font-size:clamp(.86rem,1.3vw,1.05rem);color:var(--ink-2);max-width:60ch;
+  line-height:1.65;margin:0 auto;
+}
+.slide-full .rule{width:88px;height:1px;background:var(--line);margin:1.6rem auto}
+.module-preview{display:flex;gap:.55rem;flex-wrap:wrap;justify-content:center}
+.module-preview .mpill{
+  background:var(--card);border:1px solid var(--line);border-radius:999px;
+  padding:.42rem 1.05rem;font-size:.72rem;color:var(--ink-2);
+  transition:color var(--fade),border-color var(--fade),background-color var(--fade),transform var(--press);
+  cursor:pointer;display:flex;align-items:center;gap:.4rem;font-weight:600;
+}
+.module-preview .mpill:active{transform:translateY(-1px) scale(.96)}
+.module-preview .mpill.active{background:var(--teal);border-color:var(--teal-deep);color:var(--paper)}
+.module-preview .mpill .ico{font-size:.9rem}
+.slide-full .start-btn{
+  margin-top:1.9rem;background:var(--teal);color:var(--paper);
+  border:1px solid var(--teal-deep);padding:.78rem 2.4rem;border-radius:8px;
+  font-size:.95rem;font-weight:700;cursor:pointer;
+  transition:background-color var(--fade),box-shadow var(--slide),transform var(--press);
+  letter-spacing:.02em;
+}
+.slide-full .start-btn:active{transform:scale(.97)}
+.slide-full .book-ref{margin-top:2.2rem;font-size:.66rem;color:var(--ink-3);font-style:italic}
+
+/* ─── MODULE HEADER ─── */
+.module-header{
+  display:flex;align-items:baseline;gap:.7rem;margin-bottom:.8rem;flex-shrink:0;
+  padding-bottom:.6rem;border-bottom:1px solid var(--line);
+}
+.module-header .mnum{
+  font-family:var(--mono);font-size:.66rem;font-weight:700;letter-spacing:.08em;
+  color:var(--teal-deep);background:var(--teal-tint);padding:.24rem .7rem;border-radius:6px;
+  border:1px solid rgba(13,110,100,.22);
+}
+.module-header .mtitle{
+  font-family:var(--serif);font-size:1.42rem;font-weight:700;letter-spacing:-.01em;color:var(--ink);
+}
+.module-header .msub{font-size:.68rem;color:var(--ink-3);margin-left:auto;font-style:italic}
+.module-header .mslide-count{
+  font-size:.6rem;color:var(--ink-3);font-family:var(--mono);background:var(--paper-2);
+  padding:.16rem .5rem;border-radius:4px;border:1px solid var(--line-soft);
+}
+
+/* ─── CONTENT GRID ─── */
+.content-grid{
+  display:grid;grid-template-columns:1.12fr .88fr;
+  grid-template-rows:1fr auto;gap:.8rem;flex:1;min-height:0;
+}
+.content-grid.single-col{grid-template-columns:1fr}
+
+/* ─── TEORÍA ─── */
+.theory{
+  overflow-y:auto;line-height:1.5;display:flex;flex-direction:column;gap:.6rem;
+  padding-right:.2rem;
+}
+.theory .card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:.7rem .85rem;box-shadow:var(--shadow);transition:border-color var(--slide),box-shadow var(--slide);cursor:default;
+}
+.theory .card.active{border-color:rgba(13,110,100,.5);box-shadow:var(--shadow)}
+.theory .card .card-hdr{
+  display:flex;align-items:center;gap:.5rem;font-size:.7rem;
+  font-weight:700;color:var(--teal-deep);text-transform:uppercase;letter-spacing:.09em;
+  margin-bottom:.4rem;
+}
+.theory .card .card-hdr .icon{font-size:.92rem}
+.theory .card .card-body{font-size:.78rem;color:var(--ink-2);line-height:1.58;max-width:72ch}
+.theory .card .card-body p{margin-bottom:.3rem}
+.theory .card .card-body p:last-child{margin-bottom:0}
+.theory .card .card-body strong{color:var(--ink);font-weight:700}
+.theory .card .card-body .tag{
+  display:inline-block;font-size:.64rem;font-weight:700;font-family:var(--mono);
+  padding:.06rem .45rem;border-radius:4px;background:var(--teal-tint);color:var(--teal-deep);
+  border:1px solid rgba(13,110,100,.22);margin:0 .08rem;line-height:1.4;
+}
+.theory .card .card-body .row{
+  display:flex;gap:.35rem;flex-wrap:wrap;margin:.3rem 0;
+}
+.theory .card .card-body .pill{
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:.66rem;padding:.2rem .55rem;border-radius:6px;
+  background:var(--paper);border:1px solid var(--line);color:var(--ink-2);
+  transition:color var(--fade),border-color var(--fade),background-color var(--fade),transform var(--press);
+  cursor:pointer;line-height:1.45;
+}
+.theory .card .card-body .pill:active{transform:scale(.96)}
+.theory .card .card-body .pill b{color:var(--ink)}
+.theory .card .card-body .highlight{color:var(--ink);font-weight:600}
+
+/* ─── ECUACIONES ─── */
+.eq-block{
+  background:var(--paper-2);border:1px solid var(--line-soft);border-radius:var(--radius-sm);
+  padding:.38rem .6rem;margin:.3rem 0;font-size:.86rem;text-align:center;
+}
+.eq-block .katex{color:var(--ink)}
+
+/* ─── CONCEPT FLOW ─── */
+.concept-flow{
+  display:flex;align-items:center;justify-content:center;gap:.3rem;
+  padding:.35rem;background:var(--paper-2);border-radius:var(--radius-sm);
+  border:1px solid var(--line);margin-top:.15rem;flex-shrink:0;
+}
+.concept-flow .step{
+  font-size:.64rem;font-weight:600;color:var(--ink-3);text-align:center;
+  padding:.26rem .4rem;border-radius:6px;background:var(--card);flex:1;
+  border:1px solid transparent;transition:color var(--fade),border-color var(--fade),background-color var(--fade),transform var(--press);cursor:pointer;
+}
+.concept-flow .step.done{color:var(--teal-deep);border-color:rgba(13,110,100,.35);background:var(--teal-tint)}
+.concept-flow .arrow{color:var(--line);font-size:.75rem;flex-shrink:0}
+.concept-flow .step:active{transform:scale(.96)}
+
+/* ─── CAJA DE APUNTES (detalle del docente) ─── */
+.apuntes{
+  background:var(--amber-tint);border:1px solid rgba(154,91,0,.3);border-radius:8px;
+  padding:.6rem .75rem;margin-top:.4rem;font-size:.7rem;line-height:1.5;flex-shrink:0;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.4);
+}
+.apuntes .a-hdr{
+  display:flex;align-items:center;gap:.4rem;font-weight:700;
+  color:var(--amber-deep);margin-bottom:.2rem;letter-spacing:.03em;
+}
+.apuntes .a-text{color:#5d460f}
+.apuntes .a-text strong{color:#4a3709}
+
+/* ─── PANEL DE SIMULACIÓN ─── */
+.sim-area{
+  background:var(--paper-3);border:1px solid var(--line);border-radius:var(--radius);
+  position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;
+  min-height:200px;box-shadow:inset 0 2px 8px rgba(35,44,54,.06);
+}
+.sim-area canvas.sim{width:100%;height:100%;display:block}
+.sim-col{display:flex;flex-direction:column;gap:.55rem;min-height:0;overflow-y:auto}
+.sim-col .sim-area{flex:1 1 auto}
+.theory .card .card-body .pill.active{background:var(--teal);border-color:var(--teal-deep);color:var(--paper)}
+.sim-placeholder{text-align:center;color:var(--ink-3);padding:1rem}
+.sim-placeholder .ico{font-size:2rem;display:block;opacity:.4;margin-bottom:.3rem}
+.sim-placeholder p{font-size:.75rem}
+
+/* ─── BARRA DE CONTROL ─── */
+.prof-controls{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:.42rem .8rem;display:flex;align-items:center;gap:.6rem;
+  font-size:.68rem;color:var(--ink-2);min-height:36px;flex-wrap:wrap;
+}
+.prof-controls .badge{
+  padding:.18rem .55rem;border-radius:6px;background:var(--teal-tint);
+  color:var(--teal-deep);font-family:var(--mono);font-size:.62rem;font-weight:700;
+  border:1px solid rgba(13,110,100,.22);flex-shrink:0;
+}
+.prof-controls label{display:flex;align-items:center;gap:.3rem;cursor:pointer;flex-shrink:0;font-size:.64rem}
+.prof-controls input[type="range"]{width:74px;accent-color:var(--teal);}
+.prof-controls input[type="number"]{width:58px;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:.14rem .3rem;font-size:.66rem;color:var(--ink);font-family:var(--mono)}
+.prof-controls select{
+  background:var(--card);color:var(--ink);border:1px solid var(--line);
+  border-radius:6px;padding:.18rem .4rem;font-size:.64rem;cursor:pointer;
+}
+.prof-controls button{
+  background:var(--paper);border:1px solid var(--line);color:var(--ink-2);
+  padding:.22rem .6rem;border-radius:6px;cursor:pointer;font-size:.64rem;
+  transition:border-color var(--fade),color var(--fade),background-color var(--fade),transform var(--press);font-weight:600;
+}
+.prof-controls button:active{transform:scale(.96)}
+.prof-controls .readout{
+  font-family:var(--mono);font-size:.68rem;color:var(--teal-deep);font-weight:700;
+  background:var(--teal-tint);border:1px solid rgba(13,110,100,.22);
+  padding:.14rem .5rem;border-radius:6px;margin-left:auto;flex-shrink:0;
+}
+
+/* ─── TABLAS MINI ─── */
+.data-mini{font-size:.66rem;width:100%;border-collapse:collapse}
+.data-mini th{
+  color:var(--teal-deep);font-weight:700;text-align:left;padding:.18rem .3rem;
+  border-bottom:1px solid var(--line);text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;
+}
+.data-mini td{padding:.16rem .3rem;border-bottom:1px solid var(--line-soft);color:var(--ink-2)}
+.data-mini td:last-child{font-family:var(--mono);color:var(--ink);font-size:.62rem}
+.data-mini tr{cursor:pointer}
+.data-mini .table-caption{font-size:.56rem;color:var(--ink-3);padding:.14rem .3rem;font-style:italic}
+.data-mini td b{color:var(--ink)}
+
+/* ─── ANIMACIÓN (un solo momento autorizado) ─── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.slide.active .card{animation:fadeUp .48s cubic-bezier(.22,1,.36,1) both}
+.slide.active .card:nth-child(2){animation-delay:.07s}
+.slide.active .card:nth-child(3){animation-delay:.14s}
+.slide.active .card:nth-child(4){animation-delay:.21s}
+.slide.active .eq-block{animation:fadeUp .48s .2s both}
+.slide.active .sim-area,.slide.active .apuntes,.slide.active .prof-controls{animation:fadeUp .48s .1s both}
+.slide-full.active{animation:fadeUp .5s cubic-bezier(.22,1,.36,1)}
+/* Revisitar una diapositiva = ya la conocemos → reveal instantáneo,
+   sin repetir la entrada. (Los tooltips también se vuelven instantáneos
+   tras el primero.) */
+.slide.instant .card,.slide.instant .eq-block,.slide.instant .sim-area,
+.slide.instant .apuntes,.slide.instant .prof-controls,.slide-full.instant{animation:none!important}
+
+/* ─── NAVEGACIÓN INFERIOR ─── */
+.nav-bar{
+  position:fixed;bottom:0;left:0;right:0;z-index:30;
+  background:linear-gradient(0deg,rgba(245,240,228,.97) 58%,rgba(245,240,228,0));
+  padding:.6rem 2rem .85rem;
+  display:flex;justify-content:center;align-items:center;gap:.55rem;pointer-events:none;
+}
+.nav-bar>*{pointer-events:auto}
+.nav-btn{
+  background:var(--card);border:1px solid var(--line);color:var(--ink-2);
+  width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:.85rem;
+  display:flex;align-items:center;justify-content:center;
+  transition:background-color var(--fade),color var(--fade),border-color var(--fade),transform var(--press);
+}
+.nav-btn:active{transform:scale(.9)}
+.nav-dots{display:flex;gap:.3rem;padding:0 .4rem}
+.nav-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--line);
+  cursor:pointer;transform-origin:center;
+  transition:background-color var(--fade),transform var(--slide);border:none;
+}
+.nav-dot.active{background:var(--teal);transform:scaleX(2.85)}
+.slide-counter{font-size:.58rem;font-family:var(--mono);color:var(--ink-3);letter-spacing:.06em}
+.nav-module-label{font-size:.58rem;color:var(--teal-deep);background:var(--card);border:1px solid var(--line);padding:.14rem .55rem;border-radius:6px;font-weight:600}
+
+/* ─── TOOLTIP CANVAS ─── */
+.canvas-tooltip{
+  position:absolute;pointer-events:none;z-index:5;
+  background:rgba(251,248,240,.96);border:1px solid var(--line);
+  border-radius:6px;padding:.3rem .6rem;font-size:.62rem;
+  color:var(--ink-2);display:none;max-width:190px;box-shadow:var(--shadow);
+}
+.canvas-tooltip b{color:var(--teal-deep)}
+
+/* ─── TABLA INTERACTIVA ─── */
+.interactive-table{width:100%;border-collapse:collapse;font-size:.66rem}
+.interactive-table th{
+  color:var(--teal-deep);font-weight:700;text-align:left;
+  padding:.22rem .4rem;border-bottom:1px solid var(--line);
+  position:sticky;top:0;background:var(--card);z-index:1;
+  text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;
+}
+.interactive-table td{
+  padding:.18rem .4rem;border-bottom:1px solid var(--line-soft);
+  color:var(--ink-2);transition:background-color var(--fade),color var(--fade);
+}
+.interactive-table td:last-child{font-family:var(--mono);color:var(--ink);font-size:.62rem}
+.interactive-table tr{cursor:pointer;transition:background-color var(--fade),color var(--fade)}
+.interactive-table tr.highlight td{background:var(--teal-tint);color:var(--teal-deep)}
+.interactive-table .table-caption{font-size:.56rem;color:var(--ink-3);padding:.14rem .4rem;font-style:italic}
+
+/* ─── FIGURAS DE LIBRO ─── */
+.figure-pair{display:flex;gap:.6rem;height:100%;align-items:stretch}
+.figure-pair figure{
+  flex:1;display:flex;flex-direction:column;gap:.3rem;align-items:center;
+  justify-content:center;background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius-sm);padding:.4rem;min-width:0;
+}
+.figure-pair figure img{max-width:100%;max-height:66%;object-fit:contain;border-radius:4px}
+.figure-pair figcaption{font-size:.56rem;color:var(--ink-3);text-align:center;line-height:1.4;font-style:italic}
+.figure-pair figure .fig-num{
+  font-family:var(--mono);font-size:.54rem;font-weight:700;color:var(--teal-deep);
+  letter-spacing:.1em;
+}
+
+/* ─── CONVERTIDOR DE UNIDADES ─── */
+.converter{
+  display:flex;flex-direction:column;gap:.6rem;padding:.6rem;width:100%;
+}
+.converter .conv-row{
+  display:flex;align-items:center;gap:.45rem;flex-wrap:wrap;
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);
+  padding:.5rem .6rem;
+}
+.converter .conv-row .conv-icon{font-size:1.05rem}
+.converter .conv-row .conv-label{font-size:.66rem;font-weight:700;color:var(--teal-deep);text-transform:uppercase;letter-spacing:.06em;width:74px;flex-shrink:0}
+.converter input[type="number"]{width:88px;font-family:var(--mono);font-size:.78rem;padding:.2rem .4rem;border:1px solid var(--line);border-radius:6px;background:var(--paper);color:var(--ink)}
+.converter select{font-size:.68rem;padding:.2rem .4rem;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);cursor:pointer}
+.converter .conv-eq{font-family:var(--mono);font-size:.68rem;color:var(--ink-3);flex:1;text-align:right}
+.converter .conv-result{font-family:var(--mono);font-size:.82rem;font-weight:700;color:var(--teal-deep);min-width:96px;text-align:right}
+
+/* ─── HOVER SOLO PARA DISPOSITIVOS DE PRECISIÓN ─── */
+@media (hover:hover) and (pointer:fine){
+  .module-preview .mpill:hover{border-color:var(--teal);color:var(--teal-deep);transform:translateY(-1px)}
+  .theory .card .card-body .pill:hover{border-color:var(--teal);color:var(--teal-deep);background:var(--card)}
+  .nav-btn:hover{background:var(--teal);color:var(--paper);border-color:var(--teal)}
+  .module-tab:hover{color:var(--ink-2);background:var(--paper-3)}
+  .concept-flow .step:hover{border-color:var(--teal);color:var(--teal-deep)}
+  .slide-full .start-btn:hover{background:var(--teal-deep);box-shadow:0 8px 20px rgba(35,44,54,.22)}
+  .prof-controls button:hover{border-color:var(--teal);color:var(--teal-deep)}
+  .interactive-table tr:hover td{background:var(--teal-tint);color:var(--ink)}
+  .data-mini tr:hover td{background:var(--teal-tint);color:var(--ink)}
+  .theory .card:hover{border-color:#bdb09a}
+  .nav-dot:hover{background:var(--ink-3)}
+}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:820px){
+  .slide,.slide-full{padding:3.2rem .7rem 3.6rem}
+  .content-grid{grid-template-columns:1fr!important;gap:.55rem}
+  .slide-full h1{font-size:2rem}
+  .module-bar{padding:.3rem .7rem 0;gap:.15rem;overflow-x:auto}
+  .brand-mark{display:none}
+  .module-tab{font-size:.56rem;padding:.3rem .6rem .35rem;white-space:nowrap}
+  .module-tab .mod-badge{display:none}
+  .nav-bar{padding:.3rem .7rem .5rem}
+  .theory .card .card-hdr{font-size:.66rem}
+  .module-header .msub{display:none}
+}
+@media(min-width:1800px){
+  .slide,.slide-full{padding:3.6rem 2.6rem 5rem}
+  .content-grid{gap:1rem}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  /* las entradas de slide conservan un fade de opacidad (comprensión), sin movimiento */
+  @keyframes fadeUp{from{opacity:0}to{opacity:1}}
+  .slide.active .card,.slide.active .eq-block,.slide.active .sim-area,.slide.active .apuntes,.slide.active .prof-controls,.slide-full.active{animation-duration:.3s!important;animation-delay:0s!important}
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   CAPA DE ANIMACIÓN · capítulo 2 (inyectada)
+   Entradas coreografiadas + vida ambiental continua + pulso de revisita.
+   Respeta el sistema existente (fadeUp / .instant / prefers-reduced-motion).
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* ── Variables de movimiento ── */
+:root{
+  --anim-enter:560ms cubic-bezier(.22,1,.36,1);
+  --anim-pop:420ms cubic-bezier(.34,1.56,.64,1);
+  --anim-soft:700ms cubic-bezier(.22,1,.36,1);
+  --float-t:5.5s ease-in-out infinite;
+  --drift-t:22s linear infinite;
+  --breathe-t:3.4s ease-in-out infinite;
+  --sweep-t:3.2s ease-in-out infinite;
+  --halo-t:4.2s ease-in-out infinite;
+}
+
+/* ── Keyframes ── */
+@keyframes c2-fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes c2-slideL{from{opacity:0;transform:translateX(34px) scale(.98)}to{opacity:1;transform:translateX(0) scale(1)}}
+@keyframes c2-slideR{from{opacity:0;transform:translateX(-34px) scale(.98)}to{opacity:1;transform:translateX(0) scale(1)}}
+@keyframes c2-popIn{from{opacity:0;transform:scale(.86) rotate(-1.5deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes c2-headIn{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes c2-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes c2-drift{0%{background-position:0 0}100%{background-position:120px 240px}}
+@keyframes c2-breathe{0%,100%{transform:scale(1);filter:brightness(1)}50%{transform:scale(1.035);filter:brightness(1.06)}}
+@keyframes c2-sweep{0%{background-position:-120% 0}60%,100%{background-position:220% 0}}
+@keyframes c2-flow{to{stroke-dashoffset:-26}}
+@keyframes c2-pulse{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.45);opacity:.35}}
+@keyframes c2-halo{0%,100%{opacity:.30;transform:scale(.99)}50%{opacity:.6;transform:scale(1.02)}}
+@keyframes c2-revisit{0%{opacity:.55;transform:translateY(4px) scale(.997)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes c2-dot{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+
+/* ── Vida ambiental CONTINUA (sutil, siempre activa) ── */
+body{animation:c2-drift var(--drift-t)}                       /* papel a la deriva */
+.module-header .icon, .card-hdr .icon, .a-hdr .icon{display:inline-block;animation:c2-float var(--float-t)}
+.module-header::after{                                        /* barra de acento que barre */
+  content:"";position:absolute;left:1.3rem;right:1.3rem;bottom:.35rem;height:2px;
+  background:linear-gradient(90deg,transparent,var(--teal),var(--blood),var(--amber),transparent);
+  background-size:200% 100%;background-position:-120% 0;
+  animation:c2-sweep var(--sweep-t);border-radius:2px;opacity:.7;
+}
+.module-header{position:relative}
+.badge, .readout{animation:c2-breathe var(--breathe-t)}
+.badge{transform-origin:center}
+.apuntes .a-hdr .icon{display:inline-block;animation:c2-float calc(var(--float-t) * 1.15)}
+.sim-area{position:relative}
+.sim-area::after{                                              /* halo vivo tras el canvas */
+  content:"";position:absolute;inset:-6px;border-radius:var(--radius);
+  box-shadow:0 0 0 1px var(--line-soft),0 0 34px var(--teal-tint);
+  animation:c2-halo var(--halo-t);pointer-events:none;z-index:-1;
+}
+.arrow path, .arrow line, .arrow polyline{stroke-dasharray:7 19;animation:c2-flow 1.4s linear infinite}
+.nav-dot.active::after{
+  content:"";position:absolute;inset:0;border-radius:50%;background:var(--teal);
+  animation:c2-pulse 1.8s ease-in-out infinite;z-index:-1;
+}
+.nav-dot{position:relative}
+
+/* ── ENTRADAS (1ª visita) — coreografía por elemento ── */
+.slide.active .module-header{animation:c2-headIn .5s cubic-bezier(.22,1,.36,1) both}
+.slide.active .card{animation:c2-fadeUp var(--anim-enter) both}
+.slide.active .card:nth-child(1){animation-delay:.04s}
+.slide.active .card:nth-child(2){animation-delay:.13s}
+.slide.active .card:nth-child(3){animation-delay:.22s}
+.slide.active .card:nth-child(4){animation-delay:.31s}
+.slide.active .card:nth-child(5){animation-delay:.40s}
+.slide.active .card:nth-child(6){animation-delay:.49s}
+.slide.active .eq-block{animation:c2-popIn var(--anim-pop) .20s both;position:relative;overflow:hidden}
+.slide.active .eq-block::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:2px;
+  background:linear-gradient(90deg,var(--teal),var(--blood),var(--amber));
+  transform:scaleX(0);transform-origin:left;
+  animation:c2-underline .9s var(--ease-out) .35s both;
+}
+@keyframes c2-underline{to{transform:scaleX(1)}}
+.slide.instant .eq-block::after{animation:none;transform:scaleX(1)}
+.slide.active .sim-area{animation:c2-slideL var(--anim-enter) .10s both}
+.slide.active .apuntes{animation:c2-slideR var(--anim-soft) .16s both}
+.slide.active .prof-controls{animation:c2-fadeUp var(--anim-enter) .26s both}
+.slide.active .pill,
+.slide.active .step{animation:c2-fadeUp var(--anim-enter) both}
+.slide.active .step:nth-child(1){animation-delay:.18s}
+.slide.active .step:nth-child(2){animation-delay:.30s}
+.slide.active .step:nth-child(3){animation-delay:.42s}
+.slide.active .step:nth-child(4){animation-delay:.54s}
+.slide.active .badge{animation:c2-popIn var(--anim-pop) .12s both}
+.slide.active .tag{animation:c2-fadeUp .5s var(--ease-out) both}
+.slide.active .tag:nth-child(2){animation-delay:.08s}
+.slide.active .tag:nth-child(3){animation-delay:.16s}
+
+/* ── Revisita: pulso suave de "vida" (no repetir la entrada completa) ── */
+.slide.instant .module-header{animation:c2-revisit .5s ease both}
+.slide.instant .sim-area{animation:c2-revisit .55s ease both}
+.slide.instant .card{animation:c2-revisit .45s ease both}
+.slide.instant .card:nth-child(2){animation-delay:.05s}
+.slide.instant .card:nth-child(3){animation-delay:.10s}
+.slide.instant .card:nth-child(4){animation-delay:.15s}
+
+/* ── Fallback accesibilidad: reducir todo a fades de opacidad ── */
+@media (prefers-reduced-motion:reduce){
+  body{animation:none!important}
+  *{animation-duration:.001ms!important;animation-iteration-count:1!important}
+  @keyframes c2-fadeUp{from{opacity:0}to{opacity:1}}
+  @keyframes c2-slideL{from{opacity:0}to{opacity:1}}
+  @keyframes c2-slideR{from{opacity:0}to{opacity:1}}
+  @keyframes c2-popIn{from{opacity:0}to{opacity:1}}
+  @keyframes c2-headIn{from{opacity:0}to{opacity:1}}
+  @keyframes c2-revisit{from{opacity:.6}to{opacity:1}}
+  .slide.active .card,.slide.active .eq-block,.slide.active .sim-area,
+  .slide.active .apuntes,.slide.active .prof-controls,.slide.active .pill,
+  .slide.active .step,.slide.active .badge,.slide.active .tag,.slide.active .module-header{
+    animation-duration:.3s!important;animation-delay:0s!important}
+}
+</style>
+</head>
+<body>
+<canvas id="c2-dust" aria-hidden="true" style="position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.5"></canvas>
+
+<!-- ═══════════ MÓDULOS ═══════════ -->
+<nav class="module-bar" id="moduleBar">
+  <div class="brand-mark">
+    <span class="treatise">El cuerpo humano · capítulo 2</span>
+    <span class="book">Física del Cuerpo Humano — I. P. Herman</span>
+  </div>
+</nav>
+
+<!-- ═══════════ PORTADA ═══════════ -->
+<div class="slide-full active" data-slide="0" data-module="0">
+  <h1>
+    <span class="chapno">Capítulo 2</span>
+    La <span class="vol">Estática</span> del Cuerpo
+  </h1>
+  <p class="subtitle">Las fuerzas, los torques y el equilibrio se revisan primero y luego se aplican a la estática en un plano y a la palanca. Analizamos el antebrazo, la cadera, el hombro, la rodilla, el tobillo, las mandíbulas y la parte baja de la espalda — donde las fuerzas internas pueden superar varias veces el peso corporal.</p>
+  <div class="rule"></div>
+  <div class="module-preview" id="modulePreview">
+    <span class="mpill" onclick="goModule(1)"><span class="ico">🧲</span> Fuerzas · Torques</span>
+    <span class="mpill" onclick="goModule(2)"><span class="ico">⚖️</span> Palancas · Antebrazo</span>
+    <span class="mpill" onclick="goModule(3)"><span class="ico">🦴</span> La cadera</span>
+    <span class="mpill" onclick="goModule(4)"><span class="ico">🏋️</span> La espalda</span>
+    <span class="mpill" onclick="goModule(5)"><span class="ico">🦷</span> Articulaciones · Mandíbula</span>
+    <span class="mpill" onclick="goModule(6)"><span class="ico">📐</span> Métodos</span>
+    <span class="mpill" onclick="goModule(7)"><span class="ico">✋</span> El tacto</span>
+    <span class="mpill" onclick="goModule(8)"><span class="ico">✓</span> Unidades · Resumen</span>
+  </div>
+  <button class="start-btn" onclick="goModule(1)">Comenzar la cátedra →</button>
+  <p class="book-ref">Physics of the Human Body — Irving P. Herman · Springer (2016)</p>
+</div>
+
+<!-- ═══════════ M1 · FUERZAS Y TORQUES ═══════════ -->
+<div class="slide" data-slide="1" data-module="1">
+  <div class="module-header">
+    <span class="mnum">2.1</span>
+    <span class="mtitle">Fuerzas, torques y equilibrio</span>
+    <span class="msub">Las dos condiciones que mantienen el cuerpo quieto</span>
+    <span class="mslide-count">1 / 19</span>
+  </div>
+  <div class="content-grid single-col">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">⚖️</span> Las condiciones del equilibrio</div>
+        <div class="card-body">
+          <p>En una condición estática, la suma de las fuerzas en cada dirección es cero, y la suma de los torques alrededor de cada eje también es cero:</p>
+          <div class="eq-block">\[ \sum F_x=0,\quad \sum F_y=0,\quad \sum F_z=0 \]</div>
+          <div class="eq-block">\[ \sum \tau_x=0,\quad \sum \tau_y=0,\quad \sum \tau_z=0 \]</div>
+          <p>La velocidad del centro de masa y la velocidad angular alrededor de cada eje son entonces <strong>constantes</strong> — normalmente, cero. El equilibrio vale para todo el cuerpo <em>o para cualquier parte de él</em>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🚀</span> Fuerzas y torques cambian el movimiento</div>
+        <div class="card-body">
+          <p>Las fuerzas cambian el movimiento lineal; los torques cambian el movimiento angular:</p>
+          <div class="eq-block">\[ \vec{\mathbf{F}} = m\vec{\mathbf{a}} = \frac{d\vec{\mathbf{p}}}{dt} \qquad \vec{\boldsymbol{\tau}} = I\frac{d\vec{\boldsymbol{\Omega}}}{dt} = \frac{d\vec{\mathbf{L}}}{dt} \]</div>
+          <p>Lo que llamamos <span class="tag">torque</span> aquí (rotación, cap. 2 y 3) se llama <span class="tag">momento</span> cuando se estudia la flexión de objetos (cap. 4). En estática, el lado derecho es cero.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">⏳</span> Estática y cuasiestática</div>
+        <div class="card-body">
+          <p>El estudio del balance de fuerzas de un objeto <strong>en reposo</strong> se llama <strong>estática</strong>. El movimiento <em>muy lento</em> puede tratarse como una serie de condiciones estáticas — como si no hubiera movimiento —; eso es la <strong>cuasiestática</strong>.</p>
+          <div class="concept-flow">
+            <span class="step done">Fuerzas → ΣF = 0</span><span class="arrow">→</span>
+            <span class="step done">Torques → Στ = 0</span><span class="arrow">→</span>
+            <span class="step done">Equilibrio estático</span>
+          </div>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-1">La estática es la puerta de entrada a la biomecánica: antes de entender el movimiento (cap. 3) hay que entender por qué el cuerpo <em>no</em> se mueve.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="2" data-module="1">
+  <div class="module-header">
+    <span class="mnum">2.1</span>
+    <span class="mtitle">El torque: τ = rF sinθ</span>
+    <span class="msub">Una fuerza aplicada a distancia hace girar</span>
+    <span class="mslide-count">2 / 19</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🔄</span> ¿Qué es un torque?</div>
+        <div class="card-body">
+          <p>Una fuerza <span class="tag">F</span> aplicada a una distancia <span class="tag">r</span> de un eje produce un torque (producto cruz vectorial):</p>
+          <div class="eq-block">\[ \vec{\boldsymbol{\tau}} = \vec{\mathbf{r}} \times \vec{\mathbf{F}} \]</div>
+          <p>Fuerza hacia <span class="highlight">+y</span> a distancia <span class="highlight">+r</span> del eje z → torque <span class="highlight">positivo</span>, giro antihorario que aumenta el ángulo θ. Fuerza hacia −y → torque negativo.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📐</span> La magnitud depende del ángulo</div>
+        <div class="card-body">
+          <p>Llamando θ al ángulo de <span class="tag">r</span> a <span class="tag">F</span>:</p>
+          <div class="eq-block">\[ \tau_z = r\,F\,\sin\theta \]</div>
+          <p>Para θ entre <strong>0° y 180°</strong>, sinθ &gt; 0 → torque positivo. Para θ entre <strong>180° y 360°</strong>, sinθ &lt; 0 → torque negativo. Cuando <strong>θ = 90°</strong>, τ = rF (máximo). Cuando <span class="tag">r</span> y <span class="tag">F</span> son paralelos o antiparalelos, <strong>el torque es cero</strong>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">✂️</span> Solo la componente normal contribuye</div>
+        <div class="card-body">
+          <p>Equivalentemente, solo la componente de <span class="tag">r</span> normal a <span class="tag">F</span> (r′) — o la de <span class="tag">F</span> normal a <span class="tag">r</span> (F′) — produce torque:</p>
+          <div class="eq-block">\[ \tau_z = r\,F\,\sin\theta = r'\,F = r\,F' \]</div>
+          <p>Esto vale para cualquier eje: se elige el que más simplifique el problema. <strong>Explora:</strong> mueve θ y observa cómo cambia el torque y cuáles componentes importan.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-2">En la clase: la palanca de la mano con la llave inglesa — el brazo de palanca más largo y el ángulo de 90° son las claves para aflojar un tornillo.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-torque" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">τ = rF sinθ</span>
+        <label>θ <input type="range" id="tq_theta" min="0" max="360" value="60" oninput="drawTorque()"></label>
+        <label>r <input type="range" id="tq_r" min="20" max="100" value="70" oninput="drawTorque()"></label>
+        <label>F <input type="range" id="tq_f" min="10" max="100" value="60" oninput="drawTorque()"></label>
+        <span class="readout" id="tq_out">τ = +3.6 N·m</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M2 · PALANCAS Y ANTEBRAZO ═══════════ -->
+<div class="slide" data-slide="3" data-module="2">
+  <div class="module-header">
+    <span class="mnum">2.2</span>
+    <span class="mtitle">Estática en un plano: las palancas</span>
+    <span class="msub">Todo el cuerpo se reduce a tres clases</span>
+    <span class="mslide-count">3 / 19</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">📉</span> Del espacio al plano</div>
+        <div class="card-body">
+          <p>El movimiento de codos y rodillas ocurre en un plano (por ejemplo el xy). Las seis ecuaciones se reducen a tres:</p>
+          <div class="eq-block">\[ \sum F_x=0,\quad \sum F_y=0,\quad \sum \tau_z=0 \]</div>
+          <p>Un hueso (barra) descansa sobre un <strong>fulcro</strong> (la articulación). Un peso <span class="tag">W</span> y una fuerza muscular <span class="tag">M</span> actúan a distancias <span class="tag">d_W</span> y <span class="tag">d_M</span> del fulcro. En equilibrio:</p>
+          <div class="eq-block">\[ M\,d_M = W\,d_W \qquad\Longrightarrow\qquad M = \frac{d_W}{d_M}\,W \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">1️⃣2️⃣3️⃣</span> Tres clases de palancas</div>
+        <div class="card-body">
+          <div class="row">
+            <span class="pill" onclick="setLever(1)">1ª clase · lados opuestos</span>
+            <span class="pill" onclick="setLever(2)">2ª clase · ventaja mecánica</span>
+            <span class="pill" onclick="setLever(3)">3ª clase · más común</span>
+          </div>
+          <p><strong>1ª clase:</strong> peso y músculo en lados opuestos del fulcro (menos común en el cuerpo). <strong>2ª clase:</strong> mismo lado, peso más cerca → M &lt; W, ventaja mecánica W/M &gt; 1. <strong>3ª clase:</strong> músculo más cerca del fulcro → M ≫ W (la más común).</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-3"><strong>Explora el simulador:</strong> cambia la clase, el peso y las distancias. Observa cómo crece M cuando el músculo está cerca del fulcro.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-levers" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">M·d_M = W·d_W</span>
+        <label>Clase
+          <select id="lev_clase" onchange="setLever(+this.value)">
+            <option value="1">1ª clase</option>
+            <option value="2">2ª clase</option>
+            <option value="3" selected>3ª clase</option>
+          </select>
+        </label>
+        <label>W <input type="range" id="lev_w" min="10" max="200" value="100" oninput="drawLevers()"></label>
+        <label>d_W <input type="range" id="lev_dw" min="20" max="100" value="70" oninput="drawLevers()"></label>
+        <span class="readout" id="lev_out">M = 700 N</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="4" data-module="2">
+  <div class="module-header">
+    <span class="mnum">2.2</span>
+    <span class="mtitle">Palancas en el cuerpo</span>
+    <span class="msub">Cabeza, puntillas y antebrazo</span>
+    <span class="mslide-count">4 / 19</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">1️⃣</span> Primera clase</div>
+        <div class="card-body">
+          <p>El <strong>balancín</strong> es el ejemplo clásico. En el cuerpo: la <strong>cabeza sobre la columna</strong> (el peso de la cabeza se equilibra con la fuerza de los músculos, fig. a) y el <strong>tríceps braquial</strong> tirando del cúbito alrededor del codo (fig. b). Como d_M ≪ d_W, el tríceps debe ejercer fuerzas mucho mayores que las aplicadas en la mano.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">2️⃣</span> Segunda clase</div>
+        <div class="card-body">
+          <p><strong>Pararse de puntillas:</strong> el pie rota alrededor de los dedos (fulcro); el peso del pie es contrarrestado por la fuerza del tendón de <strong>Aquiles</strong>. El peso está más cerca del fulcro, así que <span class="tag">M &lt; W</span> — hay <strong>ventaja mecánica</strong>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">3️⃣</span> Tercera clase</div>
+        <div class="card-body">
+          <p>El <strong>antebrazo</strong> equilibrado por el <strong>bíceps braquial</strong> sobre el radio (fig. d), o sostener un peso con el brazo extendido. El músculo está cerca del codo: <span class="tag">M ≫ W</span>. Parece una desventaja… pero mueve el peso mucho más lejos de lo que se acorta el músculo. <strong>Explora la amplificación:</strong></p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-4">Los músculos se contraen solo unos centímetros (el bíceps, ~7–8 cm de su longitud de ~25 cm). La palanca de 3ª clase amplifica esa distancia en d_W/d_M.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-amp" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">Amplificación de distancia</span>
+        <label>Contracción <input type="range" id="amp_dy" min="0" max="80" value="24" oninput="drawAmp()"></label>
+        <span class="readout" id="amp_out">mano ↓ 70 mm</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="5" data-module="2">
+  <div class="module-header">
+    <span class="mnum">2.3</span>
+    <span class="mtitle">El antebrazo: Casos 1 y 2</span>
+    <span class="msub">El bíceps equilibra el peso en la mano</span>
+    <span class="mslide-count">5 / 19</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">💪</span> El modelo</div>
+        <div class="card-body">
+          <p>El <strong>bíceps braquial</strong> se inserta en el <strong>radio</strong> (el hueso largo del antebrazo). El antebrazo mide <span class="tag">0,146 H</span> y la mano <span class="tag">0,108 H</span>, así que el peso en la mano está a ≈ <strong>0,2 H</strong> del pivote del codo. Para H = 180 cm, <strong>d_W = 36 cm</strong>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">1️⃣</span> Caso 1 — sin la masa del antebrazo</div>
+        <div class="card-body">
+          <p>El bíceps se inserta a <strong>4 cm</strong> del pivote. Con <span class="tag">d_W = 36 cm</span>:</p>
+          <div class="eq-block">\[ M = \frac{36}{4}\,W_W = 9\,W_W \]</div>
+          <p>Para un peso de <strong>100 N</strong> (≈ 22 lb), el músculo debe dar <strong>900 N</strong> (≈ 200 lb). Suponemos ángulo de 90° y despreciamos la masa del antebrazo.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">2️⃣</span> Caso 2 — con el peso del antebrazo</div>
+        <div class="card-body">
+          <p>El antebrazo pesa <span class="tag">W_F ≈ 0,022 W_b</span> (≈ <strong>15 N</strong> para 70 kg) y actúa en su centro de masa, a <span class="tag">d_F ≈ 13 cm</span> del pivote:</p>
+          <div class="eq-block">\[ M = \frac{d_W}{d_M}W_W + \frac{d_F}{d_M}W_F = 9\,W_W + 3{,}25\,W_F \]</div>
+          <p>La fuerza sube a <strong>950 N</strong> (210 lb). <strong>Explora:</strong> cambia el peso y alterna el modelo.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-5">Siempre empezar con modelos simples… y saber exactamente qué aproximación se hizo. Aquí: ángulo de 90° y masa del antebrazo despreciada.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-forearm" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">M = 9W_W + 3,25W_F</span>
+        <label>Peso en mano <input type="range" id="fa_w" min="0" max="150" value="100" oninput="drawForearm()"></label>
+        <label>Modelo
+          <select id="fa_model" onchange="drawForearm()">
+            <option value="1">Caso 1 (sin antebrazo)</option>
+            <option value="2" selected>Caso 2 (con antebrazo)</option>
+          </select>
+        </label>
+        <span class="readout" id="fa_out">M = 950 N</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="6" data-module="2">
+  <div class="module-header">
+    <span class="mnum">2.3</span>
+    <span class="mtitle">El antebrazo: Casos 3 y 4</span>
+    <span class="msub">El ángulo no cambia M · tres músculos flexionan</span>
+    <span class="mslide-count">6 / 19</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">📐</span> Caso 3 — el ángulo θ</div>
+        <div class="card-body">
+          <p>El antebrazo puede flexionarse más de <strong>142°</strong>. Con el brazo vertical, cada torque se multiplica por sinθ… y se cancela:</p>
+          <div class="eq-block">\[ M\,d_M\,\sin\theta = W_W\,d_W\,\sin\theta + W_F\,d_F\,\sin\theta \]</div>
+          <p>→ <strong>M no cambia con el ángulo.</strong> Pero la fuerza <em>máxima</em> que el músculo puede dar sí depende de θ (de su longitud): cerca de 90° es mayor.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">3️⃣</span> Caso 4 — tres músculos</div>
+        <div class="card-body">
+          <p>El bíceps no es el único: el <strong>braquial</strong> y el <strong>braquiorradial</strong> también flexionan. Si la fuerza de cada uno es proporcional a su área de sección fisiológica (PCA):</p>
+          <div class="eq-block">\[ M_i = k\,A_i,\qquad k = \frac{W_W d_W + W_F d_F}{A_1 d_{M1} + A_2 d_{M2} + A_3 d_{M3}} \]</div>
+          <p>Resultado: <span class="tag">M₁ = 262 N</span> (bíceps), <span class="tag">M₂ = 399 N</span> (braquial), <span class="tag">M₃ = 85 N</span> (braquiorradial).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🌀</span> El problema indeterminado</div>
+        <div class="card-body">
+          <p>Sin suponer <span class="tag">k</span> igual en los tres músculos no hay solución única. El cuerpo resuelve la indeterminación <strong>minimizando energía</strong> o redistribuyendo la carga para descansar músculos específicos.</p>
+          <table class="data-mini">
+            <tr><th>Músculo</th><th>d_i (cm)</th><th>PCA (cm²)</th><th>M_i (N)</th></tr>
+            <tr><td>Bíceps (1)</td><td>4,6</td><td>4,6</td><td>262</td></tr>
+            <tr><td>Braquial (2)</td><td>3,4</td><td>7,0</td><td>399</td></tr>
+            <tr><td>Braquiorradial (3)</td><td>7,5</td><td>1,5</td><td>85</td></tr>
+            <tr><td class="table-caption" colspan="4">Tabla 2.1 — datos de la flexión del codo (k ≤ ~40 N/cm²)</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-6">El braquial tiene brazo de momento corto (3,4 cm) pero gran PCA (7 cm²): aporta la mayor fuerza.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-forearm2" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">Caso 3 · Caso 4</span>
+        <label>θ <input type="range" id="fa2_theta" min="20" max="140" value="90" oninput="drawForearm2()"></label>
+        <label>Peso <input type="range" id="fa2_w" min="0" max="150" value="100" oninput="drawForearm2()"></label>
+        <button onclick="toggleForearmMuscles()">Músculos: 1 / 3</button>
+        <span class="readout" id="fa2_out">M₁+M₂+M₃ = 746 N</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M3 · LA CADERA ═══════════ -->
+<div class="slide" data-slide="7" data-module="3">
+  <div class="module-header">
+    <span class="mnum">2.3</span>
+    <span class="mtitle">La cadera de pie en una pierna</span>
+    <span class="msub">Las fuerzas internas superan el peso corporal</span>
+    <span class="mslide-count">7 / 19</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🦴</span> Anatomía de la cadera</div>
+        <div class="card-body">
+          <p>La pelvis fusiona <strong>ilion</strong> (superior), <strong>pubis</strong> (anterior-inferior) e <strong>isquion</strong> (posterior-inferior), más sacro y coxis. El <strong>acetábulo</strong> es la cavidad donde se aloja la cabeza del fémur, retenida por los <strong>músculos abductores</strong> (tensor de la fascia lata, glúteo menor y glúteo medio) unidos al trocánter mayor.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🧍</span> Equilibrio del cuerpo completo</div>
+        <div class="card-body">
+          <p>Solo dos fuerzas sobre el cuerpo: el peso <span class="tag">W_b</span> (en el centro de masa, línea media) y la normal <span class="tag">N = W_b</span> del suelo. Los torques se anulan eligiendo el eje en el centro de masa.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🔍</span> La pierna como cuerpo libre</div>
+        <div class="card-body">
+          <p>Cuatro fuerzas: <span class="tag">N</span>, el peso de la pierna <span class="tag">W_leg ≈ 0,16 W_b</span>, la reacción del acetábulo <span class="tag">R</span> y los abductores <span class="tag">M</span> a ~70° sobre el trocánter mayor. Resolviendo:</p>
+          <div class="eq-block">\[ M = \frac{10{,}8 - 0{,}5}{7{,}0\,\sin 70°}\,W_b \approx 1{,}57\,W_b \]</div>
+          <div class="eq-block">\[ R = 2{,}37\,W_b,\qquad \phi = 13° \]</div>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-7">Para 90 kg (880 N): M ≈ <strong>1400 N</strong> (320 lb) y R ≈ <strong>2100 N</strong> (470 lb). Ahí nace el problema de cadera: la fuerza interna es ~2,4× el peso corporal.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-hip" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">M = 1,57W_b · R = 2,37W_b</span>
+        <label>Masa <input type="range" id="hip_m" min="50" max="120" value="90" oninput="drawHip()"></label>
+        <button onclick="hipToggleBreakdown()">Descomponer R</button>
+        <span class="readout" id="hip_out">M = 1380 N</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="8" data-module="3">
+  <div class="module-header">
+    <span class="mnum">2.3</span>
+    <span class="mtitle">El bastón alivia la cadera</span>
+    <span class="msub">Apojar 1/6 del peso, un gran efecto</span>
+    <span class="mslide-count">8 / 19</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🦯</span> Con bastón</div>
+        <div class="card-body">
+          <p>El bastón (a <strong>30,5 cm</strong> de la línea media) toma <span class="tag">N_c = W_b/6</span>. El pie derecho se desplaza <span class="tag">L = 6,1 cm</span> y su normal baja a <span class="tag">N_f = 5W_b/6</span>:</p>
+          <div class="eq-block">\[ L = \frac{N_c}{N_f}\,30{,}5\text{ cm} = \frac{1}{5}\,30{,}5\text{ cm} = 6{,}1\text{ cm} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📉</span> La pierna, de nuevo</div>
+        <div class="card-body">
+          <p>El brazo de momento de N baja de <strong>10,8 → 4,7 cm</strong> (el pie se alejó de la línea media). Resultado:</p>
+          <div class="eq-block">\[ M = 0{,}61\,W_b,\qquad R = 1{,}26\,W_b \]</div>
+          <p>Para 880 N: <span class="tag">M = 540 N</span> (antes 1400 N) y <span class="tag">R = 1100 N</span> (antes 2100 N). ¡Con solo apoyar ~145 N en el bastón!</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📊</span> Fuerzas máximas por actividad</div>
+        <div class="card-body">
+          <table class="data-mini">
+            <tr><th>Actividad</th><th>Magnitud / W_b</th></tr>
+            <tr><td>Caminar</td><td>4,8–5,5</td></tr>
+            <tr><td>Caminar lento con/sin bastón</td><td>2,2 / 3,4</td></tr>
+            <tr><td>Subir escaleras</td><td>7,2–7,4</td></tr>
+            <tr><td>Bajar escaleras</td><td>7,1</td></tr>
+            <tr><td>Levantarse de una silla</td><td>3,3</td></tr>
+            <tr><td class="table-caption" colspan="2">Tabla 2.2 — estimaciones analíticas</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-8">La fuerza excesiva desgasta el cartílago y lleva al <strong>reemplazo de cadera</strong>: bola de cobalto-cromo o titanio fijada con PMMA («cemento óseo») y cavidad de polietileno de alto peso molecular.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-hipcane" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">Con bastón · sin bastón</span>
+        <button onclick="toggleCane()">Bastón: sí</button>
+        <label>Apoyo <input type="range" id="cane_nc" min="0" max="100" value="17" oninput="drawHipCane()"></label>
+        <span class="readout" id="cane_out">M = 540 N</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M4 · LA ESPALDA ═══════════ -->
+<div class="slide" data-slide="9" data-module="4">
+  <div class="module-header">
+    <span class="mnum">2.3</span>
+    <span class="mtitle">La columna y los erectores</span>
+    <span class="msub">Por qué doblarse cuesta tan caro</span>
+    <span class="mslide-count">9 / 19</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🦴</span> La columna vertebral</div>
+        <div class="card-body">
+          <p><strong>33 vértebras</strong> (26 huesos) en cinco secciones: cervical, torácica, lumbar, sacro y coxis. Curvas <strong>primarias</strong> (torácica, sacra) y <strong>secundarias</strong> (cervical, lumbar). El <strong>ángulo lumbosacro</strong> (~30°) desvía el eje; modelamos la columna como una <strong>barra rígida</strong> a un ángulo θ de la horizontal.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">💪</span> Los erectores de la columna</div>
+        <div class="card-body">
+          <p>Modelamos los <strong>erectores de la columna</strong> (iliocostal, longísimo, espinal) como un solo músculo insertado a <strong>2/3 L</strong> del pivote, a un ángulo <span class="tag">θ − 12°</span>. Pesos: tronco <span class="tag">W₁ = 0,4 W_b</span> (a L/2) y cabeza+brazos <span class="tag">W₂ = 0,2 W_b</span> (en la parte superior).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📈</span> Las fuerzas en θ = 30°</div>
+        <div class="card-body">
+          <div class="eq-block">\[ M = 2{,}5\,W_b = 2200\text{ N},\qquad R = 2{,}74\,W_b = 2400\text{ N} \]</div>
+          <p>¡El músculo tira 2,5× el peso corporal solo para sostener el tronco inclinado! Los brazos de momento de los pesos son similares al del músculo, pero la <em>dirección</em> de la fuerza muscular no compensa eficientemente. <strong>Explora:</strong> cambia el ángulo y añade carga.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-9">Miremos el recuadro: θ es el ángulo de la columna con la <em>horizontal</em> — inclinarse hasta 30° desde el suelo es una flexión profunda.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-back" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">M = 2,5W_b · R = 2,74W_b</span>
+        <label>θ <input type="range" id="back_theta" min="30" max="90" value="30" oninput="drawBack()"></label>
+        <button onclick="toggleBackLoad()">Carga: sin</button>
+        <span class="readout" id="back_out">M = 2200 N</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="10" data-module="4">
+  <div class="module-header">
+    <span class="mnum">2.3</span>
+    <span class="mtitle">Levantar peso y los discos</span>
+    <span class="msub">Nunca dobles la espalda y levantes</span>
+    <span class="mslide-count">10 / 19</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🏋️</span> El peligro de levantar</div>
+        <div class="card-body">
+          <p>Levantar un objeto de <span class="tag">0,2 W_b</span> (180 N ≈ 40 lb) en los brazos <em>aumenta</em> W₂. Para θ = 30°:</p>
+          <div class="eq-block">\[ M = 3{,}74\,W_b = 3300\text{ N},\qquad R = 4{,}07\,W_b = 3600\text{ N} \]</div>
+          <p>El músculo gana 1100 N y el disco L5 otros 1200 N — <strong>por solo 180 N</strong> levantados.</p>
+          <table class="data-mini">
+            <tr><th>θ</th><th>M (sin)</th><th>M (carga)</th><th>R (sin)</th><th>R (carga)</th></tr>
+            <tr><td>30°</td><td>2,50</td><td>3,74</td><td>2,74</td><td>4,07</td></tr>
+            <tr><td>60°</td><td>1,44</td><td>2,16</td><td>1,93</td><td>2,81</td></tr>
+            <tr><td>80°</td><td>0,50</td><td>0,75</td><td>1,08</td><td>1,53</td></tr>
+            <tr><td>90°</td><td>0</td><td>0</td><td>0,60</td><td>0,80</td></tr>
+            <tr><td class="table-caption" colspan="5">Tabla 2.3 — fuerzas en unidades de W_b (90 kg → ×880 N)</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">💿</span> El disco intervertebral</div>
+        <div class="card-body">
+          <p>2400 N comprimen el disco ~<strong>20%</strong> (Fig. 2.42). Si el disco es incompresible, su volumen se conserva: la altura baja 20% y el radio crece ~10% → <strong>disco protuberante (hernia)</strong> que presiona la raíz del nervio (Fig. 2.37).</p>
+          <div class="eq-block">\[ \text{Volumen} = \pi r^2 H = \text{constante} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🪑</span> Presión intradiscal</div>
+        <div class="card-body">
+          <p>Porcentaje de la presión al estar de pie relajado:</p>
+          <table class="data-mini">
+            <tr><th>Posición o actividad</th><th>%</th></tr>
+            <tr><td>Acostado boca arriba</td><td>20</td></tr>
+            <tr><td>Bipedestación relajada</td><td>100</td></tr>
+            <tr><td>Sentado inclinado hacia adelante</td><td>166</td></tr>
+            <tr><td>Sentado encorvado</td><td>54</td></tr>
+            <tr><td>Levantar 20 kg sin doblar rodillas</td><td>460</td></tr>
+            <tr><td>Levantar 20 kg con rodillas dobladas</td><td>340</td></tr>
+            <tr><td class="table-caption" colspan="2">Tabla 2.4 — valores relativos (datos de Wilke et al.)</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra — cuida tu espalda</div>
+        <div class="a-text" id="info-text-10">Dobla <strong>las rodillas</strong> al levantar, mantén la curvatura lumbar, usa sillas con soporte lumbar, y duerme boca arriba con las rodillas dobladas o en posición fetal — nunca boca abajo.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-disc" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">Compresión del disco</span>
+        <button onclick="setDiscPosture('upright')">Vertical</button>
+        <button onclick="setDiscPosture('bend')">Inclinado</button>
+        <button onclick="setDiscPosture('lift')">Levantando</button>
+        <span class="readout" id="disc_out">Disco sano</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M5 · ARTICULACIONES Y MANDÍBULA ═══════════ -->
+<div class="slide" data-slide="11" data-module="5">
+  <div class="module-header">
+    <span class="mnum">2.3</span>
+    <span class="mtitle">Hombro y rodilla</span>
+    <span class="msub">Deltoides que no estabilizan · la rótula como polea</span>
+    <span class="mslide-count">11 / 19</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">💪</span> Hombro: el brazo horizontal</div>
+        <div class="card-body">
+          <p>El <strong>deltoides</strong> sostiene el brazo horizontal y la mano con un peso. Para parámetros razonables, la componente <span class="tag">F_x ≈ 4·F_y</span> — por eso sostener el brazo extendido <strong>no es estable</strong>. La articulación glenohumeral es poco profunda → <strong>dislocaciones</strong> frecuentes.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🦵</span> Rodilla: dos articulaciones</div>
+        <div class="card-body">
+          <p><strong>Tibiofemoral</strong> (cóndilos del fémur + tibia, separados por los <strong>meniscos</strong>) y <strong>patelofemoral</strong>. El <strong>cuádriceps</strong> se une a la rótula y esta, vía tendón patelar, a la tibia. <strong>Explora</strong> la pantorrilla con pesa en el tobillo:</p>
+          <div class="eq-block">\[ M = \frac{(b\,W_1 + c\,W_0)\cos\beta}{a\,\sin\theta} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🛞</span> La rótula como polea</div>
+        <div class="card-body">
+          <p>La rótula <strong>aumenta el brazo de momento</strong> y, por tanto, el torque del cuádriceps:</p>
+          <div class="eq-block">\[ F_P = \frac{\cos\gamma - \cos\alpha}{\cos\phi}\,M \]</div>
+          <p>Para a = 12 cm, b = 22 cm, c = 50 cm, W₁ = 150 N, W₀ = 100 N, θ = 15°, β = 45°: <span class="tag">M = 1381 N</span> y <span class="tag">R = 1171 N</span>.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-11">Las fuerzas en la rodilla durante la marcha son ~3–4 W_b; al subir escaleras, mucho mayores. Por eso la rodilla sufre.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-shoulder" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">Hombro · deltoides</span>
+        <label>Peso mano <input type="range" id="sh_w" min="0" max="150" value="50" oninput="drawShoulder()"></label>
+        <span class="readout" id="sh_out">M ≈ 4,1×W</span>
+      </div>
+      <div class="sim-area" style="margin-top:.8rem;min-height:150px">
+        <canvas id="sim-knee" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">Rodilla · pantorrilla</span>
+        <label>β <input type="range" id="kn_beta" min="0" max="60" value="45" oninput="drawKnee()"></label>
+        <span class="readout" id="kn_out">M = 1381 N</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="12" data-module="5">
+  <div class="module-header">
+    <span class="mnum">2.3</span>
+    <span class="mtitle">Tobillo y mandíbula</span>
+    <span class="msub">Puntillas · masticar y morder</span>
+    <span class="mslide-count">12 / 19</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🦶</span> Tobillo: de puntillas</div>
+        <div class="card-body">
+          <p>El <strong>astrágalo</strong> está en equilibrio con la normal del suelo (W_b) y la fuerza del <strong>tendón de Aquiles</strong> sobre el calcáneo. Forman un sistema <strong>concurrente</strong>:</p>
+          <div class="eq-block">\[ M = W_b\,\frac{\cos\beta}{\cos(\theta+\beta)} \]</div>
+          <p>Para θ = 45° y β = 60°: <span class="tag">M = 1,93 W_b</span> y <span class="tag">R = 2,73 W_b</span> — muy por encima del peso corporal.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🦷</span> Mandíbula: la razón del ángulo recto</div>
+        <div class="card-body">
+          <p>Si la mandíbula fuera un hueso recto con dientes iguales, los posteriores tocarían primero. El <strong>ángulo recto</strong> de la rama hace que muchos dientes se toquen a la vez. Ocho dientes por lado, memorizables con <strong>ICBM</strong>: <em>incisivos, canino, bicúspides, molares</em>. Los <strong>maseteros</strong> dan la fuerza de la masticación.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📐</span> Ventaja mecánica de morder</div>
+        <div class="card-body">
+          <p>Ventajas mecánicas de los músculos (hombre):</p>
+          <table class="data-mini">
+            <tr><th>Músculo</th><th>Incisivo</th><th>1er molar</th></tr>
+            <tr><td>Masetero</td><td>0,50</td><td>0,76</td></tr>
+            <tr><td>Temporal anterior</td><td>0,24</td><td>0,48</td></tr>
+            <tr><td>Temporal posterior</td><td>0,37</td><td>0,72</td></tr>
+            <tr><td class="table-caption" colspan="3">Problema 2.28 (ligeramente menores en mujeres)</td></tr>
+          </table>
+          <p>La <strong>ortodoncia</strong> aplica fuerzas y torques al diente alrededor de su <strong>centro de resistencia</strong> (no su centro de masa, porque el periodonto lo restringe).</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-12">¿Por qué tanta ortodoncia? Tal vez las mandíbulas no crecen tan anchas porque los alimentos blandos no ejercen las tensiones que las endurecían.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-ankle" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">Puntillas · Aquiles</span>
+        <label>β <input type="range" id="an_beta" min="30" max="75" value="60" oninput="drawAnkle()"></label>
+        <span class="readout" id="an_out">M = 1,93 W_b</span>
+      </div>
+      <div class="sim-area" style="margin-top:.8rem;min-height:150px">
+        <canvas id="sim-jaw" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">Mandíbula · masetero</span>
+        <button onclick="setJawPos('incisor')">Morder: incisivo</button>
+        <button onclick="setJawPos('molar')">Morder: molar</button>
+        <span class="readout" id="jaw_out">AM = 0,50</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M6 · MÉTODOS ═══════════ -->
+<div class="slide" data-slide="13" data-module="6">
+  <div class="module-header">
+    <span class="mnum">2.3</span>
+    <span class="mtitle">La regla de las tres fuerzas</span>
+    <span class="msub">Un método gráfico para la rodilla</span>
+    <span class="mslide-count">13 / 19</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🔺</span> Tres fuerzas en equilibrio</div>
+        <div class="card-body">
+          <p>Pie y pierna inferior aislados (subir escaleras): la normal <span class="tag">N</span> en la parte anterior del pie (≈ W_b), la fuerza del <strong>tendón patelar</strong> <span class="tag">M</span>, y la reacción <span class="tag">R</span> de los cóndilos femorales en <span class="tag">Q</span>. Tres incógnitas (M, R y su dirección): el problema tiene solución directa… y una forma gráfica elegante.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📏</span> La regla</div>
+        <div class="card-body">
+          <p>Extiende <span class="tag">N</span> y <span class="tag">M</span>: se cruzan en <span class="tag">P</span>. Si el eje pasa por P, estas dos no producen torque. Como el torque neto es cero, <strong>R también debe pasar por P</strong>: <span class="tag">R ∥ QP</span>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📐</span> El triángulo cerrado</div>
+        <div class="card-body">
+          <p>Con direcciones conocidas, encola <span class="tag">M</span> y <span class="tag">R</span> a la cabeza y cola de <span class="tag">N</span> y alárgalos hasta tocarse: el triángulo se <strong>cierra</strong> y ΣF = 0. <strong>Explora paso a paso.</strong></p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-13">Las fuerzas de reacción en la rodilla son ~3–4 W_b durante la marcha, y mucho mayores al subir escaleras.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-threeforce" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">Construcción</span>
+        <button onclick="threeStep(-1)">← paso</button>
+        <button onclick="threeStep(1)">paso →</button>
+        <span class="readout" id="tf_out">Paso 1 de 4 · N y M</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="14" data-module="6">
+  <div class="module-header">
+    <span class="mnum">2.3</span>
+    <span class="mtitle">Modelado multisegmento</span>
+    <span class="msub">La pierna como tres cuerpos articulados</span>
+    <span class="mslide-count">14 / 19</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🔗</span> Segmentos articulados</div>
+        <div class="card-body">
+          <p>Un modelo anatómico de la pierna se reduce a <strong>tres segmentos</strong>: muslo, pantorrilla y pie. Cada uno con su masa <span class="tag">m</span>, centro de masa (punto) y momento de inercia <span class="tag">I</span>, unidos por <strong>bisagras</strong> (cadera, rodilla, tobillo).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🧩</span> Diagramas de cuerpo libre</div>
+        <div class="card-body">
+          <p>Cada segmento se aísla. En cada articulación, las fuerzas de reacción <span class="tag">R</span> son <strong>iguales en magnitud y opuestas en dirección</strong> (Tercera Ley de Newton). Se pueden analizar las fuerzas y torques de cada segmento por separado.</p>
+          <div class="eq-block">\[ \vec{\mathbf{R}}_2^{\,(\text{muslo})} = -\vec{\mathbf{R}}_2^{\,(\text{pantorrilla})} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🎯</span> Para qué sirve</div>
+        <div class="card-body">
+          <p>Se analizan las fuerzas musculares, las reacciones articulares y los torques <em>por segmento</em> — no solo el cuerpo completo. Es la base del análisis de movimiento del <strong>Capítulo 3</strong>. <strong>Pasa el cursor</strong> sobre cada segmento.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-14">El mismo principio de «todo el cuerpo y luego la pierna por separado» que usamos en la cadera.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-segments" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">3 segmentos</span>
+        <span class="readout" id="seg_out">Muslo · Pantorrilla · Pie</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M7 · EL TACTO ═══════════ -->
+<div class="slide" data-slide="15" data-module="7">
+  <div class="module-header">
+    <span class="mnum">2.4</span>
+    <span class="mtitle">Los receptores del tacto</span>
+    <span class="msub">Cuatro mecanorreceptores en la piel</span>
+    <span class="mslide-count">15 / 19</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">✋</span> Sentidos somáticos</div>
+        <div class="card-body">
+          <p>El cuerpo «siente» la fuerza: es el <strong>sentido del tacto</strong>. Los sentidos somáticos incluyen las sensaciones <strong>cutáneas</strong> (tacto, temperatura, dolor), la <strong>propiocepción</strong> (posición) y la <strong>cinestesia</strong> (movimiento).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🎚️</span> Los cuatro mecanorreceptores</div>
+        <div class="card-body">
+          <p>Cada uno responde a esfuerzos y desplazamientos en una <strong>banda de frecuencias</strong>:</p>
+          <div class="row">
+            <span class="pill" onclick="touchStim('press')">📌 presión</span>
+            <span class="pill" onclick="touchStim('flutter')">🦋 aleteo</span>
+            <span class="pill" onclick="touchStim('buzz')">🐝 zumbido</span>
+            <span class="pill" onclick="touchStim('vib')">📳 vibración</span>
+          </div>
+          <p><strong>Merkel</strong> (0,3–3 Hz): presión, entre epidermis y dermis. <strong>Meissner</strong> (3–40 Hz): golpecitos, <em>flutter</em>. <strong>Ruffini</strong> (15–400 Hz): estiramiento y movimiento articular, zumbido. <strong>Pacini</strong> (10–500 Hz): vibraciones rápidas.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🔢</span> Densidad espacial</div>
+        <div class="card-body">
+          <p>La densidad de mecanorreceptores varía enormemente: desde <span class="tag">25/cm²</span> en la punta de la lengua hasta <span class="tag">0,02/cm²</span> en la espalda. El movimiento del vello también estimula los receptores.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-15">Recuerda las siglas en orden de profundidad creciente: Merkel (borde epidermis-dermis), Meissner, Ruffini, Pacini (dermis profunda).</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-touch" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">Frecuencia del estímulo</span>
+        <label>f <input type="range" id="tch_f" min="0" max="100" value="30" oninput="drawTouch()"></label>
+        <span class="readout" id="tch_out">3 Hz · Meissner</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="16" data-module="7">
+  <div class="module-header">
+    <span class="mnum">2.4</span>
+    <span class="mtitle">Temperatura, dolor y Stevens</span>
+    <span class="msub">Termorreceptores · nociceptores · percepción</span>
+    <span class="mslide-count">16 / 19</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🌡️</span> Termorreceptores</div>
+        <div class="card-body">
+          <p>Dos tipos: las <strong>fibras cálidas</strong> aumentan su tasa de disparo solo cuando hace más calor (responden de 30 a 48 °C, mejor ~44 °C); las <strong>fibras frías</strong> solo cuando hace más frío (20 a 45 °C, mejor ~30 °C). Hay ~5–10 receptores térmicos por cm².</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">⚡</span> Nociceptores</div>
+        <div class="card-body">
+          <p>Detectan <strong>presión excesiva, temperatura extrema y químicos corrosivos</strong>. Unos transmiten rápido por axones <strong>mielinizados</strong> (hasta 30 m/s); otros señalan dolor persistente por axones <strong>no mielinizados</strong> (≤ 2 m/s).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📊</span> La percepción (Ley de Stevens)</div>
+        <div class="card-body">
+          <p>La sensación percibida varía con el estímulo: <strong>sublineal</strong> para la vibración, <strong>superlineal</strong> para la presión en la palma y la pesadez, <strong>lineal</strong> para el frío y <strong>superlineal</strong> para el calor (Tabla 1.15). <strong>Explora</strong> las curvas de disparo:</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-16">La <strong>palpación</strong> (usar las manos en el examen), la <strong>percusión</strong> (golpear) y la <strong>auscultación</strong> (escuchar, cap. 10) son los tres diagnósticos físicos que usan el tacto.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-thermal" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">Temperatura</span>
+        <label>T <input type="range" id="th_t" min="0" max="60" value="30" oninput="drawThermal()"></label>
+        <span class="readout" id="th_out">30 °C · frío óptimo</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M8 · UNIDADES Y RESUMEN ═══════════ -->
+<div class="slide" data-slide="17" data-module="8">
+  <div class="module-header">
+    <span class="mnum">2.5</span>
+    <span class="mtitle">Unidades de fuerza y presión</span>
+    <span class="msub">N · lb · dina · Pa · mmHg · psi</span>
+    <span class="mslide-count">17 / 19</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">⚖️</span> Unidades de fuerza</div>
+        <div class="card-body">
+          <p>MKS-SI: el <strong>newton</strong>. CGS: la <strong>dina</strong>. Inglés: la <strong>libra</strong>. Usamos lb para pesos corporales y N para el resto:</p>
+          <div class="eq-block">\[ 1\text{ N} = 10^5\text{ dinas} = 0{,}225\text{ lb} \qquad 1\text{ lb} = 4{,}45\text{ N} \]</div>
+          <div class="eq-block">\[ F = mg,\qquad g = 9{,}8\text{ m/s}^2 \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📏</span> Unidades de presión</div>
+        <div class="card-body">
+          <p>La presión es fuerza por unidad de área (un esfuerzo hidrostático igual en todas direcciones). Estándar: el <strong>pascal</strong> (1 Pa = 1 N/m²). A menudo usamos <strong>MPa = N/mm²</strong>; la presión arterial, en <strong>mmHg</strong>.</p>
+          <div class="eq-block">\[ P = \rho g h \]</div>
+          <p>Una columna de líquido de densidad ρ y altura h ejerce P = ρgh. ¡1 atm está a menos del 1% de 1 bar = 10⁵ Pa!</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🩺</span> En la práctica clínica</div>
+        <div class="card-body">
+          <p>Presión arterial <span class="tag">120/80 mmHg</span> (sistólica/diastólica, manométrica sobre la atm). Meteorología en pulgadas de Hg. Los pulmones, en cm de agua. Una masa de 1 kg pesa <strong>9,8 N</strong> — «kg de fuerza» debería leerse como ~10 N.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-17">La unidad de presión es la misma que la de energía/volumen (trabajo = fuerza × distancia). <strong>Explora</strong> el convertidor.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <div class="converter">
+          <div class="conv-row">
+            <span class="conv-icon">⚖️</span>
+            <span class="conv-label">Fuerza</span>
+            <input type="number" id="cv_f_val" value="100" oninput="convertUnits()">
+            <select id="cv_f_from" onchange="convertUnits()">
+              <option value="N" selected>newton (N)</option>
+              <option value="dyn">dina</option>
+              <option value="lb">libra (lb)</option>
+              <option value="kgf">kg-fuerza</option>
+            </select>
+            <span class="conv-eq">=</span>
+            <select id="cv_f_to" onchange="convertUnits()">
+              <option value="N">newton (N)</option>
+              <option value="dyn">dina</option>
+              <option value="lb" selected>libra (lb)</option>
+              <option value="kgf">kg-fuerza</option>
+            </select>
+            <span class="conv-result" id="cv_f_out">22,5 lb</span>
+          </div>
+          <div class="conv-row">
+            <span class="conv-icon">📏</span>
+            <span class="conv-label">Presión</span>
+            <input type="number" id="cv_p_val" value="760" oninput="convertUnits()">
+            <select id="cv_p_from" onchange="convertUnits()">
+              <option value="mmHg" selected>mmHg</option>
+              <option value="Pa">pascal (Pa)</option>
+              <option value="MPa">MPa</option>
+              <option value="psi">psi</option>
+              <option value="atm">atmósfera</option>
+              <option value="bar">bar</option>
+              <option value="cmH2O">cmH₂O</option>
+            </select>
+            <span class="conv-eq">=</span>
+            <select id="cv_p_to" onchange="convertUnits()">
+              <option value="mmHg">mmHg</option>
+              <option value="Pa" selected>pascal (Pa)</option>
+              <option value="MPa">MPa</option>
+              <option value="psi">psi</option>
+              <option value="atm">atmósfera</option>
+              <option value="bar">bar</option>
+              <option value="cmH2O">cmH₂O</option>
+            </select>
+            <span class="conv-result" id="cv_p_out">101.325 Pa</span>
+          </div>
+        </div>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">Convertidor</span>
+        <button onclick="convertPreset('bp')">Presión arterial</button>
+        <button onclick="convertPreset('atm')">1 atmósfera</button>
+        <button onclick="convertPreset('body')">Peso 70 kg</button>
+        <span class="readout">1 atm ≈ 1 bar</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="18" data-module="8">
+  <div class="module-header">
+    <span class="mnum">✓</span>
+    <span class="mtitle">Resumen del capítulo</span>
+    <span class="msub">Lo esencial para la clase</span>
+    <span class="mslide-count">18 / 19</span>
+  </div>
+  <div class="content-grid single-col">
+    <div class="theory" style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">⚖️</span> Equilibrio</div>
+        <div class="card-body"><p>ΣF = 0 y Στ = 0 en cada dirección. En el plano, tres ecuaciones (ΣF_x, ΣF_y, Στ_z).</p></div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">⚖️</span> Palancas</div>
+        <div class="card-body"><p><span class="tag">M·d_M = W·d_W</span>. Tres clases; la 3ª (músculo cerca del fulcro) domina el cuerpo.</p></div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">💪</span> Antebrazo</div>
+        <div class="card-body"><p>Bíceps a 4 cm: M = 9 W_W (+ 3,25 W_F con el peso del antebrazo). El ángulo no cambia M; tres músculos comparten la carga por su PCA.</p></div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🦴</span> Cadera y espalda</div>
+        <div class="card-body"><p>Fuerzas internas ≫ peso corporal (cadera R ≈ 2,4 W_b; disco L5 R ≈ 4 W_b al levantar). Un bastón con W_b/6 las reduce a la mitad.</p></div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📐</span> Métodos</div>
+        <div class="card-body"><p><strong>Regla de las tres fuerzas:</strong> R pasa por el cruce de N y M. <strong>Multisegmento:</strong> cada segmento con su diagrama de cuerpo libre.</p></div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">✋</span> Tacto y unidades</div>
+        <div class="card-body"><p>Merkel, Meissner, Ruffini, Pacini en sus bandas de frecuencia. Fuerza en N/lb, presión en Pa/mmHg/psi.</p></div>
+      </div>
+    </div>
+    <div class="theory" style="margin-top:.6rem">
+      <div class="apuntes">
+        <div class="a-hdr"><span>🎓</span> Idea central de la cátedra</div>
+        <div class="a-text">La estática del cuerpo se investiga con <strong>palancas</strong>: el equilibrio de cada parte se analiza con las fuerzas de gravedad, músculos y reacciones, y las fuerzas internas <strong>pueden superar varias veces el peso corporal</strong> — con consecuencias graves en cadera y espalda.</div>
+      </div>
+    </div>
+    <div class="concept-flow">
+      <span class="step" onclick="go(1)">Fuerzas y torques</span><span class="arrow">→</span>
+      <span class="step" onclick="go(3)">Palancas</span><span class="arrow">→</span>
+      <span class="step" onclick="go(5)">Antebrazo</span><span class="arrow">→</span>
+      <span class="step" onclick="go(7)">Cadera</span><span class="arrow">→</span>
+      <span class="step" onclick="go(9)">Espalda</span><span class="arrow">→</span>
+      <span class="step" onclick="go(13)">Métodos</span><span class="arrow">→</span>
+      <span class="step" onclick="go(15)">Tacto</span><span class="arrow">→</span>
+      <span class="step done" onclick="go(0)">🏠 Inicio</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ NAVEGACIÓN ═══════════ -->
+<nav class="nav-bar">
+  <button class="nav-btn" onclick="prevSlide()" aria-label="Anterior">←</button>
+  <div class="nav-dots" id="navDots"></div>
+  <button class="nav-btn" onclick="nextSlide()" aria-label="Siguiente">→</button>
+  <span class="slide-counter" id="slideCounter">1 / 19</span>
+  <span class="nav-module-label" id="navModuleLabel">Inicio</span>
+</nav>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   MOTOR DE PRESENTACIÓN · capítulo 2 · Física del Cuerpo Humano
+   Navegación · KaTeX · redibujado de sims
+   ═══════════════════════════════════════════════════════════ */
+'use strict';
+
+/* ── Total de diapositivas y módulos ── */
+const TOTAL = 19;
+const MODULES = [
+  {id:0, name:'Inicio',                       slides:[0],        ico:'🏠'},
+  {id:1, name:'Fuerzas · Torques',            slides:[1,2],      ico:'🧲'},
+  {id:2, name:'Palancas · Antebrazo',         slides:[3,4,5,6],  ico:'⚖️'},
+  {id:3, name:'La cadera',                    slides:[7,8],      ico:'🦴'},
+  {id:4, name:'La espalda',                   slides:[9,10],     ico:'🏋️'},
+  {id:5, name:'Articulaciones · Mandíbula',   slides:[11,12],    ico:'🦷'},
+  {id:6, name:'Métodos',                      slides:[13,14],    ico:'📐'},
+  {id:7, name:'El tacto',                     slides:[15,16],    ico:'✋'},
+  {id:8, name:'Unidades · Resumen',           slides:[17,18],    ico:'✓'},
+];
+let current = 0;
+
+/* ── Texto por defecto de los apuntes (para restaurar en revisita) ── */
+const infoTexts = {};
+document.querySelectorAll('.apuntes .a-text[id]').forEach(el=>{
+  infoTexts[el.id] = el.innerHTML;
+});
+
+/* ── Navegación ── */
+function moduleOf(i){ for (const m of MODULES) if (m.slides.includes(i)) return m; return MODULES[0]; }
+
+function dots(){
+  const host = document.getElementById('navDots');
+  if (!host) return;
+  host.innerHTML = '';
+  for (let i=0;i<TOTAL;i++){
+    const b = document.createElement('button');
+    b.className = 'nav-dot';
+    b.title = 'Diapositiva '+(i+1);
+    b.setAttribute('aria-label','Ir a diapositiva '+(i+1));
+    b.addEventListener('click',()=>go(i));
+    host.appendChild(b);
+  }
+}
+
+function setMPills(active){
+  document.querySelectorAll('.mpill').forEach(p=>{
+    const m = (p.getAttribute('onclick')||'').match(/goModule\((\d+)\)/);
+    p.classList.toggle('active', m && +m[1]===active);
+  });
+}
+
+/* ── Barra superior de pestañas por módulo (réplica de cap. 1) ── */
+function moduleTabs(){
+  const host = document.getElementById('moduleBar');
+  if (!host || host.querySelector('.module-tab')) return;
+  MODULES.forEach(m=>{
+    if (m.id === 0) return;            // omitir la portada
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'module-tab';
+    b.dataset.module = m.id;
+    b.innerHTML = `<span class="mod-badge">${m.id}</span>${m.ico} ${m.name.replace(/^[A-Z] · /,'')}`;
+    b.addEventListener('click',()=>goModule(m.id));
+    host.appendChild(b);
+  });
+}
+
+const _entranceSeen = new Set();
+function go(n){
+  if (n===undefined || isNaN(n)) return;
+  n = Math.max(0, Math.min(TOTAL-1, n));
+  // Restaurar los apuntes que las simulaciones hayan reescrito
+  document.querySelectorAll('.apuntes .a-text[id]').forEach(el=>{
+    if (infoTexts[el.id]) el.innerHTML = infoTexts[el.id];
+  });
+  document.querySelectorAll('.slide,.slide-full').forEach(s=>{
+    s.classList.toggle('active', +s.dataset.slide===n);
+  });
+  // Primera visita: reveal. Revisita: instantáneo (no insistir).
+  const cur = document.querySelector('.slide.active,.slide-full.active');
+  if (cur) {
+    if (!_entranceSeen.has(n)) _entranceSeen.add(n);
+    else cur.classList.add('instant');
+  }
+  current = n;
+  document.querySelectorAll('#navDots .nav-dot').forEach((d,i)=>d.classList.toggle('active', i===n));
+  const sc = document.getElementById('slideCounter');
+  if (sc) sc.textContent = (n+1)+' / '+TOTAL;
+  const ml = document.getElementById('navModuleLabel');
+  if (ml) ml.textContent = moduleOf(n).name;
+  setMPills(moduleOf(n).id);
+  document.querySelectorAll('.module-tab').forEach(tab=>{
+    const active = +tab.dataset.module === moduleOf(n).id;
+    tab.classList.toggle('active', active);
+    tab.setAttribute('aria-current', active ? 'page' : 'false');
+  });
+  requestAnimationFrame(()=>{ redrawSlide(n); });
+  // Fix carrera: la slide recién activada (display:none→flex) puede no tener
+  // layout aún cuando corre el rAF; el guard `!cv.clientWidth` corta y quedaría
+  // sin dibujar. Reintento tras asentar layout, solo si seguimos en esta slide.
+  setTimeout(()=>{ if (current===n) redrawSlide(n); }, 120);
+}
+window.go = go;
+
+function nextSlide(){ go(current+1); }
+function prevSlide(){ go(current-1); }
+function goModule(id){ const m = MODULES.find(x=>x.id===id); if (m) go(m.slides[0]); }
+window.nextSlide = nextSlide;
+window.prevSlide = prevSlide;
+window.goModule = goModule;
+
+/* ── Redibujar la simulación activa ── */
+function redrawSlide(n){
+  const fns = {
+    2: ()=>window.drawTorque && drawTorque(),
+    3: ()=>window.drawLevers && drawLevers(),
+    4: ()=>window.drawAmp && drawAmp(),
+    5: ()=>window.drawForearm && drawForearm(),
+    6: ()=>window.drawForearm2 && drawForearm2(),
+    7: ()=>window.drawHip && drawHip(),
+    8: ()=>window.drawHipCane && drawHipCane(),
+    9: ()=>window.drawBack && drawBack(),
+    10: ()=>window.drawDisc && drawDisc(),
+    11: ()=>window.drawShoulder && drawShoulder(),
+    12: ()=>window.drawAnkle && drawAnkle(),
+    13: ()=>window.drawThreeForce && drawThreeForce(),
+    14: ()=>window.drawSegments && drawSegments(),
+    15: ()=>window.drawTouch && drawTouch(),
+    16: ()=>window.drawThermal && drawThermal(),
+    17: ()=>window.convertUnits && convertUnits(),
+  };
+  if (fns[n]) fns[n]();
+  if (n===11){ if (window.drawKnee) drawKnee(); }
+  if (n===12){ if (window.drawJaw) drawJaw(); }
+}
+window.redrawSlide = redrawSlide;
+
+/* ── Teclado ── */
+document.addEventListener('keydown', e=>{
+  if (/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return;
+  if (e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){ e.preventDefault(); nextSlide(); }
+  else if (e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); prevSlide(); }
+  else if (e.key==='Home'){ e.preventDefault(); go(0); }
+  else if (e.key==='End'){ e.preventDefault(); go(TOTAL-1); }
+});
+
+/* ── Motor de amortiguación frame-rate independent ── */
+window.__damp = function(v, t, r, dt) { return v + (t - v) * (1 - Math.exp(-r * dt)); };
+
+/* ═══════════════════════════════════════════════════════════
+   HELPERS ANATÓMICOS 2D (window.AB) — heredados del capítulo 1
+   ═══════════════════════════════════════════════════════════ */
+window.AB = (function(){
+  const PAL = {
+    paper:'#f5f0e4', card:'#fbf8f0', ink:'#232c36', ink2:'#43505c', ink3:'#6b7885',
+    bone:'#cfc4ae', boneEdge:'#b6a67f', boneDark:'#9b8a64',
+    muscle:'#c14b4b', muscleEdge:'#a92a1e',
+    tendon:'#e8d8c8', skin:'#e9c49f', skinEdge:'#d9a77c',
+    teal:'#0d6e64', tealLight:'#3aa89c', amber:'#9a5b00', blood:'#a92a1e',
+    good:'#2d7d4f', warn:'#b86a1e',
+  };
+  function setup(cv, w, h){
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = Math.max(1, Math.round(w*dpr));
+    cv.height = Math.max(1, Math.round(h*dpr));
+    cv.style.width = w+'px'; cv.style.height = h+'px';
+    const ctx = cv.getContext('2d');
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,w,h);
+    ctx.lineCap='round'; ctx.lineJoin='round';
+    return ctx;
+  }
+  function fmt(x, d){
+    d = d===undefined?1:d;
+    let s = Number(x).toFixed(d).replace(/\.?0+$/,'').replace('.',',');
+    if (s===''||s==='-') s='0';
+    return s;
+  }
+  function text(ctx, s, x, y, o){
+    o = o||{};
+    ctx.font = (o.weight?o.weight+' ':'')+(o.size?o.size+'px ':'13px ')+'Karla, sans-serif';
+    ctx.fillStyle = o.color || PAL.ink;
+    ctx.textAlign = o.align || 'center';
+    ctx.textBaseline = o.base || 'middle';
+    ctx.fillText(s, x, y);
+  }
+  function arrow(ctx, x0,y0, x1,y1, o){
+    o = o||{};
+    const head = o.head===undefined?8:o.head;
+    const ang = Math.atan2(y1-y0, x1-x0);
+    ctx.strokeStyle = o.color||PAL.teal; ctx.fillStyle = o.color||PAL.teal;
+    ctx.lineWidth = o.width||2.5;
+    ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x1,y1);
+    ctx.lineTo(x1-head*Math.cos(ang-0.45), y1-head*Math.sin(ang-0.45));
+    ctx.lineTo(x1-head*Math.cos(ang+0.45), y1-head*Math.sin(ang+0.45));
+    ctx.closePath(); ctx.fill();
+  }
+  function dashed(ctx, x0,y0,x1,y1, o){
+    o = o||{};
+    ctx.strokeStyle = o.color||PAL.ink3; ctx.lineWidth = o.width||1.2;
+    ctx.setLineDash([4,4]); ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke(); ctx.setLineDash([]);
+  }
+  function bone(ctx, x0,y0,x1,y1, o){
+    o = o||{};
+    const w = o.width||10;
+    ctx.strokeStyle = o.edge||PAL.boneEdge; ctx.lineWidth = w;
+    ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+    ctx.strokeStyle = o.fill||PAL.bone; ctx.lineWidth = w-3;
+    ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+    if (o.joint!==false){ joint(ctx, x0,y0, w/2, {r:Math.max(2,w/2-3)}); }
+    if (o.jointEnd){ joint(ctx, x1,y1, w/2, {r:Math.max(2,w/2-3)}); }
+  }
+  function joint(ctx, x,y,r, o){
+    o = o||{};
+    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2);
+    ctx.fillStyle = o.fill||'#f5f0e4'; ctx.fill();
+    ctx.lineWidth = o.lw||2.2; ctx.strokeStyle = o.color||PAL.teal; ctx.stroke();
+    ctx.beginPath(); ctx.arc(x,y,Math.max(1.5,r*0.38),0,Math.PI*2);
+    ctx.fillStyle = o.color||PAL.teal; ctx.fill();
+  }
+  function muscle(ctx, ax,ay,bx,by, o){
+    o = o||{};
+    const w0 = o.w0||9, w1 = o.w1||4;
+    const ang = Math.atan2(by-ay, bx-ax);
+    const perp = ang + Math.PI/2;
+    const dx = Math.cos(perp), dy = Math.sin(perp);
+    const cx = (ax+bx)/2, cy = (ay+by)/2;
+    const bow = o.bow||0;
+    ctx.beginPath();
+    ctx.moveTo(ax + dx*w0/2, ay + dy*w0/2);
+    ctx.quadraticCurveTo(cx + dx*(bow+(w0+w1)/4), cy + dy*(bow+(w0+w1)/4), bx + dx*w1/2, by + dy*w1/2);
+    ctx.quadraticCurveTo(cx - dx*(w0+w1)/4, cy - dy*(w0+w1)/4, ax - dx*w0/2, ay - dy*w0/2);
+    ctx.closePath();
+    ctx.fillStyle = o.fill||PAL.muscle; ctx.fill();
+    ctx.lineWidth = o.lw||1.5; ctx.strokeStyle = o.edge||PAL.muscleEdge; ctx.stroke();
+  }
+  function tendon(ctx, ax,ay,bx,by, o){
+    o = o||{};
+    const w = o.width||3.5;
+    const ang = Math.atan2(by-ay,bx-ax);
+    const px = Math.cos(ang+Math.PI/2), py = Math.sin(ang+Math.PI/2);
+    ctx.beginPath();
+    ctx.moveTo(ax+px*w/2, ay+py*w/2); ctx.lineTo(bx+px*w/2, by+py*w/2);
+    ctx.lineTo(bx-px*w/2, by-py*w/2); ctx.lineTo(ax-px*w/2, ay-py*w/2);
+    ctx.closePath();
+    ctx.fillStyle = o.fill||PAL.tendon; ctx.fill();
+    ctx.lineWidth = 1; ctx.strokeStyle = o.edge||'#c8b49a'; ctx.stroke();
+  }
+  function limbSkin(ctx, x0,y0,x1,y1, w, o){
+    o = o||{};
+    const ang = Math.atan2(y1-y0,x1-x0);
+    const px = Math.cos(ang+Math.PI/2), py = Math.sin(ang+Math.PI/2);
+    ctx.beginPath();
+    ctx.moveTo(x0+px*w/2,y0+py*w/2); ctx.lineTo(x1+px*w/2,y1+py*w/2);
+    ctx.arc(x1,y1,w/2,ang-Math.PI/2,ang+Math.PI/2);
+    ctx.lineTo(x0-px*w/2,y0-py*w/2);
+    ctx.arc(x0,y0,w/2,ang+Math.PI/2,ang+Math.PI*1.5);
+    ctx.closePath();
+    ctx.fillStyle = o.fill||PAL.skin; ctx.fill();
+    ctx.lineWidth = o.lw||1.4; ctx.strokeStyle = o.edge||PAL.skinEdge; ctx.stroke();
+  }
+  function hand(ctx, x,y, r, o){
+    o = o||{};
+    ctx.fillStyle = o.fill||PAL.skin; ctx.strokeStyle = o.edge||PAL.skinEdge; ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    for (let i=-2;i<=2;i++){
+      ctx.beginPath(); ctx.arc(x+i*r*0.42, y-r*0.55, r*0.26, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+    }
+  }
+  function foot(ctx, x,y, ang, o){
+    o = o||{};
+    const L = o.len||54, h = o.h||20;
+    ctx.save(); ctx.translate(x,y); ctx.rotate(ang);
+    ctx.beginPath();
+    ctx.moveTo(-L*0.35, -h*0.25);
+    ctx.quadraticCurveTo(-L*0.5, h*0.1, -L*0.2, h*0.42);
+    ctx.quadraticCurveTo(L*0.2, h*0.55, L*0.62, h*0.3);
+    ctx.quadraticCurveTo(L*0.75, -h*0.15, L*0.55, -h*0.35);
+    ctx.quadraticCurveTo(0, -h*0.5, -L*0.35, -h*0.25);
+    ctx.closePath();
+    ctx.fillStyle = o.fill||PAL.skin; ctx.fill();
+    ctx.lineWidth = 1.4; ctx.strokeStyle = o.edge||PAL.skinEdge; ctx.stroke();
+    ctx.restore();
+  }
+  function triangle(ctx, x,y, size, o){
+    o = o||{};
+    ctx.beginPath(); ctx.moveTo(x, y-size*0.5); ctx.lineTo(x-size*0.5, y+size*0.5); ctx.lineTo(x+size*0.5, y+size*0.5); ctx.closePath();
+    ctx.fillStyle = o.color||PAL.amber; ctx.fill();
+  }
+  return {PAL, setup, fmt, text, arrow, dashed, bone, joint, muscle, tendon, limbSkin, hand, foot, triangle};
+})();
+
+/* ═══ Capa de "vida" compartida para simulaciones (c2) ═══ */
+function c2GlowArrow(ctx,x0,y0,x1,y1,color,width,pulse){
+  pulse = pulse===undefined?0:pulse;
+  ctx.save();
+  ctx.shadowColor=color; ctx.shadowBlur=7+5*Math.sin((window.c2t||0)*4+pulse);
+  AB.arrow(ctx,x0,y0,x1,y1,{color:color,width:width});
+  ctx.restore();
+}
+function c2Chip(ctx,s,x,y,color,o){ o=o||{}; const sz=o.size||11;
+  ctx.font=(o.weight?o.weight+' ':'')+sz+'px Karla, sans-serif';
+  const tw=ctx.measureText(s).width; const pad=6, bh=sz+8;
+  const bx=x-tw/2-pad, by=y-bh/2, r2=5;
+  ctx.beginPath();
+  ctx.moveTo(bx+r2,by); ctx.arcTo(bx+tw+2*pad,by,bx+tw+2*pad,by+bh,r2);
+  ctx.arcTo(bx+tw+2*pad,by+bh,bx,by+bh,r2); ctx.arcTo(bx,by+bh,bx,by,r2); ctx.arcTo(bx,by,bx+tw+2*pad,by,r2);
+  ctx.closePath();
+  ctx.fillStyle=o.fill||'rgba(251,248,240,0.92)'; ctx.fill();
+  ctx.lineWidth=1; ctx.strokeStyle=color; ctx.stroke();
+  ctx.fillStyle=color; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(s,x,y);
+}
+function c2Scene(ctx,w,h,baseY){
+  // viñeta suave + línea de base/suelo para dar profundidad
+  const g=ctx.createRadialGradient(w/2,h*0.42,Math.min(w,h)*0.2, w/2,h*0.5,Math.max(w,h)*0.75);
+  g.addColorStop(0,'rgba(255,255,255,0)');
+  g.addColorStop(1,'rgba(60,40,10,0.07)');
+  ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+  if(baseY!==undefined){
+    ctx.strokeStyle='rgba(107,120,133,0.35)'; ctx.lineWidth=1.2;
+    ctx.beginPath(); ctx.moveTo(10,baseY); ctx.lineTo(w-10,baseY); ctx.stroke();
+    ctx.save(); ctx.strokeStyle='rgba(107,120,133,0.18)';
+    for(let x=14;x<w-10;x+=14){ ctx.beginPath(); ctx.moveTo(x,baseY); ctx.lineTo(x-7,baseY+8); ctx.stroke(); }
+    ctx.restore();
+  }
+}
+
+const fmt = window.AB.fmt;
+
+function el(id){ return document.getElementById(id); }
+function num(id){ const e = el(id); return e ? parseFloat(e.value) : 0; }
+
+window.__tfStep=1; window.__segHover=null; window.__hipBreakdown=false;
+window.__backLoad=false; window.__discPosture='upright'; window.__jawMode='incisor';
+window.__faMuscles=3; window.__caneOn=true;
+
+/* ─── S2 · TORQUE ─── */
+function drawTorque(){
+  const cv=el('sim-torque'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  const t = window.c2t||0;
+  const rPx=num('tq_r'), F=num('tq_f'), thetaDeg=num('tq_theta');
+  const rM=rPx/100;
+  const th=thetaDeg*Math.PI/180;
+  const P=AB.PAL;
+  const sign=Math.sin(th)>=0?1:-1;
+
+  // ── encuadre dinámico (r horizontal, F sale del extremo de r) ──
+  const ejeX=w*0.34, ejeY=h*0.60;
+  const Fnom=(F/100)*(h*0.40);
+  const span=rPx+Fnom;
+  const z=Math.max(0.55, Math.min( (w*0.74)/span, (h*0.58)/span ));
+  const rDraw=rPx*z, Fdraw=Fnom*z;
+
+  // ── fondo milimetrado + ejes de referencia ──
+  ctx.save();
+  ctx.strokeStyle='rgba(35,44,54,0.045)'; ctx.lineWidth=1;
+  for(let x=(ejeX%26);x<w;x+=26){ ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke(); }
+  for(let y=(ejeY%26);y<h;y+=26){ ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke(); }
+  ctx.restore();
+  AB.dashed(ctx, 8, ejeY, w-8, ejeY, {color:'rgba(107,120,133,0.5)', width:1});   // línea base (yace r)
+
+  // puntos clave
+  const Ax=ejeX+rDraw, Ay=ejeY;                       // extremo de r (aplicación de F)
+  const Fx=Ax+Fdraw*Math.cos(th), Fy=Ay-Fdraw*Math.sin(th);  // extremo de F
+  const u=[Math.cos(th), -Math.sin(th)];              // dirección de F (unitaria)
+  // pie de perpendicular (brazo de palanca r·sinθ) desde el eje a la línea de acción de F
+  const dot=(ejeX-Ax)*u[0]+(ejeY-Ay)*u[1];
+  const footX=Ax+dot*u[0], footY=Ay+dot*u[1];
+  const tau=rM*F*Math.sin(th);
+
+  // ── triángulo de componentes de F (solo si aportan claridad) ──
+  ctx.save();
+  ctx.setLineDash([5,5]); ctx.lineWidth=2;
+  if (Fx>Ax+1){   // F·cosθ apunta en la misma dirección que r (cateto dibujable sin cruzar el eje)
+    ctx.strokeStyle='rgba(138,150,160,0.85)';   // F·cosθ (no aporta torque) — gris tenue
+    ctx.beginPath(); ctx.moveTo(Ax,Ay); ctx.lineTo(Fx,Ay); ctx.stroke();
+  }
+  ctx.strokeStyle='rgba(13,110,100,0.9)';   // F·sinθ (normal a r, aporta torque) — teal
+  ctx.beginPath(); ctx.moveTo(Fx,Ay); ctx.lineTo(Fx,Fy); ctx.stroke();
+  ctx.restore();
+  // (línea de acción y brazo r·sinθ omitidos: no aportaban claridad al diagrama)
+
+  // ── ángulo θ en el punto de aplicación A ──
+  // Convención del capítulo (2.1): «θ es el ángulo de r a F» → τ = r·F·sinθ.
+  // r apunta del eje a A (horizontal, → derecha). El arco vive en el vértice A,
+  // entre esa dirección de r y la recta de F. Se dibuja SIEMPRE el arco menor
+  // (≤180°): hacia arriba si F sube (θ<180°), hacia abajo si F baja (θ>180°).
+  // El signo del torque queda delegado a la flecha de giro y al readout.
+  (function(){
+    // ángulo (canvas, y abajo) de la dirección A→punta de F, en (-180°,180°]
+    const fAng = Math.atan2(-Math.sin(th), Math.cos(th));
+    if (Math.abs(fAng) < 2*Math.PI/180) return;            // θ≈0/360 ⇒ sin arco
+    if (Math.abs(fAng) > 178*Math.PI/180) return;          // θ≈180 ⇒ semirrecta, se omite
+    const Ra = Math.max(30, 34*z);
+    const a0 = 0;                                          // dirección de r (→ derecha)
+    const ccw = fAng < 0;                                  // barrido menor hacia el lado correcto
+    ctx.save();
+    // sector suave
+    ctx.beginPath();
+    ctx.moveTo(Ax, Ay);
+    ctx.arc(Ax, Ay, Ra, a0, fAng, ccw);
+    ctx.closePath();
+    ctx.fillStyle='rgba(154,91,0,0.12)';
+    ctx.fill();
+    // arco
+    ctx.beginPath();
+    ctx.arc(Ax, Ay, Ra, a0, fAng, ccw);
+    ctx.strokeStyle=P.amber; ctx.lineWidth=2; ctx.stroke();
+    // etiqueta θ junto al arco
+    const mid = fAng/2;
+    const lx = Ax + Math.cos(mid)*(Ra+15), ly = Ay + Math.sin(mid)*(Ra+15);
+    AB.text(ctx,'θ', lx, ly, {color:P.amber, size:16, weight:'700'});
+    ctx.restore();
+  })();
+  ctx.save(); ctx.translate(ejeX,ejeY); ctx.rotate(t*sign*1.1);
+  ctx.beginPath(); ctx.arc(0,0,12*z,0,Math.PI*2); ctx.fillStyle='#fbf8f0'; ctx.fill();
+  ctx.lineWidth=2.4; ctx.strokeStyle=P.amber; ctx.stroke();
+  ctx.strokeStyle=P.amber; ctx.lineWidth=1.6;
+  for(let k=0;k<6;k++){ const a=k*Math.PI/3; ctx.beginPath(); ctx.moveTo(Math.cos(a)*4*z,Math.sin(a)*4*z); ctx.lineTo(Math.cos(a)*8.5*z,Math.sin(a)*8.5*z); ctx.stroke(); }
+  ctx.restore();
+  AB.text(ctx,'eje', ejeX, ejeY+26*z+12, {color:P.ink3, size:14});
+
+  // ── barra / brazo r (horizontal) ──
+  AB.bone(ctx, ejeX, ejeY, Ax, Ay, {width:Math.max(6,9*z), joint:true, jointR:6*z});
+  ctx.beginPath(); ctx.arc(Ax,Ay,6*z,0,Math.PI*2); ctx.fillStyle=P.amber; ctx.fill();
+  ctx.lineWidth=1.8; ctx.strokeStyle='#7c4900'; ctx.stroke();
+
+  // ── vector F con glow y pulso ──
+  const Fpulse=Fdraw*(1+0.045*Math.sin(t*3));
+  const fex=Ax+Fpulse*Math.cos(th), fey=Ay-Fpulse*Math.sin(th);
+  ctx.save(); ctx.shadowColor=P.teal; ctx.shadowBlur=9+5*Math.sin(t*4);
+  AB.arrow(ctx, Ax, Ay, fex, fey, {color:P.teal, width:Math.max(3.4,4*z)});
+  ctx.restore();
+
+  // ── flecha curva de SENTIDO DE GIRO ──
+  // Arco fijo (~135°) centrado en la PARTE SUPERIOR del eje: indica el giro,
+  // NO un ángulo. Sentido: antihorario (CCW) si τ≥0, horario (CW) si τ<0.
+  // En canvas (y hacia abajo) el CCW visual se dibuja con anticlockwise=true.
+  const Rc=Math.max(30,32*z);
+  const sweep=135*Math.PI/180, top=-Math.PI/2;
+  const aL=top-sweep/2, aR=top+sweep/2;           // aL=izq-sup, aR=der-sup
+  const ccw = tau>=0;
+  const aStart = ccw ? aR : aL;                  // inicio del barrido
+  const aEnd   = ccw ? aL : aR;                  // fin del barrido
+  ctx.strokeStyle=tau>=0?P.teal:P.blood; ctx.lineWidth=2.8;
+  ctx.beginPath(); ctx.arc(ejeX,ejeY,Rc,aStart,aEnd,ccw); ctx.stroke();
+  // punta en el extremo final, tangente en la dirección del giro real
+  const aTip = ccw ? aEnd-0.04 : aEnd+0.04;
+  const tang = Math.atan2(Math.sin(aTip)-Math.sin(aEnd), Math.cos(aTip)-Math.cos(aEnd));
+  ctx.save();
+  ctx.translate(ejeX+Math.cos(aEnd)*Rc, ejeY+Math.sin(aEnd)*Rc); ctx.rotate(tang);
+  ctx.fillStyle=tau>=0?P.teal:P.blood; ctx.beginPath();
+  ctx.moveTo(9,0); ctx.lineTo(-4,-5.5); ctx.lineTo(-4,5.5); ctx.closePath(); ctx.fill();
+  ctx.restore();
+
+  // ── etiquetas (chips claros, pegadas a cada elemento) ──
+  chip(ctx,'F = '+fmt(F,0)+' N', fex+Math.cos(th)*16, fey-Math.sin(th)*16, P.teal, {size:16, weight:'700'});
+  if (Fx>Ax+1) chip(ctx,'F\u00B7cos\u03B8', (Ax+Fx)/2, Ay+16, '#5d6b76', {size:13, weight:'600'});
+  chip(ctx,'F\u00B7sin\u03B8', Fx+22, (Ay+Fy)/2, P.teal, {size:14});
+
+  // ── partículas de flujo de torque (en el arco de giro) ──
+  const nF=5, Rt=Rc;
+  for(let k=0;k<nF;k++){
+    let frac=((t*0.35*sign)+k/nF); frac=((frac%1)+1)%1;
+    const ang=0+(-th-0)*frac;
+    const dxx=ejeX+Math.cos(ang)*Rt, dyy=ejeY+Math.sin(ang)*Rt;
+    ctx.beginPath(); ctx.arc(dxx,dyy,2.4,0,Math.PI*2);
+    ctx.fillStyle=(tau>=0?P.teal:P.blood); ctx.globalAlpha=0.5+0.5*Math.sin(frac*Math.PI);
+    ctx.fill(); ctx.globalAlpha=1;
+  }
+
+  el('tq_out').textContent='\u03C4 = '+(tau>=0?'+':'')+fmt(tau,1)+' N\u00B7m';
+
+  function chip(c,s,x,y,color,o){ o=o||{}; const sz=o.size||12;
+    c.font=(o.weight?o.weight+' ':'')+sz+'px Karla, sans-serif';
+    const tw=c.measureText(s).width; const pad=6, bh=sz+8;
+    const bx=x-tw/2-pad, by=y-bh/2;
+    const r2=5;
+    c.beginPath();
+    c.moveTo(bx+r2,by); c.arcTo(bx+tw+2*pad,by,bx+tw+2*pad,by+bh,r2);
+    c.arcTo(bx+tw+2*pad,by+bh,bx,by+bh,r2); c.arcTo(bx,by+bh,bx,by,r2); c.arcTo(bx,by,bx+tw+2*pad,by,r2);
+    c.closePath();
+    c.fillStyle='rgba(251,248,240,0.9)'; c.fill();
+    c.lineWidth=1; c.strokeStyle=color; c.stroke();
+    c.fillStyle=color; c.textAlign='center'; c.textBaseline='middle'; c.fillText(s,x,y);
+  }
+}
+
+/* ─── S3 · PALANCAS ─── */
+function drawLevers(){
+  const cv=el('sim-levers'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  const cls=parseInt(el('lev_clase').value||'3',10);
+  const W=num('lev_w'), d=num('lev_dw');
+  let dM,dW;
+  if (cls===1){ dW=d; dM=d*0.6; }
+  else if (cls===2){ dW=d*0.5; dM=d; }
+  else { dW=d; dM=d*0.4; }
+  const M=W*dW/dM;
+  const fx=w*0.22, fy=h*0.52;
+  const xmin=fx-(cls===1?dM:0), xmax=fx+dW;
+  AB.bone(ctx, xmin, fy, xmax, fy, {width:11, joint:false});
+  AB.triangle(ctx, fx, fy, 13, {color:'#9a5b00'});
+  AB.text(ctx,'fulcro', fx, fy+30, {size:10,color:'#9a5b00'});
+  const s=0.75;
+  const Wpx=Math.min(110, 30+W*s);
+  const Mpx=Math.min(h*0.34, 30+M*s);
+  const mpx=cls===1? fx-dM : fx+dM;
+  AB.arrow(ctx, fx+dW, fy+6, fx+dW, fy+6+Wpx, {color:'#9a5b00', width:2.4});
+  AB.text(ctx,'W = '+fmt(W,0)+' N', fx+dW, fy+6+Wpx+14, {size:10,color:'#9a5b00',weight:'700'});
+  AB.arrow(ctx, mpx, fy-6, mpx, fy-6-Mpx, {color:'#0d6e64', width:2.4});
+  AB.text(ctx,'M = '+fmt(M,0)+' N', mpx, fy-6-Mpx-10, {size:10,color:'#0d6e64',weight:'700'});
+  if (cls===1){ AB.text(ctx,'d_W', fx+dW/2, fy+24, {size:9,color:'#6b7885'}); AB.text(ctx,'d_M', fx-dM/2, fy-8, {size:9,color:'#6b7885'}); }
+  else if (cls===2){ AB.text(ctx,'d_M', fx+dM/2, fy+24, {size:9,color:'#6b7885'}); AB.text(ctx,'d_W', fx+dW/2, fy-8, {size:9,color:'#6b7885'}); }
+  else { AB.text(ctx,'d_M', fx+dM/2, fy-8, {size:9,color:'#6b7885'}); AB.text(ctx,'d_W', fx+dW/2, fy+24, {size:9,color:'#6b7885'}); }
+  const ma=dM/dW;
+  const cl=[,,'1ª clase','2ª clase','3ª clase'];
+  AB.text(ctx, cl[cls], w*0.76, h*0.14, {size:13,color:'#0d6e64',weight:'700'});
+  el('lev_out').textContent='M = '+fmt(M,0)+' N · MA = '+fmt(ma,2);
+}
+function setLever(n){
+  const sel=el('lev_clase'); if (sel) sel.value=String(n);
+  document.querySelectorAll('.theory .pill').forEach(p=>{
+    const m=(p.getAttribute('onclick')||'').match(/setLever\((\d+)\)/);
+    p.classList.toggle('active', m && +m[1]===n);
+  });
+  drawLevers();
+}
+
+/* ─── S4 · AMPLIFICACIÓN DE DISTANCIA ─── */
+function drawAmp(){
+  const cv=el('sim-amp'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  const dy=num('amp_dy'); // mm de contracción
+  const dM=40, dW=360;    // mm (4 cm y 36 cm)
+  const alpha=Math.min(dy/dM, 1.3);
+  const ex=90, ey=h*0.56, sy=ey-150, L=280;
+  const hx=ex+L*Math.cos(alpha), hy=ey+L*Math.sin(alpha);
+  AB.bone(ctx, ex, ey, ex, sy, {width:12, joint:true, jointR:7});
+  AB.bone(ctx, ex, ey, hx, hy, {width:10, jointEnd:true, jointR:7});
+  AB.hand(ctx, hx, hy, 10);
+  // bíceps: se acorta con la contracción
+  const mx=ex+dM*Math.cos(alpha), my=ey+dM*Math.sin(alpha);
+  const ox=ex-10, oy=ey-110+(dy*1.1);
+  AB.muscle(ctx, ox, oy, mx, my, {w0:11,w1:5,bow:6});
+  AB.text(ctx,'bíceps', ox-6, oy+20, {size:10,color:'#a92a1e',align:'right'});
+  AB.text(ctx,'d_M = 4 cm', mx-6, my-12, {size:10,color:'#6b7885',align:'right'});
+  AB.text(ctx,'d_W = 36 cm', hx-6, hy+14, {size:10,color:'#6b7885',align:'right'});
+  const drop=(dW/dM)*dy;
+  el('amp_out').textContent='mano ↓ '+fmt(drop,0)+' mm';
+}
+
+/* ─── S5 · ANTEBRAZO CASOS 1-2 ─── */
+function drawForearm(){
+  const cv=el('sim-forearm'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  const W=num('fa_w');
+  const model=parseInt(el('fa_model').value||'2',10);
+  const s=5;
+  const dM=4*s, dF=13*s, dW=36*s;
+  const ex=w*0.32, ey=h*0.62, sy=ey-120;
+  const hx=ex+dW, hy=ey;
+  const breathe=1+0.07*Math.sin((window.c2t||0)*2.0);
+  c2Scene(ctx,w,h,ey+44);
+  // suelo bajo la mano
+  AB.bone(ctx, ex, ey, ex, sy, {width:13, joint:true, jointR:8});
+  AB.bone(ctx, ex, ey, hx, hy, {width:10, jointEnd:true, jointR:8});
+  AB.hand(ctx, hx, hy, 11);
+  ctx.beginPath(); ctx.arc(hx, hy-36, 15, 0, Math.PI*2); ctx.fillStyle='#9a5b00'; ctx.fill();
+  ctx.strokeStyle='#7c4900'; ctx.lineWidth=1.5; ctx.stroke();
+  c2Chip(ctx,'W_W = '+fmt(W,0)+' N', hx, hy-58, '#9a5b00', {size:11,weight:'700'});
+  const mx=ex+dM, my=ey, ox=ex-8, oy=ey-95;
+  AB.muscle(ctx, ox, oy, mx, my, {w0:12*breathe,w1:5,bow:8});
+  c2Chip(ctx,'bíceps', ox-6, oy+20, '#a92a1e', {size:10,align:'right'});
+  const M=9*W+(model===2? 3.25*15:0);
+  const Mpx=Math.min(h*0.44, 30+M*0.35)*(1+0.04*Math.sin((window.c2t||0)*2.0));
+  c2GlowArrow(ctx, mx, my-4, mx, my-4-Mpx, '#0d6e64', 2.6);
+  c2Chip(ctx,'M = '+fmt(M,0)+' N', mx, my-4-Mpx-12, '#0d6e64', {size:11,weight:'700'});
+  if (model===2){
+    const fx=ex+dF;
+    c2GlowArrow(ctx, fx, ey-6, fx, ey-6+46, '#43505c', 2, 1.5);
+    c2Chip(ctx,'W_F ≈ 15 N', fx+14, ey+52, '#43505c', {size:10,align:'left'});
+  }
+  c2GlowArrow(ctx, hx, hy+10, hx, hy+40, '#9a5b00', 2.4);
+  AB.text(ctx,'4 cm', mx+4, ey+16, {size:10,color:'#6b7885'});
+  AB.text(ctx,'13 cm', ex+dF+4, ey+16, {size:10,color:'#6b7885'});
+  AB.text(ctx,'36 cm', hx-16, ey+16, {size:10,color:'#6b7885'});
+  el('fa_out').textContent='M = '+fmt(M,0)+' N';
+}
+
+/* ─── S6 · ANTEBRAZO CASOS 3-4 ─── */
+function drawForearm2(){
+  const cv=el('sim-forearm2'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  c2Scene(ctx,w,h,h-46);
+  const theta=num('fa2_theta'), Ww=num('fa2_w');
+  const show3=(window.__faMuscles||3)===3;
+  const s=4.6, L=36*s;
+  const th=theta*Math.PI/180;
+  const ex=w*0.30, ey=h*0.60;
+  const dirX=Math.sin(th), dirY=Math.cos(th);
+  const hx=ex+L*dirX, hy=ey+L*dirY;
+  AB.bone(ctx, ex, ey, ex, ey-130, {width:12, joint:true, jointR:8});
+  AB.bone(ctx, ex, ey, hx, hy, {width:9, jointEnd:true, jointR:7});
+  AB.hand(ctx, hx, hy, 10);
+  ctx.beginPath(); ctx.arc(hx, hy+30, 13, 0, Math.PI*2); ctx.fillStyle='#9a5b00'; ctx.fill();
+  ctx.strokeStyle='#7c4900'; ctx.lineWidth=1.5; ctx.stroke();
+  AB.text(ctx,'W = '+fmt(Ww,0)+' N', hx+4, hy+52, {size:11,color:'#9a5b00',weight:'700'});
+  const k=(Ww/100);
+  const M1=262*k, M2=399*k, M3=85*k;
+  const muscles=[
+    {name:'bíceps',        d:4.6*s, M:M1, oy:-96, bow:10, color:'#c14b4b'},
+    {name:'braquial',      d:3.4*s, M:M2, oy:-50, bow:2,  color:'#b86a1e'},
+    {name:'braquiorradial',d:7.5*s, M:M3, oy:-18, bow:-16,color:'#5d4fa8'},
+  ];
+  let total=0;
+  muscles.forEach((m,i)=>{
+    const ix=ex+m.d*dirX, iy=ey+m.d*dirY;
+    if (show3 || i===0){
+      AB.muscle(ctx, ex-8, ey+m.oy, ix, iy, {w0:10*(1+0.07*Math.sin((window.c2t||0)*2 + i)),w1:4,bow:m.bow, fill:m.color, edge:m.color});
+      AB.text(ctx, m.name+' '+fmt(m.M,0)+' N', ix+16, iy-10, {size:9.5, color:m.color, align:'left'});
+      total+=m.M;
+    }
+  });
+  const shown = show3? total : (9*Ww+3.25*15);
+  el('fa2_out').textContent = show3? 'M₁+M₂+M₃ = '+fmt(total,0)+' N' : 'M = '+fmt(shown,0)+' N';
+  AB.text(ctx,'θ = '+fmt(theta,0)+'°', ex+L*0.5*dirX+12, ey+L*0.5*dirY-8, {size:11,color:'#6b7885'});
+}
+function toggleForearmMuscles(){
+  window.__faMuscles=(window.__faMuscles||3)===3?1:3;
+  const b=[...document.querySelectorAll('.prof-controls button')].find(x=>/Músculos/.test(x.textContent));
+  if (b) b.textContent='Músculos: '+window.__faMuscles+' / 3';
+  drawForearm2();
+}
+
+/* ─── S7 · CADERA ─── */
+function drawPelvis(ctx, cx, cy, r){
+  ctx.beginPath();
+  ctx.moveTo(cx-22, cy-26);
+  ctx.quadraticCurveTo(cx-30, cy+6, cx-18, cy+16);
+  ctx.quadraticCurveTo(cx, cy+22, cx+18, cy+16);
+  ctx.quadraticCurveTo(cx+30, cy+6, cx+22, cy-26);
+  ctx.quadraticCurveTo(cx+14, cy-34, cx, cy-34);
+  ctx.quadraticCurveTo(cx-14, cy-34, cx-22, cy-26);
+  ctx.closePath();
+  ctx.fillStyle='#cfc4ae'; ctx.fill();
+  ctx.lineWidth=1.6; ctx.strokeStyle='#b6a67f'; ctx.stroke();
+}
+function drawLegBase(ctx, cx, floorY, hipY, footShift){
+  const kx=cx-8, ky=floorY-96;
+  const fx2=cx-2+footShift, fy2=floorY-6;
+  drawPelvis(ctx, cx, hipY, 34);
+  AB.bone(ctx, cx, hipY+4, kx, ky, {width:13, joint:false});
+  AB.bone(ctx, kx, ky, fx2, fy2, {width:11});
+  AB.foot(ctx, fx2+4, floorY, 0, {len:52, h:18});
+  AB.joint(ctx, kx, ky, 8);
+  AB.joint(ctx, cx, hipY, 8);
+  AB.joint(ctx, fx2, floorY-4, 6);
+  const tx=cx+6, ty=hipY+30;
+  AB.muscle(ctx, cx+14, hipY-26, tx, ty, {w0:9,w1:4,bow:4,fill:'#c14b4b',edge:'#a92a1e'});
+  AB.text(ctx,'abductores', cx+34, hipY-8, {size:10,color:'#a92a1e',align:'left'});
+  return {kx,ky,fx2,fy2,tx,ty};
+}
+function drawHip(){
+  const cv=el('sim-hip'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  const m=num('hip_m')||90, Wb=m*9.8;
+  const M=1.57*Wb, R=2.37*Wb, Wleg=0.16*Wb;
+  const cx=w*0.46, floorY=h-40, hipY=floorY-170;
+  c2Scene(ctx,w,h,floorY);
+  const g=drawLegBase(ctx, cx, floorY, hipY, 0);
+  const sM=Math.min(110, M*0.08), sR=Math.min(120, R*0.055);
+  const ma=(Math.PI-70*Math.PI/180);
+  c2GlowArrow(ctx, g.tx, g.ty, g.tx+Math.cos(ma)*sM, g.ty+Math.sin(ma)*sM, '#0d6e64', 2.5);
+  c2Chip(ctx,'M = '+fmt(M,0)+' N', g.tx+Math.cos(ma)*(sM+12), g.ty+Math.sin(ma)*(sM+12), '#0d6e64', {size:10,weight:'700'});
+  c2GlowArrow(ctx, cx, hipY-96, cx, hipY-58, '#43505c', 2.5);
+  c2Chip(ctx,'W_b = '+fmt(Wb,0)+' N', cx, hipY-112, '#43505c', {size:10,weight:'700'});
+  c2GlowArrow(ctx, g.kx, g.ky-26, g.kx, g.ky-2, '#6b7885', 2);
+  c2Chip(ctx,'W_pierna', g.kx+16, g.ky-14, '#6b7885', {size:9,align:'left'});
+  c2GlowArrow(ctx, cx, floorY+10, cx, floorY+40, '#2d7d4f', 2.5);
+  c2Chip(ctx,'N = W_b', cx-6, floorY+56, '#2d7d4f', {size:10,weight:'700',align:'right'});
+  const phi=13*Math.PI/180;
+  c2GlowArrow(ctx, cx, hipY+2, cx-Math.sin(phi)*sR, hipY+2+Math.cos(phi)*sR, '#a92a1e', 2.5);
+  c2Chip(ctx,'R = '+fmt(R,0)+' N', cx-Math.sin(phi)*sR-8, hipY+2+Math.cos(phi)*sR+12, '#a92a1e', {size:10,weight:'700',align:'right'});
+  if (window.__hipBreakdown){
+    ctx.strokeStyle='#a92a1e'; ctx.lineWidth=1.2;
+    ctx.beginPath(); ctx.arc(cx, hipY+2, 26, 0, Math.PI*0.5+phi); ctx.stroke();
+    AB.text(ctx,'φ = 13°', cx-36, hipY+2+44, {size:10,color:'#a92a1e'});
+  }
+  el('hip_out').textContent='M = '+fmt(M,0)+' N';
+}
+function hipToggleBreakdown(){ window.__hipBreakdown=!window.__hipBreakdown; drawHip(); }
+
+/* ─── S8 · BASTÓN ─── */
+function drawHipCane(){
+  const cv=el('sim-hipcane'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  const m=num('hip_m')||90, Wb=m*9.8;
+  const nc=num('cane_nc')/100;
+  let Mc,Rc;
+  if (nc>=16.67){ Mc=0.61; Rc=1.26; }
+  else { Mc=1.57-(1.57-0.61)*(nc/16.67); Rc=2.37-(2.37-1.26)*(nc/16.67); }
+  const M=Mc*Wb, R=Rc*Wb;
+  const s=3.5;
+  const Lcm=nc>0? nc/(1-nc)*30.5 : 0;
+  const Lpx=Lcm*s;
+  const cx=w*0.5, floorY=h-40, hipY=floorY-170;
+  const g=drawLegBase(ctx, cx, floorY, hipY, Lpx);
+  if (window.__caneOn){
+    const caneX=cx-30.5*s;
+    ctx.strokeStyle='#9a5b00'; ctx.lineWidth=3;
+    ctx.beginPath(); ctx.moveTo(caneX, floorY); ctx.lineTo(caneX, hipY-60); ctx.stroke();
+    ctx.beginPath(); ctx.arc(caneX, hipY-60, 12, Math.PI*0.5, Math.PI*1.5); ctx.stroke();
+    AB.arrow(ctx, caneX, floorY+10, caneX, floorY+36, {color:'#b86a1e', width:2});
+    AB.text(ctx,'N_c ≈ '+fmt(nc*Wb,0)+' N', caneX, floorY+54, {size:10,color:'#b86a1e',weight:'700'});
+    AB.muscle(ctx, cx-6, hipY-22, caneX, hipY-56, {w0:7,w1:4,bow:14,fill:'#e9c49f',edge:'#d9a77c'});
+  }
+  const sM=Math.min(110, M*0.09), sR=Math.min(120, R*0.06);
+  const ma=(Math.PI-70*Math.PI/180);
+  AB.arrow(ctx, g.tx, g.ty, g.tx+Math.cos(ma)*sM, g.ty+Math.sin(ma)*sM, {color:'#0d6e64', width:2.5});
+  AB.text(ctx,'M = '+fmt(M,0)+' N', g.tx+Math.cos(ma)*(sM+12), g.ty+Math.sin(ma)*(sM+12), {size:10,color:'#0d6e64',weight:'700'});
+  const Nf=(1-nc)*Wb;
+  AB.arrow(ctx, g.fx2, floorY+10, g.fx2, floorY+40, {color:'#2d7d4f', width:2.4});
+  AB.text(ctx,'N_f = '+fmt(Nf,0)+' N', g.fx2, floorY+56, {size:10,color:'#2d7d4f',weight:'700'});
+  const phi=13*Math.PI/180;
+  AB.arrow(ctx, cx, hipY+2, cx-Math.sin(phi)*sR, hipY+2+Math.cos(phi)*sR, {color:'#a92a1e', width:2.4});
+  AB.text(ctx,'R = '+fmt(R,0)+' N', cx-Math.sin(phi)*sR-8, hipY+2+Math.cos(phi)*sR+12, {size:10,color:'#a92a1e',weight:'700',align:'right'});
+  el('cane_out').textContent='M = '+fmt(M,0)+' N';
+}
+function toggleCane(){
+  window.__caneOn=!window.__caneOn;
+  const b=[...document.querySelectorAll('.prof-controls button')].find(x=>/Bastón/.test(x.textContent));
+  if (b) b.textContent='Bastón: '+(window.__caneOn?'sí':'no');
+  drawHipCane();
+}
+
+/* ─── S9 · ESPALDA ─── */
+function drawSpine(ctx, x0,y0,x1,y1, N){
+  const dx=(x1-x0)/N, dy=(y1-y0)/N;
+  const ang=Math.atan2(y1-y0,x1-x0);
+  const px=-Math.sin(ang), py=Math.cos(ang);
+  ctx.fillStyle='#cfc4ae'; ctx.strokeStyle='#b6a67f'; ctx.lineWidth=1.4;
+  for (let i=0;i<N;i++){
+    const cx=x0+dx*(i+0.5), cy=y0+dy*(i+0.5);
+    ctx.beginPath(); ctx.ellipse(cx+px*8, cy+py*8, 12, 7, ang, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+  }
+}
+function drawBack(){
+  const cv=el('sim-back'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  const th=num('back_theta'), load=window.__backLoad;
+  const m=num('hip_m')||90, Wb=m*9.8;
+  const row=load? [[30,3.74,4.07],[60,2.16,2.81],[80,0.75,1.53],[90,0,0.80]]
+                 : [[30,2.50,2.74],[60,1.44,1.93],[80,0.50,1.08],[90,0,0.60]];
+  function interp(x){
+    for (let i=0;i<row.length-1;i++){
+      const [a,ma,ra]=row[i], [b,mb,rb]=row[i+1];
+      if (x>=a&&x<=b){ const t=(x-a)/(b-a); return [ma+(mb-ma)*t, ra+(rb-ra)*t]; }
+    }
+    return [row[row.length-1][1], row[row.length-1][2]];
+  }
+  const [Mc,Rc]=interp(th);
+  const M=Mc*Wb, R=Rc*Wb;
+  const px2=w*0.30, py2=h-46;
+  c2Scene(ctx,w,h,py2+18);
+  const L=Math.min(180, h*0.6);
+  const ang=th*Math.PI/180;
+  const sx=px2+L*Math.cos(ang), sy=py2-L*Math.sin(ang);
+  drawSpine(ctx, px2, py2, sx, sy, 5);
+  AB.joint(ctx, px2, py2, 7);
+  const nx=-Math.sin(ang), ny=-Math.cos(ang);
+  const f2x=px2+(2/3)*L*Math.cos(ang), f2y=py2-(2/3)*L*Math.sin(ang);
+  const mx2=f2x+nx*7, my2=f2y+ny*7;
+  AB.muscle(ctx, px2+nx*7, py2+ny*7, mx2, my2, {w0:8*(1+0.06*Math.sin((window.c2t||0)*1.8)),w1:4,bow:0,fill:'#c14b4b',edge:'#a92a1e'});
+  const sM=Math.min(120, M*0.05);
+  const ea=Math.atan2((py2+ny*7)-my2, (px2+nx*7)-mx2);
+  c2GlowArrow(ctx, mx2, my2, mx2+Math.cos(ea)*sM, my2+Math.sin(ea)*sM, '#0d6e64', 2.4);
+  c2Chip(ctx,'M = '+fmt(M,0)+' N', mx2+Math.cos(ea)*(sM+12), my2+Math.sin(ea)*(sM+12), '#0d6e64', {size:10,weight:'700'});
+  const w1x=px2+0.5*L*Math.cos(ang), w1y=py2-0.5*L*Math.sin(ang);
+  const w2x=sx, w2y=sy;
+  c2GlowArrow(ctx, w1x, w1y+8, w1x, w1y+34, '#43505c', 2.2);
+  c2Chip(ctx,'W₁ = 0,4W_b', w1x, w1y+48, '#43505c', {size:10});
+  c2GlowArrow(ctx, w2x, w2y+8, w2x, w2y+34, '#43505c', 2.2);
+  c2Chip(ctx,'W₂ = 0,2W_b', w2x, w2y+48, '#43505c', {size:10});
+  if (load){
+    ctx.fillStyle='#9a5b00'; ctx.fillRect(w2x-9, w2y+42, 20, 15); ctx.strokeStyle='#7c4900'; ctx.strokeRect(w2x-9, w2y+42, 20, 15);
+    c2Chip(ctx,'+0,2W_b', w2x, w2y+70, '#9a5b00', {size:10,weight:'700'});
+  }
+  const sR=Math.min(130, R*0.05);
+  const rEx=px2-Math.cos(ang)*sR, rEy=py2+Math.sin(ang)*sR;
+  c2GlowArrow(ctx, px2, py2, rEx, rEy, '#a92a1e', 2.4);
+  // etiqueta R junto al pivote (no en el extremo), fondo claro opaco
+  c2Chip(ctx,'R = '+fmt(R,0)+' N', px2+Math.max(40,rEx-px2)*0+58, py2-26, '#a92a1e', {size:10,weight:'700',align:'left',fill:'rgba(251,248,240,1)'});
+  // conector tenue del pivote a la etiqueta R
+  AB.dashed(ctx, px2+12, py2-8, px2+50, py2-22, {color:'#a92a1e', width:1});
+  AB.text(ctx,'θ = '+fmt(th,0)+'°', px2+L*0.55*Math.cos(ang)+6, py2-L*0.55*Math.sin(ang)-4, {size:11,color:'#6b7885'});
+  el('back_out').textContent='M = '+fmt(M,0)+' N';
+}
+function toggleBackLoad(){
+  window.__backLoad=!window.__backLoad;
+  const b=[...document.querySelectorAll('.prof-controls button')].find(x=>/Carga/.test(x.textContent));
+  if (b) b.textContent='Carga: '+(window.__backLoad?'con':'sin');
+  drawBack();
+}
+
+/* ─── S10 · DISCO ─── */
+function drawDisc(){
+  const cv=el('sim-disc'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  const p=window.__discPosture||'upright';
+  const cx=w/2, baseY=h-30;
+  const tilt=p==='lift'?0.5:(p==='bend'?0.28:0);
+  const shift=p==='lift'?8:(p==='bend'?4:0);
+  const compress=p==='lift'?0.5:(p==='bend'?0.2:0);
+  const bh=22, dh0=7;
+  let y=baseY;
+  const N=4;
+  for (let i=0;i<N;i++){
+    ctx.save(); ctx.translate(cx+shift*(N-i), y); ctx.rotate(-tilt);
+    ctx.fillStyle='#cfc4ae'; ctx.strokeStyle='#b6a67f'; ctx.lineWidth=1.4;
+    ctx.fillRect(-16,-bh,32,bh); ctx.strokeRect(-16,-bh,32,bh);
+    ctx.restore();
+    y-=bh;
+    if (i<N-1){
+      const dh=dh0*(1-compress*0.6);
+      const wd=32+compress*20;
+      ctx.fillStyle=p==='lift'?'#a92a1e':(p==='bend'?'#b86a1e':'#0d6e64');
+      ctx.save(); ctx.translate(cx+shift*(N-i), y); ctx.rotate(-tilt);
+      if (ctx.roundRect) ctx.roundRect(-wd/2, -dh, wd, dh, 4); else ctx.rect(-wd/2, -dh, wd, dh);
+      ctx.fill(); ctx.restore();
+      if (p==='lift'){
+        ctx.strokeStyle='#e8d8c8'; ctx.lineWidth=3;
+        ctx.beginPath(); ctx.moveTo(cx+22, y); ctx.quadraticCurveTo(cx+36, y+6, cx+46, y+22); ctx.stroke();
+        ctx.fillStyle='#a92a1e'; ctx.beginPath(); ctx.arc(cx+46, y+22, 3, 0, Math.PI*2); ctx.fill();
+      }
+      y-=dh;
+    }
+  }
+  el('disc_out').textContent = p==='upright'? 'Disco sano' : (p==='bend'? 'Disco comprimido ~20%' : 'Disco herniado · nervio');
+}
+function setDiscPosture(p){ window.__discPosture=p; drawDisc(); }
+
+/* ─── S11 · HOMBRO ─── */
+function drawShoulder(){
+  const cv=el('sim-shoulder'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  c2Scene(ctx,w,h,h-30);
+  const Ww=num('sh_w'), Warm=20;
+  const Fy=Ww+Warm, Fx=4*Fy, Mf=Math.sqrt(Fx*Fx+Fy*Fy);
+  const sx=w*0.78, sy=h*0.42, L=Math.min(150, w*0.45);
+  const hx=sx-L, hy=sy;
+  AB.bone(ctx, sx, sy, hx, hy, {width:12, joint:true, jointR:8});
+  AB.hand(ctx, hx, hy, 9);
+  ctx.beginPath(); ctx.arc(hx, hy+26, 11, 0, Math.PI*2); ctx.fillStyle='#9a5b00'; ctx.fill(); ctx.strokeStyle='#7c4900'; ctx.stroke();
+  AB.arrow(ctx, hx, hy+34, hx, hy+52, {color:'#9a5b00', width:2.2});
+  AB.text(ctx,'W = '+fmt(Ww,0)+' N', hx, hy+66, {size:10,color:'#9a5b00',weight:'700'});
+  const dmx=sx-L*0.5, dmy=sy;
+  const axx=sx, ayy=sy-42;
+  AB.muscle(ctx, axx, ayy, dmx, dmy, {w0:9,w1:4,bow:6,fill:'#c14b4b',edge:'#a92a1e'});
+  AB.text(ctx,'deltoides', axx+6, ayy-12, {size:9.5,color:'#a92a1e'});
+  const sc=Math.min(130, Mf*0.28);
+  const da=14*Math.PI/180;
+  AB.arrow(ctx, dmx, dmy-6, dmx-Math.cos(da)*sc, dmy-6-Math.sin(da)*sc, {color:'#0d6e64', width:2.5});
+  AB.text(ctx,'M', dmx-Math.cos(da)*(sc+12), dmy-6-Math.sin(da)*(sc+12), {size:11,color:'#0d6e64',weight:'700'});
+  AB.arrow(ctx, sx, sy, sx+sc*0.55, sy, {color:'#a92a1e', width:2.5});
+  AB.text(ctx,'R ≈ 4·W', sx+sc*0.55+12, sy, {size:10,color:'#a92a1e',weight:'700',align:'left'});
+  AB.text(ctx,'F_x ≈ 4·F_y → inestable', w*0.5, h*0.12, {size:11,color:'#a92a1e',weight:'700'});
+  el('sh_out').textContent='M ≈ '+fmt(Mf/Fy,1)+'×W · R ≈ 4,2×W';
+}
+
+/* ─── S11b · RODILLA ─── */
+function drawKnee(){
+  const cv=el('sim-knee'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  c2Scene(ctx,w,h,h-30);
+  const beta=num('kn_beta');
+  const W1=150, W0=100, a=12, b=22, c=50, th=15;
+  const M=((b*W1+c*W0)*Math.cos(beta*Math.PI/180))/(a*Math.sin(th*Math.PI/180));
+  const kx=w*0.42, ky=h*0.40;
+  AB.bone(ctx, kx, ky, kx+18, ky-70, {width:13, joint:true, jointR:8});
+  ctx.beginPath(); ctx.arc(kx+6, ky+4, 6, 0, Math.PI*2); ctx.fillStyle='#cfc4ae'; ctx.strokeStyle='#b6a67f'; ctx.stroke();
+  const ang=(20+beta*0.6)*Math.PI/180, L2=120;
+  const ax=kx+L2*Math.cos(ang), ay=ky+L2*Math.sin(ang);
+  AB.bone(ctx, kx, ky, ax, ay, {width:11, jointEnd:true, jointR:7});
+  AB.foot(ctx, ax+2, ay, Math.PI/2, {len:40, h:14});
+  AB.tendon(ctx, kx+4, ky-58, kx+14, ky-8, {width:4});
+  const sc=Math.min(120, M*0.09);
+  AB.arrow(ctx, kx+14, ky-10, kx+14, ky-10-sc, {color:'#0d6e64', width:2.5});
+  AB.text(ctx,'M = '+fmt(M,0)+' N', kx+22, ky-10-sc+8, {size:9,color:'#0d6e64',weight:'700',align:'left'});
+  AB.arrow(ctx, kx, ky, kx-sc*0.4, ky+sc*0.5, {color:'#a92a1e', width:2.2});
+  ctx.beginPath(); ctx.arc(ax, ay+22, 8, 0, Math.PI*2); ctx.fillStyle='#9a5b00'; ctx.fill(); ctx.strokeStyle='#7c4900'; ctx.stroke();
+  AB.text(ctx,'W₀', ax+12, ay+24, {size:9,color:'#9a5b00',weight:'700'});
+  AB.text(ctx,'β = '+fmt(beta,0)+'°', kx+6, ky+46, {size:10,color:'#6b7885'});
+  el('kn_out').textContent='M = '+fmt(M,0)+' N';
+}
+
+/* ─── S12 · TOBILLO ─── */
+function drawAnkle(){
+  const cv=el('sim-ankle'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  c2Scene(ctx,w,h,h-40);
+  const beta=num('an_beta');
+  const th=45;
+  const Wb=882;
+  const Mcoef=Math.abs(Math.cos(beta*Math.PI/180)/Math.cos((th+beta)*Math.PI/180));
+  const M=Mcoef*Wb, R=2.73*Wb;
+  const gx=w*0.34, gy=h-26;
+  // pie de puntillas: dedos en el suelo, talón elevado
+  ctx.save(); ctx.translate(gx+40, gy-16); ctx.rotate(-0.18);
+  AB.limbSkin(ctx, -14, 0, 34, 0, 22, {fill:'#e9c49f', edge:'#d9a77c'});
+  ctx.restore();
+  // suelo
+  ctx.fillStyle='#e8dfc9'; ctx.fillRect(0, gy, w, 40);
+  ctx.strokeStyle='#cfc3a9'; ctx.strokeRect(0, gy, w, 40);
+  // talus / tobillo
+  const akx=gx+18, aky=gy-30;
+  AB.joint(ctx, akx, aky, 6);
+  // tibia
+  const tkx=gx+8, tky=aky-100;
+  AB.bone(ctx, akx, aky, tkx, tky, {width:11, joint:true, jointR:7});
+  // gemelo
+  AB.muscle(ctx, tkx-4, tky+6, tkx-8, tky+58, {w0:12,w1:6,bow:10,fill:'#c14b4b',edge:'#a92a1e'});
+  // tendón de Aquiles
+  AB.tendon(ctx, tkx-8, tky+54, gx-4, gy-12, {width:4});
+  // fuerzas
+  const sc=Math.min(120, M*0.05);
+  AB.arrow(ctx, gx-4, gy-12, gx-4, gy-12-sc, {color:'#0d6e64', width:2.5});
+  AB.text(ctx,'M = '+fmt(Mcoef,2)+' W_b', gx-10, gy-12-sc-10, {size:10,color:'#0d6e64',weight:'700'});
+  AB.arrow(ctx, akx, aky, akx, aky+sc*0.5, {color:'#43505c', width:2.4});
+  AB.text(ctx,'W_b', akx+10, aky+sc*0.5, {size:10,color:'#43505c',weight:'700',align:'left'});
+  AB.arrow(ctx, akx, aky, akx-sc*0.3, aky+sc*0.75, {color:'#a92a1e', width:2.4});
+  AB.text(ctx,'R = 2,73 W_b', akx-sc*0.3, aky+sc*0.75+12, {size:9.5,color:'#a92a1e',weight:'700'});
+  AB.text(ctx,'β = '+fmt(beta,0)+'°', gx+14, gy-42, {size:10,color:'#6b7885'});
+  el('an_out').textContent='M = '+fmt(Mcoef,2)+' W_b';
+}
+
+/* ─── S12b · MANDÍBULA ─── */
+function drawJaw(){
+  const cv=el('sim-jaw'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  const mode=window.__jawMode||'incisor';
+  const sx=w*0.62, sy=h*0.30;
+  ctx.beginPath(); ctx.arc(sx, sy, 40, 0, Math.PI*2);
+  ctx.fillStyle='#cfc4ae'; ctx.strokeStyle='#b6a67f'; ctx.lineWidth=1.6; ctx.fill(); ctx.stroke();
+  const jx=sx, jy=sy+22;
+  // mandíbula
+  ctx.beginPath();
+  ctx.moveTo(jx+2, jy+2);
+  ctx.lineTo(jx-10, jy+30);
+  ctx.lineTo(jx-14, sy+58);
+  ctx.lineTo(jx-44, sy+64);
+  ctx.lineTo(jx-48, sy+58);
+  ctx.lineTo(jx-14, sy+52);
+  ctx.closePath();
+  ctx.fillStyle='#cfc4ae'; ctx.strokeStyle='#b6a67f'; ctx.lineWidth=1.4; ctx.fill(); ctx.stroke();
+  // dientes
+  ctx.fillStyle='#fbf8f0';
+  for (let i=0;i<6;i++) ctx.fillRect(jx-42+i*7, sy+50, 4, 6);
+  AB.joint(ctx, jx, jy, 5);
+  AB.muscle(ctx, sx-10, sy-14, sx-18, sy+52, {w0:7,w1:3,bow:-4,fill:'#c14b4b',edge:'#a92a1e'});
+  AB.text(ctx,'masetero', sx-30, sy-6, {size:9,color:'#a92a1e',align:'right'});
+  const am = mode==='incisor'?0.50:0.76;
+  const bx = mode==='incisor'? jx-40 : jx-14;
+  const by = mode==='incisor'? sy+60 : sy+58;
+  AB.arrow(ctx, bx, by, bx, by+22, {color:'#a92a1e', width:2.2});
+  AB.text(ctx, mode==='incisor'?'incisivo':'1er molar', bx, by+32, {size:9,color:'#a92a1e',align:'left'});
+  AB.text(ctx,'AM = '+fmt(am,2), sx, sy+78, {size:12,color:'#0d6e64',weight:'700'});
+  el('jaw_out').textContent='AM = '+fmt(am,2);
+}
+function setJawPos(m){ window.__jawMode=m; drawJaw(); }
+
+/* ─── S13 · TRES FUERZAS ─── */
+function drawThreeForce(){
+  const cv=el('sim-threeforce'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  c2Scene(ctx,w,h,h-30);
+  const step=window.__tfStep||1;
+  const g=h-40;
+  ctx.fillStyle='#e8dfc9'; ctx.fillRect(0, g, w, 40);
+  ctx.strokeStyle='#cfc3a9'; ctx.strokeRect(0, g, w, 40);
+  // pie + pierna
+  const toesX=w*0.26;
+  AB.foot(ctx, toesX, g-6, 0, {len:84, h:22});
+  const akx=w*0.38, aky=g-26;
+  const tx2=w*0.36, ty2=g-94;
+  AB.bone(ctx, akx, aky, tx2, ty2, {width:11, joint:true, jointR:6});
+  ctx.beginPath(); ctx.arc(w*0.40, ty2+8, 6, 0, Math.PI*2); ctx.fillStyle='#cfc4ae'; ctx.strokeStyle='#b6a67f'; ctx.stroke();
+  // tendón patelar (dirección de M: hacia abajo-adelante)
+  const patX=w*0.40, patY=ty2+8;
+  const tubX=w*0.47, tubY=ty2+34;
+  AB.tendon(ctx, patX, patY, tubX, tubY, {width:4});
+  // Q (cóndilo femoral)
+  const qx=w*0.30, qy=ty2-18;
+  AB.joint(ctx, qx, qy, 7);
+  AB.text(ctx,'Q', qx-16, qy-2, {size:10,color:'#6b7885'});
+  // u = dirección de M (hacia abajo-adelante)
+  const dux=tubX-patX, duy=tubY-patY;
+  const duL=Math.hypot(dux,duy), ux=dux/duL, uy=duy/duL;
+  const nNx=w*0.44, nNy=g-2;
+  const sN=60, sM=64;
+  if (step>=1){
+    AB.arrow(ctx, nNx, nNy, nNx, nNy-sN, {color:'#2d7d4f', width:2.5});
+    AB.text(ctx,'N', nNx+2, nNy-sN-8, {size:11,color:'#2d7d4f',weight:'700'});
+    AB.arrow(ctx, patX, patY, patX+ux*sM, patY+uy*sM, {color:'#0d6e64', width:2.5});
+    AB.text(ctx,'M', patX+ux*(sM+14), patY+uy*(sM+14), {size:11,color:'#0d6e64',weight:'700'});
+  }
+  const t=(nNx-patX)/ux;
+  const Px=patX+ux*t, Py=patY+uy*t;
+  if (step>=2){
+    AB.dashed(ctx, nNx, nNy, nNx, nNy-sN-46, {color:'#2d7d4f'});
+    AB.dashed(ctx, patX, patY, patX+ux*(sM+46), patY+uy*(sM+46), {color:'#0d6e64'});
+    ctx.fillStyle='#9a5b00'; ctx.beginPath(); ctx.arc(Px, Py, 3.5, 0, Math.PI*2); ctx.fill();
+    AB.text(ctx,'P', Px, Py+16, {size:12,color:'#9a5b00',weight:'700'});
+  }
+  if (step>=3){
+    const ddx=Px-qx, ddy=Py-qy, Ln=Math.hypot(ddx,ddy);
+    const rx=ddx/Ln, ry=ddy/Ln;
+    AB.arrow(ctx, qx, qy, qx+rx*70, qy+ry*70, {color:'#a92a1e', width:2.5});
+    AB.text(ctx,'R', qx+rx*80, qy+ry*80, {size:11,color:'#a92a1e',weight:'700'});
+    AB.dashed(ctx, Px, Py, qx, qy, {color:'#a92a1e', width:1.2});
+  }
+  if (step>=4){
+    const ox=w*0.62, oy=h*0.62, k=0.5;
+    const vN=[0, -sN*k];
+    const vM=[ux*sM*k, uy*sM*k];
+    const vR=[-vN[0]-vM[0], -vN[1]-vM[1]];
+    ctx.fillStyle='rgba(13,110,100,.07)';
+    ctx.beginPath(); ctx.moveTo(ox,oy); ctx.lineTo(ox+vN[0],oy+vN[1]); ctx.lineTo(ox+vN[0]+vM[0],oy+vN[1]+vM[1]); ctx.closePath(); ctx.fill();
+    AB.arrow(ctx, ox,oy, ox+vN[0],oy+vN[1], {color:'#2d7d4f', width:2.2});
+    AB.text(ctx,'N', ox+vN[0]+12, oy+vN[1]-2, {size:10,color:'#2d7d4f',weight:'700'});
+    AB.arrow(ctx, ox+vN[0],oy+vN[1], ox+vN[0]+vM[0],oy+vN[1]+vM[1], {color:'#0d6e64', width:2.2});
+    AB.text(ctx,'M', ox+vN[0]+vM[0]+2, oy+vN[1]+vM[1]-8, {size:10,color:'#0d6e64',weight:'700'});
+    AB.arrow(ctx, ox+vN[0]+vM[0],oy+vN[1]+vM[1], ox,oy, {color:'#a92a1e', width:2.2});
+    AB.text(ctx,'R', ox+vR[0]*0.55, oy+vR[1]*0.55, {size:10,color:'#a92a1e',weight:'700'});
+  }
+  const labels=['1 · N y M','2 · P (intersección)','3 · R ∥ QP','4 · Triángulo cerrado'];
+  el('tf_out').textContent='Paso '+step+' de 4 · '+labels[step-1];
+}
+function threeStep(d){
+  window.__tfStep=Math.max(1, Math.min(4, (window.__tfStep||1)+d));
+  drawThreeForce();
+}
+
+/* ─── S14 · SEGMENTOS ─── */
+function drawSegments(){
+  const cv=el('sim-segments'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  c2Scene(ctx,w,h,h-30);
+  const hover=window.__segHover;
+  const hx=w*0.5, hy=h*0.16, kx=w*0.42, ky=h*0.48, ax=w*0.36, ay=h*0.78;
+  AB.bone(ctx, hx,hy, kx,ky, {width:16, joint:true, jointR:9,
+    fill:hover==='muslo'?'#3aa89c':undefined, edge:hover==='muslo'?'#0d6e64':undefined});
+  AB.bone(ctx, kx,ky, ax,ay, {width:13, joint:true, jointR:8,
+    fill:hover==='pantorrilla'?'#3aa89c':undefined, edge:hover==='pantorrilla'?'#0d6e64':undefined});
+  ctx.save(); ctx.translate(ax,ay); ctx.rotate(Math.PI/2+0.4);
+  AB.limbSkin(ctx, 0,0, 44,0, 22, {fill:hover==='pie'?'#3aa89c':undefined, edge:hover==='pie'?'#0d6e64':undefined});
+  ctx.restore();
+  AB.arrow(ctx, hx-16, hy+2, hx-42, hy+20, {color:'#a92a1e', width:2});
+  AB.arrow(ctx, kx-12, ky+2, kx-36, ky+22, {color:'#a92a1e', width:2});
+  AB.arrow(ctx, ax-8, ay+6, ax-24, ay+24, {color:'#a92a1e', width:2});
+  AB.text(ctx,'R₁', hx-54, hy+12, {size:10,color:'#a92a1e',align:'right'});
+  AB.text(ctx,'R₂', kx-46, ky+24, {size:10,color:'#a92a1e',align:'right'});
+  AB.text(ctx,'R₃', ax-34, ay+26, {size:10,color:'#a92a1e',align:'right'});
+  AB.text(ctx,'muslo', (hx+kx)/2-8, (hy+ky)/2, {size:10,color:'#6b7885'});
+  AB.text(ctx,'pantorrilla', (kx+ax)/2-10, (ky+ay)/2, {size:10,color:'#6b7885'});
+  AB.text(ctx,'pie', ax-20, ay+44, {size:10,color:'#6b7885'});
+  el('seg_out').textContent = hover? ('FBD: '+hover) : 'Pasa el cursor sobre un segmento';
+}
+(function(){
+  const cv=el('sim-segments'); if(!cv) return;
+  cv.addEventListener('mousemove', e=>{
+    const r=cv.getBoundingClientRect();
+    const x=e.clientX-r.left, y=e.clientY-r.top;
+    const w=cv.clientWidth, h=cv.clientHeight;
+    function near(x0,y0,x1,y1,d){
+      const A=x-x0,B=y-y0,C=x1-x0,D=y1-y0;
+      const len2=C*C+D*D; if (len2===0) return Math.hypot(A,B)<d;
+      const t=Math.max(0,Math.min(1,(A*C+B*D)/len2));
+      return Math.hypot(x-(x0+t*C), y-(y0+t*D))<d;
+    }
+    const hx=w*0.5, hy=h*0.16, kx=w*0.42, ky=h*0.48, ax=w*0.36, ay=h*0.78;
+    let hover=null;
+    if (near(hx,hy,kx,ky,18)) hover='muslo';
+    else if (near(kx,ky,ax,ay,15)) hover='pantorrilla';
+    else if (Math.hypot(x-ax,y-ay)<26) hover='pie';
+    if (hover!==window.__segHover){ window.__segHover=hover; drawSegments(); }
+  });
+  cv.addEventListener('mouseleave', ()=>{ if (window.__segHover){ window.__segHover=null; drawSegments(); } });
+})();
+
+/* ─── S15 · TACTO ─── */
+function drawTouch(){
+  const cv=el('sim-touch'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  const fval=num('tch_f');
+  const f=Math.pow(10, -0.52+(fval/100)*3.22);
+  const R=[
+    {name:'Merkel',   c:1,   s:0.32, color:'#0d6e64', depth:0.16},
+    {name:'Meissner', c:10,  s:0.34, color:'#2d7d4f', depth:0.42},
+    {name:'Ruffini',  c:80,  s:0.40, color:'#9a5b00', depth:0.66},
+    {name:'Pacini',   c:150, s:0.50, color:'#5d4fa8', depth:0.86},
+  ];
+  const lf=Math.log10(f);
+  const resp=R.map(r=> Math.exp(-((lf-Math.log10(r.c))**2)/(2*r.s*r.s)));
+  const left=w*0.30, right=w*0.86, top=48, bot=h-58;
+  ctx.fillStyle='#e8dfc9'; ctx.fillRect(left, top, right-left, 14);
+  ctx.fillStyle='#e3b48f'; ctx.fillRect(left, top+14, right-left, (bot-top)*0.72);
+  ctx.fillStyle='#f0d9b6'; ctx.fillRect(left, top+(bot-top)*0.72, right-left, (bot-top)*0.28);
+  const px0=left+(right-left)*0.5;
+  const vib=Math.sin(performance.now()*0.02*Math.min(f,30)+f)*3;
+  ctx.strokeStyle='#232c36'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.arc(px0, top-14, 10+vib, 0, Math.PI*2); ctx.stroke();
+  AB.arrow(ctx, px0, top-4, px0, top+2, {color:'#232c36', width:1.5});
+  AB.text(ctx,'estímulo '+fmt(f,1)+' Hz', px0, top-28, {size:11,color:'#232c36',weight:'700'});
+  R.forEach((r,i)=>{
+    const rx=left+24+i*((right-left)-48)/3, ry=top+14+(bot-top)*r.depth;
+    const rr=5+resp[i]*7;
+    ctx.beginPath(); ctx.arc(rx,ry,rr,0,Math.PI*2);
+    ctx.fillStyle=resp[i]>0.15? r.color : 'rgba(35,44,54,.25)';
+    ctx.fill(); ctx.strokeStyle=r.color; ctx.lineWidth=1.2; ctx.stroke();
+    AB.text(ctx, r.name, rx, ry+rr+9, {size:8.5,color:'#43505c'});
+  });
+  R.forEach((r,i)=>{
+    const bx=left+6+i*((right-left-12)/4), barW=(right-left-12)/4-6;
+    const barH=resp[i]*34;
+    ctx.fillStyle='rgba(35,44,54,.12)'; ctx.fillRect(bx, h-18-34, barW, 34);
+    ctx.fillStyle=r.color; ctx.fillRect(bx, h-18-barH, barW, barH);
+    AB.text(ctx, r.name, bx+barW/2, h-8, {size:8,color:'#43505c'});
+  });
+  let dom=0; resp.forEach((r,i)=>{ if (r>resp[dom]) dom=i; });
+  el('tch_out').textContent=fmt(f,1)+' Hz · '+R[dom].name;
+}
+function touchStim(kind){
+  const map={press:16, flutter:47, buzz:71, vib:84};
+  const el0=el('tch_f'); if (el0) el0.value=map[kind];
+  document.querySelectorAll('.theory .pill').forEach(p=>{
+    const m=(p.getAttribute('onclick')||'').match(/touchStim\('(\w+)'\)/);
+    p.classList.toggle('active', m && m[1]===kind);
+  });
+  drawTouch();
+}
+
+/* ─── S16 · TERMORRECEPTORES ─── */
+function drawThermal(){
+  const cv=el('sim-thermal'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  c2Scene(ctx,w,h,h-20);
+  const T=num('th_t');
+  function warm(T){ if (T<30||T>48) return 0; return T<=44? (T-30)/14 : (48-T)/4; }
+  function cold(T){ if (T<20||T>45) return 0; return T<=30? (T-20)/10 : (45-T)/15; }
+  const warmRate=warm(T), coldRate=cold(T);
+  const x0=46, x1=w-16, y0=h-34, y1=16;
+  const X=t=>x0+(t/60)*(x1-x0);
+  const Y=v=>y0-v*(y0-y1);
+  ctx.strokeStyle='rgba(35,44,54,.1)'; ctx.lineWidth=1;
+  for (let t=0;t<=60;t+=10){
+    ctx.beginPath(); ctx.moveTo(X(t),y0); ctx.lineTo(X(t),y1); ctx.stroke();
+    AB.text(ctx,String(t), X(t), y0+12, {size:8.5,color:'#6b7885'});
+  }
+  AB.text(ctx,'T (°C)', x1-26, y0+12, {size:8.5,color:'#6b7885'});
+  function curve(fn,color){
+    ctx.strokeStyle=color; ctx.lineWidth=2.4; ctx.beginPath();
+    for (let t=12;t<=60;t+=1){ const v=fn(t); const x=X(t),y=Y(v); t===12?ctx.moveTo(x,y):ctx.lineTo(x,y); }
+    ctx.stroke();
+  }
+  curve(warm,'#a92a1e'); curve(cold,'#0d6e64');
+  AB.text(ctx,'cálido', X(46), Y(warm(46))-8, {size:9,color:'#a92a1e',weight:'700'});
+  AB.text(ctx,'frío', X(26), Y(cold(26))+12, {size:9,color:'#0d6e64',weight:'700'});
+  ctx.strokeStyle='#232c36'; ctx.setLineDash([4,3]); ctx.lineWidth=1.2;
+  ctx.beginPath(); ctx.moveTo(X(T),y0); ctx.lineTo(X(T),y1); ctx.stroke(); ctx.setLineDash([]);
+  ctx.beginPath(); ctx.arc(X(T), Y(warmRate), 4, 0, Math.PI*2); ctx.fillStyle='#a92a1e'; ctx.fill();
+  ctx.beginPath(); ctx.arc(X(T), Y(coldRate), 4, 0, Math.PI*2); ctx.fillStyle='#0d6e64'; ctx.fill();
+  AB.text(ctx,'T = '+fmt(T,0)+' °C', X(T), y0+26, {size:10,color:'#232c36',weight:'700'});
+  const best = warmRate>coldRate ? ('cálido '+(warmRate>0.9?'óptimo':'activo')) : ('frío '+(coldRate>0.9?'óptimo':'activo'));
+  el('th_out').textContent=fmt(T,0)+' °C · '+best;
+}
+
+/* ─── S17 · CONVERTIDOR ─── */
+const FORCE={N:1, dyn:1e-5, lb:4.4482216152605, kgf:9.80665};
+const PRESSURE={Pa:1, MPa:1e6, mmHg:133.322387415, psi:6894.757293, atm:101325, bar:1e5, cmH2O:98.0665};
+function fmtVal(x){
+  if (Math.abs(x)>=1e7 || (Math.abs(x)>0 && Math.abs(x)<1e-4)) return x.toExponential(2).replace('.',',');
+  return Number(x.toPrecision(4)).toString().replace('.',',');
+}
+function convertUnits(){
+  const fv=parseFloat(el('cv_f_val').value)||0;
+  const fN=fv*FORCE[el('cv_f_from').value];
+  el('cv_f_out').textContent=fmtVal(fN/FORCE[el('cv_f_to').value]);
+  const pv=parseFloat(el('cv_p_val').value)||0;
+  const pPa=pv*PRESSURE[el('cv_p_from').value];
+  el('cv_p_out').textContent=fmtVal(pPa/PRESSURE[el('cv_p_to').value]);
+}
+function convertPreset(k){
+  if (k==='bp'){ el('cv_p_val').value=120; el('cv_p_from').value='mmHg'; el('cv_p_to').value='Pa'; }
+  if (k==='atm'){ el('cv_p_val').value=1; el('cv_p_from').value='atm'; el('cv_p_to').value='Pa'; }
+  if (k==='body'){ el('cv_f_val').value=70; el('cv_f_from').value='kgf'; el('cv_f_to').value='lb'; }
+  convertUnits();
+}
+
+window.addEventListener('resize', ()=>{ if (typeof redrawSlide==='function') redrawSlide(current); });
+document.fonts && document.fonts.ready.then(()=>{ if (typeof redrawSlide==='function' && typeof current==='number') redrawSlide(current); });
+window.addEventListener('load', ()=>{ if (typeof redrawSlide==='function' && typeof current==='number') redrawSlide(current); });
+
+/* ── KaTeX ── */
+window.addEventListener('DOMContentLoaded', () => {
+  if (window.renderMathInElement) {
+    renderMathInElement(document.body, {
+      delimiters: [
+        {left:'\\(', right:'\\)', display:false},
+        {left:'\\[', right:'\\]', display:true}
+      ],
+      throwOnError:false
+    });
+  }
+  dots();
+  moduleTabs();
+  go(0);
+  if (window.drawTouch) drawTouch();
+});
+</script>
+<script>
+/* ── Capa de animación c2: refuerzo de entradas + arranque ── */
+(function(){
+  'use strict';
+  document.body.classList.add('c2-anim-ready');
+
+  // Reloj global de animación para las simulaciones de canvas (pausable).
+  window.c2t = 0;
+  let _last = performance.now();
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  // Mapa slide -> id del canvas principal (para el pulso de energía universal).
+  const CANVASMAP = {
+    2:'sim-torque', 3:'sim-levers', 4:'sim-amp', 5:'sim-forearm', 6:'sim-forearm2',
+    7:'sim-hip', 8:'sim-hipcane', 9:'sim-back', 10:'sim-disc', 11:'sim-shoulder',
+    12:'sim-ankle', 13:'sim-threeforce', 14:'sim-segments', 15:'sim-touch', 16:'sim-thermal'
+  };
+
+  // Mapa slide -> función de redibujo (idéntico al del motor, por seguridad).
+  const SIMS = {
+    2: ()=>window.drawTorque && drawTorque(),
+    3: ()=>window.drawLevers && drawLevers(),
+    4: ()=>window.drawAmp && drawAmp(),
+    5: ()=>window.drawForearm && drawForearm(),
+    6: ()=>window.drawForearm2 && drawForearm2(),
+    7: ()=>window.drawHip && drawHip(),
+    8: ()=>window.drawHipCane && drawHipCane(),
+    9: ()=>window.drawBack && drawBack(),
+    10: ()=>window.drawDisc && drawDisc(),
+    11: ()=>{ if(window.drawShoulder) drawShoulder(); if(window.drawKnee) drawKnee(); },
+    12: ()=>{ if(window.drawAnkle) drawAnkle(); if(window.drawJaw) drawJaw(); },
+    13: ()=>window.drawThreeForce && drawThreeForce(),
+    14: ()=>window.drawSegments && drawSegments(),
+    15: ()=>window.drawTouch && drawTouch(),
+    16: ()=>window.drawThermal && drawThermal(),
+    17: ()=>window.convertUnits && convertUnits(),
+  };
+  function activeSlideIdx(){
+    const s = document.querySelector('.slide.active,.slide-full.active');
+    return s ? (+s.dataset.slide) : -1;
+  }
+
+  // Pausar cuando la pestaña no está visible (ahorra CPU).
+  document.addEventListener('visibilitychange', ()=>{ _last = performance.now(); });
+
+  /* ── Polvo/campo de partículas de fondo (profundidad sutil) ── */
+  const dust = document.getElementById('c2-dust');
+  let parts = [];
+  function initDust(){
+    if (!dust) return;
+    const w = window.innerWidth, h = window.innerHeight;
+    const dpr = Math.min(window.devicePixelRatio||1, 2);
+    dust.width = Math.round(w*dpr); dust.height = Math.round(h*dpr);
+    dust.style.width = w+'px'; dust.style.height = h+'px';
+    const dctx = dust.getContext('2d'); dctx.setTransform(dpr,0,0,dpr,0,0);
+    const N = Math.max(18, Math.min(46, Math.round(w*h/42000)));
+    parts = [];
+    for (let i=0;i<N;i++){
+      parts.push({
+        x:Math.random()*w, y:Math.random()*h,
+        r:0.6+Math.random()*1.8,
+        vx:(Math.random()-0.5)*6, vy:(Math.random()-0.5)*6 - 4,
+        a:0.10+Math.random()*0.22,
+        c: ['13,110,100','169,42,30','154,91,0','93,79,168'][i%4]
+      });
+    }
+  }
+  function drawDust(dt){
+    if (!dust) return;
+    const w = window.innerWidth, h = window.innerHeight;
+    const dctx = dust.getContext('2d');
+    dctx.clearRect(0,0,w,h);
+    if (reduce) return;
+    for (const p of parts){
+      p.x += p.vx*dt; p.y += p.vy*dt;
+      if (p.y < -10) { p.y = h+10; p.x = Math.random()*w; }
+      if (p.x < -10) p.x = w+10; if (p.x > w+10) p.x = -10;
+      const tw = p.a * (0.6+0.4*Math.sin((window.c2t*1.5)+p.x));
+      dctx.beginPath();
+      dctx.fillStyle = 'rgba('+p.c+','+tw.toFixed(3)+')';
+      dctx.arc(p.x, p.y, p.r, 0, Math.PI*2); dctx.fill();
+    }
+  }
+  initDust();
+  window.addEventListener('resize', initDust);
+
+  // Re-dibujar la sim activa en bucle + pulso de energía + polvo de fondo.
+  function loop(now){
+    const dt = Math.min(0.05, (now - _last)/1000); _last = now;
+    if (!reduce) window.c2t += dt;
+    drawDust(dt);
+    const n = activeSlideIdx();
+    if (SIMS[n]) {
+      try { SIMS[n](); } catch(e) { /* no romper el bucle */ }
+    }
+    // "Pulso de energía": un barrido tenue sobre el canvas activo (vida universal,
+    // sin tocar las funciones draw*). Se dibuja tras el redibujo de la sim.
+    if (!reduce && n>=1 && n<=18) {
+      const id = CANVASMAP[n];
+      const cv = id ? document.getElementById(id) : null;
+      if (cv && cv.clientWidth) {
+        const ctx = cv.getContext('2d');
+        const w = cv.clientWidth, h = cv.clientHeight;
+        const dpr = Math.min(window.devicePixelRatio||1,2);
+        const p = (window.c2t*0.35) % 1;
+        const x = -w*0.4 + p*(w*1.8);
+        const g = ctx.createLinearGradient(x, 0, x+w*0.4, h);
+        g.addColorStop(0,'rgba(13,110,100,0)');
+        g.addColorStop(0.5,'rgba(13,110,100,0.07)');
+        g.addColorStop(1,'rgba(13,110,100,0)');
+        ctx.save(); ctx.setTransform(dpr,0,0,dpr,0,0);
+        ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+        ctx.restore();
+      }
+    }
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+  // Forzar re-disparo de la coreografía de entrada al volver a una diapositiva.
+  function kick(){
+    const cur = document.querySelector('.slide.active');
+    if (!cur) return;
+    const kids = cur.querySelectorAll('.card,.module-header,.eq-block,.sim-area,.apuntes,.prof-controls,.pill,.step,.badge,.tag');
+    kids.forEach(el=>{ el.style.animation='none'; });
+    void cur.offsetWidth;
+    kids.forEach(el=>{ el.style.animation=''; });
+  }
+  document.addEventListener('click', function(e){
+    const t = e.target.closest('[onclick^="go"], [onclick^="nextSlide"], [onclick^="prevSlide"], .nav-dot, .mpill, .nav-btn');
+    if (t){ setTimeout(kick, 30); }
+  });
+  window.addEventListener('keydown', function(){ setTimeout(kick, 30); });
+  window.requestAnimationFrame(function(){ kick(); });
+})();
+</script>
+</body>
+</html>

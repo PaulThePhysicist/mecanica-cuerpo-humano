@@ -1,0 +1,27 @@
+/* Estilos globales para la vista del Catálogo Principal */
+.App {
+  min-height: 100vh;
+  width: 100%;
+  background: var(--paper, #f5f0e4);
+  padding: 3.5rem 1.8rem 5rem;
+  font-family: var(--sans, system-ui, sans-serif);
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+/* Scrollbar estilizada institucional */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(35, 44, 54, 0.04);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--line, #cfc3a9);
+  border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-3, #6b7885);
+}

@@ -1,0 +1,30 @@
+capitulo11.html — QC CDP headless
+DECK: {"slides":24,"mpills":9,"dots":24,"canvases":23,"katex":108}
+slide 00 canvas={"has":false}
+slide 01 canvas={"has":true,"blank":false,"nz":21280,"size":[514,414]}
+slide 02 canvas={"has":true,"blank":false,"nz":21280,"size":[514,414]}
+slide 03 canvas={"has":true,"blank":false,"nz":22976,"size":[514,447]}
+slide 04 canvas={"has":true,"blank":false,"nz":21280,"size":[514,414]}
+slide 05 canvas={"has":true,"blank":false,"nz":22976,"size":[514,447]}
+slide 06 canvas={"has":true,"blank":false,"nz":21280,"size":[514,414]}
+slide 07 canvas={"has":true,"blank":false,"nz":21280,"size":[514,414]}
+slide 08 canvas={"has":true,"blank":false,"nz":21280,"size":[514,414]}
+slide 09 canvas={"has":true,"blank":false,"nz":21280,"size":[514,414]}
+slide 10 canvas={"has":true,"blank":false,"nz":21280,"size":[514,414]}
+slide 11 canvas={"has":true,"blank":false,"nz":21229,"size":[514,413]}
+  anim_11.png
+slide 12 canvas={"has":true,"blank":false,"nz":21280,"size":[514,414]}
+slide 13 canvas={"has":true,"blank":false,"nz":21280,"size":[514,414]}
+slide 14 canvas={"has":true,"blank":false,"nz":22976,"size":[514,447]}
+slide 15 canvas={"has":true,"blank":false,"nz":21280,"size":[514,414]}
+slide 16 canvas={"has":true,"blank":false,"nz":21280,"size":[514,414]}
+slide 17 canvas={"has":true,"blank":false,"nz":22976,"size":[514,447]}
+slide 18 canvas={"has":true,"blank":false,"nz":22976,"size":[514,447]}
+  anim_18.png
+slide 19 canvas={"has":true,"blank":false,"nz":22976,"size":[514,447]}
+  anim_19.png
+slide 20 canvas={"has":true,"blank":false,"nz":21280,"size":[514,414]}
+slide 21 canvas={"has":true,"blank":false,"nz":21280,"size":[514,414]}
+slide 22 canvas={"has":true,"blank":false,"nz":21280,"size":[514,414]}
+slide 23 canvas={"has":true,"blank":false,"nz":21280,"size":[514,414]}
+ERRORES: 0

@@ -1,0 +1,50 @@
+.module-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 30;
+  background: linear-gradient(180deg, rgba(245,240,228,.97) 68%, rgba(245,240,228,0));
+  padding: 0 1.6rem;
+  display: flex;
+  gap: .4rem;
+  align-items: flex-end;
+  pointer-events: none;
+}
+.module-bar > * { pointer-events: auto; }
+
+.brand-mark {
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 0 1.2rem .55rem 0; margin-right: auto; flex-shrink: 0;
+}
+.brand-mark .treatise {
+  font-family: var(--serif); font-weight: 600; font-size: .74rem;
+  letter-spacing: .01em; color: var(--ink);
+}
+.brand-mark .book {
+  font-size: .58rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3);
+}
+
+.module-tab {
+  background: var(--paper-2); border: 1px solid var(--line); border-bottom: none;
+  color: var(--ink-3); padding: .42rem 1.05rem .5rem; border-radius: 9px 9px 0 0;
+  font-size: .64rem; font-weight: 600; cursor: pointer;
+  transition: color var(--fade), background-color var(--fade), border-color var(--fade), box-shadow var(--slide);
+  letter-spacing: .02em; display: flex; align-items: center; gap: .42rem; margin-bottom: 1px;
+}
+.module-tab.active {
+  background: var(--card); border-color: var(--line); color: var(--teal-deep);
+  box-shadow: 0 -1px 0 var(--card), 0 -3px 0 var(--teal);
+  margin-bottom: 0; padding-bottom: .55rem;
+}
+.module-tab .mod-badge {
+  font-size: .55rem; background: var(--card); border: 1px solid var(--line);
+  padding: .06rem .4rem; border-radius: 4px; color: var(--ink-3); font-weight: 700;
+}
+.module-tab.active .mod-badge {
+  background: var(--teal); border-color: var(--teal); color: var(--paper);
+}
+
+.slides {
+  position: relative;
+  z-index: 1;
+  height: 100dvh;
+}

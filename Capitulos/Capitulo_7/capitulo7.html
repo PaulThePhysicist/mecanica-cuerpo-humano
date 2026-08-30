@@ -1,0 +1,3135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Capítulo 7 — Presión de Fluidos, Flujo de Fluidos en el Cuerpo y Movimiento en Fluidos. Física del Cuerpo Humano, I. P. Herman (2016). Presentación universitaria interactiva en español.">
+<title>Capítulo 7 · Fluidos del cuerpo — Física del Cuerpo Humano</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,600&family=Karla:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   FLUIDOS — design system (continuidad con caps. 1–6)
+   Papel marfil · tinta · tinta fisiológica (teal / sangre / ámbar)
+   Serif académica (Source Serif 4) + grotesca (Karla) + mono técnica
+   ═══════════════════════════════════════════════════════════════ */
+:root{
+  --paper:#f5f0e4;
+  --paper-2:#eee7d6;
+  --paper-3:#e8dfc9;
+  --card:#fbf8f0;
+  --ink:#232c36;
+  --ink-2:#43505c;
+  --ink-3:#6b7885;
+  --line:#cfc3a9;
+  --line-soft:#e2d9c4;
+  --teal:#0d6e64;
+  --teal-deep:#0a5a52;
+  --teal-tint:rgba(13,110,100,.10);
+  --blood:#a92a1e;
+  --blood-deep:#8c1f16;
+  --blood-tint:rgba(169,42,30,.10);
+  --amber:#9a5b00;
+  --amber-deep:#7c4900;
+  --amber-tint:#fbf2dc;
+  --sagittal:#5d4fa8;
+  --coronal:#2d7d4f;
+  --transverse:#b86a1e;
+  --bone:#b6a67f;
+  --serif:'Source Serif 4',Georgia,'Times New Roman',serif;
+  --sans:'Karla',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,'Cascadia Mono',monospace;
+  --radius:12px;
+  --radius-sm:8px;
+  --shadow:0 1px 2px rgba(35,44,54,.05),0 8px 22px rgba(35,44,54,.07);
+  /* ── curvas de movimiento ── */
+  --ease-out:cubic-bezier(.23,1,.32,1);
+  --ease-in-out:cubic-bezier(.77,0,.175,1);
+  --ease-drawer:cubic-bezier(.32,.72,0,1);
+  --press:160ms var(--ease-out);
+  --fade:200ms var(--ease-out);
+  --slide:250ms var(--ease-out);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:clamp(16px,1.32vw,21px)}
+body{
+  font-family:var(--sans);color:var(--ink);background-color:var(--paper);
+  background-image:linear-gradient(rgba(35,44,54,.028) 1px,transparent 1px);
+  background-size:100% 44px;
+  overflow:hidden;height:100dvh;user-select:none;line-height:1.5;
+}
+::selection{background:rgba(13,110,100,.18)}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+
+/* ─── BRAND STRIP + MODULE TABS ─── */
+.module-bar{
+  position:fixed;top:0;left:0;right:0;z-index:30;
+  background:linear-gradient(180deg,rgba(245,240,228,.97) 68%,rgba(245,240,228,0));
+  padding:0 1.6rem;display:flex;gap:.4rem;align-items:flex-end;
+  pointer-events:none;
+}
+.module-bar>*{pointer-events:auto}
+.brand-mark{
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:0 1.2rem .55rem 0;margin-right:auto;flex-shrink:0;
+}
+.brand-mark .treatise{font-family:var(--serif);font-weight:600;font-size:.74rem;letter-spacing:.01em;color:var(--ink)}
+.brand-mark .book{font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.module-tab{
+  background:var(--paper-2);border:1px solid var(--line);border-bottom:none;
+  color:var(--ink-3);padding:.42rem 1.05rem .5rem;border-radius:9px 9px 0 0;
+  font-size:.64rem;font-weight:600;cursor:pointer;
+  transition:color var(--fade),background-color var(--fade),border-color var(--fade),box-shadow var(--slide);
+  letter-spacing:.02em;
+  display:flex;align-items:center;gap:.42rem;margin-bottom:1px;
+}
+.module-tab:active{transform:scale(.97)}
+.module-tab.active{
+  background:var(--card);border-color:var(--line);color:var(--teal-deep);
+  box-shadow:0 -1px 0 var(--card),0 -3px 0 var(--teal);
+  margin-bottom:0;padding-bottom:.55rem;
+}
+.module-tab .mod-badge{
+  font-size:.55rem;background:var(--card);border:1px solid var(--line);
+  padding:.06rem .4rem;border-radius:4px;color:var(--ink-3);font-weight:700;
+}
+.module-tab.active .mod-badge{background:var(--teal);border-color:var(--teal);color:var(--paper)}
+
+/* ─── SLIDES ─── */
+.slides{position:relative;z-index:1;height:100dvh}
+.slide,.slide-full{
+  display:none;width:100%;height:100dvh;
+  padding:3.4rem 2rem 4.6rem;overflow-y:auto;position:relative;
+}
+.slide.active,.slide-full.active{display:flex;flex-direction:column}
+.slide::-webkit-scrollbar-track{background:transparent}
+
+/* ─── PORTADA ─── */
+.slide-full{align-items:center;justify-content:center;text-align:center}
+.slide-full::before{
+  content:"";position:absolute;top:0;left:0;right:0;
+  height:5px;
+  background:linear-gradient(90deg,var(--teal) 0 25%,var(--blood) 25% 50%,var(--amber) 50% 75%,var(--sagittal) 75% 100%);
+}
+.slide-full h1{
+  font-family:var(--serif);font-size:clamp(2.1rem,4.6vw,3.9rem);font-weight:700;
+  letter-spacing:-.035em;line-height:1.06;max-width:18ch;
+  margin:1.4rem auto 1.1rem;
+}
+.slide-full h1 .chapno{
+  display:block;font-family:var(--sans);font-size:clamp(.72rem,1.1vw,1rem);
+  font-weight:700;letter-spacing:.42em;text-transform:uppercase;
+  color:var(--teal-deep);margin-bottom:1.15rem;
+}
+.slide-full h1 .vol{
+  font-style:italic;font-weight:600;color:var(--ink-2);
+}
+.slide-full .subtitle{
+  font-size:clamp(.86rem,1.3vw,1.05rem);color:var(--ink-2);max-width:62ch;
+  line-height:1.65;margin:0 auto;
+}
+.slide-full .rule{width:88px;height:1px;background:var(--line);margin:1.6rem auto}
+.module-preview{display:flex;gap:.55rem;flex-wrap:wrap;justify-content:center}
+.module-preview .mpill{
+  background:var(--card);border:1px solid var(--line);border-radius:999px;
+  padding:.42rem 1.05rem;font-size:.72rem;color:var(--ink-2);
+  transition:color var(--fade),border-color var(--fade),background-color var(--fade),transform var(--press);
+  cursor:pointer;display:flex;align-items:center;gap:.4rem;font-weight:600;
+}
+.module-preview .mpill:active{transform:translateY(-1px) scale(.96)}
+.module-preview .mpill.active{background:var(--teal);border-color:var(--teal-deep);color:var(--paper)}
+.module-preview .mpill .ico{font-size:.9rem}
+.slide-full .start-btn{
+  margin-top:1.9rem;background:var(--teal);color:var(--paper);
+  border:1px solid var(--teal-deep);padding:.78rem 2.4rem;border-radius:8px;
+  font-size:.95rem;font-weight:700;cursor:pointer;
+  transition:background-color var(--fade),box-shadow var(--slide),transform var(--press);
+  letter-spacing:.02em;
+}
+.slide-full .start-btn:active{transform:scale(.97)}
+.slide-full .book-ref{margin-top:2.2rem;font-size:.66rem;color:var(--ink-3);font-style:italic}
+
+/* ─── MODULE HEADER ─── */
+.module-header{
+  display:flex;align-items:baseline;gap:.7rem;margin-bottom:.8rem;flex-shrink:0;
+  padding-bottom:.6rem;border-bottom:1px solid var(--line);
+}
+.module-header .mnum{
+  font-family:var(--mono);font-size:.66rem;font-weight:700;letter-spacing:.08em;
+  color:var(--teal-deep);background:var(--teal-tint);padding:.24rem .7rem;border-radius:6px;
+  border:1px solid rgba(13,110,100,.22);
+}
+.module-header .mtitle{
+  font-family:var(--serif);font-size:1.42rem;font-weight:700;letter-spacing:-.01em;color:var(--ink);
+}
+.module-header .msub{font-size:.68rem;color:var(--ink-3);margin-left:auto;font-style:italic}
+.module-header .mslide-count{
+  font-size:.6rem;color:var(--ink-3);font-family:var(--mono);background:var(--paper-2);
+  padding:.16rem .5rem;border-radius:4px;border:1px solid var(--line-soft);
+}
+
+/* ─── CONTENT GRID ─── */
+.content-grid{
+  display:grid;grid-template-columns:1.12fr .88fr;
+  grid-template-rows:1fr auto;gap:.8rem;flex:1;min-height:0;
+}
+.content-grid.single-col{grid-template-columns:1fr}
+
+/* ─── TEORÍA ─── */
+.theory{
+  overflow-y:auto;line-height:1.5;display:flex;flex-direction:column;gap:.6rem;
+  padding-right:.2rem;
+}
+.theory .card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:.7rem .85rem;box-shadow:var(--shadow);transition:border-color var(--slide),box-shadow var(--slide);cursor:default;
+}
+.theory .card.active{border-color:rgba(13,110,100,.5);box-shadow:var(--shadow)}
+.theory .card .card-hdr{
+  display:flex;align-items:center;gap:.5rem;font-size:.7rem;
+  font-weight:700;color:var(--teal-deep);text-transform:uppercase;letter-spacing:.09em;
+  margin-bottom:.4rem;
+}
+.theory .card .card-hdr .icon{font-size:.92rem}
+.theory .card .card-body{font-size:.78rem;color:var(--ink-2);line-height:1.58;max-width:72ch}
+.theory .card .card-body p{margin-bottom:.3rem}
+.theory .card .card-body p:last-child{margin-bottom:0}
+.theory .card .card-body strong{color:var(--ink);font-weight:700}
+.theory .card .card-body .tag{
+  display:inline-block;font-size:.64rem;font-weight:700;font-family:var(--mono);
+  padding:.06rem .45rem;border-radius:4px;background:var(--teal-tint);color:var(--teal-deep);
+  border:1px solid rgba(13,110,100,.22);margin:0 .08rem;line-height:1.4;
+}
+.theory .card .card-body .row{
+  display:flex;gap:.35rem;flex-wrap:wrap;margin:.3rem 0;
+}
+.theory .card .card-body .pill{
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:.66rem;padding:.2rem .55rem;border-radius:6px;
+  background:var(--paper);border:1px solid var(--line);color:var(--ink-2);
+  transition:color var(--fade),border-color var(--fade),background-color var(--fade),transform var(--press);
+  cursor:pointer;line-height:1.45;
+}
+.theory .card .card-body .pill:active{transform:scale(.96)}
+.theory .card .card-body .pill b{color:var(--ink)}
+.theory .card .card-body .highlight{color:var(--ink);font-weight:600}
+.theory .card .card-body .pill.active{background:var(--teal);border-color:var(--teal-deep);color:var(--paper)}
+
+/* ─── ECUACIONES ─── */
+.eq-block{
+  background:var(--paper-2);border:1px solid var(--line-soft);border-radius:var(--radius-sm);
+  padding:.38rem .6rem;margin:.3rem 0;font-size:.86rem;text-align:center;
+}
+.eq-block .katex{color:var(--ink)}
+
+/* ─── CONCEPT FLOW ─── */
+.concept-flow{
+  display:flex;align-items:center;justify-content:center;gap:.3rem;
+  padding:.35rem;background:var(--paper-2);border-radius:var(--radius-sm);
+  border:1px solid var(--line);margin-top:.15rem;flex-shrink:0;
+}
+.concept-flow .step{
+  font-size:.64rem;font-weight:600;color:var(--ink-3);text-align:center;
+  padding:.26rem .4rem;border-radius:6px;background:var(--card);flex:1;
+  border:1px solid transparent;transition:color var(--fade),border-color var(--fade),background-color var(--fade),transform var(--press);cursor:pointer;
+}
+.concept-flow .step.done{color:var(--teal-deep);border-color:rgba(13,110,100,.35);background:var(--teal-tint)}
+.concept-flow .arrow{color:var(--line);font-size:.75rem;flex-shrink:0}
+.concept-flow .step:active{transform:scale(.96)}
+
+/* ─── CAJA DE APUNTES (detalle del docente) ─── */
+.apuntes{
+  background:var(--amber-tint);border:1px solid rgba(154,91,0,.3);border-radius:8px;
+  padding:.6rem .75rem;margin-top:.4rem;font-size:.7rem;line-height:1.5;flex-shrink:0;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.4);
+}
+.apuntes .a-hdr{
+  display:flex;align-items:center;gap:.4rem;font-weight:700;
+  color:var(--amber-deep);margin-bottom:.2rem;letter-spacing:.03em;
+}
+.apuntes .a-text{color:#5d460f}
+.apuntes .a-text strong{color:#4a3709}
+
+/* ─── PANEL DE SIMULACIÓN ─── */
+.sim-area{
+  background:var(--paper-3);border:1px solid var(--line);border-radius:var(--radius);
+  position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;
+  min-height:200px;box-shadow:inset 0 2px 8px rgba(35,44,54,.06);
+}
+.sim-area canvas.sim{width:100%;height:100%;display:block}
+.sim-col{display:flex;flex-direction:column;gap:.55rem;min-height:0;overflow-y:auto}
+.sim-col .sim-area{flex:1 1 auto}
+.sim-placeholder{text-align:center;color:var(--ink-3);padding:1rem}
+.sim-placeholder .ico{font-size:2rem;display:block;opacity:.4;margin-bottom:.3rem}
+.sim-placeholder p{font-size:.75rem}
+
+/* ─── BARRA DE CONTROL ─── */
+.prof-controls{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:.42rem .8rem;display:flex;align-items:center;gap:.6rem;
+  font-size:.68rem;color:var(--ink-2);min-height:36px;flex-wrap:wrap;
+}
+.prof-controls .badge{
+  padding:.18rem .55rem;border-radius:6px;background:var(--teal-tint);
+  color:var(--teal-deep);font-family:var(--mono);font-size:.62rem;font-weight:700;
+  border:1px solid rgba(13,110,100,.22);flex-shrink:0;
+}
+.prof-controls label{display:flex;align-items:center;gap:.3rem;cursor:pointer;flex-shrink:0;font-size:.64rem}
+.prof-controls input[type="range"]{width:74px;accent-color:var(--teal);}
+.prof-controls input[type="number"]{width:58px;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:.14rem .3rem;font-size:.66rem;color:var(--ink);font-family:var(--mono)}
+.prof-controls select{
+  background:var(--card);color:var(--ink);border:1px solid var(--line);
+  border-radius:6px;padding:.18rem .4rem;font-size:.64rem;cursor:pointer;
+}
+.prof-controls button{
+  background:var(--paper);border:1px solid var(--line);color:var(--ink-2);
+  padding:.22rem .6rem;border-radius:6px;cursor:pointer;font-size:.64rem;
+  transition:border-color var(--fade),color var(--fade),background-color var(--fade),transform var(--press);font-weight:600;
+}
+.prof-controls button:active{transform:scale(.96)}
+.prof-controls .readout{
+  font-family:var(--mono);font-size:.68rem;color:var(--teal-deep);font-weight:700;
+  background:var(--teal-tint);border:1px solid rgba(13,110,100,.22);
+  padding:.14rem .5rem;border-radius:6px;margin-left:auto;flex-shrink:0;
+}
+
+/* ─── TABLAS MINI ─── */
+.data-mini{font-size:.66rem;width:100%;border-collapse:collapse}
+.data-mini th{
+  color:var(--teal-deep);font-weight:700;text-align:left;padding:.18rem .3rem;
+  border-bottom:1px solid var(--line);text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;
+}
+.data-mini td{padding:.16rem .3rem;border-bottom:1px solid var(--line-soft);color:var(--ink-2)}
+.data-mini td:last-child{font-family:var(--mono);color:var(--ink);font-size:.62rem}
+.data-mini tr{cursor:pointer}
+.data-mini .table-caption{font-size:.56rem;color:var(--ink-3);padding:.14rem .3rem;font-style:italic}
+.data-mini td b{color:var(--ink)}
+
+/* ─── ANIMACIÓN (un solo momento autorizado) ─── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.slide.active .card{animation:fadeUp .48s cubic-bezier(.22,1,.36,1) both}
+.slide.active .card:nth-child(2){animation-delay:.07s}
+.slide.active .card:nth-child(3){animation-delay:.14s}
+.slide.active .card:nth-child(4){animation-delay:.21s}
+.slide.active .eq-block{animation:fadeUp .48s .2s both}
+.slide.active .sim-area,.slide.active .apuntes,.slide.active .prof-controls{animation:fadeUp .48s .1s both}
+.slide-full.active{animation:fadeUp .5s cubic-bezier(.22,1,.36,1)}
+/* Revisitar una diapositiva = ya la conocemos → reveal instantáneo,
+   sin repetir la entrada. */
+.slide.instant .card,.slide.instant .eq-block,.slide.instant .sim-area,
+.slide.instant .apuntes,.slide.instant .prof-controls,.slide-full.instant{animation:none!important}
+
+/* ─── NAVEGACIÓN INFERIOR ─── */
+.nav-bar{
+  position:fixed;bottom:0;left:0;right:0;z-index:30;
+  background:linear-gradient(0deg,rgba(245,240,228,.97) 58%,rgba(245,240,228,0));
+  padding:.6rem 2rem .85rem;
+  display:flex;justify-content:center;align-items:center;gap:.55rem;pointer-events:none;
+}
+.nav-bar>*{pointer-events:auto}
+.nav-btn{
+  background:var(--card);border:1px solid var(--line);color:var(--ink-2);
+  width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:.85rem;
+  display:flex;align-items:center;justify-content:center;
+  transition:background-color var(--fade),color var(--fade),border-color var(--fade),transform var(--press);
+}
+.nav-btn:active{transform:scale(.9)}
+.nav-dots{display:flex;gap:.3rem;padding:0 .4rem}
+.nav-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--line);
+  cursor:pointer;transform-origin:center;
+  transition:background-color var(--fade),transform var(--slide);border:none;
+}
+.nav-dot.active{background:var(--teal);transform:scaleX(2.85)}
+.slide-counter{font-size:.58rem;font-family:var(--mono);color:var(--ink-3);letter-spacing:.06em}
+.nav-module-label{font-size:.58rem;color:var(--teal-deep);background:var(--card);border:1px solid var(--line);padding:.14rem .55rem;border-radius:6px;font-weight:600}
+
+/* ─── TOOLTIP CANVAS ─── */
+.canvas-tooltip{
+  position:absolute;pointer-events:none;z-index:5;
+  background:rgba(251,248,240,.96);border:1px solid var(--line);
+  border-radius:6px;padding:.3rem .6rem;font-size:.62rem;
+  color:var(--ink-2);display:none;max-width:190px;box-shadow:var(--shadow);
+}
+.canvas-tooltip b{color:var(--teal-deep)}
+
+/* ─── TABLA INTERACTIVA ─── */
+.interactive-table{width:100%;border-collapse:collapse;font-size:.66rem}
+.interactive-table th{
+  color:var(--teal-deep);font-weight:700;text-align:left;
+  padding:.22rem .4rem;border-bottom:1px solid var(--line);
+  position:sticky;top:0;background:var(--card);z-index:1;
+  text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;
+}
+.interactive-table td{
+  padding:.18rem .4rem;border-bottom:1px solid var(--line-soft);
+  color:var(--ink-2);transition:background-color var(--fade),color var(--fade);
+}
+.interactive-table td:last-child{font-family:var(--mono);color:var(--ink);font-size:.62rem}
+.interactive-table tr{cursor:pointer;transition:background-color var(--fade),color var(--fade)}
+.interactive-table tr.highlight td{background:var(--teal-tint);color:var(--teal-deep)}
+.interactive-table .table-caption{font-size:.56rem;color:var(--ink-3);padding:.14rem .4rem;font-style:italic}
+
+/* ─── FIGURAS DE LIBRO ─── */
+.figure-pair{display:flex;gap:.6rem;height:100%;align-items:stretch}
+.figure-pair figure{
+  flex:1;display:flex;flex-direction:column;gap:.3rem;align-items:center;
+  justify-content:center;background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius-sm);padding:.4rem;min-width:0;
+}
+.figure-pair figure img{max-width:100%;max-height:66%;object-fit:contain;border-radius:4px}
+.figure-pair figcaption{font-size:.56rem;color:var(--ink-3);text-align:center;line-height:1.4;font-style:italic}
+.figure-pair figure .fig-num{
+  font-family:var(--mono);font-size:.54rem;font-weight:700;color:var(--teal-deep);
+  letter-spacing:.1em;
+}
+
+/* ─── HOVER SOLO PARA DISPOSITIVOS DE PRECISIÓN ─── */
+@media (hover:hover) and (pointer:fine){
+  .module-preview .mpill:hover{border-color:var(--teal);color:var(--teal-deep);transform:translateY(-1px)}
+  .theory .card .card-body .pill:hover{border-color:var(--teal);color:var(--teal-deep);background:var(--card)}
+  .nav-btn:hover{background:var(--teal);color:var(--paper);border-color:var(--teal)}
+  .module-tab:hover{color:var(--ink-2);background:var(--paper-3)}
+  .concept-flow .step:hover{border-color:var(--teal);color:var(--teal-deep)}
+  .slide-full .start-btn:hover{background:var(--teal-deep);box-shadow:0 8px 20px rgba(35,44,54,.22)}
+  .prof-controls button:hover{border-color:var(--teal);color:var(--teal-deep)}
+  .interactive-table tr:hover td{background:var(--teal-tint);color:var(--ink)}
+  .data-mini tr:hover td{background:var(--teal-tint);color:var(--ink)}
+  .theory .card:hover{border-color:#bdb09a}
+  .nav-dot:hover{background:var(--ink-3)}
+}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:820px){
+  .slide,.slide-full{padding:3.2rem .7rem 3.6rem}
+  .content-grid{grid-template-columns:1fr!important;gap:.55rem}
+  .slide-full h1{font-size:2rem}
+  .module-bar{padding:.3rem .7rem 0;gap:.15rem;overflow-x:auto}
+  .brand-mark{display:none}
+  .module-tab{font-size:.56rem;padding:.3rem .6rem .35rem;white-space:nowrap}
+  .module-tab .mod-badge{display:none}
+  .nav-bar{padding:.3rem .7rem .5rem}
+  .theory .card .card-hdr{font-size:.66rem}
+  .module-header .msub{display:none}
+}
+@media(min-width:1800px){
+  .slide,.slide-full{padding:3.6rem 2.6rem 5rem}
+  .content-grid{gap:1rem}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  /* las entradas de slide conservan un fade de opacidad (comprensión), sin movimiento */
+  @keyframes fadeUp{from{opacity:0}to{opacity:1}}
+  .slide.active .card,.slide.active .eq-block,.slide.active .sim-area,.slide.active .apuntes,.slide.active .prof-controls,.slide-full.active{animation-duration:.3s!important;animation-delay:0s!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ MÓDULOS ═══════════ -->
+<nav class="module-bar" id="moduleBar">
+  <div class="brand-mark">
+    <span class="treatise">El cuerpo humano · capítulo 7</span>
+    <span class="book">Física del Cuerpo Humano — I. P. Herman</span>
+  </div>
+</nav>
+
+<!-- ═══════════ PORTADA ═══════════ -->
+<div class="slide-full active" data-slide="0" data-module="0">
+  <h1>
+    <span class="chapno">Capítulo 7</span>
+    Presión de Fluidos, Flujo de Fluidos en el Cuerpo y Movimiento en Fluidos
+  </h1>
+  <p class="subtitle">Cómo los fluidos sostienen, nutren y mueven el cuerpo: la presión hidrostática y sus leyes, la circulación de la sangre y del aire como flujo viscoso (Poiseuille), la elasticidad de los vasos, el arrastre y la sustentación que gobiernan la natación y el vuelo, y la difusión que entrega el oxígeno a las células.</p>
+  <div class="rule"></div>
+  <div class="module-preview" id="modulePreview">
+    <span class="mpill" onclick="goModule(1)"><span class="ico">🩸</span> Presión</span>
+    <span class="mpill" onclick="goModule(2)"><span class="ico">⚖️</span> Leyes de fluidos</span>
+    <span class="mpill" onclick="goModule(3)"><span class="ico">🌊</span> Bernoulli</span>
+    <span class="mpill" onclick="goModule(4)"><span class="ico">🧪</span> Poiseuille</span>
+    <span class="mpill" onclick="goModule(5)"><span class="ico">🎈</span> Compliancia</span>
+    <span class="mpill" onclick="goModule(6)"><span class="ico">🪂</span> Arrastre</span>
+    <span class="mpill" onclick="goModule(7)"><span class="ico">🫧</span> Difusión</span>
+    <span class="mpill" onclick="goModule(8)"><span class="ico">🏊</span> Cuerpo en fluidos</span>
+  </div>
+  <button class="start-btn" onclick="goModule(1)">Comenzar la cátedra →</button>
+  <p class="book-ref">Physics of the Human Body — Irving P. Herman · Springer (2016)</p>
+</div>
+
+<!-- ═══════════ M1 · PRESIÓN ═══════════ -->
+<div class="slide" data-slide="1" data-module="1">
+  <div class="module-header">
+    <span class="mnum">7.1</span>
+    <span class="mtitle">Presión hidrostática y el manómetro</span>
+    <span class="msub">La presión crece con la profundidad del fluido</span>
+    <span class="mslide-count">1 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🕳️</span> La ecuación del manómetro</div>
+        <div class="card-body">
+          <p>La presión a una profundidad \(h\) en un fluido de densidad \(\rho\) es la presión de referencia más el peso de la columna:</p>
+          <div class="eq-block">\[ P = P_{\text{ref}} + \rho g h \qquad \text{(eq. 7.1)} \]</div>
+          <p>Un <strong>manómetro de tubo en U</strong> (Fig. 7.1) mide esa columna: \(P_{\text{gas}} - P_{\text{atm}} = \rho g h\). El <strong>esfigmomanómetro</strong> usa la misma idea, con una columna de mercurio (Fig. 7.2).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🫀</span> Unidades fisiológicas</div>
+        <div class="card-body">
+          <p>Las presiones del cuerpo se reportan en <span class="tag">mmHg</span> (torr): <span class="tag">1 atm = 760 mmHg ≈ 101 kPa</span>, <span class="tag">1 mmHg ≈ 133 Pa</span>. En el riñón, la vejiga y el pulmón se usa el <span class="tag">cmH₂O</span>: <span class="tag">1 cmH₂O = 0,738 mmHg</span>.</p>
+          <p>Presión arterial típica: <span class="tag">120/80 mmHg</span>. El corazón debe empujar contra la columna hidrostática de la sangre.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🦵</span> La columna que soportamos</div>
+        <div class="card-body">
+          <p>De pie, la sangre en las piernas siente la presión hidrostática de la columna que la separa del corazón: <span class="tag">≈ 7600 mmHg ≈ 10 atm</span> en el esqueleto de las piernas (Tabla 7.1).</p>
+          <p>El gradiente hidrostático explica por qué conviene elevar las piernas para drenar las varices, y por qué el cerebro, más alto, recibe presiones menores.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-1">Todo el capítulo arranca de esta columna de fluido. En el canvas sube la profundidad y cambia el fluido: cada líquido con su densidad pesa distinto a la misma altura. Regla para el aula: cada 10 m de agua ≈ 1 atm ≈ 760 mmHg.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-manometer" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">manómetro</span>
+        <label>fluido <select id="mn_rho" onchange="drawManometer()">
+          <option value="1000">Agua · 1000</option>
+          <option value="1060">Sangre · 1060</option>
+          <option value="13600" selected>Mercurio · 13600</option>
+        </select></label>
+        <label>h <input type="range" id="mn_h" min="0" max="120" step="1" value="40" oninput="drawManometer()"> <span id="mn_hv">40 cm</span></label>
+        <span class="readout" id="mn_out">ρgh = 53 300 Pa</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="2" data-module="1">
+  <div class="module-header">
+    <span class="mnum">7.1</span>
+    <span class="mtitle">Las presiones del cuerpo · Tabla 7.1</span>
+    <span class="msub">Del oído medio a la vejiga: todo bajo presión</span>
+    <span class="mslide-count">2 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">📋</span> Presiones típicas (mmHg) · Tabla 7.1</div>
+        <div class="card-body">
+          <table class="data-mini">
+            <tr><th>Compartimento</th><th>Presión</th></tr>
+            <tr><td>Arterial sistólica</td><td>100–140</td></tr>
+            <tr><td>Arterial diastólica</td><td>60–90</td></tr>
+            <tr><td>Capilar arterial / venoso</td><td>30 / 10</td></tr>
+            <tr><td>Venosa típica</td><td>3–7</td></tr>
+            <tr><td>Ojo (ocular)</td><td>20 (12–23)</td></tr>
+            <tr><td>Glaucoma</td><td>≈ 21–30</td></tr>
+            <tr><td>Líquido cefalorraquídeo</td><td>5–12</td></tr>
+            <tr><td>Intratorácica</td><td>−10</td></tr>
+            <tr><td>Vejiga (micción)</td><td>15–30</td></tr>
+            <tr><td>Esqueleto de las piernas, de pie</td><td>≈ 7600</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🩸</span> El gradiente circulatorio</div>
+        <div class="card-body">
+          <p>La presión cae ordenadamente a lo largo del árbol vascular: <strong>arterias → capilares → venas</strong>. Esa caída es la que empuja la sangre (módulo 4, resistencia).</p>
+          <p>La <span class="tag">intratorácica negativa (−10 mmHg)</span> ayuda al retorno venoso: el tórax «aspira» la sangre de regreso al corazón.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">⚠️</span> Cuando la presión se desvía</div>
+        <div class="card-body">
+          <p><span class="tag">Glaucoma ≈ 21–30 mmHg</span> (vs. ocular normal 20): la presión del humor acuoso comprime el nervio óptico. La <span class="tag">ruptura del tímpano</span> ocurre cerca de <span class="tag">120 mmHg</span> de presión en el oído medio.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-2">Esta tabla es un «mapa de presión» del cuerpo que usaremos todo el capítulo. El canvas la grafica en escala logarítmica — si no, la pierna (7600) aplasta todo lo demás. La presión no es uniforme: es un gradiente, y la vida depende de él.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-pressures" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">presiones</span>
+        <label>foco <select id="ps_sel" onchange="drawPressures()">
+          <option value="all" selected>Todas</option>
+          <option value="arterial">Arterial</option>
+          <option value="ocular">Ocular</option>
+          <option value="lcr">Líquido cefalorraquídeo</option>
+          <option value="vejiga">Vejiga</option>
+          <option value="pierna">Piernas de pie</option>
+        </select></label>
+        <span class="readout" id="ps_out">gradiente: 120 → 0 mmHg</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="3" data-module="1">
+  <div class="module-header">
+    <span class="mnum">7.1</span>
+    <span class="mtitle">El esfigmomanómetro y los sonidos de Korotkoff</span>
+    <span class="msub">Medir la presión arterial con una columna y un estetoscopio</span>
+    <span class="mslide-count">3 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">💪</span> El manguito y la columna de mercurio</div>
+        <div class="card-body">
+          <p>El <strong>esfigmomanómetro</strong> (Fig. 7.2) infla un manguito en el brazo por encima de la presión sistólica, ocluyendo la arteria braquial, y lo desinfla lentamente mientras se observa la columna de <span class="tag">mmHg</span>.</p>
+          <div class="eq-block">\[ P_{\text{columna}} = \rho_{\text{Hg}} g h \qquad \text{lee la presión de la sangre} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🩺</span> Los sonidos de Korotkoff</div>
+        <div class="card-body">
+          <p>Cuando la presión del manguito cae por debajo de la sistólica, la sangre vuelve a pasar en cada latido y se oyen <strong>golpes rítmicos</strong> con el estetoscopio. El <span class="tag">primer sonido</span> marca la <strong>sistólica</strong>; el <span class="tag">último sonido</span>, la <strong>diastólica</strong>.</p>
+          <p>La presión arterial varía a lo largo del ciclo: <span class="tag">≈ 120 sistólica / 80 diastólica</span> (Fig. 7.3).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🎵</span> Física del sonido</div>
+        <div class="card-body">
+          <p>El flujo a través de un vaso parcialmente ocluido se vuelve <strong>turbulento</strong> (módulo 3): las fluctuaciones de presión vibran las paredes y generan el sonido. No hay sonido cuando el flujo es suave — por eso desaparecen al pasar la diastólica.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-3">Pregunta clásica de examen: «¿por qué se oye un golpe y no un silbido?». La turbulencia en un vaso parcialmente ocluido genera vibraciones de pared: el primer golpe = la sangre «vence» al manguito. Baja la presión del manguito en el canvas y escucha el proceso: golpe → flujo suave.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-bp" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">esfigmo</span>
+        <label>manguito <input type="range" id="bp_p" min="0" max="160" step="1" value="160" oninput="drawBp()"> <span id="bp_pv">160 mmHg</span></label>
+        <span class="readout" id="bp_out">sistólica 120 · diastólica 80</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M2 · LEYES DE FLUIDOS ═══════════ -->
+<div class="slide" data-slide="4" data-module="2">
+  <div class="module-header">
+    <span class="mnum">7.2</span>
+    <span class="mtitle">Gas ideal, Pascal y Arquímedes</span>
+    <span class="msub">Tres leyes que sostienen el cuerpo</span>
+    <span class="mslide-count">4 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🎈</span> Gas ideal (eq. 7.2)</div>
+        <div class="card-body">
+          <div class="eq-block">\[ P V = n R T \]</div>
+          <p>El aire inspirado, los gases del tracto digestivo y las burbujas siguen esta ley. La presión de un gas es proporcional a su cantidad y temperatura e inversamente proporcional al volumen.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🧲</span> Principio de Pascal</div>
+        <div class="card-body">
+          <p>Una presión aplicada a un <strong>fluido confinado</strong> se transmite íntegramente a todas las paredes y a cada punto:</p>
+          <div class="eq-block">\[ \Delta P_{\text{un punto}} = \Delta P_{\text{aplicada}} \]</div>
+          <p>En el cuerpo: la presión sistólica llega hasta la última arteriola porque el fluido la transmite; es la base del esfigmomanómetro y de la prensa hidráulica.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🏊</span> Principio de Arquímedes</div>
+        <div class="card-body">
+          <p>Todo cuerpo sumergido recibe un <strong>empuje</strong> igual al peso del fluido desplazado:</p>
+          <div class="eq-block">\[ E = \rho_{\text{fluido}} g V_{\text{sumergido}} \]</div>
+          <p>Si la densidad promedio del cuerpo es menor que la del fluido, <strong>flota</strong>. La grasa (\(\approx 0{,}8\ \text{g/cm}^3\)) ayuda a flotar; el hueso (\(\approx 1{,}5\text{–}2{,}0\)) se hunde. Un aire profundo en los pulmones basta para que la mayoría flote (módulo 8).</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-4">Tres leyes, tres formas de sostener el cuerpo: el gas (respiración, digestión), la transmisión de presión (circulación) y el empuje (flotabilidad). En el canvas cambia la densidad del cuerpo: 0,8 flota (grasa), 1,05 se hunde (músculo+hueso) — y mira las flechas de Pascal transmitir la presión.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-pascal" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">leyes</span>
+        <label>modo <select id="pa_mode" onchange="drawPascal()">
+          <option value="pascal" selected>Pascal</option>
+          <option value="arquimedes">Arquímedes</option>
+        </select></label>
+        <label>densidad <input type="range" id="pa_rho" min="0.6" max="1.3" step="0.01" value="0.9" oninput="drawPascal()"> <span id="pa_rv">0,90</span></label>
+        <span class="readout" id="pa_out">E = ρ_agua·g·V</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="5" data-module="2">
+  <div class="module-header">
+    <span class="mnum">7.2</span>
+    <span class="mtitle">La ley de Laplace: el cilindro</span>
+    <span class="msub">La tensión de la pared sostiene la presión interna</span>
+    <span class="mslide-count">5 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🛢️</span> El tubo cilíndrico</div>
+        <div class="card-body">
+          <p>La pared de un vaso cilíndrico de radio \(R\) sostiene la diferencia de presión \(\Delta P\) con una tensión \(T\) (fuerza por unidad de longitud):</p>
+          <div class="eq-block">\[ \Delta P = \frac{T}{R} \qquad \text{es decir} \qquad T = \Delta P \cdot R \qquad \text{(eq. 7.3–7.7)} \]</div>
+          <p>Es la <strong>ley de Laplace</strong>: a igual tensión, un tubo más ancho necesita menos presión interna, y a la inversa.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🫗</span> Consecuencia: el radio gobierna la tensión</div>
+        <div class="card-body">
+          <p>Para una presión dada, la tensión de pared crece con el radio. Por eso la <strong>aorta</strong> (gran radio) tiene paredes gruesas y elásticas, y las <strong>arteriolas</strong> (radio pequeño) resisten con tensión baja.</p>
+          <p>La palpación de un pulso (Fig. 7.25): el dedo siente la <span class="highlight">tensión de la pared</span>, no solo la presión interna.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">⚠️</span> Aneurisma</div>
+        <div class="card-body">
+          <p>Si un punto del vaso se debilita y el radio local \(R\) crece, la tensión \(T = \Delta P \cdot R\) <strong>crece con él</strong>: un bucle de retroalimentación que dilata más el aneurisma hasta el riesgo de ruptura.</p>
+          <div class="eq-block">\[ R \uparrow \ \Rightarrow\ T \uparrow \ \Rightarrow\ R \uparrow\cdots \]</div>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-5">La ley de Laplace es la idea más rentable del capítulo: explica vasos, alvéolos, vejiga, estómago y aneurismas. En el canvas mueve el radio con la presión fija: la tensión (grosor rojo de la pared) crece en línea recta con R. Ese es el peligro del aneurisma.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-laplace-cyl" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">cilindro</span>
+        <label>R <input type="range" id="lc_r" min="1" max="10" step="0.5" value="3" oninput="drawLaplaceCyl()"> <span id="lc_rv">3,0</span></label>
+        <label>ΔP <input type="range" id="lc_p" min="10" max="120" step="5" value="60" oninput="drawLaplaceCyl()"> <span id="lc_pv">60</span></label>
+        <span class="readout" id="lc_out">T = 180</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="6" data-module="2">
+  <div class="module-header">
+    <span class="mnum">7.2</span>
+    <span class="mtitle">La ley de Laplace: esfera y esferoide · Tabla 7.2</span>
+    <span class="msub">Dos curvas, la mitad de la tensión</span>
+    <span class="mslide-count">6 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🎈</span> Esfera y esferoide</div>
+        <div class="card-body">
+          <p>Una membrana esférica con dos superficies tensas sostiene el doble:</p>
+          <div class="eq-block">\[ \Delta P = \frac{2T}{R} \qquad \text{(esfera, eq. 7.8–7.9)} \]</div>
+          <div class="eq-block">\[ \Delta P = T\left(\frac{1}{R_1} + \frac{1}{R_2}\right) \qquad \text{(esferoide, eq. 7.10)} \]</div>
+          <p>Modela el globo ocular, la vejiga y el estómago (módulo 8) y los alvéolos.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🫁</span> Alvéolos y el surfactante</div>
+        <div class="card-body">
+          <p>Un alvéolo pequeño (R chico) exige más \(\Delta P\) que uno grande para la misma tensión. Sin <strong>surfactante</strong>, el pequeño <span class="highlight">se vaciaría en el grande</span> (el mismo efecto de dos burbujas conectadas).</p>
+          <p>El surfactante baja la tensión superficial local: <span class="tag">γ = 0,1 vs. 0,7 N/m del agua</span> (Tabla 7.2) — y estabiliza alvéolos de distinto tamaño.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🔬</span> Tensiones superficiales · Tabla 7.2</div>
+        <div class="card-body">
+          <table class="data-mini">
+            <tr><th>Fluido</th><th>γ (10⁻⁴ N/m)</th></tr>
+            <tr><td>Agua (20 °C)</td><td>7,28</td></tr>
+            <tr><td>Sangre entera</td><td>5,5–6,1</td></tr>
+            <tr><td>Plasma</td><td>5,0–5,6</td></tr>
+            <tr><td><b>Surfactante pulmonar</b></td><td><b>0,1</b></td></tr>
+            <tr><td>Líquido cefalorraquídeo</td><td>6,0–6,3</td></tr>
+            <tr><td>Saliva</td><td>1,5–2,1</td></tr>
+            <tr><td>Mercurio</td><td>46,4</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-6">El «2» de la esfera sale de que la membrana tiene dos superficies que se tensan. Conecta dos burbujas en el canvas y mira: la pequeña se vacía en la grande — así colapsarían los alvéolos pequeños sin surfactante. Esa molécula es una cuestión de vida o muerte al nacer.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-laplace-sphere" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">esfera</span>
+        <button id="sp_play" onclick="toggleSphere()">▶</button>
+        <label>γ <input type="range" id="ls_g" min="0.1" max="1.0" step="0.05" value="0.7" oninput="drawLaplaceSphere()"> <span id="ls_gv">0,70</span></label>
+        <span class="readout" id="ls_out">sin surfactante: colapsa</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M3 · BERNOULLI ═══════════ -->
+<div class="slide" data-slide="7" data-module="3">
+  <div class="module-header">
+    <span class="mnum">7.3</span>
+    <span class="mtitle">Flujo laminar y turbulento · Reynolds</span>
+    <span class="msub">Cinco atributos del flujo y un número que decide el régimen</span>
+    <span class="mslide-count">7 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🔀</span> Cinco atributos del flujo</div>
+        <div class="card-body">
+          <p>Todo flujo se clasifica por cinco pares: <strong>laminar/turbulento</strong>, <strong>compresible/incompresible</strong>, <strong>viscoso/no viscoso</strong>, <strong>rotacional/irrotacional</strong> y <strong>estacionario/pulsátil</strong>.</p>
+          <p>La sangre y el aire del cuerpo son incompresibles en la práctica, viscosos y pulsátiles (el corazón late). El régimen <em>laminar vs. turbulento</em> lo decide el número de Reynolds.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🔢</span> El número de Reynolds</div>
+        <div class="card-body">
+          <div class="eq-block">\[ \text{Re} = \frac{\rho\, u\, d}{\eta} \qquad \text{(eq. 7.11)} \]</div>
+          <p>Re compara la inercia del fluido con su fricción interna: <span class="tag">Re &lt; 2000</span> laminar · <span class="tag">Re &gt; 2000</span> turbulento (transición 1200–2500).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🩺</span> En el cuerpo</div>
+        <div class="card-body">
+          <p>El flujo sanguíneo es <strong>laminar</strong> en casi todo el árbol vascular. Se vuelve <strong>turbulento</strong> en la aorta en el pico sistólico y en las <strong>estenosis</strong>: los soplos cardíacos son la firma acústica de esa turbulencia (problema 7.39: una célula de 1 µm tiene Re ≈ 0,004).</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-7">Reynolds es el «semáforo» del flujo: sube la velocidad en el canvas y las líneas paralelas del régimen laminar se rompen en remolinos. Dato para el aula: la sangre en reposo es laminar casi siempre; la turbulencia es noticia médica (soplos, estenosis).</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-reynolds" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">Reynolds</span>
+        <label>fluido <select id="ry_fl" onchange="drawReynolds()">
+          <option value="sangre" selected>Sangre · η=0,004</option>
+          <option value="agua">Agua · η=0,001</option>
+          <option value="aire">Aire · η=0,000018</option>
+        </select></label>
+        <label>u <input type="range" id="ry_u" min="0" max="100" step="1" value="20" oninput="drawReynolds()"> <span id="ry_uv">20 cm/s</span></label>
+        <button id="ry_play" onclick="toggleReynolds()">▶</button>
+        <span class="readout" id="ry_out">Re = 1 600 · laminar</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="8" data-module="3">
+  <div class="module-header">
+    <span class="mnum">7.3</span>
+    <span class="mtitle">Continuidad y Bernoulli</span>
+    <span class="msub">Lo que entra, sale · lo que gana en velocidad, paga en presión</span>
+    <span class="mslide-count">8 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🔗</span> Ecuación de continuidad</div>
+        <div class="card-body">
+          <p>El flujo másico se conserva a lo largo de un tubo:</p>
+          <div class="eq-block">\[ \rho_1 A_1 u_1 = \rho_2 A_2 u_2 \qquad \text{(eq. 7.12)} \]</div>
+          <p>Para un fluido incompresible (\(\rho\) constante), el caudal volumétrico se conserva:</p>
+          <div class="eq-block">\[ A_1 u_1 = A_2 u_2 = Q \qquad \text{(eq. 7.13)} \]</div>
+          <p>La sangre que entra en un estrechamiento <strong>debe</strong> acelerar. La suma de las áreas de los capilares es enorme: por eso la sangre se frena allí.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">⚡</span> Ecuación de Bernoulli</div>
+        <div class="card-body">
+          <p>En un flujo no viscoso y estacionario, la «presión dinámica» se conserva (eq. 7.14):</p>
+          <div class="eq-block">\[ P + \frac{1}{2}\rho u^2 + \rho g h = \text{constante} \]</div>
+          <p>Donde la velocidad sube, la <strong>presión baja</strong>: es el intercambio entre presión y velocidad que veremos en el Venturi y en las estenosis.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">💧</span> Torricelli</div>
+        <div class="card-body">
+          <p>Un orificio a profundidad \(h\) descarga a la velocidad de caída libre:</p>
+          <div class="eq-block">\[ u = \sqrt{2gh} \qquad \text{(Torricelli)} \]</div>
+          <p>La sangre que sale de un vaso roto, o el agua de un tanque, sigue esta velocidad.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-8">Continuidad y Bernoulli son las dos caras del mismo flujo: la primera dice cuánta velocidad, la segunda qué presión le toca. En el canvas el tubo se estrecha: mira las partículas acelerarse y la línea de presión caer justo en la garganta del Venturi.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-venturi" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">Venturi</span>
+        <label>u₁ <input type="range" id="ve_u" min="5" max="80" step="1" value="30" oninput="drawVenturi()"> <span id="ve_uv">30 cm/s</span></label>
+        <label>estrechamiento <input type="range" id="ve_a" min="0.2" max="1" step="0.05" value="0.5" oninput="drawVenturi()"> <span id="ve_av">50 %</span></label>
+        <span class="readout" id="ve_out">u₂ = 60 cm/s</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="9" data-module="3">
+  <div class="module-header">
+    <span class="mnum">7.3</span>
+    <span class="mtitle">El Venturi y la estenosis</span>
+    <span class="msub">Medir el flujo por la caída de presión</span>
+    <span class="mslide-count">9 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">📐</span> Ecuaciones del Venturi</div>
+        <div class="card-body">
+          <p>En la garganta de área \(A_2\) la velocidad sube (continuidad) y la presión cae (Bernoulli):</p>
+          <div class="eq-block">\[ u_2 = \frac{A_1}{A_2}\, u_1 \qquad \text{(eq. 7.15)} \]</div>
+          <div class="eq-block">\[ P_2 - P_1 = \frac{1}{2}\rho u_1^2 \left[ 1 - \left(\frac{A_1}{A_2}\right)^2 \right] \qquad \text{(eq. 7.16–7.18)} \]</div>
+          <p>Medir \(P_2 - P_1\) da el caudal <em>sin</em> cortar el vaso: el principio del medidor de Venturi.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🩸</span> La estenosis del vaso</div>
+        <div class="card-body">
+          <p>En una <strong>estenosis</strong> (placa que estrecha una arteria) el mismo intercambio ocurre: la velocidad sube, la presión local <strong>cae</strong>. El efecto Venturi puede hacer que la presión en la estenosis baje de la del exterior.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🌀</span> Riesgo de colapso</div>
+        <div class="card-body">
+          <p>Si la presión interna cae por debajo de la externa, el vaso <strong>se comprime</strong>: el flujo se vuelve pulsátil e intermitente. Es la física detrás de los soplos y de por qué las estenosis severas rompen el flujo suave.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-9">El mismo dibujo del Venturi sirve de estenosis: cambia solo la palabra. Sube el estrechamiento en el canvas: la presión en la garganta se hunde y, a estenosis extremas, cruza la línea del cero relativo — ese es el colapso del vaso.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-stenosis" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">estenosis</span>
+        <label>% estenosis <input type="range" id="st_s" min="0" max="90" step="1" value="60" oninput="drawStenosis()"> <span id="st_sv">60 %</span></label>
+        <span class="readout" id="st_out">caída de presión en la placa</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M4 · POISEUILLE ═══════════ -->
+<div class="slide" data-slide="10" data-module="4">
+  <div class="module-header">
+    <span class="mnum">7.3</span>
+    <span class="mtitle">Viscosidad · Tabla 7.3</span>
+    <span class="msub">La fricción interna del fluido</span>
+    <span class="mslide-count">10 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🧴</span> La ley de Newton de la viscosidad</div>
+        <div class="card-body">
+          <p>Para deslizar una placa sobre un fluido hay que vencer una fuerza proporcional al área y al gradiente de velocidad (eq. 7.22–7.23):</p>
+          <div class="eq-block">\[ F = \eta \frac{A v}{y} \qquad \text{·} \qquad \tau = \eta \frac{dv}{dy} \]</div>
+          <p>La <strong>viscosidad dinámica</strong> \(\eta\) es la «fricción interna» del fluido. Unidades: <span class="tag">Pa·s</span>, <span class="tag">poise</span> (1 P = 0,1 Pa·s), <span class="tag">cP</span>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🩸</span> Viscosidades del cuerpo · Tabla 7.3</div>
+        <div class="card-body">
+          <table class="data-mini">
+            <tr><th>Fluido</th><th>η (Pa·s)</th></tr>
+            <tr><td>Agua (0 °C)</td><td>1,78 × 10⁻³</td></tr>
+            <tr><td>Agua (20 °C)</td><td>1,00 × 10⁻³</td></tr>
+            <tr><td>Agua (37 °C)</td><td>0,69 × 10⁻³</td></tr>
+            <tr><td>Plasma (37 °C)</td><td>1,5 × 10⁻³</td></tr>
+            <tr><td><b>Sangre entera (37 °C)</b></td><td><b>≈ 4,0 × 10⁻³</b></td></tr>
+            <tr><td>Líquido sinovial</td><td>&gt; 0,3</td></tr>
+            <tr><td>Aire (20 °C)</td><td>1,8 × 10⁻⁵</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🔴</span> La sangre no es newtoniana</div>
+        <div class="card-body">
+          <p>La sangre <strong>adelgaza al fluir</strong> (shear-thinning): a baja velocidad, los glóbulos rojos se aglomeran y \(\eta\) sube; a alta velocidad se alinean y \(\eta\) baja. A 45 % de hematocrito y baja cizalladura, <span class="tag">η ≈ 100 × 10⁻³ Pa·s</span>.</p>
+          <p>Otros fluidos no newtonianos: <strong>dilatantes</strong> (endurecen al cizallarse) y los de <strong>Bingham</strong>, como la pasta de dientes, que no fluyen hasta superar un esfuerzo umbral.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-10">Tres décadas de orden de magnitud separan el aire (10⁻⁵) de la sangre (10⁻³) y del líquido sinovial (10⁻¹). El agua a 37 °C es menos viscosa que a 0 °C: fiebre y frío también «afinan» la sangre (problema 7.19). En el canvas, estira el fluido entre las placas: el perfil de velocidad es la ley de Newton.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-viscosity" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">viscosidad</span>
+        <label>fluido <select id="vs_fl" onchange="drawViscosity()">
+          <option value="0.000018">Aire · 1,8e-5</option>
+          <option value="0.001" selected>Agua · 1,0e-3</option>
+          <option value="0.004">Sangre · 4,0e-3</option>
+          <option value="0.3">Sinovial · 0,3</option>
+        </select></label>
+        <label>v <input type="range" id="vs_v" min="0" max="100" step="1" value="40" oninput="drawViscosity()"> <span id="vs_vv">40</span></label>
+        <span class="readout" id="vs_out">τ = 0,20 Pa</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="11" data-module="4">
+  <div class="module-header">
+    <span class="mnum">7.3</span>
+    <span class="mtitle">La ley de Poiseuille</span>
+    <span class="msub">El caudal depende de la cuarta potencia del radio</span>
+    <span class="mslide-count">11 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🛤️</span> El caudal y la caída de presión</div>
+        <div class="card-body">
+          <p>Para flujo laminar estacionario en un tubo (eq. 7.24–7.26):</p>
+          <div class="eq-block">\[ Q = \frac{\pi R^4 (P_1 - P_2)}{8 \eta L} \qquad \Delta P = \frac{8 \eta L Q}{\pi R^4} \]</div>
+          <div class="eq-block">\[ \text{Potencia} = \Delta P \cdot Q \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🥟</span> Perfil parabólico de velocidad</div>
+        <div class="card-body">
+          <p>La velocidad varía con el radio (eq. 7.36, 7.39–7.40):</p>
+          <div class="eq-block">\[ v(r) = \frac{\Delta P}{4 \eta L}\left(R^2 - r^2\right) = 2u\left(1 - \frac{r^2}{R^2}\right) \]</div>
+          <div class="eq-block">\[ u = \frac{R^2 \Delta P}{8 \eta L} \qquad \text{(velocidad media)} \]</div>
+          <p>Máxima en el eje, cero en la pared: la «bala» parabólica de la sangre.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📉</span> Por qué manda el radio</div>
+        <div class="card-body">
+          <p>El radio entra a la <strong>cuarta potencia</strong>: reducir \(R\) a la mitad multiplica la resistencia por 16 y hunde el caudal a 1/16. Por eso el cuerpo regula el flujo con <span class="highlight">vasodilatación y vasoconstricción</span>, no cambiando la viscosidad.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-11">La R⁴ es la ecuación más poderosa de la hemodinámica: el 1 % de diámetro de más puede cambiar el flujo varios por cien. En el canvas sube R y observa el perfil parabólico ensancharse y el caudal dispararse — es la base de por qué las arterias pequeñas dominan la resistencia total.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-poiseuille" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">Poiseuille</span>
+        <label>R <input type="range" id="po_r" min="0.5" max="5" step="0.1" value="2" oninput="drawPoiseuille()"> <span id="po_rv">2,0</span></label>
+        <label>η <input type="range" id="po_e" min="0.001" max="0.006" step="0.0005" value="0.004" oninput="drawPoiseuille()"> <span id="po_ev">0,004</span></label>
+        <label>ΔP <input type="range" id="po_p" min="10" max="120" step="5" value="60" oninput="drawPoiseuille()"> <span id="po_pv">60</span></label>
+        <span class="readout" id="po_out">Q ∝ R⁴</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="12" data-module="4">
+  <div class="module-header">
+    <span class="mnum">7.3</span>
+    <span class="mtitle">Resistencia y la analogía de Ohm</span>
+    <span class="msub">El sistema circulatorio como circuito</span>
+    <span class="mslide-count">12 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">⚡</span> Resistencia hemodinámica</div>
+        <div class="card-body">
+          <p>La resistencia es la oposición del vaso al flujo (eq. 7.19):</p>
+          <div class="eq-block">\[ R = \frac{\Delta P}{Q} \qquad \text{·} \qquad R_{\text{Poiseuille}} = \frac{8 \eta L}{\pi R^4} \]</div>
+          <p>De Poiseuille se obtiene su expresión en términos de geometría y fluido: larga, viscosa y estrecha = resistente.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🔌</span> La analogía eléctrica</div>
+        <div class="card-body">
+          <p>La ley de Ohm \(V = I R\) se lee en hemodinámica <span class="tag">\(\Delta P = Q \cdot R\)</span>. Presión ↔ voltaje, caudal ↔ corriente, resistencia ↔ resistencia.</p>
+          <p>El corazón (bomba) mantiene \(\Delta P\); el lecho vascular ajusta \(R\) para repartir el \(Q\) entre órganos.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🔀</span> Serie y paralelo</div>
+        <div class="card-body">
+          <p>En <strong>serie</strong> las resistencias se suman; en <strong>paralelo</strong> se reparte el caudal. Los capilares en paralelo bajan la resistencia total: por eso la mayor caída de presión ocurre en las <span class="highlight">arteriolas</span>, que regulan el reparto órgano a órgano.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-12">La analogía de Ohm unifica el capítulo con lo que ya saben de circuitos. En el canvas conecta dos vasos en paralelo y cambia sus radios: el reparto del caudal sigue la ley de R⁻⁴ — el vaso más ancho se lleva la mayor parte del flujo.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-resistance" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">paralelo</span>
+        <label>r₁ <input type="range" id="rs_r1" min="0.5" max="3" step="0.1" value="2" oninput="drawResistance()"> <span id="rs_r1v">2,0</span></label>
+        <label>r₂ <input type="range" id="rs_r2" min="0.5" max="3" step="0.1" value="1" oninput="drawResistance()"> <span id="rs_r2v">1,0</span></label>
+        <span class="readout" id="rs_out">R₁ = 1 · R₂ = 16 · R_eq = 0,94</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M5 · COMPLIANCIA ═══════════ -->
+<div class="slide" data-slide="13" data-module="5">
+  <div class="module-header">
+    <span class="mnum">7.3</span>
+    <span class="mtitle">Compliancia y distensibilidad</span>
+    <span class="msub">El vaso elástico que almacena volumen</span>
+    <span class="mslide-count">13 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🎈</span> Compliancia</div>
+        <div class="card-body">
+          <p>Cuánto volumen admite un vaso por unidad de presión (eq. 7.20):</p>
+          <div class="eq-block">\[ C = \frac{\Delta V}{\Delta P} \]</div>
+          <p>Para un cilindro elástico de radio \(r_0\), longitud \(L\), pared \(w\) y módulo de Young \(Y\) (eq. 7.46):</p>
+          <div class="eq-block">\[ C_{\text{flujo}} = \frac{2\pi r_0^3 L}{w\, Y} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📐</span> Distensibilidad</div>
+        <div class="card-body">
+          <p>El cambio fraccional de área por presión (eq. 7.47–7.48, 7.51):</p>
+          <div class="eq-block">\[ D = \frac{\Delta A/A}{\Delta P} = \frac{2r_0}{w\,Y} \]</div>
+          <div class="eq-block">\[ \frac{\Delta V}{V} = 2\frac{r_0}{w}\frac{P}{Y} \qquad \text{(eq. 7.43)} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🫀</span> El efecto Windkessel</div>
+        <div class="card-body">
+          <p>Las arterias elásticas se expanden en sístole y <strong>devuelven</strong> el volumen en diástole: el flujo llega a los tejidos casi continuo aunque el corazón late. Un sistema rígido perdería ese «reservorio».</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">⏳</span> Envejecer es endurecerse</div>
+        <div class="card-body">
+          <p>Con la edad, \(Y\) crece y \(D\) cae: la onda de pulso viaja más rápido y la presión sistólica tiende a subir. Medir la <span class="highlight">velocidad de onda de pulso</span> es medir la rigidez arterial.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-13">Compliancia = elasticidad del vaso como reservorio. En el canvas sube el módulo de Young Y: el vaso se vuelve rígido, apenas se expande con la presión y la compliancia se hunde — eso es la arteria del anciano. La distensibilidad es la misma historia por unidad de área.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-compliance" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">compliancia</span>
+        <label>Y <input type="range" id="cm_y" min="0.2" max="2" step="0.05" value="0.6" oninput="drawCompliance()"> <span id="cm_yv">0,60</span></label>
+        <label>ΔP <input type="range" id="cm_p" min="10" max="120" step="5" value="60" oninput="drawCompliance()"> <span id="cm_pv">60</span></label>
+        <span class="readout" id="cm_out">C_flujo ∝ r₀³/wY</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="14" data-module="5">
+  <div class="module-header">
+    <span class="mnum">7.3</span>
+    <span class="mtitle">Inertancia y tubos curvos</span>
+    <span class="msub">La masa del fluido se resiste a cambiar</span>
+    <span class="mslide-count">14 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🏋️</span> Inertancia</div>
+        <div class="card-body">
+          <p>La masa del fluido se opone a los <em>cambios</em> de caudal (eq. 7.21, 7.52–7.53):</p>
+          <div class="eq-block">\[ \Delta P = \frac{\rho L}{A}\,\frac{\partial Q}{\partial t} = L_{\text{flujo}}\,\frac{\partial Q}{\partial t} \qquad L_{\text{flujo}} = \frac{\rho L}{A} = \frac{\rho L}{\pi r^2} \]</div>
+          <p>Es el análogo hidráulico de la inductancia: importa solo cuando el flujo es <span class="tag">pulsátil</span>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">〽️</span> Tubos curvos</div>
+        <div class="card-body">
+          <p>En una curva de radio de curvatura \(\mathcal{R}\), la presión centrífuga empuja el fluido hacia la pared exterior (eq. 7.57):</p>
+          <div class="eq-block">\[ P_{\text{cent}} = \frac{2\rho u^2 R}{\mathcal{R}} \]</div>
+          <p>La manguera «se endereza»; la sangre se concentra en el lado externo del <strong>arco aórtico</strong>. Por eso las placas (ateromas) tienden a formarse en las curvaturas.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">⏱️</span> ¿Cuándo importa la inertancia?</div>
+        <div class="card-body">
+          <p>En un flujo estacionario, \(\partial Q/\partial t = 0\) y la inertancia no hace nada. En la aorta, la sangre <strong>acelera y frena con cada latido</strong>: allí la inercia del fluido se siente y se combina con resistencia y compliancia.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-14">Resistencia, compliancia e inertancia forman la terna RLC del sistema arterial: resistencia frena, compliancia almacena, inertancia retrasa. En el canvas, las partículas que atraviesan el arco aórtico se amontonan en la pared exterior — la firma de la presión centrífuga.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-inertance" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">inertancia</span>
+        <label>u <input type="range" id="in_u" min="0" max="100" step="1" value="50" oninput="drawInertance()"> <span id="in_uv">50 cm/s</span></label>
+        <button id="in_play" onclick="toggleInertance()">▶</button>
+        <span class="readout" id="in_out">ΔP = (ρL/A)·∂Q/∂t</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M6 · ARRASTRE ═══════════ -->
+<div class="slide" data-slide="15" data-module="6">
+  <div class="module-header">
+    <span class="mnum">7.3</span>
+    <span class="mtitle">Arrastre: Stokes e hidrodinámico</span>
+    <span class="msub">Dos leyes, un número que las separa</span>
+    <span class="mslide-count">15 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🫧</span> La ley de Stokes</div>
+        <div class="card-body">
+          <p>A <span class="tag">Re &lt; 100</span> domina la fricción viscosa. Una esfera de radio \(R\) a velocidad \(u\) en un fluido de viscosidad \(\eta\):</p>
+          <div class="eq-block">\[ F = 6\pi R \eta u \qquad \text{(eq. 7.58)} \]</div>
+          <p>Lineal en \(u\) y \(R\): es el régimen de las células, las partículas en la sangre (Re ≈ 0,004) y la sedimentación.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🌬️</span> Arrastre hidrodinámico</div>
+        <div class="card-body">
+          <p>A <span class="tag">Re &gt; 100</span> domina la inercia del fluido. La fuerza crece con el área frontal y con \(u^2\) (eq. 7.59):</p>
+          <div class="eq-block">\[ F = \frac{1}{2} C_D A \rho u^2 \]</div>
+          <p>\(C_D\) ≈ <span class="tag">1,0</span> para cilindros y <span class="tag">0,5</span> para esferas. Tres contribuciones: presión frontal, remolinos de estela y fricción superficial.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🔢</span> El criterio y la potencia</div>
+        <div class="card-body">
+          <p>El número de Reynolds decide cuál de las dos leyes usar. La potencia para vencer el arrastre (eq. 7.62):</p>
+          <div class="eq-block">\[ P = F \cdot u \]</div>
+          <p>Por eso el viento aumenta tanto el gasto metabólico al correr (Tabla 6.25): \(F \propto u^2\) y \(P \propto u^3\).</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-15">Stokes (lineal) e hidrodinámico (cuadrático) son dos mundos separados por Re = 100. Una célula cae según Stokes; un nadador, según el arrastre hidrodinámico (problema 7.40). En el canvas cambia el radio de la esfera: Re decide qué ley dibuja la flecha de fuerza.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-drag" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">arrastre</span>
+        <label>R <input type="range" id="dr_r" min="0.001" max="10" step="0.001" value="0.01" oninput="drawDrag()"> <span id="dr_rv">0,01</span></label>
+        <label>u <input type="range" id="dr_u" min="1" max="200" step="1" value="50" oninput="drawDrag()"> <span id="dr_uv">50 cm/s</span></label>
+        <span class="readout" id="dr_out">Re = 133 · hidrodinámico</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="16" data-module="6">
+  <div class="module-header">
+    <span class="mnum">7.3</span>
+    <span class="mtitle">Sustentación y Strouhal</span>
+    <span class="msub">La fuerza que también usan la mano y el ala</span>
+    <span class="mslide-count">16 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🪽</span> Sustentación</div>
+        <div class="card-body">
+          <p>Una superficie inclinada en un flujo genera fuerza perpendicular a la corriente (eq. 7.63):</p>
+          <div class="eq-block">\[ F_{\text{sust}} = \frac{1}{2} C_{\text{sust}} S \rho u^2 \]</div>
+          <p>\(C_{\text{sust}}\) va de <span class="tag">−0,4 a 1,2</span> para ángulos de ataque \(\beta\) de −4° a 12°. Más allá de ≈ 12° el flujo se desprende y la sustentación <strong>colapsa</strong> (entrada en pérdida, «stall»).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🌪️</span> Número de Strouhal</div>
+        <div class="card-body">
+          <p>La frecuencia con que se sueltan los vórtices alternos en la estela (eq. 7.60):</p>
+          <div class="eq-block">\[ f_{\text{St}} = \text{St}\,\frac{u}{D} \qquad \text{St} \approx 0{,}12\text{–}0{,}23 \]</div>
+          <p>Gobierna el «caleidoscopio» de vórtices tras nadadores y voladores, y la vibración de cables y mástiles.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">✋</span> La mano como hélice</div>
+        <div class="card-body">
+          <p>En el nado, la mano que barre inclinada genera <strong>sustentación</strong> además de propulsión: los buenos nadadores usan las manos como hélices y no como paletas planas (módulo 8).</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-16">La sustentación no es solo aviación: es la mano del nadador y el ala del Gossamer. El gráfico del canvas es el del libro: C_sust crece con el ángulo hasta ~12°, y ahí se desploma. Ese pico y esa caída son la física completa del vuelo y de la brazada.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-lift" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">sustentación</span>
+        <label>β <input type="range" id="li_b" min="-6" max="20" step="1" value="8" oninput="drawLift()"> <span id="li_bv">8°</span></label>
+        <span class="readout" id="li_out">C_sust = 0,82</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M7 · DIFUSIÓN ═══════════ -->
+<div class="slide" data-slide="17" data-module="7">
+  <div class="module-header">
+    <span class="mnum">7.3</span>
+    <span class="mtitle">Las leyes de Fick</span>
+    <span class="msub">El transporte molecular que no necesita bomba</span>
+    <span class="mslide-count">17 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">📈</span> Primera ley de Fick</div>
+        <div class="card-body">
+          <p>Las moléculas fluyen de donde hay más a donde hay menos (eq. 7.64):</p>
+          <div class="eq-block">\[ J = -D_{\text{dif}} \frac{\partial n}{\partial x} \]</div>
+          <p>La corriente \(J\) es proporcional al gradiente de concentración; \(D_{\text{dif}}\) es el coeficiente de difusión.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🌫️</span> Segunda ley: la difusión ensancha</div>
+        <div class="card-body">
+          <p>Combinando con la conservación de masa (eq. 7.65–7.66):</p>
+          <div class="eq-block">\[ \frac{\partial n}{\partial t} = -\frac{\partial J}{\partial x} = D_{\text{dif}}\frac{\partial^2 n}{\partial x^2} \]</div>
+          <p>Un pico inicial de moléculas se convierte en una <strong>gaussiana</strong> que se aplana y se ensancha (eq. 7.67, 7.69):</p>
+          <div class="eq-block">\[ n \sim \frac{N}{\sqrt{4\pi D_{\text{dif}}t}}\,e^{-x^2/4D_{\text{dif}}t} \qquad \sigma^2 = \sigma_0^2 + 2D_{\text{dif}}t \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📏</span> Cuánto tarda</div>
+        <div class="card-body">
+          <p>La distancia típica crece como la raíz del tiempo: <span class="tag">\(x \sim \sqrt{2Dt}\)</span>. Coeficientes: <span class="tag">D ≈ 10⁻¹ gas · 10⁻⁵ líquido · 10⁻⁹ sólido</span> cm²/s.</p>
+          <p>El O₂ cruza del alvéolo a la mitocondria por difusión en <span class="highlight">≈ 100 μm</span>; más allá, necesita la sangre.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-17">La difusión no es «algo que se esparce»: es un paseo aleatorio, y por eso el ancho crece como √t, no como t. Pulsa ▶ en el canvas y mira la gaussiana ensancharse con σ = √(2Dt) — esa es la segunda ley de Fick dibujada.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-diffusion" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">difusión</span>
+        <label>D <input type="range" id="df_d" min="0.01" max="2" step="0.01" value="0.3" oninput="drawDiffusion()"> <span id="df_dv">0,30</span></label>
+        <button id="df_play" onclick="toggleDiffusion()">▶</button>
+        <span class="readout" id="df_out">σ = √(2Dt)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="18" data-module="7">
+  <div class="module-header">
+    <span class="mnum">7.3</span>
+    <span class="mtitle">La escala de la difusión</span>
+    <span class="msub">Difusión para micras, flujo para centímetros</span>
+    <span class="mslide-count">18 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">⏳</span> Tiempos por distancia</div>
+        <div class="card-body">
+          <p>De \(x \sim \sqrt{2Dt}\) sale el tiempo para difundir una distancia \(x\): <span class="tag">\(t \sim x^2 / 2D\)</span>.</p>
+          <table class="data-mini">
+            <tr><th>Medio</th><th>D (cm²/s)</th><th>Distancia en 1 s</th></tr>
+            <tr><td>Gas</td><td>≈ 10⁻¹</td><td>≈ 1 cm</td></tr>
+            <tr><td>Líquido</td><td>≈ 10⁻⁵</td><td>≈ 10⁻² cm</td></tr>
+            <tr><td>Sólido</td><td>≈ 10⁻⁹</td><td>≈ 10⁻⁴ cm</td></tr>
+          </table>
+          <p>En un líquido, difundir 1 cm toma \(t \approx 10^5\ \text{s} \approx 28\ \text{h}\) — inútil.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🔬</span> Difusión solo a corta distancia</div>
+        <div class="card-body">
+          <p>La difusión es eficiente en <span class="tag">1 a 100 μm</span>: la célula de 2 μm, la hendidura sináptica, la pared alveolar. A distancias mayores, el cuerpo <strong>lleva el soluto con flujo</strong>: sangre, peristalsis, transporte activo.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🫁</span> El oxígeno de punta a punta</div>
+        <div class="card-body">
+          <p>Del alvéolo a la mitocondria hay solo <strong>≈ 100 μm</strong> de difusión; el resto del camino (hasta el músculo de la pierna) lo recorre la sangre <em>convectiva</em>. Cada transporte usa la física que le toca.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-18">Esta es la «tabla que explica todo»: el olor se difunde en gas en segundos, un nutriente en líquido tarda horas en recorrer centímetros. Por eso el cuerpo no «espera» la difusión: bombea. Mueve la distancia en el canvas y mira cómo el tiempo del líquido se dispara cuadráticamente.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-diffusion2" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">escala</span>
+        <label>x <input type="range" id="d2_x" min="1" max="1000" step="1" value="100" oninput="drawDiffusion2()"> <span id="d2_xv">100 μm</span></label>
+        <span class="readout" id="d2_out">t_líq = x²/2D</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ M8 · CUERPO EN FLUIDOS ═══════════ -->
+<div class="slide" data-slide="19" data-module="8">
+  <div class="module-header">
+    <span class="mnum">7.4</span>
+    <span class="mtitle">Caudales del sistema alimentario · Tabla 7.4</span>
+    <span class="msub">Del bocado a la evacuación: horas y velocidades</span>
+    <span class="mslide-count">19 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🍽️</span> Longitudes y tiempos · Tabla 7.4</div>
+        <div class="card-body">
+          <table class="data-mini">
+            <tr><th>Componente</th><th>Long.</th><th>Tiempo de paso</th><th>Velocidad</th></tr>
+            <tr><td>Boca y faringe</td><td>8 cm</td><td>1–10 s</td><td>1–8 cm/s</td></tr>
+            <tr><td>Esófago</td><td>25 cm</td><td>5–20 s</td><td>3–5 cm/s</td></tr>
+            <tr><td>Estómago</td><td>12 cm</td><td>2–6 h</td><td>≈ 0,001</td></tr>
+            <tr><td>Intestino delgado</td><td>400 cm</td><td>3–5 h</td><td>0,03</td></tr>
+            <tr><td>Intestino grueso</td><td>≈ 150 cm</td><td>10–20 h</td><td>0,004–0,008</td></tr>
+            <tr><td>Recto</td><td>16–20 cm</td><td>≈ 1 h</td><td>0,006</td></tr>
+            <tr><td><b>Total</b></td><td><b>≈ 600 cm</b></td><td><b>16–32 h</b></td><td><b>≈ 0,01</b></td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🫃</span> La peristalsis (Fig. 7.22)</div>
+        <div class="card-body">
+          <p>Ondas de contracción muscular recorren el tubo y <strong>empujan</strong> el contenido. Es un flujo pulsátil, viscoso y no newtoniano, con Reynolds muy bajo — siempre laminar (problema 7.21).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🐌</span> La lentitud deliberada</div>
+        <div class="card-body">
+          <p>El contenido avanza <span class="highlight">≈ 0,01 cm/s</span> de promedio: 16 a 32 horas de boca a recto. La lentitud deja tiempo a la digestión y a la absorción. Compárese con la sangre, que en la aorta viaja ~50 cm/s.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-19">La tabla 7.4 es un viaje por el tracto: veloz al principio (segundos), lentísimo al final (horas). Pulsa ▶ y mira el bocado viajar: cada segmento arrastra a su velocidad. El dato «600 cm, 16–32 h» es el resumen de todo el módulo.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-flows" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">peristalsis</span>
+        <button id="fl_play" onclick="toggleFlows()">▶</button>
+        <span class="readout" id="fl_out">boca → recto: 16–32 h</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="20" data-module="8">
+  <div class="module-header">
+    <span class="mnum">7.4</span>
+    <span class="mtitle">La vejiga y la relación presión-volumen</span>
+    <span class="msub">El cistometrograma y la ley de Laplace</span>
+    <span class="mslide-count">20 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">💦</span> El cistometrograma (Fig. 7.23)</div>
+        <div class="card-body">
+          <p>La presión sube a <span class="tag">5–10 cmH₂O</span> al llenar <span class="tag">30–50 mL</span>; luego se acumulan <span class="tag">200–300 mL</span> más con poco cambio. Sobre <span class="tag">300–400 mL</span> la presión sube rápido: la <strong>necesidad de orinar</strong> aparece a ≈ <span class="tag">30 cmH₂O</span> (3 kPa).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🚽</span> Vaciar la vejiga</div>
+        <div class="card-body">
+          <p>La micción normal ocurre a <span class="tag">20–40 cmH₂O</span> (2–4 kPa). Los reflejos de micción (ondas agudas en la figura) disparan la presión <em>momentáneamente</em> hasta <span class="tag">150 cmH₂O</span> (15 kPa).</p>
+          <p>Conversión: <span class="tag">1 cmH₂O = 0,738 mmHg</span>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🎈</span> Lo que dice Laplace</div>
+        <div class="card-body">
+          <p>Modelando la vejiga como esfera de pared constante, la tensión de pared crece como <span class="tag">\(V^{1/3}\)</span>, no como \(V\). La presión interior queda casi plana.</p>
+          <p>Por eso los <strong>sensores de llenado están en la pared</strong>, midiendo el esfuerzo, y no la presión — que apenas cambia.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-20">El mismo principio que en el estómago: la tensión crece como la raíz cúbica del volumen, la presión queda plana. En el canvas recorre el volumen y mira: meseta hasta ~300 mL, luego el ascenso — y dónde aparece «ganas de orinar». Es un cistometrograma dibujado en vivo.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-bladder" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">vejiga</span>
+        <label>V <input type="range" id="bl_v" min="0" max="600" step="5" value="200" oninput="drawBladder()"> <span id="bl_vv">200 mL</span></label>
+        <span class="readout" id="bl_out">P ≈ 12 cmH₂O · tensión σ ∝ V^⅓</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="21" data-module="8">
+  <div class="module-header">
+    <span class="mnum">7.5</span>
+    <span class="mtitle">Natación</span>
+    <span class="msub">Flotar, empujar el agua y deslizarse</span>
+    <span class="mslide-count">21 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🛟</span> Flotar</div>
+        <div class="card-body">
+          <p>Flotamos si la densidad promedio es menor que la del agua (1,0 g/cm³). La <strong>grasa</strong> (\(\approx 0{,}8\)) flota; el <strong>músculo</strong> (\(\approx 1{,}0\)) queda a ras; el <strong>hueso</strong> (1,5–2,0) se hunde. Un aire profundo baja la densidad promedio: casi todos flotan tras inspirar.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🦾</span> La fuerza de la brazada</div>
+        <div class="card-body">
+          <p>El brazo barre un volumen cilíndrico y entrega el momento al agua (eq. 7.74–7.75):</p>
+          <div class="eq-block">\[ F_{\text{brazada}} \simeq \frac{\rho \pi l^3 w}{4T^2} \]</div>
+          <p>Con \(l = 0{,}386H\), \(w = 0{,}07H\), 60 brazadas/min (\(T=1\) s) y \(H=1{,}8\) m: <span class="tag">F ≈ 27 N</span>. La velocidad estacionaria (eq. 7.73) con \(C_D=1{,}0\), \(A\approx 0{,}076\) m²: <span class="tag">u ≈ 0,8 m/s</span>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📊</span> Escalas y planeo</div>
+        <div class="card-body">
+          <p>Alometría de la velocidad de natación (eq. 7.76): <span class="tag">\(u \approx 0{,}5\,m_b^{0{,}19}\)</span> m/s — un animal de 70 kg nada a ≈ 1 m/s.</p>
+          <p>Si el nadador deja de bracear, el arrastre cuadrático frena suavemente (eq. 7.80): <span class="tag">\(u(t) = u_i/(1 + C_DA\rho u_i t/2m_b)\)</span>.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-21">Física de la brazada: empujar agua hacia atrás te lleva hacia adelante (tercera ley). El 27 N sale de mover ~0,1 m³ de agua por brazada — y da 0,8 m/s, la velocidad real del crawl. En el canvas cambia la altura y la cadencia: el modelo completo del libro, en vivo.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-swim" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">natación</span>
+        <label>H <input type="range" id="sw_h" min="1.5" max="2.1" step="0.05" value="1.8" oninput="drawSwim()"> <span id="sw_hv">1,80 m</span></label>
+        <label>brazadas <input type="range" id="sw_b" min="30" max="90" step="5" value="60" oninput="drawSwim()"> <span id="sw_bv">60/min</span></label>
+        <button id="sw_play" onclick="toggleSwim()">▶</button>
+        <span class="readout" id="sw_out">F ≈ 27 N · u ≈ 0,8 m/s</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="22" data-module="8">
+  <div class="module-header">
+    <span class="mnum">7.5</span>
+    <span class="mtitle">¿Por qué no volamos?</span>
+    <span class="msub">La cuenta de fuerzas que impide el vuelo humano</span>
+    <span class="mslide-count">22 / 23</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">✋</span> Batir los brazos</div>
+        <div class="card-body">
+          <p>Cada aleteo desplaza ≈ <span class="tag">0,1 m³</span> de aire (\(\approx 0{,}1\) kg). Con brazos que alcanzan 20 m/s y 3 aleteos/s, el cambio de momento es de:</p>
+          <div class="eq-block">\[ F = (0{,}1\ \text{kg})(20\ \text{m/s})(3\ \text{s}^{-1}) \approx 6\ \text{N} \]</div>
+          <p>Frente a un peso de <span class="tag">700 N</span>: ni de lejos.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🪽</span> Con alas</div>
+        <div class="card-body">
+          <p>Alas de <span class="tag">2 m²</span> moverían 2 m³ de aire y darían ≈ <span class="tag">120 N</span> hacia arriba. Incluso corriendo a 10 m/s (récord mundial), la sustentación es \(0{,}5 \times 1{,}2 \times 2 \times 1 \times 100 = 120\ \text{N}\) — siempre menos que el peso.</p>
+          <div class="eq-block">\[ F_{\text{sust}} = \tfrac{1}{2} C_{\text{sust}} S \rho u^2 < m_b g \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🚴</span> El Gossamer Albatross (1979)</div>
+        <div class="card-body">
+          <p>El vuelo humano propulsado sí existe — con una máquina. Bryan Allen pedaleó la aeronave de <span class="tag">30 m de envergadura</span> y <span class="tag">30 kg</span> a través del Canal de la Mancha: <span class="tag">35,6 km en 2 h 49 min</span> con <span class="tag">125 W</span>, volando a ras para aprovechar el efecto suelo. Premio Kremer.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-22">La moraleja física: batir brazos da 6 N, alas dan 120 N, el peso pide 700 N — falta un factor ~6. No es falta de fuerza de voluntad: es densidad de aire vs. peso. En el canvas juega con la envergadura y la cadencia: la barrera no se cruza, y el punto rojo del peso queda siempre arriba.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-flight" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">vuelo</span>
+        <label>envergadura <input type="range" id="ft_s" min="0.5" max="5" step="0.5" value="1" oninput="drawFlight()"> <span id="ft_sv">1 m</span></label>
+        <label>aleteo <input type="range" id="ft_f" min="1" max="6" step="1" value="3" oninput="drawFlight()"> <span id="ft_fv">3 /s</span></label>
+        <span class="readout" id="ft_out">F = 6 N vs peso 700 N</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ NAVEGACIÓN ═══════════ -->
+<nav class="nav-bar">
+  <button class="nav-btn" onclick="prevSlide()" aria-label="Anterior">‹</button>
+  <div class="nav-dots" id="navDots"></div>
+  <button class="nav-btn" onclick="nextSlide()" aria-label="Siguiente">›</button>
+  <span class="slide-counter" id="slideCounter">1 / 23</span>
+  <span class="nav-module-label" id="navModuleLabel">Inicio</span>
+</nav>
+
+<div class="canvas-tooltip" id="canvasTooltip"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   MOTOR DE PRESENTACIÓN · capítulo 7 · Física del Cuerpo Humano
+   Navegación · KaTeX · redibujado de sims
+   ═══════════════════════════════════════════════════════════ */
+'use strict';
+
+/* ── Total de diapositivas y módulos ── */
+const TOTAL = 23;
+const MODULES = [
+  {id:0, name:'Inicio',              slides:[0],                  ico:'🏠'},
+  {id:1, name:'Presión',             slides:[1,2,3],              ico:'🩸'},
+  {id:2, name:'Leyes de fluidos',    slides:[4,5,6],              ico:'⚖️'},
+  {id:3, name:'Bernoulli',           slides:[7,8,9],              ico:'🌊'},
+  {id:4, name:'Poiseuille',          slides:[10,11,12],           ico:'🧪'},
+  {id:5, name:'Compliancia',         slides:[13,14],              ico:'🎈'},
+  {id:6, name:'Arrastre',            slides:[15,16],              ico:'🪂'},
+  {id:7, name:'Difusión',            slides:[17,18],              ico:'🫧'},
+  {id:8, name:'Cuerpo en fluidos',   slides:[19,20,21,22],        ico:'🏊'},
+];
+let current = 0;
+
+/* ── Texto por defecto de los apuntes (para restaurar en revisita) ── */
+const infoTexts = {};
+document.querySelectorAll('.apuntes .a-text[id]').forEach(el=>{
+  infoTexts[el.id] = el.innerHTML;
+});
+
+/* ── Navegación ── */
+function moduleOf(i){ for (const m of MODULES) if (m.slides.includes(i)) return m; return MODULES[0]; }
+
+function dots(){
+  const host = document.getElementById('navDots');
+  if (!host) return;
+  host.innerHTML = '';
+  for (let i=0;i<TOTAL;i++){
+    const b = document.createElement('button');
+    b.className = 'nav-dot';
+    if (i===0) b.classList.add('active');
+    b.title = 'Diapositiva '+(i+1);
+    b.setAttribute('aria-label','Ir a diapositiva '+(i+1));
+    b.addEventListener('click',()=>go(i));
+    host.appendChild(b);
+  }
+}
+
+function setMPills(active){
+  document.querySelectorAll('.mpill').forEach(p=>{
+    const m = (p.getAttribute('onclick')||'').match(/goModule\((\d+)\)/);
+    p.classList.toggle('active', m && +m[1]===active);
+  });
+}
+
+/* ── Pestañas de módulo en la barra superior ── */
+function buildModuleTabs(){
+  const bar = document.getElementById('moduleBar');
+  if (!bar) return;
+  MODULES.forEach(m=>{
+    if (m.id===0) return;
+    const t = document.createElement('button');
+    t.className = 'module-tab';
+    t.innerHTML = '<span class="mod-badge">'+m.id+'</span>'+m.ico+' '+m.name;
+    t.setAttribute('onclick','goModule('+m.id+')');
+    t.setAttribute('aria-label','Módulo '+m.id+': '+m.name);
+    bar.appendChild(t);
+  });
+}
+function updateTabs(id){
+  document.querySelectorAll('.module-tab').forEach(t=>{
+    const mid = (t.getAttribute('onclick')||'').match(/goModule\((\d+)\)/);
+    t.classList.toggle('active', mid && +mid[1]===id);
+  });
+}
+
+const _entranceSeen = new Set();
+function go(n){
+  if (n===undefined || isNaN(n)) return;
+  n = Math.max(0, Math.min(TOTAL-1, n));
+  // Restaurar los apuntes que las simulaciones hayan reescrito
+  document.querySelectorAll('.apuntes .a-text[id]').forEach(el=>{
+    if (infoTexts[el.id]) el.innerHTML = infoTexts[el.id];
+  });
+  document.querySelectorAll('.slide,.slide-full').forEach(s=>{
+    s.classList.toggle('active', +s.dataset.slide===n);
+  });
+  // Primera visita: reveal. Revisita: instantáneo (no insistir).
+  const cur = document.querySelector('.slide.active,.slide-full.active');
+  if (cur) {
+    if (!_entranceSeen.has(n)) _entranceSeen.add(n);
+    else cur.classList.add('instant');
+  }
+  current = n;
+  document.querySelectorAll('#navDots .nav-dot').forEach((d,i)=>d.classList.toggle('active', i===n));
+  const sc = document.getElementById('slideCounter');
+  if (sc) sc.textContent = (n+1)+' / '+TOTAL;
+  const ml = document.getElementById('navModuleLabel');
+  if (ml) ml.textContent = moduleOf(n).name;
+  const mid = moduleOf(n).id;
+  setMPills(mid);
+  updateTabs(mid);
+  requestAnimationFrame(()=>{ redrawSlide(n); });
+  // La slide recién activada (display:none→flex) puede no tener layout aún
+  // cuando corre el rAF; el guard `!cv.clientWidth` corta y quedaría sin
+  // dibujar. Reintento tras asentar layout, solo si seguimos en esta slide.
+  setTimeout(()=>{ if (current===n) redrawSlide(n); }, 120);
+}
+window.go = go;
+
+function nextSlide(){ go(current+1); }
+function prevSlide(){ go(current-1); }
+function goModule(id){ const m = MODULES.find(x=>x.id===id); if (m) go(m.slides[0]); }
+window.nextSlide = nextSlide;
+window.prevSlide = prevSlide;
+window.goModule = goModule;
+
+/* ── Redibujar la simulación activa ── */
+function redrawSlide(n){
+  const fns = {
+    1: ()=>window.drawManometer && drawManometer(),
+    2: ()=>window.drawPressures && drawPressures(),
+    3: ()=>window.drawBp && drawBp(),
+    4: ()=>window.drawPascal && drawPascal(),
+    5: ()=>window.drawLaplaceCyl && drawLaplaceCyl(),
+    6: ()=>window.drawLaplaceSphere && drawLaplaceSphere(),
+    7: ()=>window.drawReynolds && drawReynolds(),
+    8: ()=>window.drawVenturi && drawVenturi(),
+    9: ()=>window.drawStenosis && drawStenosis(),
+    10: ()=>window.drawViscosity && drawViscosity(),
+    11: ()=>window.drawPoiseuille && drawPoiseuille(),
+    12: ()=>window.drawResistance && drawResistance(),
+    13: ()=>window.drawCompliance && drawCompliance(),
+    14: ()=>window.drawInertance && drawInertance(),
+    15: ()=>window.drawDrag && drawDrag(),
+    16: ()=>window.drawLift && drawLift(),
+    17: ()=>window.drawDiffusion && drawDiffusion(),
+    18: ()=>window.drawDiffusion2 && drawDiffusion2(),
+    19: ()=>window.drawFlows && drawFlows(),
+    20: ()=>window.drawBladder && drawBladder(),
+    21: ()=>window.drawSwim && drawSwim(),
+    22: ()=>window.drawFlight && drawFlight(),
+  };
+  if (fns[n]) fns[n]();
+}
+window.redrawSlide = redrawSlide;
+
+/* ── Teclado ── */
+document.addEventListener('keydown', e=>{
+  if (/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return;
+  if (e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){ e.preventDefault(); nextSlide(); }
+  else if (e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); prevSlide(); }
+  else if (e.key==='Home'){ e.preventDefault(); go(0); }
+  else if (e.key==='End'){ e.preventDefault(); go(TOTAL-1); }
+});
+
+/* ── Motor de amortiguación frame-rate independent ── */
+window.__damp = function(v, t, r, dt) { return v + (t - v) * (1 - Math.exp(-r * dt)); };
+
+/* ═══════════════════════════════════════════════════════════
+   HELPERS ANATÓMICOS 2D (window.AB) — heredados de los capítulos 1–6
+   ═══════════════════════════════════════════════════════════ */
+window.AB = (function(){
+  const PAL = {
+    paper:'#f5f0e4', card:'#fbf8f0', ink:'#232c36', ink2:'#43505c', ink3:'#6b7885',
+    line:'#cfc3a9', sagittal:'#5d4fa8',
+    bone:'#cfc4ae', boneEdge:'#b6a67f', boneDark:'#9b8a64',
+    muscle:'#c14b4b', muscleEdge:'#a92a1e',
+    tendon:'#e8d8c8', skin:'#e9c49f', skinEdge:'#d9a77c',
+    teal:'#0d6e64', tealLight:'#3aa89c', amber:'#9a5b00', blood:'#a92a1e',
+    good:'#2d7d4f', warn:'#b86a1e',
+  };
+  function setup(cv, w, h){
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = Math.max(1, Math.round(w*dpr));
+    cv.height = Math.max(1, Math.round(h*dpr));
+    cv.style.width = w+'px'; cv.style.height = h+'px';
+    const ctx = cv.getContext('2d');
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,w,h);
+    ctx.lineCap='round'; ctx.lineJoin='round';
+    return ctx;
+  }
+  function fmt(x, d){
+    d = d===undefined?1:d;
+    let s = Number(x).toFixed(d).replace(/\.0+$/,'').replace('.',',');
+    if (s===''||s==='-') s='0';
+    return s;
+  }
+  function text(ctx, s, x, y, o){
+    o = o||{};
+    ctx.font = (o.weight?o.weight+' ':'')+(o.size?o.size+'px ':'13px ')+'Karla, sans-serif';
+    ctx.fillStyle = o.color || PAL.ink;
+    ctx.textAlign = o.align || 'center';
+    ctx.textBaseline = o.base || 'middle';
+    ctx.fillText(s, x, y);
+  }
+  function arrow(ctx, x0,y0, x1,y1, o){
+    o = o||{};
+    const head = o.head===undefined?8:o.head;
+    const ang = Math.atan2(y1-y0, x1-x0);
+    ctx.strokeStyle = o.color||PAL.teal; ctx.fillStyle = o.color||PAL.teal;
+    ctx.lineWidth = o.width||2.5;
+    ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x1,y1);
+    ctx.lineTo(x1-head*Math.cos(ang-0.45), y1-head*Math.sin(ang-0.45));
+    ctx.lineTo(x1-head*Math.cos(ang+0.45), y1-head*Math.sin(ang+0.45));
+    ctx.closePath(); ctx.fill();
+  }
+  function dashed(ctx, x0,y0,x1,y1, o){
+    o = o||{};
+    ctx.strokeStyle = o.color||PAL.ink3; ctx.lineWidth = o.width||1.2;
+    ctx.setLineDash([4,4]); ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke(); ctx.setLineDash([]);
+  }
+  function bone(ctx, x0,y0,x1,y1, o){
+    o = o||{};
+    const w = o.width||10;
+    ctx.strokeStyle = o.edge||PAL.boneEdge; ctx.lineWidth = w;
+    ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+    ctx.strokeStyle = o.fill||PAL.bone; ctx.lineWidth = w-3;
+    ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+    if (o.joint!==false){ joint(ctx, x0,y0, w/2, {r:Math.max(2,w/2-3)}); }
+    if (o.jointEnd){ joint(ctx, x1,y1, w/2, {r:Math.max(2,w/2-3)}); }
+  }
+  function joint(ctx, x,y,r, o){
+    o = o||{};
+    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2);
+    ctx.fillStyle = o.fill||'#f5f0e4'; ctx.fill();
+    ctx.lineWidth = o.lw||2.2; ctx.strokeStyle = o.color||PAL.teal; ctx.stroke();
+    ctx.beginPath(); ctx.arc(x,y,Math.max(1.5,r*0.38),0,Math.PI*2);
+    ctx.fillStyle = o.color||PAL.teal; ctx.fill();
+  }
+  function muscle(ctx, ax,ay,bx,by, o){
+    o = o||{};
+    const w0 = o.w0||9, w1 = o.w1||4;
+    const ang = Math.atan2(by-ay, bx-ax);
+    const perp = ang + Math.PI/2;
+    const dx = Math.cos(perp), dy = Math.sin(perp);
+    const cx = (ax+bx)/2, cy = (ay+by)/2;
+    const bow = o.bow||0;
+    ctx.beginPath();
+    ctx.moveTo(ax + dx*w0/2, ay + dy*w0/2);
+    ctx.quadraticCurveTo(cx + dx*(bow+(w0+w1)/4), cy + dy*(bow+(w0+w1)/4), bx + dx*w1/2, by + dy*w1/2);
+    ctx.quadraticCurveTo(cx - dx*(w0+w1)/4, cy - dy*(w0+w1)/4, ax - dx*w0/2, ay - dy*w0/2);
+    ctx.closePath();
+    ctx.fillStyle = o.fill||PAL.muscle; ctx.fill();
+    ctx.lineWidth = o.lw||1.5; ctx.strokeStyle = o.edge||PAL.muscleEdge; ctx.stroke();
+  }
+  function tendon(ctx, ax,ay,bx,by, o){
+    o = o||{};
+    const w = o.width||3.5;
+    const ang = Math.atan2(by-ay,bx-ax);
+    const px = Math.cos(ang+Math.PI/2), py = Math.sin(ang+Math.PI/2);
+    ctx.beginPath();
+    ctx.moveTo(ax+px*w/2, ay+py*w/2); ctx.lineTo(bx+px*w/2, by+py*w/2);
+    ctx.lineTo(bx-px*w/2, by-py*w/2); ctx.lineTo(ax-px*w/2, ay-py*w/2);
+    ctx.closePath();
+    ctx.fillStyle = o.fill||PAL.tendon; ctx.fill();
+    ctx.lineWidth = 1; ctx.strokeStyle = o.edge||'#c8b49a'; ctx.stroke();
+  }
+  function limbSkin(ctx, x0,y0,x1,y1, w, o){
+    o = o||{};
+    const ang = Math.atan2(y1-y0,x1-x0);
+    const px = Math.cos(ang+Math.PI/2), py = Math.sin(ang+Math.PI/2);
+    ctx.beginPath();
+    ctx.moveTo(x0+px*w/2,y0+py*w/2); ctx.lineTo(x1+px*w/2,y1+py*w/2);
+    ctx.arc(x1,y1,w/2,ang-Math.PI/2,ang+Math.PI/2);
+    ctx.lineTo(x0-px*w/2,y0-py*w/2);
+    ctx.arc(x0,y0,w/2,ang+Math.PI/2,ang+Math.PI*1.5);
+    ctx.closePath();
+    ctx.fillStyle = o.fill||PAL.skin; ctx.fill();
+    ctx.lineWidth = o.lw||1.4; ctx.strokeStyle = o.edge||PAL.skinEdge; ctx.stroke();
+  }
+  function hand(ctx, x,y, r, o){
+    o = o||{};
+    ctx.fillStyle = o.fill||PAL.skin; ctx.strokeStyle = o.edge||PAL.skinEdge; ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    for (let i=-2;i<=2;i++){
+      ctx.beginPath(); ctx.arc(x+i*r*0.42, y-r*0.55, r*0.26, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+    }
+  }
+  function foot(ctx, x,y, ang, o){
+    o = o||{};
+    const L = o.len||54, h = o.h||20;
+    ctx.save(); ctx.translate(x,y); ctx.rotate(ang);
+    ctx.beginPath();
+    ctx.moveTo(-L*0.35, -h*0.25);
+    ctx.quadraticCurveTo(-L*0.5, h*0.1, -L*0.2, h*0.42);
+    ctx.quadraticCurveTo(L*0.2, h*0.55, L*0.62, h*0.3);
+    ctx.quadraticCurveTo(L*0.75, -h*0.15, L*0.55, -h*0.35);
+    ctx.quadraticCurveTo(0, -h*0.5, -L*0.35, -h*0.25);
+    ctx.closePath();
+    ctx.fillStyle = o.fill||PAL.skin; ctx.fill();
+    ctx.lineWidth = 1.4; ctx.strokeStyle = o.edge||PAL.skinEdge; ctx.stroke();
+    ctx.restore();
+  }
+  function triangle(ctx, x, y, size, o){
+    o = o||{};
+    ctx.beginPath(); ctx.moveTo(x, y-size*0.5); ctx.lineTo(x-size*0.5, y+size*0.5); ctx.lineTo(x+size*0.5, y+size*0.5); ctx.closePath();
+    ctx.fillStyle = o.color||PAL.amber; ctx.fill();
+  }
+  return {PAL, setup, fmt, text, arrow, dashed, bone, joint, muscle, tendon, limbSkin, hand, foot, triangle};
+})();
+const fmt = window.AB.fmt;
+
+function el(id){ return document.getElementById(id); }
+function num(id){ const e = el(id); return e ? parseFloat(e.value) : 0; }
+
+/* ── Formato español de miles (punto) con decimal (coma) ── */
+function espan(x, d){
+  d=d===undefined?0:d;
+  let s=Number(x).toFixed(d), neg=s.startsWith('-');
+  if(neg) s=s.slice(1);
+  const parts=s.split('.'), ip=parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+  let out=ip;
+  if(parts.length>1 && parts[1]!=='') out+=','+parts[1];
+  return (neg?'-':'')+out;
+}
+
+/* ── Estado global de las simulaciones animadas ── */
+window.__spPlaying=false; window.__spT=0;   // esfera (burbujas conectadas)
+window.__ryPlaying=false; window.__ryT=0;  // Reynolds
+window.__inPlaying=false; window.__inT=0;  // inertancia / arco aórtico
+window.__dfPlaying=false; window.__dfT=0;  // difusión gaussiana
+window.__flPlaying=false; window.__flT=0;  // peristalsis
+window.__swPlaying=false; window.__swT=0;  // natación
+window.__veT=0; window.__stT=0;            // animación continua (Venturi, estenosis)
+
+/* ═══════════════════════════════════════════════════════════
+   S1 · Manómetro de tubo en U (eq. 7.1)
+   ═══════════════════════════════════════════════════════════ */
+function drawManometer(){
+  const cv=el('sim-manometer'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const rho=num('mn_rho')||1000;
+  const cm=Math.max(0,Math.min(120,num('mn_h')||40));
+  const hv=el('mn_hv'); if (hv) hv.textContent=espan(cm,0)+' cm';
+  const hM=cm/100, P=rho*9.8*hM, PmmHg=P/133.3;
+  // tubo en U estilizado
+  const cx=w*0.5, base=h*0.78, tubeW=w*0.22, colW=w*0.075;
+  const xL=cx-tubeW/2, xR=cx+tubeW/2;
+  ctx.strokeStyle=AB.PAL.ink3; ctx.lineWidth=3;
+  ctx.beginPath();
+  ctx.moveTo(xL,base); ctx.lineTo(xL,h*0.30);
+  ctx.moveTo(xR,base); ctx.lineTo(xR,h*0.30);
+  ctx.moveTo(xL,base); ctx.lineTo(xR,base);
+  ctx.stroke();
+  // columna desplazada (derecha sube, izquierda baja)
+  const k=h*0.42/120; // escala: 120 cm → 42% de alto
+  const rise=Math.min(h*0.40, cm*k);
+  ctx.fillStyle=AB.PAL.teal;
+  ctx.fillRect(xR-colW/2, base-rise, colW, rise+4);
+  ctx.fillRect(xL-colW/2, base-4, colW, 4);
+  // marca de referencia
+  AB.dashed(ctx,cx-tubeW,base,cx+tubeW,base,{color:AB.PAL.ink3});
+  AB.text(ctx,'ref', xR+colW/2+6, base, {size:7,color:AB.PAL.ink3,align:'left'});
+  // flecha de presión sobre la columna
+  AB.arrow(ctx, xR+colW/2+12, base-rise/2, xR+colW/2+12, base-rise-16, {color:AB.PAL.blood,width:2.5});
+  AB.text(ctx,'P = ρgh', xR+colW/2+20, base-rise-18, {size:8,weight:'700',color:AB.PAL.blood,align:'left'});
+  // resultados
+  AB.text(ctx,'P = ρ·g·h = '+espan(P,0)+' Pa', w/2, h*0.20, {size:11,weight:'700',color:AB.PAL.ink});
+  AB.text(ctx,'= '+espan(PmmHg,1)+' mmHg · ρ = '+espan(rho,0)+' kg/m³ · g = 9,8 m/s²', w/2, h*0.30, {size:8,color:AB.PAL.ink3});
+  AB.text(ctx,'P_ref + ρgh: cada 10 m de agua ≈ 1 atm ≈ 760 mmHg', w/2, h*0.92, {size:7.5,color:AB.PAL.ink3});
+  const out=el('mn_out');
+  if (out) out.textContent='ρgh = '+espan(P,0)+' Pa · '+espan(PmmHg,1)+' mmHg';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S2 · Mapa de presiones del cuerpo (Tabla 7.1, escala log)
+   ═══════════════════════════════════════════════════════════ */
+function drawPressures(){
+  const cv=el('sim-pressures'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const rows=[
+    ['Arterial sistólica',120,AB.PAL.blood],
+    ['Arterial diastólica',80,AB.PAL.blood],
+    ['Capilar',30,AB.PAL.teal],
+    ['Venosa',5,AB.PAL.teal],
+    ['Ocular',20,AB.PAL.amber],
+    ['LCR',8,AB.PAL.amber],
+    ['Vejiga',20,AB.PAL.sagittal],
+    ['Piernas (de pie)',7600,AB.PAL.ink2],
+    ['Intratorácica',-10,AB.PAL.ink3],
+  ];
+  const sel=el('ps_sel')?el('ps_sel').value:'all';
+  // escala log de 1 a 10000
+  const log0=0, log1=4;
+  const lx=w*0.30, lw=w*0.62, gy=h*0.16, gH=h*0.60;
+  const Y=p=>{ const l=p>0?Math.log10(Math.max(1,p)):0; return gy+gH*(1-l/log1); };
+  // eje
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.beginPath(); ctx.moveTo(lx,gy); ctx.lineTo(lx,gy+gH); ctx.lineTo(lx+lw,gy+gH); ctx.stroke();
+  AB.text(ctx,'mmHg (escala log)', lx, gy-8, {size:8,color:AB.PAL.ink3,align:'left'});
+  [1,10,100,1000,10000].forEach(v=>{
+    const y=Y(v);
+    AB.dashed(ctx,lx,y,lx+lw,y,{color:AB.PAL.line});
+    AB.text(ctx,espan(v,0), lx-6, y, {size:7,color:AB.PAL.ink3,align:'right'});
+  });
+  // barras
+  rows.forEach((r,i)=>{
+    const x=lx+i*lw/rows.length;
+    const y=r[1]>0?Y(r[1]):gy+gH;
+    const bh=r[1]>0?gy+gH-y:14;
+    const isSel=sel==='all'||sel===r[0].toLowerCase().split(' ')[0]||
+      (sel==='pierna'&&r[0].includes('Piernas'))||(sel==='lcr'&&r[0].includes('LCR'));
+    ctx.fillStyle=r[2]+(isSel?'':'44');
+    ctx.fillRect(x+3,y,bw(r),Math.max(1,bh));
+    if (r[1]>0) ctx.fillRect(x+3,y,Math.max(2,bw(r)),bh);
+    else ctx.fillRect(x+3,y,Math.max(2,bw(r)),bh);
+    ctx.fillStyle=r[2]; ctx.fillRect(x+3,y,bw(r),Math.max(2,bh));
+    AB.text(ctx,isSel?r[0]:r[0].slice(0,4)+'…', x+bw(r)/2+3, gy+gH+12, {size:isSel?7:6,weight:isSel?'700':'400',color:isSel?AB.PAL.ink:AB.PAL.ink3});
+    if (isSel){
+      AB.text(ctx,r[1]>0?espan(r[1],0)+' mmHg':'-10 mmHg', x+bw(r)/2+3, y-8, {size:8,weight:'700',color:r[2]});
+    }
+  });
+  function bw(r){ return Math.max(8,(lx+lw)/rows.length-6); }
+  AB.text(ctx,'La presión cae a lo largo del árbol vascular: arterias → capilares → venas', w/2, h*0.90, {size:8,color:AB.PAL.ink3});
+  const out=el('ps_out');
+  if (out) out.textContent=sel==='all'?'gradiente: 120 → 0 mmHg':(rows.find(r=>sel==='pierna'?r[0].includes('Piernas'):r[0].toLowerCase().includes(sel))||[sel,'?',''])[1]+' mmHg';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S3 · Esfigmomanómetro y sonidos de Korotkoff
+   ═══════════════════════════════════════════════════════════ */
+function drawBp(){
+  const cv=el('sim-bp'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const P=Math.max(0,Math.min(160,num('bp_p')||160));
+  const pv=el('bp_pv'); if (pv) pv.textContent=espan(P,0)+' mmHg';
+  const SYS=120, DIA=80;
+  const phase = P>SYS ? 'ocluido — sin sonido'
+    : P>DIA ? 'Korotkoff — golpes rítmicos'
+    : 'flujo suave — sin sonido';
+  // manómetro: arco con aguja
+  const gx=w*0.30, gy=h*0.36, R=Math.min(54,h*0.26);
+  const a0=Math.PI*0.75, a1=Math.PI*2.25;
+  ctx.strokeStyle=AB.PAL.paper; ctx.lineWidth=10;
+  ctx.beginPath(); ctx.arc(gx,gy,R,a0,a1); ctx.stroke();
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.arc(gx,gy,R,a0,a1); ctx.stroke();
+  [SYS,DIA].forEach((v,i)=>{
+    const a=a0+(a1-a0)*v/200;
+    const col=i?AB.PAL.amber:AB.PAL.blood;
+    ctx.strokeStyle=col; ctx.lineWidth=2.4;
+    ctx.beginPath(); ctx.moveTo(gx+Math.cos(a)*(R-7),gy+Math.sin(a)*(R-7)); ctx.lineTo(gx+Math.cos(a)*(R+4),gy+Math.sin(a)*(R+4)); ctx.stroke();
+    AB.text(ctx,v+(i?' diast':' sist'), gx+Math.cos(a)*(R+12), gy+Math.sin(a)*(R+12), {size:7,weight:'700',color:col});
+  });
+  const aP=a0+(a1-a0)*Math.min(P,200)/200;
+  AB.arrow(ctx, gx,gy, gx+Math.cos(aP)*R, gy+Math.sin(aP)*R, {color:AB.PAL.teal,width:2.6,head:9});
+  AB.text(ctx,'manguito', gx, gy-R-16, {size:8,weight:'700',color:AB.PAL.teal});
+  // brazo + manguito
+  const ax=w*0.06, ay=h*0.72, alen=w*0.38, aw=20;
+  AB.limbSkin(ctx, ax,ay, ax+alen,ay, aw);
+  const cuffX=ax+alen*0.55;
+  ctx.fillStyle=P>DIA?AB.PAL.blood:AB.PAL.teal;
+  ctx.fillRect(cuffX-6, ay-aw/2-4, 14, aw+8);
+  AB.text(ctx,'manguito', cuffX, ay-aw/2-12, {size:7,color:AB.PAL.ink3});
+  // arteria debajo: flujo
+  const ay2=h*0.88, lx0=ax, lx1=ax+alen;
+  ctx.strokeStyle=AB.PAL.ink3; ctx.lineWidth=3;
+  ctx.beginPath(); ctx.moveTo(lx0,ay2); ctx.lineTo(lx1,ay2); ctx.stroke();
+  if (phase==='Korotkoff — golpes rítmicos'){
+    const p=(Date.now()%600)/600;
+    for(let i=0;i<8;i++){
+      const t=(i/8+p)%1;
+      ctx.strokeStyle=(t<0.12)?AB.PAL.blood:AB.PAL.ink3;
+      ctx.lineWidth=t<0.12?5:2.5;
+      const x=lx0+t*(lx1-lx0);
+      ctx.beginPath(); ctx.moveTo(x-8,ay2); ctx.lineTo(x+8,ay2); ctx.stroke();
+    }
+  } else {
+    ctx.strokeStyle=AB.PAL.tealLight; ctx.lineWidth=3;
+    ctx.beginPath(); ctx.moveTo(lx0,ay2); ctx.lineTo(lx1,ay2); ctx.stroke();
+  }
+  AB.text(ctx,'arteria braquial', (lx0+lx1)/2, ay2+12, {size:7,color:AB.PAL.ink3});
+  AB.text(ctx,phase, w/2, h*0.56, {size:11,weight:'700',color: phase==='Korotkoff — golpes rítmicos'?AB.PAL.blood:AB.PAL.teal});
+  AB.text(ctx,'1er golpe = sistólica · último golpe = diastólica', w/2, h*0.62, {size:8,color:AB.PAL.ink3});
+  const out=el('bp_out');
+  if (out) out.textContent='sistólica 120 · diastólica 80 · '+phase;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S4 · Pascal y Arquímedes
+   ═══════════════════════════════════════════════════════════ */
+function drawPascal(){
+  const cv=el('sim-pascal'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const mode=el('pa_mode')?el('pa_mode').value:'pascal';
+  const rho=Math.max(0.6,Math.min(1.3,num('pa_rho')||0.9));
+  const rv=el('pa_rv'); if (rv) rv.textContent=espan(rho,2);
+  if (mode==='pascal'){
+    // recipiente cerrado
+    const rx=w*0.20, ry=h*0.26, rw=w*0.60, rh=h*0.40;
+    ctx.strokeStyle=AB.PAL.ink; ctx.lineWidth=3;
+    ctx.strokeRect(rx,ry,rw,rh);
+    ctx.fillStyle='rgba(13,110,100,.12)'; ctx.fillRect(rx,ry,rw,rh);
+    // émbolo
+    ctx.fillStyle=AB.PAL.ink2; ctx.fillRect(rx,ry-10,rw,12);
+    AB.arrow(ctx, rx+rw/2, ry-26, rx+rw/2, ry-8, {color:AB.PAL.blood,width:3});
+    AB.text(ctx,'F aplicada', rx+rw/2, ry-34, {size:8,weight:'700',color:AB.PAL.blood});
+    // transmisión: flechas iguales en paredes
+    const F=18;
+    AB.arrow(ctx, rx-20, ry+rh/2, rx-4, ry+rh/2, {color:AB.PAL.teal,width:2.4});
+    AB.arrow(ctx, rx+rw+4, ry+rh/2, rx+rw+20, ry+rh/2, {color:AB.PAL.teal,width:2.4});
+    AB.arrow(ctx, rx+rw/2, ry+rh+4, rx+rw/2, ry+rh+22, {color:AB.PAL.teal,width:2.4});
+    AB.arrow(ctx, rx+rw/2-40, ry+rh+4, rx+rw/2-40, ry+rh+22, {color:AB.PAL.teal,width:2.4});
+    AB.arrow(ctx, rx+rw/2+40, ry+rh+4, rx+rw/2+40, ry+rh+22, {color:AB.PAL.teal,width:2.4});
+    AB.text(ctx,'ΔP igual en todos los puntos', w/2, ry+rh+34, {size:9,weight:'700',color:AB.PAL.teal});
+    AB.text(ctx,'Principio de Pascal: la presión se transmite íntegra al fluido confinado', w/2, h*0.92, {size:7.5,color:AB.PAL.ink3});
+    const out=el('pa_out');
+    if (out) out.textContent='transmisión íntegra de ΔP';
+    return;
+  }
+  // Arquímedes: tanque con cuerpo
+  const tx=w*0.12, tw=w*0.76, water=h*0.24;
+  const surf=h*0.42, bottom=h*0.82;
+  ctx.fillStyle='rgba(45,125,79,.16)';
+  ctx.fillRect(tx,surf,tw,bottom-surf);
+  ctx.strokeStyle=AB.PAL.ink; ctx.lineWidth=2.5;
+  ctx.strokeRect(tx,water,tw,bottom-water);
+  // superficie ondulada
+  ctx.strokeStyle=AB.PAL.coronal||'#2d7d4f'; ctx.lineWidth=2;
+  ctx.beginPath();
+  for(let x=tx;x<=tx+tw;x+=4){ const y=surf+Math.sin(x*0.1)*2.5; x===tx?ctx.moveTo(x,y):ctx.lineTo(x,y); }
+  ctx.stroke();
+  // cuerpo
+  const cw=w*0.16, ch=h*0.30;
+  const floatOK=rho<1;
+  const cx2=tx+tw/2, cyTop=floatOK? (surf-ch) : (surf+(bottom-surf-ch)/2);
+  ctx.fillStyle=AB.PAL.amber; ctx.strokeStyle=AB.PAL.amberDeep||'#7c4900'; ctx.lineWidth=2;
+  ctx.fillRect(cx2-cw/2,cyTop,cw,ch);
+  ctx.strokeRect(cx2-cw/2,cyTop,cw,ch);
+  AB.text(ctx,'ρ_cuerpo = '+espan(rho,2), cx2, cyTop+ch/2, {size:8,weight:'700',color:AB.PAL.paper});
+  // empuje y peso
+  const E=rho*0.62, W=rho*0.62;
+  AB.arrow(ctx, cx2, surf-14, cx2, surf-8, {color:AB.PAL.teal,width:0});
+  AB.arrow(ctx, cx2+cw/2+16, cyTop+ch, cx2+cw/2+16, cyTop+ch-(floatOK?E*90:E*90), {color:AB.PAL.teal,width:3});
+  AB.text(ctx,'E', cx2+cw/2+16, cyTop+ch-(floatOK?E*90:E*90)-12, {size:8,weight:'700',color:AB.PAL.teal});
+  AB.arrow(ctx, cx2-cw/2-16, cyTop, cx2-cw/2-16, cyTop+W*90, {color:AB.PAL.blood,width:3});
+  AB.text(ctx,'P', cx2-cw/2-16, cyTop+W*90+12, {size:8,weight:'700',color:AB.PAL.blood});
+  AB.text(ctx, floatOK?'flota — densidad < agua (1,0)':'se hunde — densidad ≥ agua', w/2, h*0.90, {size:10,weight:'700',color:floatOK?AB.PAL.teal:AB.PAL.blood});
+  AB.text(ctx,'grasa 0,8 flota · músculo 1,0 · hueso 1,5–2,0 se hunde', w/2, h*0.965, {size:7,color:AB.PAL.ink3});
+  const out=el('pa_out');
+  if (out) out.textContent=floatOK?'E = ρ_agua·g·V > P · flota':'E < P · se hunde';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S5 · Ley de Laplace: cilindro (T = ΔP·R)
+   ═══════════════════════════════════════════════════════════ */
+function drawLaplaceCyl(){
+  const cv=el('sim-laplace-cyl'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const R=Math.max(0.5,Math.min(10,num('lc_r')||3));
+  const rv=el('lc_rv'); if (rv) rv.textContent=espan(R,1);
+  const dP=Math.max(10,Math.min(120,num('lc_p')||60));
+  const pv=el('lc_pv'); if (pv) pv.textContent=espan(dP,0);
+  const T=R*dP;
+  const cx=w*0.5, cy=h*0.44;
+  const Rmax=10, rpx=Math.min(64,Math.max(16,R/Rmax*(h*0.22)));
+  const wall=Math.min(34, 4+T/1200*(h*0.24));
+  // pared (anillo)
+  ctx.fillStyle=AB.PAL.blood;
+  ctx.beginPath(); ctx.arc(cx,cy,rpx+wall,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='#8c1f16';
+  ctx.beginPath(); ctx.arc(cx,cy,rpx+wall,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle=AB.PAL.paper;
+  ctx.beginPath(); ctx.arc(cx,cy,rpx,0,Math.PI*2); ctx.fill();
+  // presión interna
+  ctx.fillStyle='rgba(169,42,30,.10)';
+  ctx.beginPath(); ctx.arc(cx,cy,rpx,0,Math.PI*2); ctx.fill();
+  // flechas de presión hacia fuera
+  for(let i=0;i<6;i++){
+    const a=i*Math.PI/3;
+    AB.arrow(ctx, cx+Math.cos(a)*rpx*0.55, cy+Math.sin(a)*rpx*0.55, cx+Math.cos(a)*rpx, cy+Math.sin(a)*rpx, {color:AB.PAL.blood,width:2.6,head:8});
+  }
+  // flechas de tensión en la pared
+  ctx.strokeStyle=AB.PAL.ink; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(cx-6, cy-rpx-wall-14); ctx.lineTo(cx+6, cy-rpx-wall-14); ctx.stroke();
+  AB.arrow(ctx, cx-20, cy-rpx-wall-14, cx-8, cy-rpx-wall-14, {color:AB.PAL.ink,width:2.4});
+  AB.arrow(ctx, cx+8, cy-rpx-wall-14, cx+20, cy-rpx-wall-14, {color:AB.PAL.ink,width:2.4});
+  AB.text(ctx,'T = ΔP·R', cx, cy-rpx-wall-26, {size:9,weight:'700',color:AB.PAL.ink});
+  AB.text(ctx,'ΔP = '+espan(dP,0), cx+14, cy, {size:8,weight:'700',color:AB.PAL.blood,align:'left'});
+  AB.text(ctx,'R = '+espan(R,1), cx+rpx+10, cy-14, {size:8,color:AB.PAL.ink3,align:'left'});
+  AB.text(ctx,'T = ΔP·R = '+espan(T,0), w/2, h*0.78, {size:12,weight:'700',color:AB.PAL.blood});
+  AB.text(ctx,'a mayor radio, mayor tensión para la misma presión → el peligro del aneurisma', w/2, h*0.88, {size:8,color:AB.PAL.ink3});
+  const out=el('lc_out');
+  if (out) out.textContent='T = '+espan(T,0)+' (ΔP·R)';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S6 · Ley de Laplace: esfera — burbujas conectadas
+   ═══════════════════════════════════════════════════════════ */
+function toggleSphere(){
+  window.__spPlaying=!window.__spPlaying;
+  if (window.__spPlaying) window.__spT=0;
+  const b=el('sp_play'); if (b) b.textContent=window.__spPlaying?'⏸':'▶';
+  drawLaplaceSphere();
+}
+function drawLaplaceSphere(){
+  const cv=el('sim-laplace-sphere'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const g=Math.max(0.1,Math.min(1.0,num('ls_g')||0.7));
+  const gv=el('ls_gv'); if (gv) gv.textContent=espan(g,2);
+  const t=(window.__spT||0);
+  const R1s=0.5, R2s=0.9;
+  const drift=g>0.45 ? Math.min(0.34,t*0.5) : Math.min(0.06,t*0.08);
+  const R1=Math.max(0.16,R1s-drift), R2=Math.min(1.35,R2s+drift*0.5);
+  const dP1=2*g/R1, dP2=2*g/R2;
+  const stable=g<=0.45;
+  const cx1=w*0.28, cx2=w*0.72, cy=h*0.42;
+  const s1=Math.min(70,Math.max(16,R1*120)), s2=Math.min(80,Math.max(20,R2*95));
+  // tubo conector
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=5;
+  ctx.beginPath(); ctx.moveTo(cx1+s1,cy); ctx.lineTo(cx2-s2,cy); ctx.stroke();
+  // burbujas
+  [ [cx1,cy,s1,dP1], [cx2,cy,s2,dP2] ].forEach((b,i)=>{
+    const [bx,by,br,dp]=b;
+    ctx.strokeStyle=i?AB.PAL.amber:AB.PAL.teal; ctx.lineWidth=2.5;
+    ctx.beginPath(); ctx.arc(bx,by,br,0,Math.PI*2); ctx.stroke();
+    ctx.fillStyle=i?'rgba(154,91,0,.10)':'rgba(13,110,100,.10)';
+    ctx.beginPath(); ctx.arc(bx,by,br,0,Math.PI*2); ctx.fill();
+    // flecha de presión interna
+    AB.arrow(ctx, bx, by, bx, by+br*0.8, {color:i?AB.PAL.amber:AB.PAL.teal,width:2.2});
+    AB.text(ctx,'ΔP='+espan(dp,2), bx, by+br+12, {size:7.5,weight:'700',color:i?AB.PAL.amber:AB.PAL.teal});
+    AB.text(ctx, i?'grande':'pequeña', bx, by-br-8, {size:7.5,color:AB.PAL.ink3});
+  });
+  // resultado
+  const msg=stable
+    ? 'surfactante: ΔP₁ ≈ ΔP₂ → los alvéolos coexisten'
+    : 'sin surfactante: ΔP₁ > ΔP₂ → el pequeño se vacía en el grande';
+  AB.text(ctx,msg, w/2, h*0.74, {size:10,weight:'700',color:stable?AB.PAL.teal:AB.PAL.blood});
+  AB.text(ctx,'γ = '+espan(g,2)+' (agua 0,7 · surfactante 0,1)', w/2, h*0.84, {size:8,color:AB.PAL.ink3});
+  AB.text(ctx,'alvéolos · vejiga · estómago como esferas', w/2, h*0.94, {size:7.5,color:AB.PAL.ink3});
+  const out=el('ls_out');
+  if (out) out.textContent=stable?'ΔP₁ ≈ ΔP₂ · estable (γ baja)':'ΔP₁ > ΔP₂ · colapso del pequeño';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S7 · Reynolds: laminar ↔ turbulento
+   ═══════════════════════════════════════════════════════════ */
+function toggleReynolds(){
+  window.__ryPlaying=!window.__ryPlaying;
+  if (window.__ryPlaying) window.__ryT=0;
+  const b=el('ry_play'); if (b) b.textContent=window.__ryPlaying?'⏸':'▶';
+  drawReynolds();
+}
+function drawReynolds(){
+  const cv=el('sim-reynolds'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const fl=el('ry_fl')?el('ry_fl').value:'sangre';
+  const eta=fl==='agua'?0.001:(fl==='aire'?0.000018:0.004);
+  const rho=fl==='aire'?1.2:1060;
+  const u=Math.max(0,Math.min(100,num('ry_u')||20));
+  const uv=el('ry_uv'); if (uv) uv.textContent=espan(u,0)+' cm/s';
+  const d=0.01; // 1 cm
+  const Re=rho*(u/100)*d/eta;
+  const turb=Re>2000;
+  const ty=h*0.34, th=h*0.30, tx0=w*0.10, tx1=w*0.90;
+  // tubo
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=3;
+  ctx.beginPath(); ctx.moveTo(tx0,ty); ctx.lineTo(tx1,ty); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(tx0,ty+th); ctx.lineTo(tx1,ty+th); ctx.stroke();
+  AB.text(ctx,'tubo · d = 1 cm', (tx0+tx1)/2, ty+th+14, {size:7.5,color:AB.PAL.ink3});
+  const t=(window.__ryT||0);
+  const lines=turb?5:6;
+  for(let li=0; li<lines; li++){
+    const yy=ty+th*(li+1)/(lines+1);
+    if (!turb){
+      ctx.strokeStyle='rgba(13,110,100,.55)'; ctx.lineWidth=1.6;
+      ctx.beginPath();
+      for(let x=tx0;x<=tx1;x+=6){
+        const px=tx0+((x-tx0+ t*(u/100)*120)% (tx1-tx0));
+        const y=yy+Math.sin(px*0.06)*1.5;
+        x===tx0?ctx.moveTo(px,y):ctx.lineTo(px,y);
+      }
+      ctx.stroke();
+    } else {
+      // vórtices
+      const n=Math.ceil(t*3)%8;
+      for(let i=0;i<6;i++){
+        const x=tx0+((i*0.16+ t*0.5)%1.0)*(tx1-tx0);
+        const rr=5+ (i%3)*3;
+        ctx.strokeStyle='rgba(169,42,30,.5)'; ctx.lineWidth=1.4;
+        ctx.beginPath();
+        ctx.arc(x, yy, rr, t*6+i, t*6+i+Math.PI*0.9);
+        ctx.stroke();
+      }
+    }
+  }
+  AB.text(ctx,'Re = ρud/η', w*0.14, ty-16, {size:9,weight:'700',color:AB.PAL.teal});
+  AB.text(ctx,'Re = '+espan(Re,0), w*0.86, ty-16, {size:10,weight:'700',color:turb?AB.PAL.blood:AB.PAL.teal});
+  AB.text(ctx, turb?'turbulento — Re > 2000':'laminar — Re < 2000', w/2, h*0.78, {size:11,weight:'700',color:turb?AB.PAL.blood:AB.PAL.teal});
+  AB.text(ctx,fl+': η = '+eta+' Pa·s · transición 1200–2500 · los soplos = turbulencia', w/2, h*0.88, {size:8,color:AB.PAL.ink3});
+  const out=el('ry_out');
+  if (out) out.textContent='Re = '+espan(Re,0)+' · '+(turb?'turbulento':'laminar');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S8 · Continuidad y Bernoulli — tubo de Venturi
+   ═══════════════════════════════════════════════════════════ */
+function drawVenturi(){
+  const cv=el('sim-venturi'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const u1=Math.max(5,Math.min(80,num('ve_u')||30));
+  const uv=el('ve_uv'); if (uv) uv.textContent=espan(u1,0)+' cm/s';
+  const a=Math.max(0.2,Math.min(1,num('ve_a')||0.5));
+  const av=el('ve_av'); if (av) av.textContent=Math.round(a*100)+' %';
+  const u2=u1/a;
+  const rho=1060;
+  const dP=0.5*rho*((u2/100)**2-(u1/100)**2); // Pa
+  // tubo con garganta
+  const yT=h*0.30, th=h*0.18, wf=w*0.72, x0=w*0.14;
+  const seg=x0+wf*0.5;
+  const h1=th, h2=th*a;
+  ctx.fillStyle='rgba(13,110,100,.14)';
+  ctx.beginPath();
+  ctx.moveTo(x0,yT-h1/2); ctx.lineTo(x0,yT+h1/2);
+  ctx.lineTo(seg-h2/2, yT+h2/2); ctx.lineTo(seg-h2/2, yT-h2/2);
+  ctx.lineTo(seg+h2/2, yT-h2/2); ctx.lineTo(seg+h2/2, yT+h2/2);
+  ctx.lineTo(x0+wf, yT+h1/2); ctx.lineTo(x0+wf, yT-h1/2);
+  ctx.closePath(); ctx.fill();
+  ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=2.4; ctx.stroke();
+  // partículas (animación continua)
+  const t=(window.__veT||0);
+  for(let i=0;i<14;i++){
+    const phase=(i/14+t*0.8)%1;
+    const x=x0+phase*wf;
+    // velocidad local: u1 fuera, u2 en garganta
+    const inGap=x>seg-h2/2 && x<seg+h2/2;
+    const sp=inGap?u2:u1;
+    const px=x+(phase*0+ (t*300*(sp/30))%40)-20;
+    const yy=inGap?(yT+(Math.sin(phase*40)*h2*0.15)):yT+Math.sin(phase*40)*h1*0.15;
+    ctx.fillStyle=AB.PAL.teal; ctx.globalAlpha=0.5;
+    ctx.beginPath(); ctx.arc(px,yy,2.6,0,7); ctx.fill();
+    ctx.globalAlpha=1;
+  }
+  AB.text(ctx,'u₁ = '+espan(u1,0), x0, yT-h1/2-14, {size:8,color:AB.PAL.teal});
+  AB.text(ctx,'u₂ = '+espan(u2,0), seg, yT-h2/2-14, {size:8,weight:'700',color:AB.PAL.blood});
+  // línea de presión (Bernoulli)
+  const py=h*0.66, pA=h*0.82;
+  AB.dashed(ctx,x0,py,x0+wf,py,{color:AB.PAL.line});
+  AB.text(ctx,'P (presión)', x0, py-10, {size:7.5,color:AB.PAL.ink3,align:'left'});
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2.6;
+  ctx.beginPath();
+  for(let x=x0;x<=x0+wf;x+=4){
+    const inGap=x>seg-h2/2 && x<seg+h2/2;
+    const sp=inGap?u2:u1;
+    const dip=0.5*rho*((sp/100)**2-(u1/100)**2)/60000;
+    const y=py+(pA-py)*(0.15+dip);
+    x===x0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  }
+  ctx.stroke();
+  AB.text(ctx,'P + ½ρu² = const → la presión cae donde acelera', w/2, h*0.94, {size:8,color:AB.PAL.ink3});
+  const out=el('ve_out');
+  if (out) out.textContent='u₂ = '+espan(u2,0)+' cm/s · ΔP ≈ '+espan(dP,0)+' Pa';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S9 · Estenosis — el mismo Venturi, en un vaso
+   ═══════════════════════════════════════════════════════════ */
+function drawStenosis(){
+  const cv=el('sim-stenosis'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const S=Math.max(0,Math.min(90,num('st_s')||60));
+  const sv=el('st_sv'); if (sv) sv.textContent=espan(S,0)+' %';
+  const a=Math.max(0.1,1-S/100); // fracción de área restante
+  const u1=20, u2=u1/a;
+  const yT=h*0.30, th=h*0.16, wf=w*0.72, x0=w*0.14;
+  const seg=x0+wf*0.55;
+  const h1=th, h2=Math.max(4,th*a);
+  // placa + vaso
+  ctx.fillStyle='rgba(13,110,100,.12)';
+  ctx.beginPath();
+  ctx.moveTo(x0,yT-h1/2); ctx.lineTo(x0,yT+h1/2);
+  ctx.lineTo(seg-h2/2, yT+h2/2); ctx.lineTo(seg-h2/2, yT-h2/2);
+  ctx.lineTo(seg+h2/2, yT-h2/2); ctx.lineTo(seg+h2/2, yT+h2/2);
+  ctx.lineTo(x0+wf, yT+h1/2); ctx.lineTo(x0+wf, yT-h1/2);
+  ctx.closePath(); ctx.fill();
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2.4; ctx.stroke();
+  // placa
+  ctx.fillStyle=AB.PAL.amber;
+  ctx.beginPath(); ctx.ellipse(seg, yT-h1/2, Math.max(3,h2*0.9), 9, 0, Math.PI, 0); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(seg, yT+h1/2, Math.max(3,h2*0.9), 9, 0, 0, Math.PI); ctx.fill();
+  AB.text(ctx,'placa', seg+10, yT-h1/2-14, {size:7,color:AB.PAL.amber});
+  // partículas
+  const t=(window.__stT||0);
+  for(let i=0;i<12;i++){
+    const phase=(i/12+t*0.7)%1;
+    const x=x0+phase*wf;
+    const inGap=x>seg-h2/2 && x<seg+h2/2;
+    ctx.fillStyle=inGap?AB.PAL.blood:AB.PAL.teal; ctx.globalAlpha=0.55;
+    ctx.beginPath(); ctx.arc(x, yT+Math.sin(phase*40)*(inGap?h2*0.12:h1*0.15), 2.6, 0, 7); ctx.fill();
+    ctx.globalAlpha=1;
+  }
+  AB.text(ctx,'u₁='+espan(u1,0), x0, yT-h1/2-14, {size:8,color:AB.PAL.teal});
+  AB.text(ctx,'u₂='+espan(u2,0), seg, yT-h2/2-14, {size:8,weight:'700',color:AB.PAL.blood});
+  // presión con Bernoulli, cayendo en la estenosis
+  const py=h*0.60, pA=h*0.80;
+  AB.dashed(ctx,x0,py,x0+wf,py,{color:AB.PAL.line});
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2.6;
+  ctx.beginPath();
+  for(let x=x0;x<=x0+wf;x+=4){
+    const inGap=x>seg-h2/2 && x<seg+h2/2;
+    const sp=inGap?u2:u1;
+    const dip=0.5*1060*((sp/100)**2-(u1/100)**2)/40000;
+    const y=py+(pA-py)*(0.08+dip);
+    x===x0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  }
+  ctx.stroke();
+  // riesgo de colapso
+  const dP0=0.5*1060*((u2/100)**2-(u1/100)**2);
+  const collapse=dP0>130;
+  AB.text(ctx, collapse?'¡la presión cae por debajo de la externa — el vaso puede colapsar!':'la presión local cae en la estenosis', w/2, h*0.90, {size:9.5,weight:'700',color:collapse?AB.PAL.blood:AB.PAL.teal});
+  const out=el('st_out');
+  if (out) out.textContent='u₂ = '+espan(u2,0)+' cm/s · '+(collapse?'riesgo de colapso':'caída local de presión');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S10 · Viscosidad: dos placas (ley de Newton)
+   ═══════════════════════════════════════════════════════════ */
+function drawViscosity(){
+  const cv=el('sim-viscosity'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const eta=Math.max(1e-5,Math.min(0.4,num('vs_fl')||0.001));
+  const v=Math.max(0,Math.min(100,num('vs_v')||40));
+  const vv=el('vs_vv'); if (vv) vv.textContent=espan(v,0);
+  const gap=h*0.42, y0=h*0.24;
+  // placas
+  ctx.fillStyle=AB.PAL.ink2;
+  ctx.fillRect(w*0.10,y0-7,w*0.80,7);
+  ctx.fillRect(w*0.10,y0+gap,w*0.80,7);
+  AB.text(ctx,'placa fija', w*0.50, y0+gap+16, {size:7.5,color:AB.PAL.ink3});
+  AB.text(ctx,'placa móvil', w*0.50, y0-14, {size:7.5,color:AB.PAL.ink3});
+  // perfil de velocidad: flechas crecientes con altura
+  const tau=eta*v/100;
+  for(let i=1;i<=9;i++){
+    const yy=y0+gap*i/10;
+    const sp=(v/100)*(i/10);
+    AB.arrow(ctx, w*0.16, yy, w*0.16+Math.max(4,sp*90), yy, {color:AB.PAL.teal,width:1.8,head:5});
+  }
+  AB.text(ctx,'v(y) = v·y/gap', w*0.16, y0+gap+34, {size:8,weight:'700',color:AB.PAL.teal,align:'left'});
+  AB.text(ctx,'τ = η·dv/dy = η·v/y = '+espan(tau,4)+' Pa', w/2, h*0.84, {size:10,weight:'700',color:AB.PAL.ink});
+  AB.text(ctx,'η = '+espan(eta,6)+' Pa·s · newtoniano: perfil lineal', w/2, h*0.92, {size:8,color:AB.PAL.ink3});
+  const out=el('vs_out');
+  if (out) out.textContent='τ = '+espan(tau,4)+' Pa';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S11 · Poiseuille: perfil parabólico y R⁴
+   ═══════════════════════════════════════════════════════════ */
+function drawPoiseuille(){
+  const cv=el('sim-poiseuille'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const R=Math.max(0.5,Math.min(5,num('po_r')||2));
+  const rv=el('po_rv'); if (rv) rv.textContent=espan(R,1);
+  const eta=Math.max(0.001,Math.min(0.006,num('po_e')||0.004));
+  const ev=el('po_ev'); if (ev) ev.textContent=espan(eta,3);
+  const dP=Math.max(10,Math.min(120,num('po_p')||60));
+  const pv=el('po_pv'); if (pv) pv.textContent=espan(dP,0);
+  // velocidad media modelo: u = 50 cm/s en el default
+  const u=50*(R/2)*(R/2)*(dP/60)*(0.004/eta);
+  const vmax=2*u;
+  const cx=w*0.30, cy=h*0.42, rad=Math.min(54,h*0.26)*R/2;
+  const hmax=Math.min(rad*0.9, vmax*0.9);
+  // tubo (corte transversal)
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=3;
+  ctx.beginPath(); ctx.arc(cx,cy,rad,0,Math.PI*2); ctx.stroke();
+  // perfil parabólico
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2.6;
+  ctx.beginPath();
+  for(let i=0;i<=30;i++){
+    const r=rad*(1-i/30);
+    const vr=vmax*(1-(r/rad)*(r/rad));
+    const x=cx+r*Math.cos(Math.PI), y=cy-r*Math.sin(0); // dibujo hacia la izquierda del eje
+    const xp=cx-r, yp=cy-vr;
+    i?ctx.lineTo(xp,yp):ctx.moveTo(xp,yp);
+  }
+  for(let i=30;i<=60;i++){
+    const r=rad*(1-(60-i)/30);
+    const vr=vmax*(1-(r/rad)*(r/rad));
+    const xp=cx+r, yp=cy-vr;
+    ctx.lineTo(xp,yp);
+  }
+  ctx.stroke();
+  // flechas de velocidad dentro
+  for(let i=-4;i<=4;i++){
+    const r=rad*(Math.abs(i)/5);
+    const vr=Math.max(0,vmax*(1-(r/rad)*(r/rad)));
+    const y=cy-r*(i<0?1:-1);
+    AB.arrow(ctx, cx-((i<0)?-1:1)*(vr/2+4), y, cx+((i<0)?1:-1)*(vr/2+4), y, {color:AB.PAL.teal,width:2.4,head:6});
+  }
+  AB.text(ctx,'v(r) = 2u(1 − r²/R²)', cx, cy-rad-16, {size:9,weight:'700',color:AB.PAL.blood});
+  // Q relativo
+  const Qrel=Math.pow(R,4)*dP/eta;
+  AB.text(ctx,'Q ∝ R⁴·ΔP/η', w*0.72, h*0.30, {size:9,weight:'700',color:AB.PAL.teal});
+  AB.text(ctx,'Q_rel = '+espan(Qrel,0), w*0.72, h*0.40, {size:11,weight:'700',color:AB.PAL.ink});
+  AB.text(ctx,'u = R²ΔP/8ηL', w*0.72, h*0.52, {size:8,color:AB.PAL.ink3});
+  AB.text(ctx,'R a la mitad → Q a 1/16', w*0.72, h*0.62, {size:8,weight:'700',color:AB.PAL.blood});
+  AB.text(ctx,'el radio manda: vasodilatación y vasoconstricción regulan el flujo', w/2, h*0.92, {size:8,color:AB.PAL.ink3});
+  const out=el('po_out');
+  if (out) out.textContent='u ≈ '+espan(u,0)+' cm/s · Q_rel = '+espan(Qrel,0);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S12 · Resistencia: dos vasos en paralelo (Ohm)
+   ═══════════════════════════════════════════════════════════ */
+function drawResistance(){
+  const cv=el('sim-resistance'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const r1=Math.max(0.5,Math.min(3,num('rs_r1')||2));
+  const r1v=el('rs_r1v'); if (r1v) r1v.textContent=espan(r1,1);
+  const r2=Math.max(0.5,Math.min(3,num('rs_r2')||1));
+  const r2v=el('rs_r2v'); if (r2v) r2v.textContent=espan(r2,1);
+  const R1=Math.pow(2/r1,4), R2=Math.pow(2/r2,4);
+  const Req=1/(1/R1+1/R2);
+  const f1=(1/R1)/(1/R1+1/R2), f2=1-f1;
+  // vasos horizontales
+  const x0=w*0.12, x1=w*0.88, y1=h*0.34, y2=h*0.52;
+  const hgt=v=>Math.max(5,v*14);
+  ctx.fillStyle='rgba(13,110,100,.16)';
+  ctx.fillRect(x0,y1-hgt(r1)/2,x1-x0,hgt(r1));
+  ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=2;
+  ctx.strokeRect(x0,y1-hgt(r1)/2,x1-x0,hgt(r1));
+  ctx.fillStyle='rgba(154,91,0,.16)';
+  ctx.fillRect(x0,y2-hgt(r2)/2,x1-x0,hgt(r2));
+  ctx.strokeStyle=AB.PAL.amber; ctx.lineWidth=2;
+  ctx.strokeRect(x0,y2-hgt(r2)/2,x1-x0,hgt(r2));
+  AB.text(ctx,'r₁ = '+espan(r1,1)+' · R₁ = '+espan(R1,1), x0-6, y1, {size:8,weight:'700',color:AB.PAL.teal,align:'right'});
+  AB.text(ctx,'r₂ = '+espan(r2,1)+' · R₂ = '+espan(R2,1), x0-6, y2, {size:8,weight:'700',color:AB.PAL.amber,align:'right'});
+  // flujo: ancho de flecha ∝ fracción
+  AB.arrow(ctx, x0+10, y1, x1-10, y1, {color:AB.PAL.teal,width:Math.max(2,3+12*f1)});
+  AB.arrow(ctx, x0+10, y2, x1-10, y2, {color:AB.PAL.amber,width:Math.max(2,3+12*f2)});
+  AB.text(ctx,Math.round(f1*100)+' %', x1-8, y1, {size:7,color:AB.PAL.paper,align:'right'});
+  AB.text(ctx,Math.round(f2*100)+' %', x1-8, y2, {size:7,color:AB.PAL.paper,align:'right'});
+  // salida común
+  AB.text(ctx,'R ∝ 1/r⁴ · 1/R_eq = 1/R₁ + 1/R₂', w/2, h*0.72, {size:9,weight:'700',color:AB.PAL.ink});
+  AB.text(ctx,'R_eq = '+espan(Req,2)+' — el paralelo baja la resistencia total', w/2, h*0.82, {size:8,color:AB.PAL.ink3});
+  AB.text(ctx,'las arteriolas regulan el reparto: vasodilatación ↔ vasoconstricción', w/2, h*0.92, {size:7.5,color:AB.PAL.ink3});
+  const out=el('rs_out');
+  if (out) out.textContent='R₁ = '+espan(R1,1)+' · R₂ = '+espan(R2,1)+' · R_eq = '+espan(Req,2);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S13 · Compliancia y distensibilidad
+   ═══════════════════════════════════════════════════════════ */
+function drawCompliance(){
+  const cv=el('sim-compliance'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const Y=Math.max(0.2,Math.min(2,num('cm_y')||0.6));
+  const yv=el('cm_yv'); if (yv) yv.textContent=espan(Y,2);
+  const dP=Math.max(10,Math.min(120,num('cm_p')||60));
+  const pv=el('cm_pv'); if (pv) pv.textContent=espan(dP,0);
+  const expand=Math.min(0.85,0.22*(dP/60)*(0.6/Y));
+  const x0=w*0.10, x1=w*0.90, cy=h*0.44, h0=h*0.26;
+  // estado de referencia (rígido) en gris
+  AB.dashed(ctx,x0,cy-h0/2,x1,cy-h0/2,{color:AB.PAL.line});
+  AB.dashed(ctx,x0,cy+h0/2,x1,cy+h0/2,{color:AB.PAL.line});
+  AB.text(ctx,'r₀ (sin presión)', x0, cy-h0/2-10, {size:7,color:AB.PAL.ink3,align:'left'});
+  // vaso inflado
+  const hh=h0*(1+expand);
+  ctx.fillStyle='rgba(169,42,30,.12)';
+  ctx.beginPath();
+  ctx.moveTo(x0,cy-hh/2); ctx.quadraticCurveTo((x0+x1)/2,cy-hh/2*(1+expand*1.2),x1,cy-hh/2);
+  ctx.lineTo(x1,cy+hh/2); ctx.quadraticCurveTo((x0+x1)/2,cy+hh/2*(1+expand*1.2),x0,cy+hh/2);
+  ctx.closePath(); ctx.fill();
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2.6;
+  ctx.beginPath();
+  ctx.moveTo(x0,cy-hh/2); ctx.quadraticCurveTo((x0+x1)/2,cy-hh/2*(1+expand*1.2),x1,cy-hh/2);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x0,cy+hh/2); ctx.quadraticCurveTo((x0+x1)/2,cy+hh/2*(1+expand*1.2),x1,cy+hh/2);
+  ctx.stroke();
+  // flechas de presión
+  AB.arrow(ctx, x0+40, cy-hh/2, x0+40, cy-hh/2-18, {color:AB.PAL.blood,width:2.2});
+  AB.arrow(ctx, x0+40, cy+hh/2, x0+40, cy+hh/2+18, {color:AB.PAL.blood,width:2.2});
+  AB.text(ctx,'ΔP = '+espan(dP,0), x0+46, cy-hh/2-14, {size:8,color:AB.PAL.blood,align:'left'});
+  // métricas
+  const Crel=(1/1)*(dP/60)/(Y/0.6);
+  const Drel=(1/1)/(Y/0.6);
+  AB.text(ctx,'C = ΔV/ΔP', w*0.26, h*0.72, {size:9,weight:'700',color:AB.PAL.teal});
+  AB.text(ctx,'C_rel = '+espan(Crel,2), w*0.26, h*0.82, {size:11,weight:'700',color:AB.PAL.ink});
+  AB.text(ctx,'D = 2r₀/wY', w*0.70, h*0.72, {size:9,weight:'700',color:AB.PAL.amber});
+  AB.text(ctx,'Y ↑ → C ↓ (arteria rígida)', w*0.70, h*0.82, {size:8,weight:'700',color:AB.PAL.blood});
+  AB.text(ctx,'elástica (Y bajo): reservorio · rígida (Y alto): pulso amplio', w/2, h*0.92, {size:8,color:AB.PAL.ink3});
+  const out=el('cm_out');
+  if (out) out.textContent='expansión ΔV ∝ ΔP/Y · C_rel = '+espan(Crel,2);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S14 · Inertancia y el arco aórtico
+   ═══════════════════════════════════════════════════════════ */
+function toggleInertance(){
+  window.__inPlaying=!window.__inPlaying;
+  if (window.__inPlaying) window.__inT=0;
+  const b=el('in_play'); if (b) b.textContent=window.__inPlaying?'⏸':'▶';
+  drawInertance();
+}
+function drawInertance(){
+  const cv=el('sim-inertance'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const u=Math.max(0,Math.min(100,num('in_u')||50));
+  const uv=el('in_uv'); if (uv) uv.textContent=espan(u,0)+' cm/s';
+  // arco aórtico: semicírculo
+  const cx=w*0.30, cy=h*0.62, R0=Math.min(64,h*0.30);
+  const ri=R0*0.72, ro=R0*1.18;
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2.6;
+  ctx.beginPath(); ctx.arc(cx,cy,R0,Math.PI,0); ctx.stroke();
+  ctx.strokeStyle='rgba(169,42,30,.25)'; ctx.lineWidth=Math.max(4,(ro-ri));
+  ctx.beginPath(); ctx.arc(cx,cy,(ri+ro)/2,Math.PI,0); ctx.stroke();
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.arc(cx,cy,ri,Math.PI,0); ctx.stroke();
+  ctx.beginPath(); ctx.arc(cx,cy,ro,Math.PI,0); ctx.stroke();
+  AB.text(ctx,'arco aórtico', cx, cy-ri-14, {size:8,weight:'700',color:AB.PAL.blood});
+  AB.arrow(ctx, cx-R0-16, cy, cx-ri, cy, {color:AB.PAL.teal,width:2.6});
+  AB.arrow(ctx, cx+ri, cy, cx+R0+16, cy, {color:AB.PAL.teal,width:2.6});
+  // partículas a lo largo del arco
+  const t=(window.__inT||0);
+  const radial=0.35+0.65*(u/100);
+  for(let i=0;i<16;i++){
+    const a=Math.PI-( (i/16 + (window.__inPlaying? t*0.35 : 0)) % 1 )*Math.PI;
+    const r=ri+(ro-ri)*radial + Math.sin(i*12.9898)*2;
+    ctx.fillStyle=AB.PAL.teal;
+    ctx.beginPath(); ctx.arc(cx+Math.cos(a)*r, cy-Math.sin(a)*r, 3, 0, 7); ctx.fill();
+  }
+  // leyenda de posición radial
+  AB.text(ctx,'u baja → partículas centradas', w*0.72, h*0.30, {size:8,color:AB.PAL.teal});
+  AB.text(ctx,'u alta → se pegan a la pared exterior', w*0.72, h*0.40, {size:8,weight:'700',color:AB.PAL.blood});
+  AB.text(ctx,'P_cent = 2ρu²R/ℛ', w*0.72, h*0.56, {size:10,weight:'700',color:AB.PAL.ink});
+  AB.text(ctx,'L_flujo = ρL/A = ρL/πr²', w*0.72, h*0.68, {size:9,color:AB.PAL.ink});
+  AB.text(ctx,'ΔP = (ρL/A)·∂Q/∂t — solo importa si el flujo es pulsátil', w/2, h*0.90, {size:8,color:AB.PAL.ink3});
+  const out=el('in_out');
+  if (out) out.textContent=u<30?'ΔP = (ρL/A)·∂Q/∂t · partículas centradas':'ΔP = (ρL/A)·∂Q/∂t · pared externa';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S15 · Arrastre: Stokes e hidrodinámico
+   ═══════════════════════════════════════════════════════════ */
+function drawDrag(){
+  const cv=el('sim-drag'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const R=Math.max(0.001,Math.min(10,num('dr_r')||0.01));
+  const rv=el('dr_rv'); if (rv) rv.textContent=espan(R,3);
+  const u=Math.max(1,Math.min(200,num('dr_u')||50));
+  const uv=el('dr_uv'); if (uv) uv.textContent=espan(u,0)+' cm/s';
+  const rho=1000, eta=0.001;
+  const Re=200*R*u;
+  const uM=u/100, RM=R/100;
+  const Fst=6*Math.PI*RM*eta*uM;
+  const Fhd=0.5*0.5*Math.PI*RM*RM*rho*uM*uM;
+  const useStokes=Re<100;
+  const F=useStokes?Fst:Fhd;
+  const cx=w*0.42, cy=h*0.52;
+  const rs=Math.max(6,Math.min(52,6+Math.log10(1+R)*18));
+  // esfera
+  ctx.fillStyle=AB.PAL.amber; ctx.strokeStyle=AB.PAL.amberDeep||'#7c4900'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.arc(cx,cy,rs,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  // flechas de flujo
+  for(let i=-3;i<=3;i++){
+    const y=cy+i*(rs*0.28);
+    AB.arrow(ctx, w*0.08, y, w*0.24, y, {color:AB.PAL.tealLight,width:1.8,head:5});
+    AB.arrow(ctx, w*0.60, y, w*0.76, y, {color:AB.PAL.tealLight,width:1.8,head:5});
+  }
+  // fuerza de arrastre
+  AB.arrow(ctx, cx, cy-rs-6, cx, cy-rs-6-(useStokes?F*4e3:Math.min(70,F*2)), {color:AB.PAL.blood,width:3.4});
+  AB.text(ctx,'F = '+espan(F,useStokes?7:3)+' N', cx, cy-rs-24, {size:9,weight:'700',color:AB.PAL.blood});
+  AB.text(ctx,useStokes?'Ley de Stokes: F = 6πRηu':'Arrastre hidrodinámico: F = ½C_DAρu²', w/2, h*0.80, {size:10,weight:'700',color:useStokes?AB.PAL.teal:AB.PAL.blood});
+  AB.text(ctx,'Re = ρud/η = '+espan(Re,0), w/2, h*0.90, {size:9,color:AB.PAL.ink});
+  AB.text(ctx,'Re < 100 → Stokes (lineal) · Re > 100 → hidrodinámico (u²)', w/2, h*0.965, {size:7.5,color:AB.PAL.ink3});
+  const out=el('dr_out');
+  if (out) out.textContent='Re = '+espan(Re,0)+' · '+(useStokes?'Stokes':'hidrodinámico');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S16 · Sustentación y Strouhal
+   ═══════════════════════════════════════════════════════════ */
+function drawLift(){
+  const cv=el('sim-lift'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const beta=Math.max(-6,Math.min(20,num('li_b')||8));
+  const bv=el('li_bv'); if (bv) bv.textContent=espan(beta,0)+'°';
+  let Cs;
+  if (beta<=-4) Cs=-0.4-(beta+4)*0.2;
+  else if (beta<=12) Cs=-0.4+1.6*(beta+4)/16;
+  else Cs=1.2-(beta-12)*0.12;
+  const stall=beta>12;
+  // gráfico C vs β
+  const gx=w*0.12, gy=h*0.18, gw=w*0.36, gh=h*0.52;
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.beginPath(); ctx.moveTo(gx,gy); ctx.lineTo(gx,gy+gh); ctx.lineTo(gx+gw,gy+gh); ctx.stroke();
+  ctx.strokeStyle=AB.PAL.ink3; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(gx,gy+gh/2); ctx.lineTo(gx+gw,gy+gh/2); ctx.stroke();
+  AB.text(ctx,'C_sust', gx, gy-8, {size:7.5,color:AB.PAL.ink3});
+  AB.text(ctx,'β (°)', gx+gw/2, gy+gh+12, {size:7.5,color:AB.PAL.ink3});
+  const X=b=>gx+(b+6)/26*gw;
+  const Y=c=>gy+gh-(c+0.6)/(1.8)*gh;
+  ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=2.4;
+  ctx.beginPath();
+  for(let b=-6;b<=20;b+=0.5){
+    let c;
+    if (b<=-4) c=-0.4-(b+4)*0.2;
+    else if (b<=12) c=-0.4+1.6*(b+4)/16;
+    else c=1.2-(b-12)*0.12;
+    (b===-6)?ctx.moveTo(X(b),Y(c)):ctx.lineTo(X(b),Y(c));
+  }
+  ctx.stroke();
+  ctx.fillStyle=AB.PAL.blood;
+  ctx.beginPath(); ctx.arc(X(beta),Y(Cs),5,0,7); ctx.fill();
+  AB.dashed(ctx,X(beta),Y(Cs),X(beta),gy+gh,{color:AB.PAL.blood});
+  AB.text(ctx,'stall > 12°', X(16), Y(0.6)+14, {size:7,color:AB.PAL.blood});
+  // perfil de ala
+  const ax=w*0.70, ay=h*0.48;
+  ctx.save(); ctx.translate(ax,ay); ctx.rotate(beta*Math.PI/180);
+  ctx.fillStyle=AB.PAL.ink2;
+  ctx.beginPath();
+  ctx.moveTo(-46,0);
+  ctx.quadraticCurveTo(-6,-16,26,-12);
+  ctx.quadraticCurveTo(42,-10,50,0);
+  ctx.quadraticCurveTo(20,14,-46,0);
+  ctx.closePath(); ctx.fill();
+  ctx.restore();
+  // flujo horizontal
+  for(let i=-2;i<=2;i++){
+    const y=ay+i*26;
+    AB.arrow(ctx, ax-86, y, ax-60, y, {color:AB.PAL.tealLight,width:1.6,head:5});
+  }
+  AB.text(ctx,'viento relativo →', ax-74, ay+42, {size:7,color:AB.PAL.teal});
+  // sustentación
+  AB.arrow(ctx, ax, ay-30, ax, ay-30-(stall?14:70), {color:stall?AB.PAL.amber:AB.PAL.teal,width:3.4});
+  AB.text(ctx,stall?'pérdida (stall)':'sustentación', ax, ay-30-(stall?20:82), {size:8,weight:'700',color:stall?AB.PAL.amber:AB.PAL.teal});
+  AB.text(ctx,'β = '+espan(beta,0)+'° · C_sust = '+espan(Cs,2), w/2, h*0.82, {size:10,weight:'700',color:AB.PAL.ink});
+  AB.text(ctx,'C_sust de −0,4 a 1,2 para β de −4° a 12° · St ≈ 0,12–0,23', w/2, h*0.92, {size:8,color:AB.PAL.ink3});
+  const out=el('li_out');
+  if (out) out.textContent='C_sust = '+espan(Cs,2)+(stall?' · ¡stall!':'');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S17 · Difusión: gaussiana que se ensancha (Fick)
+   ═══════════════════════════════════════════════════════════ */
+function toggleDiffusion(){
+  window.__dfPlaying=!window.__dfPlaying;
+  if (window.__dfPlaying) window.__dfT=0;
+  const b=el('df_play'); if (b) b.textContent=window.__dfPlaying?'⏸':'▶';
+  drawDiffusion();
+}
+function drawDiffusion(){
+  const cv=el('sim-diffusion'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const D=Math.max(0.01,Math.min(2,num('df_d')||0.3));
+  const dv=el('df_dv'); if (dv) dv.textContent=espan(D,2);
+  const t=(window.__dfT||0)*D;
+  const sigma=Math.max(0.02,Math.sqrt(2*0.3*t));
+  const cx=w*0.50, g0=h*0.78, gh=h*0.50;
+  // referencia: pico original
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.4;
+  ctx.beginPath(); ctx.moveTo(cx, g0-gh*0.9); ctx.lineTo(cx, g0); ctx.stroke();
+  // gaussiana actual
+  ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=2.8;
+  ctx.beginPath();
+  const peak=Math.exp(0)/(sigma);
+  for(let i=0;i<=160;i++){
+    const x=cx-w*0.42+i/160*(w*0.84);
+    const d=(x-cx)/w;
+    const n=Math.exp(-(d*d)/(2*sigma*sigma))/(sigma);
+    const y=g0-(n/peak)*gh;
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  }
+  ctx.stroke();
+  // ancho σ
+  const sx=sigma*w;
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(cx-sx,g0); ctx.lineTo(cx+sx,g0); ctx.stroke();
+  AB.text(ctx,'2σ', cx+sx+4, g0-4, {size:7,color:AB.PAL.blood});
+  AB.text(ctx,'t = '+espan(t,2)+' (D·t) · σ = '+espan(sigma,3), w/2, h*0.88, {size:9,weight:'700',color:AB.PAL.ink});
+  AB.text(ctx,'n ∝ exp(−x²/4Dt) · σ² = 2Dt — el ancho crece como √t', w/2, h*0.955, {size:7.5,color:AB.PAL.ink3});
+  const out=el('df_out');
+  if (out) out.textContent='σ = '+espan(sigma,3)+' · t = '+espan(t,2);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S18 · Escala de la difusión: t = x²/2D
+   ═══════════════════════════════════════════════════════════ */
+function drawDiffusion2(){
+  const cv=el('sim-diffusion2'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const x=Math.max(1,Math.min(1000,num('d2_x')||100));
+  const xv=el('d2_xv'); if (xv) xv.textContent=espan(x,0)+' μm';
+  const xcm=x*1e-4;
+  const med=[['gas',0.1,AB.PAL.teal],['líquido',1e-5,AB.PAL.amber],['sólido',1e-9,AB.PAL.blood]];
+  const ts=med.map(m=>xcm*xcm/(2*m[1]));
+  // escala log de tiempo: 1e-8 a 1e8 s
+  const log0=-8, log1=8;
+  const gy=h*0.20, gh=h*0.52, gx=w*0.30, gw=w*0.60;
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.beginPath(); ctx.moveTo(gx,gy); ctx.lineTo(gx,gy+gh); ctx.lineTo(gx+gw,gy+gh); ctx.stroke();
+  AB.text(ctx,'t (s, escala log)', gx+gw+6, gy+gh/2, {size:8,color:AB.PAL.ink3,align:'left',base:'middle'});
+  [1e-6,1,3600,86400,1e6].forEach(v=>{
+    const l=Math.log10(v);
+    const y=gy+gh*(1-(l-log0)/(log1-log0));
+    AB.dashed(ctx,gx,y,gx+gw,y,{color:AB.PAL.line});
+    const lab=v<100?(v===-6?'1 µs':(v===1?'1 s':'1 min')):(v===86400?'1 d':(v===1e6?'11 d':'' ));
+    AB.text(ctx,lab===''?espan(v,0):lab, gx-6, y, {size:7,color:AB.PAL.ink3,align:'right'});
+  });
+  // barras por medio
+  med.forEach((m,i)=>{
+    const l=Math.log10(Math.max(1e-8,ts[i]));
+    const y=gy+gh*(1-(l-log0)/(log1-log0));
+    const bh=Math.max(3,gy+gh-y);
+    ctx.fillStyle=m[2];
+    ctx.fillRect(gx+16+i*gw/3+8, y, Math.max(6,gw/3-16), bh);
+    const lab=ts[i]<1?espan(ts[i]*1000,0)+' ms':(ts[i]<3600?espan(ts[i],1)+' s':(ts[i]<86400?espan(ts[i]/60,0)+' min':espan(ts[i]/86400,1)+' d'));
+    AB.text(ctx,m[0]+': '+lab, gx+16+i*gw/3+gw/6, gy+gh+14, {size:7.5,weight:'700',color:m[2]});
+  });
+  AB.text(ctx,'t = x²/2D con x = '+espan(x,0)+' μm ('+espan(xcm,5)+' cm)', w/2, h*0.84, {size:9,weight:'700',color:AB.PAL.ink});
+  AB.text(ctx,'difusión eficiente solo entre 1 y 100 μm · el resto lo lleva el flujo', w/2, h*0.92, {size:8,color:AB.PAL.ink3});
+  const out=el('d2_out');
+  if (out) out.textContent='t_líq = '+espan(ts[1],0)+' s ≈ '+espan(ts[1]/3600,1)+' h';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S19 · Peristalsis: el viaje del bocado
+   ═══════════════════════════════════════════════════════════ */
+function toggleFlows(){
+  window.__flPlaying=!window.__flPlaying;
+  if (window.__flPlaying) window.__flT=0;
+  const b=el('fl_play'); if (b) b.textContent=window.__flPlaying?'⏸':'▶';
+  drawFlows();
+}
+function drawFlows(){
+  const cv=el('sim-flows'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  // tracto estilizado: serpenteo horizontal
+  const segs=[['boca',0.02],['esófago',0.06],['estómago',0.25],['delgado',0.40],['grueso',0.62],['recto',0.95]];
+  const x0=w*0.06, x1=w*0.94, cy=h*0.46;
+  // camino ondulado
+  ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=14;
+  ctx.beginPath();
+  for(let i=0;i<=200;i++){
+    const t=i/200;
+    const x=x0+t*(x1-x0);
+    const y=cy+Math.sin(t*Math.PI*5)*h*0.07;
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  }
+  ctx.stroke();
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.beginPath();
+  for(let i=0;i<=200;i++){
+    const t=i/200;
+    const x=x0+t*(x1-x0);
+    const y=cy+Math.sin(t*Math.PI*5)*h*0.07;
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  }
+  ctx.stroke();
+  // hitos
+  segs.forEach((s,i)=>{
+    const x=x0+s[1]*(x1-x0);
+    const y=cy+Math.sin(s[1]*Math.PI*5)*h*0.07;
+    ctx.fillStyle=AB.PAL.paper; ctx.strokeStyle=AB.PAL.ink3; ctx.lineWidth=1.4;
+    ctx.beginPath(); ctx.arc(x,y,7,0,7); ctx.fill(); ctx.stroke();
+    AB.text(ctx,s[0], x, y-(i===0?-16:16), {size:7.5,weight:'700',color:AB.PAL.ink});
+  });
+  // bocado
+  const t=(window.__flT||0)%1;
+  const pos=t; // posición normalizada: veloz al inicio, lenta después
+  // simular avance con frenado: mapear tiempo→pos no lineal
+  const slow=x=>0.02+(x)*(0.98); // dejar simple: lineal
+  const bx=x0+slow(t)*(x1-x0);
+  const by=cy+Math.sin(slow(t)*Math.PI*5)*h*0.07;
+  ctx.fillStyle=AB.PAL.blood;
+  ctx.beginPath(); ctx.arc(bx,by,10,0,7); ctx.fill();
+  AB.text(ctx,'bocado', bx, by+24, {size:8,weight:'700',color:AB.PAL.blood});
+  // tiempos
+  AB.text(ctx,'boca 1–10 s · esófago 5–20 s · estómago 2–6 h · delgado 3–5 h · grueso 10–20 h', w/2, h*0.80, {size:8,color:AB.PAL.ink3});
+  AB.text(ctx,'velocidad media ≈ 0,01 cm/s — de boca a recto: 16–32 h', w/2, h*0.90, {size:8,weight:'700',color:AB.PAL.ink});
+  const out=el('fl_out');
+  if (out) out.textContent='peristalsis · boca → recto: 16–32 h';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S20 · Vejiga: cistometrograma
+   ═══════════════════════════════════════════════════════════ */
+function drawBladder(){
+  const cv=el('sim-bladder'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const V=Math.max(0,Math.min(600,num('bl_v')||200));
+  const vv=el('bl_vv'); if (vv) vv.textContent=espan(V,0)+' mL';
+  function P(V){
+    if (V<30) return 5;
+    if (V<300) return 5+(V-30)*(15/270);
+    return 20+(V-300)*0.12;
+  }
+  const p=P(V);
+  // ejes
+  const gx=w*0.14, gw=w*0.76, gy=h*0.16, gh=h*0.60;
+  ctx.strokeStyle=AB.PAL.line; ctx.lineWidth=1.2;
+  ctx.beginPath(); ctx.moveTo(gx,gy); ctx.lineTo(gx,gy+gh); ctx.lineTo(gx+gw,gy+gh); ctx.stroke();
+  AB.text(ctx,'P (cmH₂O)', gx+6, gy+6, {size:8,color:AB.PAL.ink3,align:'left'});
+  AB.text(ctx,'volumen (mL)', gx+gw/2, gy+gh+14, {size:8,color:AB.PAL.ink3});
+  [0,10,20,30,40,50].forEach(v=>{
+    const y=gy+gh-(v/55)*gh;
+    AB.dashed(ctx,gx,y,gx+gw,y,{color:AB.PAL.line});
+    AB.text(ctx,v, gx-6, y, {size:7,color:AB.PAL.ink3,align:'right'});
+  });
+  // umbral "ganas de orinar"
+  const yUr=gy+gh-(30/55)*gh;
+  ctx.strokeStyle=AB.PAL.blood; ctx.lineWidth=2;
+  ctx.setLineDash([6,4]); ctx.beginPath(); ctx.moveTo(gx,yUr); ctx.lineTo(gx+gw,yUr); ctx.stroke(); ctx.setLineDash([]);
+  AB.text(ctx,'ganas de orinar ≈ 30', gx+gw-6, yUr-6, {size:7,color:AB.PAL.blood,align:'right'});
+  // curva
+  ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=2.8;
+  ctx.beginPath();
+  for(let v=0;v<=600;v+=10){
+    const x=gx+v/600*gw, y=gy+gh-(P(v)/55)*gh;
+    v?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  }
+  ctx.stroke();
+  // punto actual
+  const px=gx+V/600*gw, py=gy+gh-(p/55)*gh;
+  ctx.fillStyle=AB.PAL.blood;
+  ctx.beginPath(); ctx.arc(px,py,6,0,7); ctx.fill();
+  AB.dashed(ctx,px,py,px,gy+gh,{color:AB.PAL.blood});
+  AB.text(ctx,'V = '+espan(V,0)+' mL', px, gy+gh+14, {size:8,color:AB.PAL.blood});
+  // fases
+  const fase=V<30?'relleno inicial: 5–10 cmH₂O':(V<300?'meseta: 200–300 mL con poco cambio':'ascenso rápido');
+  AB.text(ctx,fase, w/2, h*0.86, {size:10,weight:'700',color:V<300?AB.PAL.teal:AB.PAL.blood});
+  AB.text(ctx,'σ ∝ V^⅓ (Laplace) → los sensores de llenado están en la pared, no en la presión', w/2, h*0.94, {size:8,color:AB.PAL.ink3});
+  const out=el('bl_out');
+  if (out) out.textContent='P ≈ '+espan(p,0)+' cmH₂O · σ ∝ V^⅓';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S21 · Natación: la física de la brazada
+   ═══════════════════════════════════════════════════════════ */
+function toggleSwim(){
+  window.__swPlaying=!window.__swPlaying;
+  if (window.__swPlaying) window.__swT=0;
+  const b=el('sw_play'); if (b) b.textContent=window.__swPlaying?'⏸':'▶';
+  drawSwim();
+}
+function drawSwim(){
+  const cv=el('sim-swim'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const H=Math.max(1.5,Math.min(2.1,num('sw_h')||1.8));
+  const hv=el('sw_hv'); if (hv) hv.textContent=espan(H,2)+' m';
+  const B=Math.max(30,Math.min(90,num('sw_b')||60));
+  const bv=el('sw_bv'); if (bv) bv.textContent=espan(B,0)+'/min';
+  const l=0.386*H, wm=0.07*H, T=60/B;
+  const F=1000*Math.PI*l*l*l*wm/(4*T*T);
+  const A=0.259*H*0.09*H;
+  const u=Math.sqrt(2*F/(1.0*A*1000));
+  // superficie del agua
+  const surf=h*0.30;
+  ctx.fillStyle='rgba(45,125,79,.14)';
+  ctx.fillRect(0,surf,w,h-surf);
+  ctx.strokeStyle=AB.PAL.coronal||'#2d7d4f'; ctx.lineWidth=2;
+  ctx.beginPath();
+  for(let x=0;x<=w;x+=5){ const y=surf+Math.sin(x*0.05+ (window.__swT||0)*2)*2.5; x?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+  ctx.stroke();
+  // nadador: cabeza + torso
+  const hx=w*0.36, hy=surf-16;
+  ctx.fillStyle=AB.PAL.skin; ctx.strokeStyle=AB.PAL.skinEdge; ctx.lineWidth=1.4;
+  ctx.beginPath(); ctx.arc(hx,hy,11,0,7); ctx.fill(); ctx.stroke();
+  ctx.fillStyle=AB.PAL.muscle; ctx.strokeStyle=AB.PAL.muscleEdge;
+  ctx.beginPath(); ctx.ellipse(hx-16,hy+14,20,12,0.3,0,7); ctx.fill(); ctx.stroke();
+  // brazo que barre
+  const a=(window.__swT||0)*Math.PI*2;
+  const shx=hx-22, shy=hy+4;
+  const elbow=shx+Math.cos(a)*20, elby=shy+Math.sin(a)*18;
+  const hndx=elbow+Math.cos(a)*18, hndy=elby+Math.sin(a)*18+4;
+  AB.limbSkin(ctx, shx,shy, elbow,elby, 7, {fill:AB.PAL.skin});
+  AB.limbSkin(ctx, elbow,elby, hndx,hndy, 6, {fill:AB.PAL.skin});
+  AB.hand(ctx, hndx, hndy+4, 6);
+  AB.joint(ctx, shx,shy, 5, {color:AB.PAL.blood});
+  AB.joint(ctx, elbow,elby, 4, {color:AB.PAL.blood});
+  AB.text(ctx,'brazada', shx-14, shy-20, {size:7.5,color:AB.PAL.teal});
+  // flechas de fuerza
+  AB.arrow(ctx, hndx-8, hndy+8, hndx-26, hndy+26, {color:AB.PAL.teal,width:2.6});
+  AB.arrow(ctx, hx+20, hy+8, hx+52, hy+8, {color:AB.PAL.blood,width:3.4});
+  AB.text(ctx,'F_prop', hx+44, hy-2, {size:8,weight:'700',color:AB.PAL.blood});
+  AB.text(ctx,'agua empujada →', hndx-30, hndy+34, {size:7,color:AB.PAL.teal});
+  // resultados
+  AB.text(ctx,'F ≈ '+espan(F,0)+' N · u ≈ '+espan(u,1)+' m/s', w/2, h*0.72, {size:11,weight:'700',color:AB.PAL.ink});
+  AB.text(ctx,'F = ρπl³w/4T² · l = 0,386H · w = 0,07H · 60 brazadas/min → 27 N → 0,8 m/s', w/2, h*0.82, {size:8,color:AB.PAL.ink3});
+  AB.text(ctx,'alometría u ≈ 0,5·m_b^0,19 m/s — un animal de 70 kg nada a ≈ 1 m/s', w/2, h*0.92, {size:8,color:AB.PAL.ink3});
+  const out=el('sw_out');
+  if (out) out.textContent='F ≈ '+espan(F,0)+' N · u ≈ '+espan(u,1)+' m/s';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   S22 · Vuelo humano: la cuenta de fuerzas
+   ═══════════════════════════════════════════════════════════ */
+function drawFlight(){
+  const cv=el('sim-flight'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const ctx=AB.setup(cv,w,h);
+  const S=Math.max(0.5,Math.min(5,num('ft_s')||1));
+  const sv=el('ft_sv'); if (sv) sv.textContent=espan(S,1)+' m';
+  const f=Math.max(1,Math.min(6,num('ft_f')||3));
+  const fv=el('ft_fv'); if (fv) fv.textContent=espan(f,0)+' /s';
+  const A=S; // área efectiva de alas (m²)
+  const F=1.2*A*0.7*20*f;
+  const W=700;
+  const bars=[['peso (700 N)',W,AB.PAL.blood],['brazos (6 N)',6,AB.PAL.amber],['alas '+espan(A,1)+' m²',F,AB.PAL.teal]];
+  const bx=w*0.20, bw=w*0.62, gy=h*0.22, gH=h*0.50, Fmax=Math.max(W,F,6);
+  bars.forEach((b,i)=>{
+    const y=gy+i*(gH/3.6);
+    ctx.fillStyle=b[2];
+    ctx.fillRect(bx,y,bw*b[1]/Fmax,26);
+    AB.text(ctx,b[0], bx-8, y+13, {size:8,weight:'700',color:b[2],align:'right'});
+    AB.text(ctx,espan(b[1],0)+' N', bx+bw*b[1]/Fmax+8, y+13, {size:8,weight:'700',color:AB.PAL.ink,align:'left'});
+  });
+  // barrera
+  AB.dashed(ctx,bx+6,gy+gH*0.4,bx+bw*W/Fmax,gy+gH*0.4,{color:AB.PAL.line});
+  // persona
+  const px=w*0.72, py=h*0.56;
+  ctx.fillStyle=AB.PAL.skin; ctx.strokeStyle=AB.PAL.skinEdge; ctx.lineWidth=1.4;
+  ctx.beginPath(); ctx.arc(px,py-24,9,0,7); ctx.fill(); ctx.stroke();
+  ctx.fillStyle=AB.PAL.ink2;
+  ctx.fillRect(px-8,py-12,16,22);
+  AB.limbSkin(ctx, px-8,py-8, px-26,py-20, 6, {fill:AB.PAL.skin});
+  AB.limbSkin(ctx, px+8,py-8, px+26,py-20, 6, {fill:AB.PAL.skin});
+  AB.limbSkin(ctx, px-6,py+10, px-12,py+34, 6, {fill:AB.PAL.skin});
+  AB.limbSkin(ctx, px+6,py+10, px+12,py+34, 6, {fill:AB.PAL.skin});
+  // alas
+  ctx.strokeStyle=AB.PAL.teal; ctx.lineWidth=4;
+  ctx.beginPath(); ctx.moveTo(px-8,py-8); ctx.lineTo(px-44,py-24); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(px+8,py-8); ctx.lineTo(px+44,py-24); ctx.stroke();
+  // flechas de brazos
+  AB.arrow(ctx, px-30, py-20, px-38, py-40, {color:AB.PAL.teal,width:2.4});
+  AB.arrow(ctx, px+30, py-20, px+38, py-40, {color:AB.PAL.teal,width:2.4});
+  AB.arrow(ctx, px, py+34, px, py+50, {color:AB.PAL.blood,width:3});
+  AB.text(ctx,'700 N', px+8, py+46, {size:7,color:AB.PAL.blood});
+  AB.text(ctx,'batir: ~0,1 m³ de aire por aleteo → 6 N', px, py+58, {size:7,color:AB.PAL.amber});
+  const ok=F>=W;
+  AB.text(ctx, ok?'(no ocurre con alas humanas)' : 'F = '+espan(F,0)+' N &lt; peso 700 N — no despegamos', w/2, h*0.88, {size:10.5,weight:'700',color:ok?AB.PAL.teal:AB.PAL.blood});
+  AB.text(ctx,'Gossamer Albatross (1979): 35,6 km en 2h49m con 125 W · efecto suelo', w/2, h*0.955, {size:7.5,color:AB.PAL.ink3});
+  const out=el('ft_out');
+  if (out) out.textContent='F = '+espan(F,0)+' N vs peso 700 N';
+}
+
+/* ── Bucle de animación (marco-tiempo independiente) ── */
+let __lastTs=0;
+function animLoop(ts){
+  const dt=Math.min(0.06, ((ts-__lastTs)||0)/1000);
+  __lastTs=ts;
+  if (current===6 && window.__spPlaying){ window.__spT=(window.__spT||0)+dt*0.8; drawLaplaceSphere(); }
+  if (current===7 && window.__ryPlaying){ window.__ryT=(window.__ryT||0)+dt*1; drawReynolds(); }
+  if (current===8){ window.__veT=(window.__veT||0)+dt*1; drawVenturi(); }
+  if (current===9){ window.__stT=(window.__stT||0)+dt*0.8; drawStenosis(); }
+  if (current===14 && window.__inPlaying){ window.__inT=(window.__inT||0)+dt*1; drawInertance(); }
+  if (current===17 && window.__dfPlaying){ window.__dfT=(window.__dfT||0)+dt*0.4; drawDiffusion(); }
+  if (current===19 && window.__flPlaying){ window.__flT=(window.__flT||0)+dt*0.06; drawFlows(); }
+  if (current===21 && window.__swPlaying){ window.__swT=(window.__swT||0)+dt*0.6; drawSwim(); }
+  requestAnimationFrame(animLoop);
+}
+requestAnimationFrame(animLoop);
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  dots();
+  buildModuleTabs();
+  if (window.renderMathInElement) renderMathInElement(document.body, {
+    delimiters:[
+      {left:'\\(',right:'\\)',display:false},
+      {left:'\\[',right:'\\]',display:true}
+    ],
+    throwOnError:false
+  });
+  requestAnimationFrame(()=>redrawSlide(0));
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+=== INFORME QC CAPITULO 9 ===
+mpills=9  nav-dots=24  slides=24  katex=110
+- Excepciones JS: 0
+- Errores de consola: 0
+- Canvases fallidos: 0
+- Canvases OK: 23 / 23
+=== VEREDICTO: APROBADO ===

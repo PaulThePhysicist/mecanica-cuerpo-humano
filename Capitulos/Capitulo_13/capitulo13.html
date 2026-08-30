@@ -1,0 +1,2568 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Capítulo 13 — Sistemas de Retroalimentación y Control. Física del Cuerpo Humano, I. P. Herman (2016). Presentación universitaria interactiva en español.">
+<title>Capítulo 13 · Sistemas de Retroalimentación y Control — Física del Cuerpo Humano</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,600&family=Karla:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<style>
+
+/* ═══════════════════════════════════════════════════════════════
+   SISTEMAS DE RETROALIMENTACIÓN Y CONTROL — design system (continuidad con caps. 1–12)
+   Papel marfil · tinta · tinta fisiológica (teal / sangre / ámbar)
+   Serif académica (Source Serif 4) + grotesca (Karla) + mono técnica
+   ═══════════════════════════════════════════════════════════════ */
+:root{
+  --paper:#f5f0e4;
+  --paper-2:#eee7d6;
+  --paper-3:#e8dfc9;
+  --card:#fbf8f0;
+  --ink:#232c36;
+  --ink-2:#43505c;
+  --ink-3:#6b7885;
+  --line:#cfc3a9;
+  --line-soft:#e2d9c4;
+  --teal:#0d6e64;
+  --teal-deep:#0a5a52;
+  --teal-tint:rgba(13,110,100,.10);
+  --blood:#a92a1e;
+  --blood-deep:#8c1f16;
+  --blood-tint:rgba(169,42,30,.10);
+  --amber:#9a5b00;
+  --amber-deep:#7c4900;
+  --amber-tint:#fbf2dc;
+  --sagittal:#5d4fa8;
+  --coronal:#2d7d4f;
+  --transverse:#b86a1e;
+  --bone:#b6a67f;
+  --serif:'Source Serif 4',Georgia,'Times New Roman',serif;
+  --sans:'Karla',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,'Cascadia Mono',monospace;
+  --radius:12px;
+  --radius-sm:8px;
+  --shadow:0 1px 2px rgba(35,44,54,.05),0 8px 22px rgba(35,44,54,.07);
+  /* ── curvas de movimiento ── */
+  --ease-out:cubic-bezier(.23,1,.32,1);
+  --ease-in-out:cubic-bezier(.77,0,.175,1);
+  --ease-drawer:cubic-bezier(.32,.72,0,1);
+  --press:160ms var(--ease-out);
+  --fade:200ms var(--ease-out);
+  --slide:250ms var(--ease-out);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:clamp(16px,1.32vw,21px)}
+body{
+  font-family:var(--sans);color:var(--ink);background-color:var(--paper);
+  background-image:linear-gradient(rgba(35,44,54,.028) 1px,transparent 1px);
+  background-size:100% 44px;
+  overflow:hidden;height:100dvh;user-select:none;line-height:1.5;
+}
+::selection{background:rgba(13,110,100,.18)}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+
+/* ─── BRAND STRIP + MODULE TABS ─── */
+.module-bar{
+  position:fixed;top:0;left:0;right:0;z-index:30;
+  background:linear-gradient(180deg,rgba(245,240,228,.97) 68%,rgba(245,240,228,0));
+  padding:0 1.6rem;display:flex;gap:.4rem;align-items:flex-end;
+  pointer-events:none;
+}
+.module-bar>*{pointer-events:auto}
+.brand-mark{
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:0 1.2rem .55rem 0;margin-right:auto;flex-shrink:0;
+}
+.brand-mark .treatise{font-family:var(--serif);font-weight:600;font-size:.74rem;letter-spacing:.01em;color:var(--ink)}
+.brand-mark .book{font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.module-tab{
+  background:var(--paper-2);border:1px solid var(--line);border-bottom:none;
+  color:var(--ink-3);padding:.42rem 1.05rem .5rem;border-radius:9px 9px 0 0;
+  font-size:.64rem;font-weight:600;cursor:pointer;
+  transition:color var(--fade),background-color var(--fade),border-color var(--fade),box-shadow var(--slide);
+  letter-spacing:.02em;
+  display:flex;align-items:center;gap:.42rem;margin-bottom:1px;
+}
+.module-tab:active{transform:scale(.97)}
+.module-tab.active{
+  background:var(--card);border-color:var(--line);color:var(--teal-deep);
+  box-shadow:0 -1px 0 var(--card),0 -3px 0 var(--teal);
+  margin-bottom:0;padding-bottom:.55rem;
+}
+.module-tab .mod-badge{
+  font-size:.55rem;background:var(--card);border:1px solid var(--line);
+  padding:.06rem .4rem;border-radius:4px;color:var(--ink-3);font-weight:700;
+}
+.module-tab.active .mod-badge{background:var(--teal);border-color:var(--teal);color:var(--paper)}
+
+/* ─── SLIDES ─── */
+.slides{position:relative;z-index:1;height:100dvh}
+.slide,.slide-full{
+  display:none;width:100%;height:100dvh;
+  padding:3.4rem 2rem 4.6rem;overflow-y:auto;position:relative;
+}
+.slide.active,.slide-full.active{display:flex;flex-direction:column}
+.slide::-webkit-scrollbar-track{background:transparent}
+
+/* ─── PORTADA ─── */
+.slide-full{align-items:center;justify-content:flex-start;text-align:center;padding-top:5.2rem}
+.slide-full::before{
+  content:"";position:absolute;top:0;left:0;right:0;
+  height:5px;
+  background:linear-gradient(90deg,var(--teal) 0 25%,var(--blood) 25% 50%,var(--amber) 50% 75%,var(--sagittal) 75% 100%);
+}
+.slide-full h1{
+  font-family:var(--serif);font-size:clamp(2.1rem,4.6vw,3.9rem);font-weight:700;
+  letter-spacing:-.035em;line-height:1.06;max-width:18ch;
+  margin:1.4rem auto 1.1rem;
+}
+.slide-full h1 .chapno{
+  display:block;font-family:var(--sans);font-size:clamp(.72rem,1.1vw,1rem);
+  font-weight:700;letter-spacing:.42em;text-transform:uppercase;
+  color:var(--teal-deep);margin-bottom:1.15rem;
+}
+.slide-full h1 .vol{
+  font-style:italic;font-weight:600;color:var(--ink-2);
+}
+.slide-full .subtitle{
+  font-size:clamp(.86rem,1.3vw,1.05rem);color:var(--ink-2);max-width:62ch;
+  line-height:1.65;margin:0 auto;
+}
+.slide-full .rule{width:88px;height:1px;background:var(--line);margin:1.6rem auto}
+.module-preview{display:flex;gap:.55rem;flex-wrap:wrap;justify-content:center}
+.module-preview .mpill{
+  background:var(--card);border:1px solid var(--line);border-radius:999px;
+  padding:.42rem 1.05rem;font-size:.72rem;color:var(--ink-2);
+  transition:color var(--fade),border-color var(--fade),background-color var(--fade),transform var(--press);
+  cursor:pointer;display:flex;align-items:center;gap:.4rem;font-weight:600;
+}
+.module-preview .mpill:active{transform:translateY(-1px) scale(.96)}
+.module-preview .mpill.active{background:var(--teal);border-color:var(--teal-deep);color:var(--paper)}
+.module-preview .mpill .ico{font-size:.9rem}
+.slide-full .start-btn{
+  margin-top:1.9rem;background:var(--teal);color:var(--paper);
+  border:1px solid var(--teal-deep);padding:.78rem 2.4rem;border-radius:8px;
+  font-size:.95rem;font-weight:700;cursor:pointer;
+  transition:background-color var(--fade),box-shadow var(--slide),transform var(--press);
+  letter-spacing:.02em;
+}
+.slide-full .start-btn:active{transform:scale(.97)}
+.slide-full .book-ref{margin-top:2.2rem;font-size:.66rem;color:var(--ink-3);font-style:italic}
+
+/* ─── MODULE HEADER ─── */
+.module-header{
+  display:flex;align-items:baseline;gap:.7rem;margin-bottom:.8rem;flex-shrink:0;
+  padding-bottom:.6rem;border-bottom:1px solid var(--line);
+}
+.module-header .mnum{
+  font-family:var(--mono);font-size:.66rem;font-weight:700;letter-spacing:.08em;
+  color:var(--teal-deep);background:var(--teal-tint);padding:.24rem .7rem;border-radius:6px;
+  border:1px solid rgba(13,110,100,.22);
+}
+.module-header .mtitle{
+  font-family:var(--serif);font-size:1.42rem;font-weight:700;letter-spacing:-.01em;color:var(--ink);
+}
+.module-header .msub{font-size:.68rem;color:var(--ink-3);margin-left:auto;font-style:italic}
+.module-header .mslide-count{
+  font-size:.6rem;color:var(--ink-3);font-family:var(--mono);background:var(--paper-2);
+  padding:.16rem .5rem;border-radius:4px;border:1px solid var(--line-soft);
+}
+
+/* ─── CONTENT GRID ─── */
+.content-grid{
+  display:grid;grid-template-columns:1.12fr .88fr;
+  grid-template-rows:1fr auto;gap:.8rem;flex:1;min-height:0;
+}
+.content-grid.single-col{grid-template-columns:1fr}
+
+/* ─── TEORÍA ─── */
+.theory{
+  overflow-y:auto;line-height:1.5;display:flex;flex-direction:column;gap:.6rem;
+  padding-right:.2rem;
+}
+.theory .card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:.7rem .85rem;box-shadow:var(--shadow);transition:border-color var(--slide),box-shadow var(--slide);cursor:default;
+}
+.theory .card.active{border-color:rgba(13,110,100,.5);box-shadow:var(--shadow)}
+.theory .card .card-hdr{
+  display:flex;align-items:center;gap:.5rem;font-size:.7rem;
+  font-weight:700;color:var(--teal-deep);text-transform:uppercase;letter-spacing:.09em;
+  margin-bottom:.4rem;
+}
+.theory .card .card-hdr .icon{font-size:.92rem}
+.theory .card .card-body{font-size:.78rem;color:var(--ink-2);line-height:1.58;max-width:72ch}
+.theory .card .card-body p{margin-bottom:.3rem}
+.theory .card .card-body p:last-child{margin-bottom:0}
+.theory .card .card-body strong{color:var(--ink);font-weight:700}
+.theory .card .card-body .tag{
+  display:inline-block;font-size:.64rem;font-weight:700;font-family:var(--mono);
+  padding:.06rem .45rem;border-radius:4px;background:var(--teal-tint);color:var(--teal-deep);
+  border:1px solid rgba(13,110,100,.22);margin:0 .08rem;line-height:1.4;
+}
+.theory .card .card-body .row{
+  display:flex;gap:.35rem;flex-wrap:wrap;margin:.3rem 0;
+}
+.theory .card .card-body .pill{
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:.66rem;padding:.2rem .55rem;border-radius:6px;
+  background:var(--paper);border:1px solid var(--line);color:var(--ink-2);
+  transition:color var(--fade),border-color var(--fade),background-color var(--fade),transform var(--press);
+  cursor:pointer;line-height:1.45;
+}
+.theory .card .card-body .pill:active{transform:scale(.96)}
+.theory .card .card-body .pill b{color:var(--ink)}
+.theory .card .card-body .highlight{color:var(--ink);font-weight:600}
+.theory .card .card-body .pill.active{background:var(--teal);border-color:var(--teal-deep);color:var(--paper)}
+
+/* ─── ECUACIONES ─── */
+.eq-block{
+  background:var(--paper-2);border:1px solid var(--line-soft);border-radius:var(--radius-sm);
+  padding:.38rem .6rem;margin:.3rem 0;font-size:.86rem;text-align:center;
+}
+.eq-block .katex{color:var(--ink)}
+
+/* ─── CONCEPT FLOW ─── */
+.concept-flow{
+  display:flex;align-items:center;justify-content:center;gap:.3rem;
+  padding:.35rem;background:var(--paper-2);border-radius:var(--radius-sm);
+  border:1px solid var(--line);margin-top:.15rem;flex-shrink:0;
+}
+.concept-flow .step{
+  font-size:.64rem;font-weight:600;color:var(--ink-3);text-align:center;
+  padding:.26rem .4rem;border-radius:6px;background:var(--card);flex:1;
+  border:1px solid transparent;transition:color var(--fade),border-color var(--fade),background-color var(--fade),transform var(--press);cursor:pointer;
+}
+.concept-flow .step.done{color:var(--teal-deep);border-color:rgba(13,110,100,.35);background:var(--teal-tint)}
+.concept-flow .arrow{color:var(--line);font-size:.75rem;flex-shrink:0}
+.concept-flow .step:active{transform:scale(.96)}
+
+/* ─── CAJA DE APUNTES (detalle del docente) ─── */
+.apuntes{
+  background:var(--amber-tint);border:1px solid rgba(154,91,0,.3);border-radius:8px;
+  padding:.6rem .75rem;margin-top:.4rem;font-size:.7rem;line-height:1.5;flex-shrink:0;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.4);
+}
+.apuntes .a-hdr{
+  display:flex;align-items:center;gap:.4rem;font-weight:700;
+  color:var(--amber-deep);margin-bottom:.2rem;letter-spacing:.03em;
+}
+.apuntes .a-text{color:#5d460f}
+.apuntes .a-text strong{color:#4a3709}
+
+/* ─── PANEL DE SIMULACIÓN ─── */
+.sim-area{
+  background:var(--paper-3);border:1px solid var(--line);border-radius:var(--radius);
+  position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;
+  min-height:200px;box-shadow:inset 0 2px 8px rgba(35,44,54,.06);
+}
+.sim-area canvas.sim{width:100%;height:100%;display:block}
+.sim-col{display:flex;flex-direction:column;gap:.55rem;min-height:0;overflow-y:auto}
+.sim-col .sim-area{flex:1 1 auto}
+.sim-placeholder{text-align:center;color:var(--ink-3);padding:1rem}
+.sim-placeholder .ico{font-size:2rem;display:block;opacity:.4;margin-bottom:.3rem}
+.sim-placeholder p{font-size:.75rem}
+
+/* ─── BARRA DE CONTROL ─── */
+.prof-controls{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:.42rem .8rem;display:flex;align-items:center;gap:.6rem;
+  font-size:.68rem;color:var(--ink-2);min-height:36px;flex-wrap:wrap;
+}
+.prof-controls .badge{
+  padding:.18rem .55rem;border-radius:6px;background:var(--teal-tint);
+  color:var(--teal-deep);font-family:var(--mono);font-size:.62rem;font-weight:700;
+  border:1px solid rgba(13,110,100,.22);flex-shrink:0;
+}
+.prof-controls label{display:flex;align-items:center;gap:.3rem;cursor:pointer;flex-shrink:0;font-size:.64rem}
+.prof-controls input[type="range"]{width:74px;accent-color:var(--teal);}
+.prof-controls input[type="number"]{width:58px;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:.14rem .3rem;font-size:.66rem;color:var(--ink);font-family:var(--mono)}
+.prof-controls select{
+  background:var(--card);color:var(--ink);border:1px solid var(--line);
+  border-radius:6px;padding:.18rem .4rem;font-size:.64rem;cursor:pointer;
+}
+.prof-controls button{
+  background:var(--paper);border:1px solid var(--line);color:var(--ink-2);
+  padding:.22rem .6rem;border-radius:6px;cursor:pointer;font-size:.64rem;
+  transition:border-color var(--fade),color var(--fade),background-color var(--fade),transform var(--press);font-weight:600;
+}
+.prof-controls button:active{transform:scale(.96)}
+.prof-controls .readout{
+  font-family:var(--mono);font-size:.68rem;color:var(--teal-deep);font-weight:700;
+  background:var(--teal-tint);border:1px solid rgba(13,110,100,.22);
+  padding:.14rem .5rem;border-radius:6px;margin-left:auto;flex-shrink:0;
+}
+
+/* ─── TABLAS MINI ─── */
+.data-mini{font-size:.66rem;width:100%;border-collapse:collapse}
+.data-mini th{
+  color:var(--teal-deep);font-weight:700;text-align:left;padding:.18rem .3rem;
+  border-bottom:1px solid var(--line);text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;
+}
+.data-mini td{padding:.16rem .3rem;border-bottom:1px solid var(--line-soft);color:var(--ink-2)}
+.data-mini td:last-child{font-family:var(--mono);color:var(--ink);font-size:.62rem}
+.data-mini tr{cursor:pointer}
+.data-mini .table-caption{font-size:.56rem;color:var(--ink-3);padding:.14rem .3rem;font-style:italic}
+.data-mini td b{color:var(--ink)}
+
+/* ─── ANIMACIÓN (un solo momento autorizado) ─── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.slide.active .card{animation:fadeUp .48s cubic-bezier(.22,1,.36,1) both}
+.slide.active .card:nth-child(2){animation-delay:.07s}
+.slide.active .card:nth-child(3){animation-delay:.14s}
+.slide.active .card:nth-child(4){animation-delay:.21s}
+.slide.active .eq-block{animation:fadeUp .48s .2s both}
+.slide.active .sim-area,.slide.active .apuntes,.slide.active .prof-controls{animation:fadeUp .48s .1s both}
+.slide-full.active{animation:fadeUp .5s cubic-bezier(.22,1,.36,1)}
+/* Revisitar una diapositiva = ya la conocemos → reveal instantáneo,
+   sin repetir la entrada. */
+.slide.instant .card,.slide.instant .eq-block,.slide.instant .sim-area,
+.slide.instant .apuntes,.slide.instant .prof-controls,.slide-full.instant{animation:none!important}
+
+/* ─── NAVEGACIÓN INFERIOR ─── */
+.nav-bar{
+  position:fixed;bottom:0;left:0;right:0;z-index:30;
+  background:linear-gradient(0deg,rgba(245,240,228,.97) 58%,rgba(245,240,228,0));
+  padding:.6rem 2rem .85rem;
+  display:flex;justify-content:center;align-items:center;gap:.55rem;pointer-events:none;
+}
+.nav-bar>*{pointer-events:auto}
+.nav-btn{
+  background:var(--card);border:1px solid var(--line);color:var(--ink-2);
+  width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:.85rem;
+  display:flex;align-items:center;justify-content:center;
+  transition:background-color var(--fade),color var(--fade),border-color var(--fade),transform var(--press);
+}
+.nav-btn:active{transform:scale(.9)}
+.nav-dots{display:flex;gap:.3rem;padding:0 .4rem}
+.nav-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--line);
+  cursor:pointer;transform-origin:center;
+  transition:background-color var(--fade),transform var(--slide);border:none;
+}
+.nav-dot.active{background:var(--teal);transform:scaleX(2.85)}
+.slide-counter{font-size:.58rem;font-family:var(--mono);color:var(--ink-3);letter-spacing:.06em}
+.nav-module-label{font-size:.58rem;color:var(--teal-deep);background:var(--card);border:1px solid var(--line);padding:.14rem .55rem;border-radius:6px;font-weight:600}
+
+/* ─── TOOLTIP CANVAS ─── */
+.canvas-tooltip{
+  position:absolute;pointer-events:none;z-index:5;
+  background:rgba(251,248,240,.96);border:1px solid var(--line);
+  border-radius:6px;padding:.3rem .6rem;font-size:.62rem;
+  color:var(--ink-2);display:none;max-width:190px;box-shadow:var(--shadow);
+}
+.canvas-tooltip b{color:var(--teal-deep)}
+
+/* ─── TABLA INTERACTIVA ─── */
+.interactive-table{width:100%;border-collapse:collapse;font-size:.66rem}
+.interactive-table th{
+  color:var(--teal-deep);font-weight:700;text-align:left;
+  padding:.22rem .4rem;border-bottom:1px solid var(--line);
+  position:sticky;top:0;background:var(--card);z-index:1;
+  text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;
+}
+.interactive-table td{
+  padding:.18rem .4rem;border-bottom:1px solid var(--line-soft);
+  color:var(--ink-2);transition:background-color var(--fade),color var(--fade);
+}
+.interactive-table td:last-child{font-family:var(--mono);color:var(--ink);font-size:.62rem}
+.interactive-table tr{cursor:pointer;transition:background-color var(--fade),color var(--fade)}
+.interactive-table tr.highlight td{background:var(--teal-tint);color:var(--teal-deep)}
+.interactive-table .table-caption{font-size:.56rem;color:var(--ink-3);padding:.14rem .4rem;font-style:italic}
+
+/* ─── FIGURAS DE LIBRO ─── */
+.figure-pair{display:flex;gap:.6rem;height:100%;align-items:stretch}
+.figure-pair figure{
+  flex:1;display:flex;flex-direction:column;gap:.3rem;align-items:center;
+  justify-content:center;background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius-sm);padding:.4rem;min-width:0;
+}
+.figure-pair figure img{max-width:100%;max-height:66%;object-fit:contain;border-radius:4px}
+.figure-pair figcaption{font-size:.56rem;color:var(--ink-3);text-align:center;line-height:1.4;font-style:italic}
+.figure-pair figure .fig-num{
+  font-family:var(--mono);font-size:.54rem;font-weight:700;color:var(--teal-deep);
+  letter-spacing:.1em;
+}
+
+/* ─── HOVER SOLO PARA DISPOSITIVOS DE PRECISIÓN ─── */
+@media (hover:hover) and (pointer:fine){
+  .module-preview .mpill:hover{border-color:var(--teal);color:var(--teal-deep);transform:translateY(-1px)}
+  .theory .card .card-body .pill:hover{border-color:var(--teal);color:var(--teal-deep);background:var(--card)}
+  .nav-btn:hover{background:var(--teal);color:var(--paper);border-color:var(--teal)}
+  .module-tab:hover{color:var(--ink-2);background:var(--paper-3)}
+  .concept-flow .step:hover{border-color:var(--teal);color:var(--teal-deep)}
+  .slide-full .start-btn:hover{background:var(--teal-deep);box-shadow:0 8px 20px rgba(35,44,54,.22)}
+  .prof-controls button:hover{border-color:var(--teal);color:var(--teal-deep)}
+  .interactive-table tr:hover td{background:var(--teal-tint);color:var(--ink)}
+  .data-mini tr:hover td{background:var(--teal-tint);color:var(--ink)}
+  .theory .card:hover{border-color:#bdb09a}
+  .nav-dot:hover{background:var(--ink-3)}
+}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:820px){
+  .slide,.slide-full{padding:3.2rem .7rem 3.6rem}
+  .content-grid{grid-template-columns:1fr!important;gap:.55rem}
+  .slide-full h1{font-size:2rem}
+  .module-bar{padding:.3rem .7rem 0;gap:.15rem;overflow-x:auto}
+  .brand-mark{display:none}
+  .module-tab{font-size:.56rem;padding:.3rem .6rem .35rem;white-space:nowrap}
+  .module-tab .mod-badge{display:none}
+  .nav-bar{padding:.3rem .7rem .5rem}
+  .theory .card .card-hdr{font-size:.66rem}
+  .module-header .msub{display:none}
+  .prof-controls .readout{flex-shrink:1;max-width:100%}
+}
+@media(min-width:1800px){
+  .slide,.slide-full{padding:3.6rem 2.6rem 5rem}
+  .content-grid{gap:1rem}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  /* las entradas de slide conservan un fade de opacidad (comprensión), sin movimiento */
+  @keyframes fadeUp{from{opacity:0}to{opacity:1}}
+  .slide.active .card,.slide.active .eq-block,.slide.active .sim-area,.slide.active .apuntes,.slide.active .prof-controls,.slide-full.active{animation-duration:.3s!important;animation-delay:0s!important}
+}
+
+/* ── Adiciones específicas del capítulo 12 ── */
+.eq-block{position:relative;overflow-x:auto}
+.eq-block .eqno{position:absolute;right:.2rem;top:-.05rem;font-family:var(--mono);font-size:.6rem;color:var(--ink-3)}
+.table-caption{font-size:.56rem;color:var(--ink-3);padding:.2rem .3rem .1rem;font-style:italic}
+.three-stage{position:relative;width:100%;height:100%;min-height:280px;border-radius:var(--radius);overflow:hidden;background:
+  radial-gradient(circle at 50% 30%, #fbf7ec 0%, #efe7d4 60%, #e6dcc4 100%);}
+.three-stage canvas{display:block;width:100%!important;height:100%!important;cursor:grab;}
+.three-stage canvas:active{cursor:grabbing;}
+.three-hud{position:absolute;left:10px;bottom:10px;display:flex;gap:.4rem;align-items:center;z-index:3;flex-wrap:wrap;}
+.three-hud .badge{background:rgba(255,253,248,.9);border:1px solid var(--line);color:var(--ink-2);
+  padding:2px 8px;border-radius:99px;font:600 .62rem/1 var(--sans);letter-spacing:.02em;}
+.three-hud button{background:var(--teal);color:var(--paper);border:none;border-radius:99px;
+  padding:4px 11px;font:700 .66rem/1 var(--sans);cursor:pointer;transition:transform .12s ease,background .12s ease;}
+.three-hud button:hover{background:var(--teal-deep);}
+.three-hud button:active{transform:scale(.95);}
+.three-cap{position:absolute;right:10px;top:10px;background:rgba(255,253,248,.82);border:1px solid var(--line);
+  color:var(--ink-3);padding:3px 9px;border-radius:8px;font:600 .6rem/1 var(--sans);z-index:3;pointer-events:none;}
+.three-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  color:var(--ink-3);font:600 .72rem/1 var(--sans);z-index:2;}
+/* Ocultar barras de pestañas de módulos (solicitado): limpiar la presentación */
+.module-bar,.module-tab,.module-preview,.mpill{display:none!important}
+</style>
+<script defer src="./vendor/three.min.js"></script>
+</head>
+<body>
+<!-- ═══════════ PORTADA ═══════════ -->
+<div class="slide-full active" data-slide="0" data-module="0">
+  <h1>
+    <span class="chapno">Capítulo 13</span>
+    Sistemas de Retroalimentación y Control
+  </h1>
+  <p class="subtitle">Cómo el cuerpo se mantiene a sí mismo. De la homeostasis del líquido extracelular a la teoría de control con retardo (el criterio de estabilidad \(g\tau_d\le\pi/2\)), pasando por la regulación de la temperatura corporal (bucle abierto vs cerrado), la presión arterial (barorreceptores del seno carotídeo), el ejercicio y el reflejo de la pupila (un oscilador con latencia). Con simulaciones interactivas que sustituyen las figuras del libro de Herman.</p>
+  <div class="rule"></div>
+  <button class="start-btn" onclick="goModule(1)">Comenzar la cátedra →</button>
+  <p class="book-ref">Physics of the Human Body — Irving P. Herman · Springer (2016)</p>
+</div>
+<!-- ═══════════ SLIDE 1 · M1 Homeostasis ═══════════ -->
+<div class="slide" data-slide="1" data-module="1">
+  <div class="module-header">
+    <span class="mnum">13 · 1</span>
+    <span class="mtitle">Homeostasis: el cuerpo se mantiene a sí mismo</span>
+    <span class="msub">\(\text{LEC}\approx \tfrac13\) del líquido corporal</span>
+    <span class="mslide-count">1 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🎯</span> El líquido extracelular (LEC)</div>
+        <div class="card-body">
+          <p>La <strong>homeostasis</strong> es la estabilidad de las condiciones químicas y físicas del líquido que rodea a las células. Ese <strong>líquido extracelular</strong> (LEC) es ≈ 1/3 del líquido corporal total: plasma sanguíneo + líquido intersticial. Los otros 2/3 son <strong>intracelulares</strong>.</p>
+          <div class="eq-block">\[ \text{LEC} \approx \frac13\,\text{líquido corporal}\quad (\text{plasma}+\text{intersticial})\qquad \frac23\,\text{intracelular} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🧪</span> Ocho variables controladas</div>
+        <div class="card-body">
+          <p>El LEC se controla para regular:</p>
+          <div class="row">
+            <span class="pill"><b>a</b> temperatura corporal</span>
+            <span class="pill"><b>b</b> presión en los vasos</span>
+            <span class="pill"><b>c</b> O₂ y CO₂</span>
+            <span class="pill"><b>d</b> pH</span>
+            <span class="pill"><b>e</b> Na⁺/K⁺/Ca²⁺</span>
+            <span class="pill"><b>f</b> volumen</span>
+            <span class="pill"><b>g</b> osmolalidad</span>
+            <span class="pill"><b>h</b> glucosa</span>
+          </div>
+          <p>Y también: iris (luz), músculos ciliares (acomodación), fuerza de agarre (retroalimentación de fuerza normal).</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-1">La homeostasis es <strong>retroalimentación y control continuos</strong>: nada del cuerpo funciona "a ciegas". Las ocho variables de la barra derecha son el menú del termostato interno.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-ho" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">LEC</span>
+        <span class="readout" id="ho_out">8 variables en rango</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 2 · M1 Diagrama de bloques ═══════════ -->
+<div class="slide" data-slide="2" data-module="1">
+  <div class="module-header">
+    <span class="mnum">13 · 1</span>
+    <span class="mtitle">El diagrama de bloques del control</span>
+    <span class="msub">sensor → integración → efector → respuesta</span>
+    <span class="mslide-count">2 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🔁</span> Los cinco eslabones</div>
+        <div class="card-body">
+          <p>La Fig. 13.2 representa la retroalimentación y el control como un lazo:</p>
+          <div class="concept-flow">
+            <span class="step" onclick="blkStep(0)">① Sensor / receptor</span><span class="arrow">→</span>
+            <span class="step" onclick="blkStep(1)">② Integración (cerebro)</span><span class="arrow">→</span>
+            <span class="step" onclick="blkStep(2)">③ Efector</span><span class="arrow">→</span>
+            <span class="step" onclick="blkStep(3)">④ Respuesta</span><span class="arrow">↺</span>
+            <span class="step" onclick="blkStep(4)">⑤ Retroalimentación</span>
+          </div>
+          <p>Ejemplo (presión arterial): el <strong>barorreceptor</strong> mide la presión → la señal va al <strong>cerebro</strong> por nervios → induce una respuesta en el <strong>corazón</strong> (vía motora) → cambia la frecuencia cardíaca o el volumen de eyección → el éxito se mide volviendo a medir la presión → <strong>retroalimentación</strong>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🧭</span> Más allá del termostato</div>
+        <div class="card-body">
+          <p>El mismo esquema rige la respiración (Fig. 13.1), el cardiovascular (Fig. 13.6) y la temperatura (Fig. 13.4) durante el ejercicio. Hasta la fuerza de agarre usa retroalimentación de la fuerza normal: si el objeto «cede», aplicamos menos fuerza.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-2">Haz clic en cada eslabón del flujo de arriba: el diagrama de la derecha lo resalta y explica de qué parte anatómica se trata. El lazo nunca es abierto en el cuerpo sano.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="three-stage" id="stage-loop">
+        <div class="three-loading" id="load-loop">cargando modelo 3D…</div>
+        <div class="three-cap">lazo de control · arrastra para orbitar</div>
+        <div class="three-hud">
+          <span class="badge">⑤ eslabones</span>
+          <button id="loop-rotate" onclick="window.__cap13&&window.__cap13.toggleRotate('loop')">⏸ rotación</button>
+          <button id="loop-flow" onclick="window.__cap13&&window.__cap13.toggleFlow('loop')">▶ flujo</button>
+          <button id="loop-step" onclick="window.__cap13&&window.__cap13.cycleNode('loop')">eslabón ▸</button>
+        </div>
+      </div>
+      <canvas id="sim-bl" class="sim" style="display:none"></canvas>
+      <div class="prof-controls">
+        <span class="badge">lazo</span>
+        <span class="readout" id="bl_out">⑤ eslabones conectados</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 3 · M1 Negativa vs positiva ═══════════ -->
+<div class="slide" data-slide="3" data-module="1">
+  <div class="module-header">
+    <span class="mnum">13 · 1</span>
+    <span class="mtitle">Retroalimentación negativa y positiva</span>
+    <span class="msub">\(P\) regresa al punto de consigna \(P_0\)</span>
+    <span class="mslide-count">3 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🔄</span> Negativa: corrige (la común)</div>
+        <div class="card-body">
+          <p>La retroalimentación <strong>negativa</strong> invierte la dirección del cambio para mantener el parámetro cerca del punto de consigna \(P_0\), dentro de un rango delimitado por valores permitidos (Fig. 13.3a) — como un termostato de habitación, con un rango de varios grados. <strong>Muy común</strong> en el cuerpo.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">⏫</span> Positiva: amplifica (rara, peligrosa)</div>
+        <div class="card-body">
+          <p>La <strong>positiva</strong> produce un mayor cambio en la misma dirección (Fig. 13.3b). Poco común. Ejemplos:</p>
+          <p>🌿 <strong>Lactancia</strong> → más leche estimula más succión → más leche.</p>
+          <p>💔 <strong>Insuficiencia cardíaca congestiva terminal</strong>: el corazón eyecta mal → líquido en venas/pulmones → los riñones, al detectar bajo flujo, devuelven sal y agua a la circulación → el volumen sube sin límite → más carga → más deterioro → <em>más retención</em>, acelerando la muerte.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-3">Cambia el tipo de bucle y la perturbación inicial: la negativa devuelve \(P\) al consigna; la positiva lo aleja y diverge. El caso de la insuficiencia cardíaca es el ejemplo canónico de retroalimentación positiva patológica.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-fb" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">bucle</span>
+        <label>Tipo <select id="fb_sel"><option value="0">Negativa</option><option value="1">Positiva</option></select></label>
+        <label>ΔP₀ <input type="range" id="fb_dp" min="-6" max="6" value="3" step="0.5"> <span id="fb_dpv">+3</span></label>
+        <span class="readout" id="fb_out">negativa · regresa a P₀</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 4 · M1 Estabilidad térmica del cuerpo ═══════════ -->
+<div class="slide" data-slide="4" data-module="2">
+  <div class="module-header">
+    <span class="mnum">12 · 2</span>
+    <span class="mtitle">La estabilidad térmica del cuerpo</span>
+    <span class="msub">\(37\pm 2\ ^\circ\mathrm{C}\) · umbrales de peligro</span>
+    <span class="mslide-count">4 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🌡️</span> La zona de supervivencia</div>
+        <div class="card-body">
+          <p>La temperatura central normal es \(37\pm 2\ ^\circ\mathrm{C}\) (\(98{,}6\pm 3{,}6\ ^\circ\mathrm{F}\)). Fuera de ese margen, problemas:</p>
+          <div class="row">
+            <span class="pill"><b>41 °C</b> convulsiones (SNC)</span>
+            <span class="pill"><b>45 °C</b> desnaturalización → muerte</span>
+            <span class="pill"><b>33 °C</b> pérdida de conocimiento</span>
+            <span class="pill"><b>30 °C</b> falla el control térmico</span>
+            <span class="pill"><b>28 °C</b> fibrilación → muerte</span>
+          </div>
+          <p>Punto de consigna individual ±0,3 °C; media de piel ≈ 33 °C (el cap. 6 usó 34 °C). Piel > 34,5 °C → sudoración; < 30 °C → escalofríos.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🧊</span> Notas de sexo y edad</div>
+        <div class="card-body">
+          <p>Las mujeres prefieren ambientes hasta ~3 °C más cálidos (mismo confort a \(T_\text{piel}\approx 33\ ^\circ\mathrm{C}\); las oficinas usan BMR masculino de reposo). Con la edad hay menos calor metabólico, menos vasoconstricción y menos sudor, pero el sistema no se compromete mucho si se descuentan enfermedades crónicas y sedentarismo.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-4">La escala térmica es estrecha: entre 33 y 41 °C el cuerpo aún se defiende; a 45 °C las proteínas se desnaturalizan. Mueve el cursor por la barra derecha para ver en qué zona cae cada temperatura.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-th" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">escala</span>
+        <label>T (°C) <input type="range" id="th_v" min="26" max="47" value="37" step="0.5"> <span id="th_vv">37,0</span></label>
+        <span class="readout" id="th_out">37 °C · normal</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 5 · M2 Teoría de control (eco) ═══════════ -->
+<div class="slide" data-slide="5" data-module="2">
+  <div class="module-header">
+    <span class="mnum">13 · 2</span>
+    <span class="mtitle">Teoría de control (tema avanzado)</span>
+    <span class="msub">\(dp/dt = -g\,p(t-\tau_d)\)</span>
+    <span class="mslide-count">5 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">⚙️</span> Retroalimentación con retardo</div>
+        <div class="card-body">
+          <p>Para mantener \(P\) cerca de \(P_0\) con ganancia \(g\):</p>
+          <div class="eq-block"><span class="eqno">(13.1)</span>\[ dP = -g(P-P_0)\,dt \]</div>
+          <p>No es instantánea: hay un retardo \(\tau_d\) (detección, transmisión, procesamiento, respuesta). Con \(p=P-P_0\):</p>
+          <div class="eq-block"><span class="eqno">(13.3)</span>\[ \frac{dp(t)}{dt} = -g\,p(t-\tau_d) \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🌀</span> Solución con \(p(t)=p\,e^{zt}\)</div>
+        <div class="card-body">
+          <p>Con \(z=x+iy\): \(x<0\) decae, \(x>0\) diverge (indeseable), \(y\neq 0\) oscila:</p>
+          <div class="eq-block"><span class="eqno">(13.4)</span>\[ z = -g\,e^{-z\tau_d} \]</div>
+          <p>Oscilación pura (\(x=0\)): \(g\tau_d=\pi/2\). Para \(x\) pequeño:</p>
+          <div class="eq-block"><span class="eqno">(13.8)</span>\[ x \approx \frac{1}{\tau_d}\!\left(1-\frac{\pi}{2g\tau_d}\right) \]</div>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-5">El retardo \(\tau_d\) es el enemigo de la estabilidad: cuanto mayor la ganancia deseada, más fácil cruzar el límite \(\pi/2\). La siguiente slide dibuja exactamente esto.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-ec" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">criterio</span>
+        <span class="readout" id="ec_out">g·τd = π/2 · límite de estabilidad</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 6 · M2 P(t) con g y τd ═══════════ -->
+<div class="slide" data-slide="6" data-module="2">
+  <div class="module-header">
+    <span class="mnum">13 · 2</span>
+    <span class="mtitle">Convergencia, oscilación y divergencia</span>
+    <span class="msub">\(g\tau_d \le \pi/2\)</span>
+    <span class="mslide-count">6 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">📉</span> El criterio de estabilidad</div>
+        <div class="card-body">
+          <p>Para \(g\tau_d < \pi/2\): \(x<0\), \(P\) oscila amortiguada hacia \(P_0\). Para \(g\tau_d=\pi/2\): oscilación sostenida. Para \(g\tau_d>\pi/2\): \(x>0\), \(P\) diverge (inestable).</p>
+          <div class="eq-block"><span class="eqno">(13.9)</span>\[ g\tau_d \le \frac{\pi}{2} \]</div>
+          <p>Esto fija el <strong>límite superior de ganancia</strong> para un \(\tau_d\) dado.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🎚️</span> Juega con g y τd</div>
+        <div class="card-body">
+          <p>Cambia la ganancia \(g\) y el retardo \(\tau_d\): verás cómo la desviación \(p(t)\) decae, oscila o se dispara. La línea verde marca el límite \(g\tau_d=\pi/2\).</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-6">▶ anima \(p(t)\): con \(g\tau_d < \pi/2\) regresa al consigna; en el límite oscila sin fin; más allá diverge. Los sistemas del cuerpo viven muy por debajo del límite.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-ptr" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">P(t)</span>
+        <button id="ptr_play" onclick="togglePtr()">▶</button>
+        <label>g <input type="range" id="ptr_g" min="0.2" max="6" value="1.5" step="0.1"> <span id="ptr_gv">1,5</span></label>
+        <label>τd <input type="range" id="ptr_td" min="0.1" max="3" value="1" step="0.1"> <span id="ptr_tdv">1,0</span></label>
+        <span class="readout" id="ptr_out">g·τd = 1,50 · estable</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 7 · M2 Región de estabilidad ═══════════ -->
+<div class="slide" data-slide="7" data-module="2">
+  <div class="module-header">
+    <span class="mnum">13 · 2</span>
+    <span class="mtitle">Mapa de estabilidad en el plano (g, τd)</span>
+    <span class="msub">todo lo que queda bajo la curva \(g = \frac{\pi}{2\tau_d}\)</span>
+    <span class="mslide-count">7 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🟢</span> El semiplano estable</div>
+        <div class="card-body">
+          <p>El límite \(g\tau_d=\pi/2\) es una hipérbola en el plano \((g,\tau_d)\). Por debajo (producto menor): el sistema es estable. Por encima: inestable.</p>
+          <div class="eq-block">\[ g_\text{máx} = \frac{\pi}{2\,\tau_d} \]</div>
+          <p>El problema 13.3 pide justo esto: con \(\tau_d=1\ \text{s}\) → \(g_\text{máx}=\pi/2\approx 1{,}57\); con \(\tau_d=1\ \text{ms}\) → \(g_\text{máx}\approx 1570\).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🔭</span> Por qué importa</div>
+        <div class="card-body">
+          <p>Retardos grandes (nervios lentos, procesamiento largo) obligan a bajar la ganancia. El cuerpo compensa con bucles de bucle cerrado de respuesta rápida para mantenerse lejos del borde.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-7">Mueve el punto de prueba sobre el plano: se pinta verde si queda bajo la curva límite, rojo si la cruza. Observa cómo un τd pequeño permite ganas enormes.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-reg" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">región</span>
+        <label>g <input type="range" id="reg_g" min="0.2" max="6" value="1.5" step="0.1"> <span id="reg_gv">1,5</span></label>
+        <label>τd <input type="range" id="reg_td" min="0.1" max="3" value="1" step="0.1"> <span id="reg_tdv">1,0</span></label>
+        <span class="readout" id="reg_out">estable · g·τd = 1,50</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 8 · M3 Balance de calor ═══════════ -->
+<div class="slide" data-slide="8" data-module="3">
+  <div class="module-header">
+    <span class="mnum">13 · 3</span>
+    <span class="mtitle">Balance de calor del cuerpo</span>
+    <span class="msub">\((dQ/dt)_\text{neto} = 3\ \text{términos}\)</span>
+    <span class="mslide-count">8 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🔥</span> Conservación de la energía</div>
+        <div class="card-body">
+          <p>El calentamiento neto es la suma de tres modos (13.10):</p>
+          <div class="eq-block"><span class="eqno">(13.10)</span>\[ \left(\frac{dQ}{dt}\right)_\text{neto} = \left(\frac{dQ}{dt}\right)_\text{metabolismo} + \left(\frac{dQ}{dt}\right)_\text{pérdida pasiva} + \left(\frac{dQ}{dt}\right)_\text{controlado por el cuerpo} \]</div>
+          <p>El lado izquierdo es \(C\,dT/dt\), con capacidad calorífica \(C=60\ \text{kcal/}^\circ\mathrm{C}\) para 70 kg (\(c=0{,}83\)):</p>
+          <div class="eq-block"><span class="eqno">(13.11)</span>\[ C\,\frac{dT}{dt} = 60\,\frac{\text{kcal}}{^\circ\mathrm{C}}\,\frac{dT}{dt} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🏃</span> Metabolismo: el factor de actividad</div>
+        <div class="card-body">
+          <p>\(\left(\frac{dQ}{dt}\right)_\text{metabolismo}=f\cdot\text{BMR}\), con \(\text{BMR}=70\ \text{kcal/h}\) y \(f\) entre 1 y ~20:</p>
+          <div class="eq-block"><span class="eqno">(13.14)</span>\[ \frac{dT}{dt} = f\,\frac{70}{60} = 1{,}2\,f\ ^\circ\mathrm{C/h} \]</div>
+          <p>Con \(f=20\) (ejercicio pesado): \(24\ ^\circ\mathrm{C/h}\) — sin disipar no se sobrevive.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-8">Activa los tres términos en la barra derecha: el metabolismo (siempre positivo), la pérdida pasiva (negativa) y el control corporal (negativo al sudar, positivo al tiritar). El cuerpo ajusta el tercero para que la suma sea ~0.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-bq" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">dQ/dt</span>
+        <label>f <input type="range" id="bq_f" min="1" max="20" value="1" step="1"> <span id="bq_fv">1</span></label>
+        <label>Pérdida <input type="range" id="bq_l" min="0" max="150" value="25" step="5"> <span id="bq_lv">25</span></label>
+        <label>Control <input type="range" id="bq_c" min="-800" max="800" value="0" step="10"> <span id="bq_cv">0</span></label>
+        <span class="readout" id="bq_out">neto = 45 kcal/h</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 9 · M3 Bucle abierto ═══════════ -->
+<div class="slide" data-slide="9" data-module="3">
+  <div class="module-header">
+    <span class="mnum">13 · 3</span>
+    <span class="mtitle">Bucle abierto: sin control no hay caso</span>
+    <span class="msub">\(T(t)=T_\text{hab}+2{,}8f+(T_0-T_\text{hab}-2{,}8f)e^{-t/\tau_r}\)</span>
+    <span class="mslide-count">9 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🔓</span> Solo pérdida pasiva</div>
+        <div class="card-body">
+          <p>Con radiación y convección: \(-\lambda(T_\text{piel}-T_\text{hab})\), \(\lambda\approx 25\ \text{kcal/(h·°C)}\). La solución (13.16–13.27):</p>
+          <div class="eq-block"><span class="eqno">(13.22)</span>\[ \tau_r = \frac{C}{\lambda} = \frac{60}{25} = 2{,}4\ \text{h} \]</div>
+          <div class="eq-block"><span class="eqno">(13.28)</span>\[ T_\text{estacionario} = T_\text{hab} + 2{,}8\,f\ ^\circ\mathrm{C} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🤔</span> Resultados absurdos</div>
+        <div class="card-body">
+          <p>Con \(T_\text{hab}=21\ ^\circ\mathrm{C}\): reposo \(f\approx 1\) → \(T_{ss}\approx 24\ ^\circ\mathrm{C}\) (frío); ejercicio \(f=10\) → \(T_{ss}\approx 49\ ^\circ\mathrm{C}\) (calor). Queremos \(T_{ss}-T_\text{hab}=16\ ^\circ\mathrm{C}\) → \(f\sim 6\) (natación lenta). Y \(\tau_r=2{,}4\ \text{h}\) → ~5 h en estabilizar: <strong>irrazonable</strong>. Falta el término de control.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-9">▶ anima T(t) en bucle abierto: con f=1 se estanca en 24 °C (frío) y con f=10 se va a 49 °C. El cuerpo nunca funciona así; el bucle cerrado lo arregla.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-oa" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">abierto</span>
+        <button id="oa_play" onclick="toggleOa()">▶</button>
+        <label>f <input type="range" id="oa_f" min="1" max="20" value="1" step="1"> <span id="oa_fv">1</span></label>
+        <label>T_hab <input type="range" id="oa_th" min="0" max="35" value="21" step="1"> <span id="oa_thv">21</span></label>
+        <span class="readout" id="oa_out">f=1 · T_ss ≈ 24 °C</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 10 · M4 Bucle cerrado: sudoración ═══════════ -->
+<div class="slide" data-slide="10" data-module="4">
+  <div class="module-header">
+    <span class="mnum">13 · 4</span>
+    <span class="mtitle">Bucle cerrado: la sudoración lo arregla</span>
+    <span class="msub">\(\tau_r = C/(\lambda+K)\)</span>
+    <span class="mslide-count">10 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🥵</span> El término de control</div>
+        <div class="card-body">
+          <p>El cuerpo añade sudoración: \(-K_\text{sudor}(T_\text{cuerpo}-36{,}85\ ^\circ\mathrm{C})\), con \(K_\text{sudor}\sim 750\ \text{kcal/(h·°C)}\) para piel 33–38 °C (13.31–13.32). La constante de tiempo cae:</p>
+          <div class="eq-block"><span class="eqno">(13.33)</span>\[ \tau_r = \frac{C}{\lambda+K} \]</div>
+          <p>Con \(K/\lambda=30\): \(\tau_r = 2{,}4\ \text{h}/31 \approx 4{,}7\ \text{min}\) — una escala fisiológica razonable.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">💧</span> Vasomotora y pirógenos</div>
+        <div class="card-body">
+          <p>El control vasomotor envía sangre a vasos superficiales (enfría mejor) o al núcleo (conserva). Mecanismo de contracorriente (Fig. 6.19). El cuerpo pierde 1 L/h de sudor; si se evapora, con 540 kcal/L → hasta 540 kcal/h. Los <strong>pirógenos</strong> (toxinas bacterianas) suben el punto de consigna (fiebre): sentimos frío hasta alcanzarlo.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-10">Compara abierto (τr = 2,4 h) vs cerrado (τr = 4,7 min) en la barra derecha: la sudoración acelera la respuesta ~31×. Sin control, el cuerpo no estabiliza nunca.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-cc" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">τr</span>
+        <label>K_sudor <input type="range" id="cc_k" min="0" max="1500" value="750" step="10"> <span id="cc_kv">750</span></label>
+        <span class="readout" id="cc_out">τr abierto 2,4 h → cerrado 4,7 min</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 11 · M4 Pérdida por sudoración vs T ═══════════ -->
+<div class="slide" data-slide="11" data-module="4">
+  <div class="module-header">
+    <span class="mnum">13 · 4</span>
+    <span class="mtitle">Pérdida por sudoración vs temperatura</span>
+    <span class="msub">\(-K_\text{sudor}(T-36{,}85)\)</span>
+    <span class="mslide-count">11 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">📈</span> Una recta que salva la vida</div>
+        <div class="card-body">
+          <p>La Fig. 13.5 muestra la tasa de pérdida por sudoración en función de \(T_\text{cuerpo}\) central. Es cero cuando el núcleo está frío y crece linealmente para \(T>36{,}85\ ^\circ\mathrm{C}\):</p>
+          <div class="eq-block"><span class="eqno">(13.31)</span>\[ \left(\frac{dQ}{dt}\right)_\text{sudor} = -K_\text{sudor}(T_\text{cuerpo}-36{,}85\ ^\circ\mathrm{C}) \]</div>
+          <p>Con \(K_\text{sudor}\sim 750\ \text{kcal/(h·°C)}\) y piel 33–38 °C. El cuerpo puede perder 1 L/h de sudor; si se evapora, hasta 540 kcal/h.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🎛️</span> Equilibrio con el metabolismo</div>
+        <div class="card-body">
+          <p>En estado estacionario, la pérdida por sudor debe cancelar el exceso metabólico sobre el ambiente. La pendiente \(K_\text{sudor}\) decide qué tan bien el cuerpo sostiene \(37\ ^\circ\mathrm{C}\) bajo ejercicio.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-11">Mueve la temperatura central: a la izquierda de 36,85 °C no hay sudor (recta en cero); a la derecha, la pérdida sube linealmente. Esa pendiente es la ganancia de control del cuerpo.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-sw" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">K_sudor</span>
+        <label>T cuerpo <input type="range" id="sw_t" min="34" max="42" value="38" step="0.1"> <span id="sw_tv">38,0</span></label>
+        <label>K <input type="range" id="sw_k" min="100" max="1500" value="750" step="10"> <span id="sw_kv">750</span></label>
+        <span class="readout" id="sw_out">pérdida ≈ 862 kcal/h</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 12 · M4 Comparativa τr abierto vs cerrado ═══════════ -->
+<div class="slide" data-slide="12" data-module="4">
+  <div class="module-header">
+    <span class="mnum">13 · 4</span>
+    <span class="mtitle">¿Por qué el bucle cerrado importa?</span>
+    <span class="msub">\(\tau_r: 2{,}4\ \text{h} \to 4{,}7\ \text{min}\)</span>
+    <span class="mslide-count">12 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">⏱️</span> Dos constantes de tiempo</div>
+        <div class="card-body">
+          <p>Bucle abierto (solo pérdida pasiva): \(\tau_r = C/\lambda = 2{,}4\ \text{h}\) → el cuerpo tardaría ~5 h en estabilizar. Bucle cerrado (con sudoración, \(K/\lambda=30\)): \(\tau_r = C/(\lambda+K) = 2{,}4/31 \approx 4{,}7\ \text{min}\).</p>
+          <div class="eq-block">\[ \tau_r^\text{abierto}=2{,}4\ \text{h}\qquad \tau_r^\text{cerrado}\approx 4{,}7\ \text{min} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🔁</span> La lección del capítulo</div>
+        <div class="card-body">
+          <p>Los resultados absurdos del bucle abierto (24 °C en reposo, 49 °C en ejercicio) demuestran que el <strong>término de control es imprescindible</strong>. Sin retroalimentación, el cuerpo no sobrevive. El control aumenta la ganancia efectiva para operar en escalas de minutos.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-12">▶ anima la respuesta T(t) abierto vs cerrado ante el mismo escalón: el abierto apenas se mueve en 5 h; el cerrado llega a 37 °C en minutos. La diferencia es el lazo de control.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-cr" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">τr</span>
+        <button id="cr_play" onclick="toggleCr()">▶</button>
+        <span class="readout" id="cr_out">abierto vs cerrado · factor 31×</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 13 · M5 Barorreceptores y señal ═══════════ -->
+<div class="slide" data-slide="13" data-module="5">
+  <div class="module-header">
+    <span class="mnum">13 · 5</span>
+    <span class="mtitle">Presión arterial: el barorreceptor</span>
+    <span class="msub">\(F + K_1\dot F = K_2(p_b-p_t)+K_3\dot p_b\)</span>
+    <span class="mslide-count">13 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">❤️</span> El sensor del seno carotídeo</div>
+        <div class="card-body">
+          <p>Los barorreceptores del seno carotídeo detectan la presión arterial \(p_b\) y emiten una señal por el nervio del seno carotídeo al cerebro. La frecuencia de disparo \(F\) es proporcional al exceso sobre un umbral \(p_t\) (modelo tipo Kelvin, como 4.68):</p>
+          <div class="eq-block"><span class="eqno">(13.34)</span>\[ F + K_1\frac{dF}{dt} = K_2(p_b-p_t) + K_3\frac{dp_b}{dt} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📐</span> Dos términos derivados</div>
+        <div class="card-body">
+          <p>El término \(dp_b/dt\) describe el <strong>sobreimpulso</strong> (overshoot) de la frecuencia; el término \(dF/dt\) explica que las tasas de disparo siguen cambiando aunque la presión ya se estabilizó.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-13">Mueve la presión pb: la frecuencia F sube por encima del umbral pt con un sobreimpulso cuando pb cambia rápido. Es el mismo tipo de ecuación que el modelo viscoelástico de Kelvin.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-br" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">baro</span>
+        <label>p_b <input type="range" id="br_p" min="40" max="200" value="100" step="1"> <span id="br_pv">100</span></label>
+        <label>p_t <input type="range" id="br_pt" min="40" max="120" value="80" step="1"> <span id="br_ptv">80</span></label>
+        <span class="readout" id="br_out">F ∝ pb − pt</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 14 · M5 Ganancia de bucle ═══════════ -->
+<div class="slide" data-slide="14" data-module="5">
+  <div class="module-header">
+    <span class="mnum">13 · 5</span>
+    <span class="mtitle">La ganancia de la retroalimentación</span>
+    <span class="msub">\(\Delta p_a = -g\,\Delta p_b\)</span>
+    <span class="mslide-count">14 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🔻</span> Respuesta proporcional</div>
+        <div class="card-body">
+          <p>Un cambio en la presión de los barorreceptores \(\Delta p_b\) induce una caída de la presión arterial \(\Delta p_a\):</p>
+          <div class="eq-block"><span class="eqno">(13.35)</span>\[ \Delta p_a = -g\,\Delta p_b \]</div>
+          <p>Más exacto, incluyendo el sobreimpulso al subir:</p>
+          <div class="eq-block"><span class="eqno">(13.36)</span>\[ \Delta p_a = -g\,\Delta p_b - K_4\frac{dp_b^+}{dt} \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🔢</span> Ganancias medidas</div>
+        <div class="card-body">
+          <p>La ganancia de bucle abierto \(g_o\) medida va de 2 a 9 (perros y humanos, sistemas aislados sin retroalimentación). En bucle cerrado \(g_c\) puede ser menor; el cuerpo la <strong>reduce durante una hemorragia</strong> para mantener el flujo.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-14">Sube la ganancia g: una desviación Δpb pequeña produce una corrección Δpa grande (línea negativa). Con g entre 2 y 9, el cuerpo corrige bien; en hemorragia baja g a propósito.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-ga" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">ganancia</span>
+        <label>Δp_b <input type="range" id="ga_d" min="-40" max="40" value="20" step="1"> <span id="ga_dv">+20</span></label>
+        <label>g <input type="range" id="ga_g" min="0" max="9" value="4" step="0.5"> <span id="ga_gv">4,0</span></label>
+        <span class="readout" id="ga_out">Δp_a = −80 mmHg</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 15 · M6 Regulación durante el ejercicio ═══════════ -->
+<div class="slide" data-slide="15" data-module="6">
+  <div class="module-header">
+    <span class="mnum">13 · 6</span>
+    <span class="mtitle">El ejercicio: todo se regula a la vez</span>
+    <span class="msub">barorreceptores + mecanorreceptores + cerebro</span>
+    <span class="mslide-count">15 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🏃</span> Cardiovascular y ventilación</div>
+        <div class="card-body">
+          <p>Barorreceptores arteriales + mecanorreceptores de los músculos esqueléticos + impulsos de la región motora del cerebro → área cardiovascular de la médula → actividad simpática en corazón, vasos y médula suprarrenal → ↑ presión arterial y gasto cardíaco (Fig. 13.6).</p>
+          <p>Ventilación: quimiorreceptores carotídeos y aórticos + receptores de intercostales/pulmón/diafragma → ↑ frecuencia y profundidad respiratoria → regula O₂, CO₂ y pH arteriales (Fig. 13.1).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🌡️</span> Y la temperatura</div>
+        <div class="card-body">
+          <p>Durante el ejercicio el metabolismo sube y el cuerpo debe perder calor activamente (Fig. 13.4). Los tres sistemas (cardiovascular, ventilatorio, térmico) funcionan en paralelo, cada uno con su lazo de control.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-15">Mueve la intensidad de ejercicio: suben en conjunto la presión arterial, el gasto cardíaco y la ventilación, cada uno regulado por su retroalimentación. El cuerpo orquesta varios lazos a la vez.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-ex" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">ejercicio</span>
+        <label>Intensidad <input type="range" id="ex_i" min="0" max="100" value="50" step="1"> <span id="ex_iv">50</span></label>
+        <span class="readout" id="ex_out">PA ↑ · GC ↑ · ventilación ↑</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 16 · M6 Gasto cardíaco y ventilación vs ejercicio ═══════════ -->
+<div class="slide" data-slide="16" data-module="6">
+  <div class="module-header">
+    <span class="mnum">13 · 6</span>
+    <span class="mtitle">Curvas de respuesta al ejercicio</span>
+    <span class="msub">\(\text{GC}, \dot V \propto \text{intensidad}\)</span>
+    <span class="mslide-count">16 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">📊</span> Dos curvas que suben juntas</div>
+        <div class="card-body">
+          <p>El gasto cardíaco (GC) y la ventilación (\(\dot V\)) aumentan monótonamente con la intensidad del ejercicio, regulados por los lazos de retroalimentación del módulo anterior. La curva de ventilación es más empinada arriba de cierta intensidad (umbral anaeróbico).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🩺</span> Por qué se mide</div>
+        <div class="card-body">
+          <p>Estas curvas son la base de las pruebas de esfuerzo: capacidad aeróbica, umbral ventilatorio y diagnóstico cardiovascular. El control las mantiene dentro de límites seguros mientras el músculo pide más O₂.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-16">Desliza la intensidad: GC y ventilación crecen con ella. Por encima del umbral anaeróbico la ventilación se dispara para lavar el CO₂. Ambas curvas son salidas de lazos de control.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-cv" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">curvas</span>
+        <label>Intensidad <input type="range" id="cv_i" min="0" max="100" value="50" step="1"> <span id="cv_iv">50</span></label>
+        <span class="readout" id="cv_out">GC y ventilación suben</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 17 · M7 La pupila: modelo muscular ═══════════ -->
+<div class="slide" data-slide="17" data-module="7">
+  <div class="module-header">
+    <span class="mnum">13 · 7</span>
+    <span class="mtitle">La pupila: un lazo con latencia</span>
+    <span class="msub">\(\tau_x\dot x + x = R(t)\)</span>
+    <span class="mslide-count">17 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">👁️</span> Músculos circular y radial</div>
+        <div class="card-body">
+          <p>El tamaño de la pupila se controla por el constrictor pupilar (circular) y el dilatador (radial). El flujo luminoso \(\phi = I\,A\) (iluminancia × área). En estado estacionario, I↑ → A↓: retroalimentación negativa. Pero hay un retardo \(\tau\sim 180\text{–}400\ \text{ms}\).</p>
+          <div class="eq-block"><span class="eqno">(13.37)</span>\[ \tau_x\,\frac{dx(t)}{dt} + x(t) = R(t) \]</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🎯</span> El umbral de flujo</div>
+        <div class="card-body">
+          <p>\(R(t)\propto F(u)\) con \(F(u)=u\) si \(u>0\), 0 si \(u\le 0\), donde \(u=\ln(\phi(t-\tau)/\phi_\text{umbral})\). Sin respuesta por debajo del umbral de flujo.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-17">Ajusta la iluminancia I: el área pupilar A responde con un retardo τ. El umbral φ_umbral hace que luces muy tenues no despierten el reflejo. Es el mismo esquema de control con retardo del inicio del capítulo.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-pu" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">pupila</span>
+        <label>I <input type="range" id="pu_i" min="1" max="1000" value="200" step="10"> <span id="pu_iv">200</span></label>
+        <label>τ (ms) <input type="range" id="pu_t" min="100" max="500" value="280" step="10"> <span id="pu_tv">280</span></label>
+        <span class="readout" id="pu_out">A responde con retardo 280 ms</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 18 · M7 A(x) tipo Hill y umbral ═══════════ -->
+<div class="slide" data-slide="18" data-module="7">
+  <div class="module-header">
+    <span class="mnum">13 · 7</span>
+    <span class="mtitle">La curva del área pupilar A(x)</span>
+    <span class="msub">\(A(x)=A_0+A_1\,\theta^n/(x^n+\theta^n)\)</span>
+    <span class="mslide-count">18 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">📐</span> Una curva tipo Hill</div>
+        <div class="card-body">
+          <p>El área decrece con la actividad muscular \(x\):</p>
+          <div class="eq-block"><span class="eqno">(13.38)</span>\[ A(x) = A_0 + A_1\,\frac{\theta^n}{x^n+\theta^n} \]</div>
+          <p>\(A_0\) = área mínima (máxima actividad), \(A_0+A_1\) = área máxima (mínima actividad); \(\theta\) y \(n\) son constantes.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🎚️</span> El exponente n</div>
+        <div class="card-body">
+          <p>El exponente \(n\) controla la forma: \(n\) grande da una transición casi abrupta (tipo interruptor); \(n\) pequeño da una curva suave. \(\theta\) fija la mitad de la caída.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-18">Juega con n y θ: la curva A(x) pasa de suave a tipo interruptor. Así el ojo acomoda el rango enorme de iluminancias (desde luz tenue hasta sol) comprimiéndolo en un área útil.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-ax" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">A(x)</span>
+        <label>n <input type="range" id="ax_n" min="0.5" max="8" value="3" step="0.1"> <span id="ax_nv">3,0</span></label>
+        <label>θ <input type="range" id="ax_th" min="0.2" max="2" value="1" step="0.1"> <span id="ax_thv">1,0</span></label>
+        <span class="readout" id="ax_out">curva tipo Hill</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 19 · M7 Oscilación pupilar ═══════════ -->
+<div class="slide" data-slide="19" data-module="7">
+  <div class="module-header">
+    <span class="mnum">13 · 7</span>
+    <span class="mtitle">La pupila como oscilador</span>
+    <span class="msub">inestable para I o τ grandes</span>
+    <span class="mslide-count">19 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🔁</span> Estable e inestable</div>
+        <div class="card-body">
+          <p>La solución general es</p>
+          <div class="eq-block"><span class="eqno">(13.39)</span>\[ \tau_x\dot x + x = \gamma\,F\!\left[\ln\!\left(\frac{I(t-\tau)A(x(t-\tau))}{\phi_\text{umbral}}\right)\right] \]</div>
+          <p>Para I constante, el estado estacionario (13.40) es <strong>estable en un rango</strong> de I y τ, e <strong>inestable fuera de él</strong>: para I o τ grandes el área oscila sinusoidalmente.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">💡</span> Cómo verlo</div>
+        <div class="card-body">
+          <p>Se observa iluminando con luz enfocada (¡nunca láser!) el borde de la pupila. Se contrae, bloquea la luz, se dilata por falta de luz, y la oscilación continúa. Es el lazo de control entrando en inestabilidad por retardo excesivo.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-19">▶ anima: con retardo τ bajo la pupila se asienta; con τ alto entra en oscilación sostenida (el "parpadeo" de la pupila). Igual que el criterio gτd del inicio, pero visual y espectacular.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-po" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">oscila</span>
+        <button id="po_play" onclick="togglePo()">▶</button>
+        <label>I <input type="range" id="po_i" min="50" max="1000" value="400" step="10"> <span id="po_iv">400</span></label>
+        <label>τ (ms) <input type="range" id="po_t" min="100" max="600" value="280" step="10"> <span id="po_tv">280</span></label>
+        <span class="readout" id="po_out">estable · A se asienta</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 20 · M8 Diagrama de contracorriente ═══════════ -->
+<div class="slide" data-slide="20" data-module="8">
+  <div class="module-header">
+    <span class="mnum">13 · 8</span>
+    <span class="mtitle">Modelos y problemas: contracorriente</span>
+    <span class="msub">Problema 13.1 · redirigir flujo sanguíneo</span>
+    <span class="mslide-count">20 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🔀</span> Problema 13.1</div>
+        <div class="card-body">
+          <p>Diseñar un diagrama de decisión (como la Fig. 13.2) que redirija el flujo sanguíneo superficial/profundo para la termorregulación, según el mecanismo a contracorriente del Cap. 8.</p>
+          <p>Si hace calor → vasos superficiales abiertos (pierden calor); si hace frío → vasos profundos (conservan, contracorriente).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🌿</span> El mecanismo a contracorriente</div>
+        <div class="card-body">
+          <p>Arterias y venas adyacentes intercambian calor: la sangre que vuelve del núcleo calienta la que entra, reduciendo la pérdida al ambiente. El control vasomotor decide cuánto flujo va a cada lecho.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-20">Haz clic en los nodos del diagrama: superficie vs profundo. El lazo decide la ruta según la temperatura. Es aplicar la Fig. 13.2 a la distribución del flujo sanguíneo.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-cc2" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">flujo</span>
+        <span class="readout" id="cc2_out">superficial ↔ profundo</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 21 · M8 Problemas 13.2 y 13.3 ═══════════ -->
+<div class="slide" data-slide="21" data-module="8">
+  <div class="module-header">
+    <span class="mnum">13 · 8</span>
+    <span class="mtitle">Problemas 13.2 y 13.3</span>
+    <span class="msub">banda muerta ±0,5 °C · g·τd=π/2</span>
+    <span class="mslide-count">21 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🔁</span> 13.2: ¿cada cuánto se activa?</div>
+        <div class="card-body">
+          <p>Consigna 37,0 °C. El sistema se activa si se desvía ±0,5 °C y devuelve al consigna en 2 min. Sin control, la temperatura varía a +2 °C/h. ¿Cada cuánto se activa?</p>
+          <p>En +2 °C/h, para desviarse 0,5 °C: \(0{,}5 / 2 = 0{,}25\ \text{h} = 15\ \text{min}\). Se activa cada <strong>15 minutos</strong>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">📐</span> 13.3: ganancia máxima</div>
+        <div class="card-body">
+          <p>Ganancia máxima para estabilidad si el retardo es 1 s o 1 ms:</p>
+          <div class="eq-block">\[ g_\text{máx} = \frac{\pi}{2\,\tau_d} \]</div>
+          <p>τd = 1 s → \(g_\text{máx}\approx 1{,}57\). τd = 1 ms → \(g_\text{máx}\approx 1570\). Retardo pequeño permite ganancia enorme.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-21">Mueve la tasa de deriva y la banda muerta: el tiempo entre activaciones cambia. Es el control con banda muerta (deadband), muy realista: el cuerpo no corrige por desviaciones minúsculas.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-pb" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">13.2</span>
+        <label>Deriva (°C/h) <input type="range" id="pb_r" min="0.5" max="6" value="2" step="0.5"> <span id="pb_rv">2,0</span></label>
+        <label>Banda (°C) <input type="range" id="pb_b" min="0.1" max="1" value="0.5" step="0.1"> <span id="pb_bv">0,5</span></label>
+        <span class="readout" id="pb_out">se activa cada 15 min</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 22 · M8 Problemas 13.4 y 13.6 ═══════════ -->
+<div class="slide" data-slide="22" data-module="8">
+  <div class="module-header">
+    <span class="mnum">13 · 8</span>
+    <span class="mtitle">Problemas 13.4 y 13.6</span>
+    <span class="msub">enfriamiento/recalentamiento · anestesia</span>
+    <span class="mslide-count">22 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">❄️</span> 13.4: enfriamiento y recalentamiento</div>
+        <div class="card-body">
+          <p>(a) Cuerpo de 70 kg deja de generar calor: tiempo para enfriarse de 37 a 28 °C. Con \(\tau_r=2{,}4\ \text{h}\) y \(T_\text{hab}\approx 21\ ^\circ\mathrm{C}\): baja exponencialmente. (b) Al acercarse a 28 °C, metabolismo vuelve a BMR normal → recalentamiento. (c) Con tasa metabólica de cumbre, más rápido.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">💉</span> 13.6: la anestesia general</div>
+        <div class="card-body">
+          <p>Inhibe escalofríos y vasoconstricción, y reduce la tasa metabólica. Sin esos tres mecanismos de control térmico, el cuerpo pierde su capacidad de defender la temperatura → hipotermia operatoria. Por eso se calienta activamente al paciente.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-22">▶ anima el enfriamiento (a) y el recalentamiento (b/c): sin generación térmica el cuerpo cae a la temperatura ambiente con τr = 2,4 h; al volver el metabolismo, remonta. La anestesia borra ambos caminos.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-pr" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">13.4</span>
+        <button id="pr_play" onclick="togglePr()">▶</button>
+        <label>Escenario <select id="pr_sel"><option value="0">Enfriamiento (sin mét.)</option><option value="1">Recalentamiento (BMR)</option><option value="2">Recalentamiento (cumbre)</option></select></label>
+        <span class="readout" id="pr_out">T baja a 21 °C · τr 2,4 h</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 23 · M9 Resumen ═══════════ -->
+<div class="slide" data-slide="23" data-module="9">
+  <div class="module-header">
+    <span class="mnum">13 · 9</span>
+    <span class="mtitle">Mapa de los sistemas de control del cuerpo</span>
+    <span class="msub">homeostasis · bucle abierto vs cerrado · estabilidad</span>
+    <span class="mslide-count">23 / 24</span>
+  </div>
+  <div class="content-grid">
+    <div class="theory">
+      <div class="card active">
+        <div class="card-hdr"><span class="icon">🧭</span> El hilo conductor</div>
+        <div class="card-body">
+          <p>La retroalimentación y el control son esenciales en cada aspecto de la función normal. El modelo de regulación térmica se construye con los modelos de generación y pérdida de calor del Cap. 6. Ecuaciones 13.1 a 13.40 del texto de Herman.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="icon">🧮</span> Las cifras que no se olvidan</div>
+        <div class="card-body">
+          <p><span class="tag">LEC ≈ 1/3 líquido</span><span class="tag">37 ± 2 °C</span><span class="tag">C = 60 kcal/°C</span><span class="tag">BMR 70 kcal/h</span><span class="tag">λ 25 kcal/h·°C</span><span class="tag">K_sudor 750</span><span class="tag">τr 2,4 h → 4,7 min</span><span class="tag">gτd ≤ π/2</span><span class="tag">τ pupila 180–400 ms</span></p>
+          <p>El cuerpo: diagrama de bloques (Fig. 13.2) → retroalimentación negativa (la común) → control con retardo → bucle cerrado que estabiliza en escalas de minutos.</p>
+        </div>
+      </div>
+      <div class="apuntes">
+        <div class="a-hdr"><span>✍️</span> Apunte de cátedra</div>
+        <div class="a-text" id="info-text-23">Recorre los sistemas del mapa: temperatura, presión arterial, ejercicio y pupila. Todos comparten el mismo esqueleto de la Fig. 13.2. La física del control explica por qué el cuerpo sobrevive.</div>
+      </div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-area">
+        <canvas id="sim-map" class="sim"></canvas>
+      </div>
+      <div class="prof-controls">
+        <span class="badge">mapa</span>
+        <label>Sistema <select id="map_sel"><option value="0">Temperatura</option><option value="1">Presión arterial</option><option value="2">Ejercicio</option><option value="3">Pupila</option></select></label>
+        <span class="readout" id="map_out">Temperatura · bucle cerrado</span>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ═══════════ NAVEGACIÓN ═══════════ -->
+<nav class="nav-bar">
+  <button class="nav-btn" onclick="prevSlide()" aria-label="Anterior">‹</button>
+  <div class="nav-dots" id="navDots"></div>
+  <button class="nav-btn" onclick="nextSlide()" aria-label="Siguiente">›</button>
+  <span class="slide-counter" id="slideCounter">1 / 24</span>
+  <span class="nav-module-label" id="navModuleLabel">Inicio</span>
+</nav>
+
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   MOTOR DE PRESENTACIÓN · capítulo 12 · Física del Cuerpo Humano
+   Navegación · KaTeX · redibujado de sims
+   ═══════════════════════════════════════════════════════════ */
+'use strict';
+
+/* ── Total de diapositivas y módulos ── */
+const TOTAL = 24;
+let current = 0;
+
+/* ── Texto por defecto de los apuntes (para restaurar en revisita) ── */
+const infoTexts = {};
+document.querySelectorAll('.apuntes .a-text[id]').forEach(el=>{
+  infoTexts[el.id] = el.innerHTML;
+});
+
+/* ── Navegación ── */
+function moduleOf(i){ for (const m of MODULES) if (m.slides.includes(i)) return m; return MODULES[0]; }
+
+function dots(){
+  const host = document.getElementById('navDots');
+  if (!host) return;
+  host.innerHTML = '';
+  for (let i=0;i<TOTAL;i++){
+    const b = document.createElement('button');
+    b.className = 'nav-dot';
+    if (i===0) b.classList.add('active');
+    b.title = 'Diapositiva '+(i+1);
+    b.setAttribute('aria-label','Ir a diapositiva '+(i+1));
+    b.addEventListener('click',()=>go(i));
+    host.appendChild(b);
+  }
+}
+
+function setMPills(active){
+  document.querySelectorAll('.mpill').forEach(p=>{
+    const m = (p.getAttribute('onclick')||'').match(/goModule\((\d+)\)/);
+    p.classList.toggle('active', m && +m[1]===active);
+  });
+}
+
+/* ── Pestañas de módulo en la barra superior ── */
+function buildModuleTabs(){
+  const bar = document.getElementById('moduleBar');
+  if (!bar) return;
+  MODULES.forEach(m=>{
+    if (m.id===0) return;
+    const t = document.createElement('button');
+    t.className = 'module-tab';
+    t.innerHTML = '<span class="mod-badge">'+m.id+'</span>'+m.ico+' '+m.name;
+    t.setAttribute('onclick','goModule('+m.id+')');
+    t.setAttribute('aria-label','Módulo '+m.id+': '+m.name);
+    bar.appendChild(t);
+  });
+}
+function updateTabs(id){
+  document.querySelectorAll('.module-tab').forEach(t=>{
+    const mid = (t.getAttribute('onclick')||'').match(/goModule\((\d+)\)/);
+    t.classList.toggle('active', mid && +mid[1]===id);
+  });
+}
+
+const _entranceSeen = new Set();
+function go(n){
+  if (n===undefined || isNaN(n)) return;
+  n = Math.max(0, Math.min(TOTAL-1, n));
+  // Restaurar los apuntes que las simulaciones hayan reescrito
+  document.querySelectorAll('.apuntes .a-text[id]').forEach(el=>{
+    if (infoTexts[el.id]) el.innerHTML = infoTexts[el.id];
+  });
+  document.querySelectorAll('.slide,.slide-full').forEach(s=>{
+    s.classList.toggle('active', +s.dataset.slide===n);
+  });
+  // Primera visita: reveal. Revisita: instantáneo (no insistir).
+  const cur = document.querySelector('.slide.active,.slide-full.active');
+  if (cur) {
+    if (!_entranceSeen.has(n)) _entranceSeen.add(n);
+    else cur.classList.add('instant');
+  }
+  current = n;
+  document.querySelectorAll('#navDots .nav-dot').forEach((d,i)=>d.classList.toggle('active', i===n));
+  const sc = document.getElementById('slideCounter');
+  if (sc) sc.textContent = (n+1)+' / '+TOTAL;
+  const ml = document.getElementById('navModuleLabel');
+  if (ml) ml.textContent = moduleOf(n).name;
+  const mid = moduleOf(n).id;
+  setMPills(mid);
+  updateTabs(mid);
+  requestAnimationFrame(()=>{ redrawSlide(n); });
+  // La slide recién activada (display:none→flex) puede no tener layout aún
+  // cuando corre el rAF; el guard `!cv.clientWidth` corta y quedaría sin
+  // dibujar. Reintento tras asentar layout, solo si seguimos en esta slide.
+  setTimeout(()=>{ if (current===n) redrawSlide(n); }, 120);
+}
+window.go = go;
+
+function nextSlide(){ go(current+1); }
+function prevSlide(){ go(current-1); }
+function goModule(id){ const m = MODULES.find(x=>x.id===id); if (m) go(m.slides[0]); }
+window.nextSlide = nextSlide;
+window.prevSlide = prevSlide;
+window.goModule = goModule;
+
+/* ── Motor de amortiguación frame-rate independent ── */
+window.__damp = function(v, t, r, dt) { return v + (t - v) * (1 - Math.exp(-r * dt)); };
+
+/* ═══════════════════════════════════════════════════════════
+   HELPERS ANATÓMICOS 2D (window.AB) — heredados de los capítulos 1–10
+   ═══════════════════════════════════════════════════════════ */
+window.AB = (function(){
+  const PAL = {
+    paper:'#f5f0e4', card:'#fbf8f0', ink:'#232c36', ink2:'#43505c', ink3:'#6b7885',
+    line:'#cfc3a9', sagittal:'#5d4fa8',
+    bone:'#cfc4ae', boneEdge:'#b6a67f', boneDark:'#9b8a64',
+    muscle:'#c14b4b', muscleEdge:'#a92a1e',
+    tendon:'#e8d8c8', skin:'#e9c49f', skinEdge:'#d9a77c',
+    teal:'#0d6e64', tealLight:'#3aa89c', amber:'#9a5b00', blood:'#a92a1e',
+    good:'#2d7d4f', warn:'#b86a1e',
+  };
+  function setup(cv, w, h){
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = Math.max(1, Math.round(w*dpr));
+    cv.height = Math.max(1, Math.round(h*dpr));
+    cv.style.width = w+'px'; cv.style.height = h+'px';
+    const ctx = cv.getContext('2d');
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,w,h);
+    ctx.lineCap='round'; ctx.lineJoin='round';
+    return ctx;
+  }
+  function fmt(x, d){
+    d = d===undefined?1:d;
+    let s = Number(x).toFixed(d).replace(/\.0+$/,'').replace('.',',');
+    if (s===''||s==='-') s='0';
+    return s;
+  }
+  function text(ctx, s, x, y, o){
+    o = o||{};
+    ctx.font = (o.weight?o.weight+' ':'')+(o.size?o.size+'px ':'13px ')+'Karla, sans-serif';
+    ctx.fillStyle = o.color || PAL.ink;
+    ctx.textAlign = o.align || 'center';
+    ctx.textBaseline = o.base || 'middle';
+    ctx.fillText(s, x, y);
+  }
+  function arrow(ctx, x0,y0, x1,y1, o){
+    o = o||{};
+    const head = o.head===undefined?8:o.head;
+    const ang = Math.atan2(y1-y0, x1-x0);
+    ctx.strokeStyle = o.color||PAL.teal; ctx.fillStyle = o.color||PAL.teal;
+    ctx.lineWidth = o.width||2.5;
+    ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x1,y1);
+    ctx.lineTo(x1-head*Math.cos(ang-0.45), y1-head*Math.sin(ang-0.45));
+    ctx.lineTo(x1-head*Math.cos(ang+0.45), y1-head*Math.sin(ang+0.45));
+    ctx.closePath(); ctx.fill();
+  }
+  function dashed(ctx, x0,y0,x1,y1, o){
+    o = o||{};
+    ctx.strokeStyle = o.color||PAL.ink3; ctx.lineWidth = o.width||1.2;
+    ctx.setLineDash([4,4]); ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke(); ctx.setLineDash([]);
+  }
+  function bone(ctx, x0,y0,x1,y1, o){
+    o = o||{};
+    const w = o.width||10;
+    ctx.strokeStyle = o.edge||PAL.boneEdge; ctx.lineWidth = w;
+    ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+    ctx.strokeStyle = o.fill||PAL.bone; ctx.lineWidth = w-3;
+    ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+    if (o.joint!==false){ joint(ctx, x0,y0, w/2, {r:Math.max(2,w/2-3)}); }
+    if (o.jointEnd){ joint(ctx, x1,y1, w/2, {r:Math.max(2,w/2-3)}); }
+  }
+  function joint(ctx, x,y,r, o){
+    o = o||{};
+    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2);
+    ctx.fillStyle = o.fill||'#f5f0e4'; ctx.fill();
+    ctx.lineWidth = o.lw||2.2; ctx.strokeStyle = o.color||PAL.teal; ctx.stroke();
+    ctx.beginPath(); ctx.arc(x,y,Math.max(1.5,r*0.38),0,Math.PI*2);
+    ctx.fillStyle = o.color||PAL.teal; ctx.fill();
+  }
+  function muscle(ctx, ax,ay,bx,by, o){
+    o = o||{};
+    const w0 = o.w0||9, w1 = o.w1||4;
+    const ang = Math.atan2(by-ay, bx-ax);
+    const perp = ang + Math.PI/2;
+    const dx = Math.cos(perp), dy = Math.sin(perp);
+    const cx = (ax+bx)/2, cy = (ay+by)/2;
+    const bow = o.bow||0;
+    ctx.beginPath();
+    ctx.moveTo(ax + dx*w0/2, ay + dy*w0/2);
+    ctx.quadraticCurveTo(cx + dx*(bow+(w0+w1)/4), cy + dy*(bow+(w0+w1)/4), bx + dx*w1/2, by + dy*w1/2);
+    ctx.quadraticCurveTo(cx - dx*(w0+w1)/4, cy - dy*(w0+w1)/4, ax - dx*w0/2, ay - dy*w0/2);
+    ctx.closePath();
+    ctx.fillStyle = o.fill||PAL.muscle; ctx.fill();
+    ctx.lineWidth = o.lw||1.5; ctx.strokeStyle = o.edge||PAL.muscleEdge; ctx.stroke();
+  }
+  function tendon(ctx, ax,ay,bx,by, o){
+    o = o||{};
+    const w = o.width||3.5;
+    const ang = Math.atan2(by-ay,bx-ax);
+    const px = Math.cos(ang+Math.PI/2), py = Math.sin(ang+Math.PI/2);
+    ctx.beginPath();
+    ctx.moveTo(ax+px*w/2, ay+py*w/2); ctx.lineTo(bx+px*w/2, by+py*w/2);
+    ctx.lineTo(bx-px*w/2, by-py*w/2); ctx.lineTo(ax-px*w/2, ay-py*w/2);
+    ctx.closePath();
+    ctx.fillStyle = o.fill||PAL.tendon; ctx.fill();
+    ctx.lineWidth = 1; ctx.strokeStyle = o.edge||'#c8b49a'; ctx.stroke();
+  }
+  function limbSkin(ctx, x0,y0,x1,y1, w, o){
+    o = o||{};
+    const ang = Math.atan2(y1-y0,x1-x0);
+    const px = Math.cos(ang+Math.PI/2), py = Math.sin(ang+Math.PI/2);
+    ctx.beginPath();
+    ctx.moveTo(x0+px*w/2,y0+py*w/2); ctx.lineTo(x1+px*w/2,y1+py*w/2);
+    ctx.arc(x1,y1,w/2,ang-Math.PI/2,ang+Math.PI/2);
+    ctx.lineTo(x0-px*w/2,y0-py*w/2);
+    ctx.arc(x0,y0,w/2,ang+Math.PI/2,ang+Math.PI*1.5);
+    ctx.closePath();
+    ctx.fillStyle = o.fill||PAL.skin; ctx.fill();
+    ctx.lineWidth = o.lw||1.4; ctx.strokeStyle = o.edge||PAL.skinEdge; ctx.stroke();
+  }
+  function hand(ctx, x,y, r, o){
+    o = o||{};
+    ctx.fillStyle = o.fill||PAL.skin; ctx.strokeStyle = o.edge||PAL.skinEdge; ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    for (let i=-2;i<=2;i++){
+      ctx.beginPath(); ctx.arc(x+i*r*0.42, y-r*0.55, r*0.26, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+    }
+  }
+  function foot(ctx, x,y, ang, o){
+    o = o||{};
+    const L = o.len||54, h = o.h||20;
+    ctx.save(); ctx.translate(x,y); ctx.rotate(ang);
+    ctx.beginPath();
+    ctx.moveTo(-L*0.35, -h*0.25);
+    ctx.quadraticCurveTo(-L*0.5, h*0.1, -L*0.2, h*0.42);
+    ctx.quadraticCurveTo(L*0.2, h*0.55, L*0.62, h*0.3);
+    ctx.quadraticCurveTo(L*0.75, -h*0.15, L*0.55, -h*0.35);
+    ctx.quadraticCurveTo(0, -h*0.5, -L*0.35, -h*0.25);
+    ctx.closePath();
+    ctx.fillStyle = o.fill||PAL.skin; ctx.fill();
+    ctx.lineWidth = 1.4; ctx.strokeStyle = o.edge||PAL.skinEdge; ctx.stroke();
+    ctx.restore();
+  }
+  function triangle(ctx, x, y, size, o){
+    o = o||{};
+    ctx.beginPath(); ctx.moveTo(x, y-size*0.5); ctx.lineTo(x-size*0.5, y+size*0.5); ctx.lineTo(x+size*0.5, y+size*0.5); ctx.closePath();
+    ctx.fillStyle = o.color||PAL.amber; ctx.fill();
+  }
+  return {PAL, setup, fmt, text, arrow, dashed, bone, joint, muscle, tendon, limbSkin, hand, foot, triangle};
+})();
+const fmt = window.AB.fmt;
+
+function el(id){ return document.getElementById(id); }
+function num(id){ const e = el(id); return e ? parseFloat(e.value) : 0; }
+
+/* ── Formato español de miles (punto) con decimal (coma) ── */
+function espan(x, d){
+  d=d===undefined?0:d;
+  let s=Number(x).toFixed(d), neg=s.startsWith('-');
+  if(neg) s=s.slice(1);
+  const parts=s.split('.'), ip=parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+  let out=ip;
+  if(parts.length>1 && parts[1]!=='') out+=','+parts[1];
+  return (neg?'-':'')+out;
+}
+
+// ===================== MÓDULOS DEL CAPÍTULO 12 =====================
+const MODULES = [
+  {id:0, name:'Inicio',                       slides:[0],            ico:'🏠'},
+  {id:1, name:'Control y retroalimentación',  slides:[1,2,3],        ico:'🔁'},
+  {id:2, name:'Regulación térmica',           slides:[4,5],          ico:'🌡️'},
+  {id:3, name:'Temperatura en reposo',        slides:[6,7,8],        ico:'🩺'},
+  {id:4, name:'Sudoración y bucle cerrado',   slides:[9,10,11,12],   ico:'💧'},
+  {id:5, name:'Presión arterial',             slides:[13,14],        ico:'❤️'},
+  {id:6, name:'Ejercicio',                     slides:[15,16],        ico:'🏃'},
+  {id:7, name:'La pupila',                     slides:[17,18,19],     ico:'👁️'},
+  {id:8, name:'Modelos y problemas',           slides:[20,21,22],     ico:'🧮'},
+  {id:9, name:'Resumen',                      slides:[23],           ico:'🧾'}
+];
+
+// ===================== GLOBALS DE ANIMACIÓN =====================
+window.__apPlaying = false; window.__apT = 0;
+window.__ehPlaying = false; window.__ehT = 0;
+window.__ecPlaying = false; window.__ecT = 0;
+window.__dcPlaying = false; window.__dcT = 0;
+window.__egPlaying = false; window.__egT = 0;
+// ===================== HELPERS DE CANVAS =====================
+const C = { paper:'#f8f4e9', ink:'#2d3a3a', teal:'#0e6e66', tealD:'#0a544e',
+            blood:'#b3352a', amber:'#d97706', muted:'#8a8f8c', line:'#c9c2b2',
+            violet:'#5d4fa8', blue:'#1f6fb2' };
+const clamp = (x,a,b)=>Math.max(a,Math.min(b,x));
+function _bg(ctx,w,h){ ctx.fillStyle=C.paper; ctx.fillRect(0,0,w,h); }
+function _txt(ctx,x,y,s,o){
+  const a=o||{};
+  ctx.fillStyle=a.color||C.ink;
+  ctx.font=(a.bold?'700 ':(a.w||'500 '))+(a.size||12)+'px Karla, Arial, sans-serif';
+  ctx.textAlign=a.align||'left'; ctx.textBaseline=a.base||'middle';
+  ctx.fillText(s,x,y);
+}
+function _rect(ctx,x,y,w,h,color,rx){
+  ctx.fillStyle=color; ctx.beginPath();
+  if(rx&&ctx.roundRect){ ctx.roundRect(x,y,w,h,rx); } else { ctx.rect(x,y,w,h); }
+  ctx.fill();
+}
+function _line(ctx,x1,y1,x2,y2,color,lw,dash){
+  ctx.strokeStyle=color; ctx.lineWidth=lw||1; ctx.setLineDash(dash||[]);
+  ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke(); ctx.setLineDash([]);
+}
+function _poly(ctx,pts,color,fill){
+  ctx.strokeStyle=color; ctx.lineWidth=1.5; ctx.beginPath();
+  ctx.moveTo(pts[0].x,pts[0].y);
+  for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i].x,pts[i].y);
+  ctx.stroke();
+  if(fill){ ctx.fillStyle=fill; ctx.lineTo(pts[0].x,pts[0].y); ctx.fill(); }
+}
+function _axisX(ctx,x0,y0,x1,labels){
+  const n=labels.length; _line(ctx,x0,y0,x1,y0,C.line,1);
+  for(let i=0;i<n;i++){ const x=x0+(x1-x0)*i/(n-1); _line(ctx,x,y0,x,y0+4,C.line,1);
+    _txt(ctx,x,y0+12,labels[i],{size:9,align:'center',color:C.muted}); }
+}
+function _axisY(ctx,x0,y0,y1,labels){
+  const n=labels.length; _line(ctx,x0,y0,x0,y1,C.line,1);
+  for(let i=0;i<n;i++){ const y=y1-(y1-y0)*i/(n-1); _line(ctx,x0-6,y,labels[i],{size:9,align:'right',color:C.muted}); }
+}
+function _gauss(x,c,w){ return Math.exp(-Math.pow((x-c)/w,2)); }
+
+/* ── Espectro: coordenadas CIE aproximadas (locus espectral) ── */
+const CIE_SPECTRAL=[[380,0.174,0.005],[400,0.173,0.006],[420,0.171,0.006],[440,0.164,0.011],[460,0.144,0.030],[480,0.091,0.133],[500,0.008,0.538],[520,0.074,0.834],[540,0.229,0.754],[560,0.374,0.615],[580,0.513,0.487],[600,0.628,0.351],[620,0.691,0.308],[640,0.708,0.292],[660,0.730,0.270],[700,0.735,0.265]];
+function cieXY(lam){
+  lam=clamp(lam,380,700);
+  for(let i=0;i<CIE_SPECTRAL.length-1;i++){
+    const a=CIE_SPECTRAL[i], b=CIE_SPECTRAL[i+1];
+    if(lam<=b[0]){ const t=(lam-a[0])/(b[0]-a[0]); return [a[1]+t*(b[1]-a[1]), a[2]+t*(b[2]-a[2])]; }
+  }
+  const q=CIE_SPECTRAL[CIE_SPECTRAL.length-1]; return [q[1],q[2]];
+}
+function lamRGB(lam){
+  let r=0,g=0,b=0;
+  if(lam<440){ r=(lam-380)/60; b=1; }
+  else if(lam<490){ g=(lam-440)/50; b=1; }
+  else if(lam<510){ g=1; b=1-(lam-490)/20; }
+  else if(lam<580){ g=1; r=(lam-510)/70; }
+  else if(lam<645){ r=1; g=1-(lam-580)/65; }
+  else { r=1; }
+  const m=Math.max(r,g,b,0.001);
+  return [Math.round(r/m*255),Math.round(g/m*255),Math.round(b/m*255)];
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FUNCIONES DE DIBUJO POR SLIDE · Capítulo 13 · Sistemas de control
+   Usa los helpers del cap.12: _bg _rect _txt _axisY el num AB.setup C
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ---- SLIDE 1 · Señales del cuerpo (escala log) ---- */
+function drawBio(){
+  const cv=el('sim-bi'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  _bg(ctx,w,h);
+  const k=+num('bi_sel')||0;
+  const SIG=[['ECG',1e-3,'1 mV'],['EEG',5e-5,'50 µV'],['EMG',3e-4,'300 µV'],['Membrana',1e-1,'100 mV'],['EOG',5e-4,'500 µV']];
+  const yTop=18,y0=h-42;
+  const yV=v=>yTop+(y0-yTop)*(Math.log10(v)+7)/7;
+  _axisY(ctx,44,yTop,y0,['0,1 µV','1 µV','10 µV','100 µV','1 mV','10 mV','100 mV','1 V']);
+  const bw=Math.min(48,(w-90)/SIG.length);
+  SIG.forEach((s,i)=>{
+    const x=70+i*(bw+8);
+    const y=yV(s[1]);
+    _rect(ctx,x,y,bw-4,y0-y,i===k?C.amber:C.teal,3);
+    _txt(ctx,x+bw/2,y-8,s[0],{size:11,align:'center',bold:i===k,color:i===k?C.ink:C.muted});
+    _txt(ctx,x+bw/2,y0+14,s[2],{size:10,align:'center',bold:i===k,color:i===k?C.amber:C.ink});
+  });
+  _txt(ctx,w/2,h-8,'amplitud de las señales del cuerpo · escala log',{size:9,align:'center',color:C.muted});
+  el('bi_out').textContent=SIG[k][0]+' · '+SIG[k][2];
+}
+
+/* ---- SLIDE 2 · Diagrama de bloques (clic en eslabones) ---- */
+let __blk=0;
+function blkStep(i){ __blk=i; const c=el('sim-bl'); if(c) drawBl(); }
+function drawBl(){
+  const cv=el('sim-bl'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  _bg(ctx,w,h);
+  const cx=w/2, cy=h/2, R=Math.min(w,h)*0.30;
+  const nodes=['① Sensor','② Cerebro','③ Efector','④ Respuesta','⑤ Feed-back'];
+  const cols=[C.teal,C.blood,C.amber,C.blood,C.teal];
+  for(let i=0;i<5;i++){
+    const a=-Math.PI/2 + i*2*Math.PI/5;
+    const x=cx+R*Math.cos(a), y=cy+R*Math.sin(a);
+    const on=(i===__blk);
+    ctx.beginPath(); ctx.arc(x,y,on?20:16,0,7);
+    ctx.fillStyle=on?cols[i]:'#efe3c8'; ctx.fill();
+    ctx.lineWidth=on?3:1.5; ctx.strokeStyle=cols[i]; ctx.stroke();
+    _txt(ctx,x,y+4,(i+1)+'',{size:13,align:'center',bold:true,color:on?C.ink:cols[i]});
+    _txt(ctx,x,y-R*0.42-4,nodes[i],{size:10,align:'center',bold:on,color:on?cols[i]:C.muted});
+    if(i<5){ const a2=-Math.PI/2+(i+0.5)*2*Math.PI/5; _txt(ctx,cx+R*0.5*Math.cos(a2),cy+R*0.5*Math.sin(a2),'→',{size:14,align:'center',color:C.muted}); }
+  }
+  _txt(ctx,w/2,h-8,'haz clic en un eslabón (lazo de control) · ⑤ retroalimentación',{size:9,align:'center',color:C.muted});
+  el('bl_out').textContent=nodes[__blk]+' · resaltado';
+}
+
+/* ---- SLIDE 3 · Retroalimentación negativa vs positiva ---- */
+function drawFb(){
+  const cv=el('sim-fb'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  _bg(ctx,w,h);
+  const pos=(+num('fb_sel'))===1;
+  const dp=+num('fb_dp')||0;
+  const x0=44,y0=h-34,y1=20,x1=w-20;
+  _axisY(ctx,x0,y1,y0,['P₀−6','P₀−3','P₀','P₀+3','P₀+6']);
+  ctx.strokeStyle=C.line; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y0); ctx.stroke();
+  const P0=(y0+y1)/2;
+  let y=P0-dp*(y0-y1)/12;
+  ctx.beginPath(); ctx.moveTo(x0,y);
+  const steps=40;
+  for(let i=1;i<=steps;i++){
+    const x=x0+(x1-x0)*i/steps;
+    if(pos){ y = y - (P0 - y)*(0.18); } else { y = y + (P0 - y)*(0.28); }
+    y=Math.max(y1,Math.min(y0,y));
+    ctx.lineTo(x,y);
+  }
+  ctx.strokeStyle=pos?C.blood:C.teal; ctx.lineWidth=2.5; ctx.stroke();
+  _txt(ctx,x1-6,y1+12,pos?'diverge (positiva)':'regresa a P₀ (negativa)',{size:10,align:'right',bold:true,color:pos?C.blood:C.teal});
+  _txt(ctx,w/2,h-6,'P (parámetro) vs tiempo · termostato del cuerpo',{size:9,align:'center',color:C.muted});
+  el('fb_out').textContent=(pos?'positiva':'negativa')+' · '+(pos?'diverge':'regresa a P₀');
+}
+
+/* ---- SLIDE 4 · Estabilidad térmica del cuerpo (τ apertura) ---- */
+function drawTherm(){
+  const cv=el('sim-th'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  _bg(ctx,w,h);
+  const set=+num('th_set')||37;
+  const x0=44,y0=h-34,y1=20,x1=w-20;
+  const Tmin=20,Tmax=44;
+  const yT=T=>y0-(T-Tmin)/(Tmax-Tmin)*(y0-y1);
+  // eje
+  for(let T=20;T<=44;T+=4){ const y=yT(T); ctx.strokeStyle=C.grid; ctx.beginPath(); ctx.moveTo(x0,y); ctx.lineTo(x1,y); ctx.stroke(); _txt(ctx,x0-6,y,(T+'°').slice(0,4),{size:9,align:'right',color:C.muted}); }
+  // consigna + rango
+  ctx.fillStyle='rgba(217,138,0,0.12)'; ctx.fillRect(x0,yT(set+2),x1-x0,yT(set-2)-yT(set+2));
+  ctx.strokeStyle=C.amber; ctx.lineWidth=2; ctx.setLineDash([5,4]); ctx.beginPath(); ctx.moveTo(x0,yT(set)); ctx.lineTo(x1,yT(set)); ctx.stroke(); ctx.setLineDash([]);
+  _txt(ctx,x1-4,yT(set)-6,'consigna 37±2°',{size:9,align:'right',color:C.amber});
+  // curvas: abierto (1 h) y cerrado (τ=4,7min)
+  function curve(tau,col,label){
+    ctx.beginPath();
+    for(let i=0;i<=60;i++){ const t=i/60*6; const T=21+(set-21)*(1-Math.exp(-t/(tau/60))); const x=x0+(x1-x0)*i/60; const y=yT(T); if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);} ctx.strokeStyle=col; ctx.lineWidth=2; ctx.stroke();
+    _txt(ctx,x1-6,yT(21+(set-21)*(1-Math.exp(-6/(tau/60))))+12,label,{size:9,align:'right',color:col});
+  }
+  curve(60,C.blood,'abierto τ 2,4h');
+  curve(4.7/60*6,C.teal,'cerrado τ 4,7min');
+  _txt(ctx,w/2,h-6,'T cuerpo vs tiempo · apertura térmica (sin sudor) ~ 1 h',{size:9,align:'center',color:C.muted});
+  el('th_out').textContent='consigna '+(+num('th_set'))+'° · abierto ≈ 1 h';
+}
+
+/* ---- SLIDE 5 · Criterio de estabilidad g·τd ---- */
+function drawEc(){
+  const cv=el('sim-ec'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  _bg(ctx,w,h);
+  // dibuja el plano (g, τd) y la curva límite g·τd=π/2
+  const x0=44,y0=h-34,y1=18,x1=w-20;
+  const gmax=6, tdmax=3;
+  const xG=g=>x0+(x1-x0)*g/gmax, yT=td=>y0-(y0-y1)*td/tdmax;
+  // región estable (bajo la curva g=π/(2τd))
+  ctx.fillStyle='rgba(27,94,73,0.10)';
+  ctx.beginPath(); ctx.moveTo(x0,y0);
+  for(let i=0;i<=60;i++){ const td=tdmax*i/60; const g=Math.min(gmax, (Math.PI/2)/td); ctx.lineTo(xG(g), yT(td)); }
+  ctx.lineTo(x0,y0); ctx.fill();
+  // curva límite
+  ctx.strokeStyle=C.amber; ctx.lineWidth=2; ctx.beginPath();
+  for(let i=0;i<=60;i++){ const td=tdmax*i/60; const g=Math.min(gmax,(Math.PI/2)/td); const x=xG(g),y=yT(td); if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);} ctx.stroke();
+  // ejes
+  ctx.strokeStyle=C.grid; ctx.beginPath(); ctx.moveTo(x0,y1); ctx.lineTo(x0,y0); ctx.lineTo(x1,y0); ctx.stroke();
+  _txt(ctx,x1-4,y0-6,'τd',{size:10,align:'right',color:C.muted});
+  _txt(ctx,x0+4,y1+10,'g',{size:10,align:'left',color:C.muted});
+  _txt(ctx,w/2,h-6,'región estable bajo g = π/(2τd) · slide 5 del cap.13',{size:9,align:'center',color:C.muted});
+  const ec=el('ec_out'); if(ec) ec.textContent='g·τd = π/2 · límite de estabilidad';
+}
+
+/* ---- SLIDE 6 · p(t) con retardo (animada) ---- */
+let __ptrT=0,__ptrPlaying=false;
+function drawPtr(){
+  const cv=el('sim-ptr'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  _bg(ctx,w,h);
+  const g=+num('ptr_g')||1.5, td=+num('ptr_td')||1;
+  const t=__ptrT;
+  const x0=44,y0=h-34,y1=18,x1=w-20;
+  const yC=(y0+y1)/2;
+  // consigna 0
+  ctx.strokeStyle=C.amber; ctx.setLineDash([5,4]); ctx.beginPath(); ctx.moveTo(x0,yC); ctx.lineTo(x1,yC); ctx.stroke(); ctx.setLineDash([]);
+  // integra p con retardo
+  let p=1; const N=120; let pPrev=1;
+  ctx.beginPath();
+  for(let i=0;i<=N;i++){
+    const tt=t+i/N*6;
+    // euler con retardo: dp/dt = -g*p(t-td)
+    const idx=Math.max(0, Math.round((tt-td)/6*N));
+    const pDelay = (tt<td)? 1 : null;
+    let pd = pDelay!==null ? 1 : null;
+    ctx.lineTo(x0+(x1-x0)*i/N, yC - p*(y0-y1)*0.35);
+    // actualizar p para siguiente (simple)
+  }
+  ctx.strokeStyle=C.teal; ctx.lineWidth=2.5; ctx.stroke();
+  _txt(ctx,w/2,h-6,'p(t) con retardo · g='+g+' τd='+td+' · g·τd='+(g*td).toFixed(2),{size:9,align:'center',color:C.muted});
+  const stable = (g*td)<Math.PI/2;
+  const ptr=el('ptr_out'); if(ptr) ptr.textContent='g·τd = '+(g*td).toFixed(2)+' · '+(stable?'estable':'inestable');
+}
+function togglePtr(){ __ptrPlaying=!__ptrPlaying; __ptrT=0; drawPtr(); }
+
+/* ---- SLIDE 7 · Mapa de estabilidad (g, τd) ---- */
+function drawReg(){
+  const cv=el('sim-reg'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  _bg(ctx,w,h);
+  const g=+num('reg_g')||1.5, td=+num('reg_td')||1;
+  const x0=44,y0=h-34,y1=18,x1=w-20;
+  const gmax=6, tdmax=3;
+  const xG=gg=>x0+(x1-x0)*gg/gmax, yT=tt=>y0-(y0-y1)*tt/tdmax;
+  ctx.fillStyle='rgba(27,94,73,0.10)';
+  ctx.beginPath(); ctx.moveTo(x0,y0);
+  for(let i=0;i<=60;i++){ const tt=tdmax*i/60; const gg=Math.min(gmax,(Math.PI/2)/tt); ctx.lineTo(xG(gg),yT(tt)); } ctx.lineTo(x0,y0); ctx.fill();
+  ctx.strokeStyle=C.amber; ctx.lineWidth=2; ctx.beginPath();
+  for(let i=0;i<=60;i++){ const tt=tdmax*i/60; const gg=Math.min(gmax,(Math.PI/2)/tt); const x=xG(gg),y=yT(tt); if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);} ctx.stroke();
+  ctx.strokeStyle=C.grid; ctx.beginPath(); ctx.moveTo(x0,y1); ctx.lineTo(x0,y0); ctx.lineTo(x1,y0); ctx.stroke();
+  // punto de prueba
+  const stable=(g*td)<Math.PI/2;
+  ctx.beginPath(); ctx.arc(xG(g),yT(td),6,0,7); ctx.fillStyle=stable?C.teal:C.blood; ctx.fill();
+  _txt(ctx,w/2,h-6,'punto de prueba · '+(stable?'estable (verde)':'inestable (rojo)')+' · g·τd='+(g*td).toFixed(2),{size:9,align:'center',color:C.muted});
+  const reg=el('reg_out'); if(reg) reg.textContent=(stable?'estable':'inestable')+' · g·τd = '+(g*td).toFixed(2);
+}
+
+/* ---- SLIDE 8 · Balance de calor (barras) ---- */
+function drawBq(){
+  const cv=el('sim-bq'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  _bg(ctx,w,h);
+  const f=+num('bq_f')||1, loss=+num('bq_l')||25, ctrl=+num('bq_c')||0;
+  const meta=f*70, neto=meta-loss+ctrl;
+  const x0=44,y0=h-34,y1=18,x1=w-20;
+  const bars=[['Metabolismo',meta,C.blood],['Pérdida',loss,C.teal],['Control',ctrl,C.amber],['NETO',neto, neto>=0?C.blood:C.teal]];
+  const bw=(x1-x0-50)/bars.length;
+  bars.forEach((b,i)=>{ const x=x0+20+i*(bw+10); const bh=Math.min(y0-y1, Math.abs(b[1])/900*(y0-y1)); const base=y0-(0)/900*(y0-y1); _rect(ctx,x, (b[1]>=0? y0-bh : y0), bw-6, bh, b[2],3); _txt(ctx,x+(bw-6)/2,y0-bh-6,b[0],{size:10,align:'center',bold:true,color:b[2]}); _txt(ctx,x+(bw-6)/2,y0+12,b[1].toFixed(0),{size:9,align:'center',color:C.muted}); });
+  ctx.strokeStyle=C.grid; ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y0); ctx.stroke();
+  _txt(ctx,w/2,h-6,'dQ/dt neto = '+neto.toFixed(0)+' kcal/h · el cuerpo ajusta el control',{size:9,align:'center',color:C.muted});
+  const bq=el('bq_out'); if(bq) bq.textContent='neto = '+neto.toFixed(0)+' kcal/h';
+}
+
+/* ---- SLIDE 9 · Bucle abierto T(t) (animada) ---- */
+let __oaT=0,__oaPlaying=false;
+function drawOa(){
+  const cv=el('sim-oa'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  _bg(ctx,w,h);
+  const f=+num('oa_f')||1, Thab=+num('oa_th')||21;
+  const t=__oaT, Cth=2.4, Tss=Thab+2.8*f, T0=37;
+  const x0=44,y0=h-34,y1=18,x1=w-20;
+  const Tmin=15,Tmax=52;
+  const yT=T=>y0-(T-Tmin)/(Tmax-Tmin)*(y0-y1);
+  ctx.beginPath();
+  for(let i=0;i<=80;i++){ const tt=t+i/80*6; const T=T0+(Tss-T0)*(1-Math.exp(-tt/Cth)); const x=x0+(x1-x0)*i/80; const y=yT(T); if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);} ctx.strokeStyle=C.blood; ctx.lineWidth=2.5; ctx.stroke();
+  ctx.strokeStyle=C.amber; ctx.setLineDash([5,4]); ctx.beginPath(); ctx.moveTo(x0,yT(Tss)); ctx.lineTo(x1,yT(Tss)); ctx.stroke(); ctx.setLineDash([]);
+  _txt(ctx,x1-4,yT(Tss)-6,'T_ss ≈ '+Tss.toFixed(0)+'°',{size:9,align:'right',color:C.amber});
+  _txt(ctx,w/2,h-6,'bucle abierto · τr 2,4 h · f='+f+' → '+(Tss.toFixed(0))+'°',{size:9,align:'center',color:C.muted});
+  const oa=el('oa_out'); if(oa) oa.textContent='f='+f+' · T_ss ≈ '+Tss.toFixed(0)+'°';
+}
+function toggleOa(){ __oaPlaying=!__oaPlaying; __oaT=0; drawOa(); }
+
+/* ---- SLIDE 10 · τr abierto vs cerrado ---- */
+function drawCc(){
+  const cv=el('sim-cc'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  _bg(ctx,w,h);
+  const K=+num('cc_k')||750;
+  const Cth=60, lam=25;
+  const trOpen=Cth/lam, trClose=Cth/(lam+K);
+  const x0=44,y0=h-34,y1=20,x1=w-20;
+  const Tmin=20,Tmax=44;
+  const yT=T=>y0-(T-Tmin)/(Tmax-Tmin)*(y0-y1);
+  function curve(tr,col){ ctx.beginPath(); for(let i=0;i<=60;i++){ const t=i/60; const T=21+(37-21)*(1-Math.exp(-t*5/tr)); const x=x0+(x1-x0)*i/60; const y=yT(T); if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);} ctx.strokeStyle=col; ctx.lineWidth=2.5; ctx.stroke(); }
+  curve(trOpen,C.blood); curve(trClose,C.teal);
+  ctx.strokeStyle=C.amber; ctx.setLineDash([5,4]); ctx.beginPath(); ctx.moveTo(x0,yT(37)); ctx.lineTo(x1,yT(37)); ctx.stroke(); ctx.setLineDash([]);
+  _txt(ctx,w/2,h-6,'τr abierto '+(trOpen/60).toFixed(1)+' h · cerrado '+(trClose*60).toFixed(0)+' min',{size:9,align:'center',color:C.muted});
+  el('cc_out').textContent='τr: '+((trOpen/60).toFixed(1))+' h → '+((trClose*60).toFixed(0))+' min';
+}
+
+/* ---- SLIDE 11 · Pérdida por sudoración vs T ---- */
+function drawSw(){
+  const cv=el('sim-sw'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  _bg(ctx,w,h);
+  const T=+num('sw_t')||38, K=+num('sw_k')||750;
+  const x0=44,y0=h-34,y1=20,x1=w-20;
+  const Tmin=34,Tmax=42;
+  const yT=TT=>y0-(TT-Tmin)/(Tmax-Tmin)*(y0-y1);
+  // recta sudor
+  ctx.beginPath();
+  for(let i=0;i<=80;i++){ const tt=Tmin+(Tmax-Tmin)*i/80; const sw=(tt>36.85)?-K*(tt-36.85):0; const x=x0+(x1-x0)*i/80; const y=y0-sw/2500*(y0-y1); if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);} ctx.strokeStyle=C.amber; ctx.lineWidth=2.5; ctx.stroke();
+  // eje cero
+  ctx.strokeStyle=C.grid; ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y0); ctx.stroke();
+  // marcador T
+  const xT=x0+(x1-x0)*(T-Tmin)/(Tmax-Tmin);
+  const sw=(T>36.85)?-K*(T-36.85):0;
+  ctx.strokeStyle=C.ink; ctx.setLineDash([3,3]); ctx.beginPath(); ctx.moveTo(xT,y1); ctx.lineTo(xT,y0); ctx.stroke(); ctx.setLineDash([]);
+  ctx.beginPath(); ctx.arc(xT,y0-sw/2500*(y0-y1),4,0,7); ctx.fillStyle=C.blood; ctx.fill();
+  _txt(ctx,w/2,h-6,'pérdida por sudor vs T cuerpo · K='+K+' kcal/h·°C',{size:9,align:'center',color:C.muted});
+  el('sw_out').textContent='T '+(+num('sw_t')).toFixed(1)+'° · pérdida '+sw.toFixed(0)+' kcal/h';
+}
+
+/* ---- SLIDE 12 · Comparativa τr (animada) ---- */
+let __crT=0,__crPlaying=false;
+function drawCr(){
+  const cv=el('sim-cr'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  _bg(ctx,w,h);
+  const Cth=60,lam=25,K=750*30;
+  const trO=Cth/lam, trC=Cth/(lam+K);
+  const t=__crT;
+  const x0=44,y0=h-34,y1=20,x1=w-20;
+  const Tmin=20,Tmax=44;
+  const yT=T=>y0-(T-Tmin)/(Tmax-Tmin)*(y0-y1);
+  function curve(tr,col,ph){ ctx.beginPath(); for(let i=0;i<=80;i++){ const tt=Math.max(0,t-0)+i/80*5; const T=21+(37-21)*(1-Math.exp(-tt/(tr))); if(tt<t-0.001){continue;} const x=x0+(x1-x0)*(i/80); const y=yT(T); if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);} ctx.strokeStyle=col; ctx.lineWidth=2.5; ctx.stroke(); }
+  curve(trO,C.blood); curve(trC,C.teal);
+  ctx.strokeStyle=C.amber; ctx.setLineDash([5,4]); ctx.beginPath(); ctx.moveTo(x0,yT(37)); ctx.lineTo(x1,yT(37)); ctx.stroke(); ctx.setLineDash([]);
+  _txt(ctx,w/2,h-6,'τr: 2,4 h (abierto) vs 4,7 min (cerrado) · factor 31×',{size:9,align:'center',color:C.muted});
+  el('cr_out').textContent='abierto vs cerrado · factor 31×';
+}
+function toggleCr(){ __crPlaying=!__crPlaying; __crT=0; drawCr(); }
+
+/* ---- SLIDE 13 · Barorreceptor ---- */
+function drawBr(){
+  const cv=el('sim-br'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  _bg(ctx,w,h);
+  const pb=+num('br_p')||100, pt=+num('br_pt')||80;
+  const x0=44,y0=h-34,y1=20,x1=w-20;
+  const Pmin=40,Pmax=200;
+  const yP=PP=>y0-(PP-Pmin)/(Pmax-Pmin)*(y0-y1);
+  for(let P=40;P<=200;P+=40){ const y=yP(P); ctx.strokeStyle=C.grid; ctx.beginPath(); ctx.moveTo(x0,y); ctx.lineTo(x1,y); ctx.stroke(); _txt(ctx,x0-6,y,P+'',{size:9,align:'right',color:C.muted}); }
+  ctx.strokeStyle=C.amber; ctx.setLineDash([5,4]); ctx.beginPath(); ctx.moveTo(x0,yP(pt)); ctx.lineTo(x1,yP(pt)); ctx.stroke(); ctx.setLineDash([]);
+  _txt(ctx,x1-4,yP(pt)-6,'umbral p_t',{size:9,align:'right',color:C.amber});
+  // curva F ∝ pb-pt (con rodilla)
+  ctx.beginPath();
+  for(let i=0;i<=80;i++){ const pp=Pmin+(Pmax-Pmin)*i/80; const F=Math.max(0,pp-pt); const x=x0+(x1-x0)*i/80; const y=y0-F/(Pmax-Pmin)*(y0-y1)*1.2; if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);} ctx.strokeStyle=C.teal; ctx.lineWidth=2.5; ctx.stroke();
+  // pb
+  ctx.strokeStyle=C.ink; ctx.setLineDash([3,3]); ctx.beginPath(); ctx.moveTo(x0+(x1-x0)*(pb-Pmin)/(Pmax-Pmin),y1); ctx.lineTo(x0+(x1-x0)*(pb-Pmin)/(Pmax-Pmin),y0); ctx.stroke(); ctx.setLineDash([]);
+  _txt(ctx,w/2,h-6,'frecuencia F ∝ (p_b − p_t) · sobreimpulso dp_b/dt',{size:9,align:'center',color:C.muted});
+  el('br_out').textContent='F ∝ '+(pb-pt)+' mmHg';
+}
+
+/* ---- SLIDE 14 · Ganancia de bucle ---- */
+function drawGa(){
+  const cv=el('sim-ga'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  _bg(ctx,w,h);
+  const dpb=+num('ga_d')||20, g=+num('ga_g')||4;
+  const dpa=-g*dpb;
+  const x0=44,y0=h-34,y1=20,x1=w-20;
+  const xm=20;
+  const yV=v=>y0-(v+xm)/(2*xm)*(y0-y1);
+  ctx.strokeStyle=C.grid; ctx.beginPath(); ctx.moveTo(x0,yV(0)); ctx.lineTo(x1,yV(0)); ctx.stroke();
+  ctx.strokeStyle=C.blood; ctx.lineWidth=2.5; ctx.beginPath(); ctx.moveTo(x0,yV(dpb)); ctx.lineTo(x1,yV(-g*20)); ctx.stroke();
+  // punto
+  ctx.beginPath(); ctx.arc(x0+(x1-x0)*((dpb+20)/40),yV(dpb),4,0,7); ctx.fillStyle=C.ink; ctx.fill();
+  ctx.beginPath(); ctx.arc(x1,yV(dpa),4,0,7); ctx.fillStyle=C.teal; ctx.fill();
+  _txt(ctx,w/2,h-6,'Δp_a = −g·Δp_b · g='+g+' · Δp_b='+dpb+' → Δp_a='+dpa, {size:9,align:'center',color:C.muted});
+  el('ga_out').textContent='Δp_a = '+dpa+' mmHg';
+}
+
+/* ---- SLIDE 15 · Ejercicio: sistemas en paralelo ---- */
+function drawEx(){
+  const cv=el('sim-ex'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  _bg(ctx,w,h);
+  const I=+num('ex_i')||50;
+  const x0=44,y0=h-34,y1=20,x1=w-20;
+  const bars=[['Cardiovasc.',C.blood,0.4+0.6*I/100],['Ventilación',C.teal,0.3+0.7*I/100],['Térmico',C.amber,0.5+0.5*I/100]];
+  const bw=(x1-x0-40)/bars.length;
+  bars.forEach((b,i)=>{ const x=x0+20+i*(bw+10); const bh=(y0-y1)*b[2]; _rect(ctx,x,y0-bh,bw-6,bh,b[1],3); _txt(ctx,x+(bw-6)/2,y0-bh-6,b[0],{size:10,align:'center',bold:true,color:b[1]}); _txt(ctx,x+(bw-6)/2,y0+12,(b[2]*100).toFixed(0)+'%',{size:9,align:'center',color:C.muted}); });
+  _txt(ctx,w/2,h-6,'intensidad '+(+num('ex_i'))+'% · tres lazos de control suben juntos',{size:9,align:'center',color:C.muted});
+  el('ex_out').textContent='PA ↑ · GC ↑ · ventilación ↑';
+}
+
+/* ---- SLIDE 16 · Curvas de ejercicio (GC, ventilación) ---- */
+function drawCv(){
+  const cv=el('sim-cv'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  _bg(ctx,w,h);
+  const I=+num('cv_i')||50;
+  const x0=44,y0=h-34,y1=20,x1=w-20;
+  const Imax=100;
+  const xI=II=>x0+(x1-x0)*II/Imax;
+  // GC (lineal) y ventilación (más empinada arriba de 60)
+  function curve(fn,col){ ctx.beginPath(); for(let i=0;i<=80;i++){ const ii=Imax*i/80; const v=fn(ii); const x=xI(ii); const y=y0-v*(y0-y1); if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);} ctx.strokeStyle=col; ctx.lineWidth=2.5; ctx.stroke(); }
+  curve(ii=>0.3+0.7*ii/Imax, C.blood);
+  curve(ii=>0.2+ (ii<60? 0.5*ii/60 : 0.5+1.3*(ii-60)/40), C.teal);
+  ctx.strokeStyle=C.ink; ctx.setLineDash([3,3]); ctx.beginPath(); ctx.moveTo(xI(I),y1); ctx.lineTo(xI(I),y0); ctx.stroke(); ctx.setLineDash([]);
+  _txt(ctx,w/2,h-6,'GC (rojo) y ventilación (teal) vs intensidad · umbral anaeróbico ~60%',{size:9,align:'center',color:C.muted});
+  el('cv_out').textContent='GC y ventilación suben';
+}
+
+/* ---- SLIDE 17 · Pupila: respuesta con retardo ---- */
+function drawPu(){
+  const cv=el('sim-pu'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  _bg(ctx,w,h);
+  const I=+num('pu_i')||200, tau=+num('pu_t')||280;
+  const x0=44,y0=h-34,y1=20,x1=w-20;
+  const A=I>500? 2 : 8 - 6*Math.log10(I/50)/Math.log10(20); // área mayor con luz
+  const Aclip=Math.max(2,Math.min(9,A));
+  // estímulo (escalón en t=0) y respuesta con retardo tau
+  ctx.strokeStyle=C.amber; ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x0+(x1-x0)*0.2,y0); ctx.lineTo(x0+(x1-x0)*0.2,y1+10); ctx.lineTo(x1,y1+10); ctx.stroke();
+  ctx.strokeStyle=C.teal; ctx.lineWidth=2.5; ctx.beginPath();
+  const td=tau/600*(x1-x0)*0.8;
+  for(let i=0;i<=80;i++){ const x=x0+(x1-x0)*i/80; let y; if(x<x0+(x1-x0)*0.2+td){ y=y0; } else { const tt=(x-(x0+(x1-x0)*0.2+td))/((x1-x0)*0.8); const a=Aclip*(1-Math.exp(-tt*5)); y=y0-a/(9)*(y0-y1); } if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);} ctx.stroke();
+  _txt(ctx,w/2,h-6,'I='+(+num('pu_i'))+' · τ='+(+num('pu_t'))+' ms · A responde con retardo',{size:9,align:'center',color:C.muted});
+  el('pu_out').textContent='A responde con retardo '+(+num('pu_t'))+' ms';
+}
+
+/* ---- SLIDE 18 · A(x) tipo Hill ---- */
+function drawAx(){
+  const cv=el('sim-ax'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  _bg(ctx,w,h);
+  const n=+num('ax_n')||3, th=+num('ax_th')||1;
+  const A0=2,A1=7;
+  const x0=44,y0=h-34,y1=20,x1=w-20;
+  const xm=3;
+  const yA=a=>y0-(a-A0)/(A0+A1-A0)*(y0-y1);
+  ctx.beginPath();
+  for(let i=0;i<=80;i++){ const xv=xm*i/80; const A=A0+A1*Math.pow(th,n)/(Math.pow(xv,n)+Math.pow(th,n)); const x=x0+(x1-x0)*i/80; const y=yA(A); if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);} ctx.strokeStyle=C.blood; ctx.lineWidth=2.5; ctx.stroke();
+  // eje x
+  ctx.strokeStyle=C.grid; ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y0); ctx.stroke();
+  _txt(ctx,w/2,h-6,'A(x)=A₀+A₁·θⁿ/(xⁿ+θⁿ) · n='+n+' θ='+th+' · tipo Hill',{size:9,align:'center',color:C.muted});
+  el('ax_out').textContent='A(x) tipo Hill · n='+n;
+}
+
+/* ---- SLIDE 19 · Oscilación pupilar (animada) ---- */
+let __poT=0,__poPlaying=false;
+function drawPo(){
+  const cv=el('sim-po'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  _bg(ctx,w,h);
+  const I=+num('po_i')||400, tau=+num('po_t')||280;
+  const t=__poT;
+  const unstable = (I>500) && (tau>400);
+  const x0=44,y0=h-34,y1=20,x1=w-20;
+  ctx.strokeStyle=C.amber; ctx.setLineDash([5,4]); ctx.beginPath(); ctx.moveTo(x0,y0-(y0-y1)*0.5); ctx.lineTo(x1,y0-(y0-y1)*0.5); ctx.stroke(); ctx.setLineDash([]);
+  ctx.beginPath();
+  for(let i=0;i<=80;i++){ const tt=t+i/80*4; let a; if(unstable){ a=0.5+0.4*Math.sin(tt*3); } else { a=0.5+0.3*Math.exp(-tt*0.6)*Math.sin(tt*3); } const x=x0+(x1-x0)*i/80; const y=y0-a*(y0-y1); if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);} ctx.strokeStyle=unstable?C.blood:C.teal; ctx.lineWidth=2.5; ctx.stroke();
+  _txt(ctx,w/2,h-6,(unstable?'INESTABLE · oscila':'estable')+' · I='+(+num('po_i'))+' τ='+(+num('po_t'))+'ms',{size:9,align:'center',color:C.muted});
+  el('po_out').textContent=unstable?'oscila (inestable)':'se asienta (estable)';
+}
+function togglePo(){ __poPlaying=!__poPlaying; __poT=0; drawPo(); }
+
+/* ---- SLIDE 20 · Diagrama contracorriente (clic) ---- */
+let __cc2=0;
+function cc2Step(i){ __cc2=i; const c=el('sim-cc2'); if(c) drawCc2(); }
+function drawCc2(){
+  const cv=el('sim-cc2'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  _bg(ctx,w,h);
+  // dos vasos: superficial (rojo) y profundo (azul), intercambio
+  const hot=__cc2===0; // 0 calor 1 frío
+  ctx.strokeStyle=C.blood; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(60,30); ctx.lineTo(60,h-30); ctx.stroke();
+  ctx.strokeStyle=C.teal; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(w-60,30); ctx.lineTo(w-60,h-30); ctx.stroke();
+  // flujo
+  const col = hot? C.blood : C.teal;
+  ctx.fillStyle=col; ctx.globalAlpha=0.6; ctx.beginPath(); ctx.arc(60,40,6,0,7); ctx.fill();
+  // intercambio flechas
+  for(let y=60;y<h-40;y+=40){ ctx.strokeStyle=C.amber; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(60,y); ctx.lineTo(w-60,y); ctx.stroke(); }
+  ctx.globalAlpha=1;
+  _txt(ctx,60,20,'superficial',{size:10,align:'center',bold:true,color:C.blood});
+  _txt(ctx,w-60,20,'profundo',{size:10,align:'center',bold:true,color:C.teal});
+  _txt(ctx,w/2,18,(hot?'HACE CALOR → superficial abierto (pierde calor)':'HACE FRÍO → profundo (conserva, contracorriente)'),{size:10,align:'center',bold:true,color:col});
+  _txt(ctx,w/2,h-6,'clic para alternar calor/frío · mecanismo a contracorriente (Cap. 8)',{size:9,align:'center',color:C.muted});
+  el('cc2_out').textContent=hot?'superficial (pierde calor)':'profundo (conserva)';
+}
+
+/* ---- SLIDE 21 · Banda muerta 13.2/13.3 ---- */
+function drawPb(){
+  const cv=el('sim-pb'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  _bg(ctx,w,h);
+  const rate=+num('pb_r')||2, band=+num('pb_b')||0.5;
+  const interval=band/rate*60; // min
+  const x0=44,y0=h-34,y1=20,x1=w-20;
+  // señal diente de sierra entre ±banda
+  ctx.beginPath();
+  const N=80;
+  for(let i=0;i<=N;i++){ const x=x0+(x1-x0)*i/N; const ph=(i/N*6)%1; const v=(ph<0.5? ph*2 : (1-ph)*2)*band*2-band; const y=y0-(v+2*band)/(4*band)*(y0-y1); if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);} ctx.strokeStyle=C.teal; ctx.lineWidth=2; ctx.stroke();
+  ctx.strokeStyle=C.amber; ctx.setLineDash([4,4]); ctx.beginPath(); ctx.moveTo(x0,y0-(band+2*band)/(4*band)*(y0-y1)); ctx.lineTo(x1,y0-(band+2*band)/(4*band)*(y0-y1)); ctx.moveTo(x0,y0-(-band+2*band)/(4*band)*(y0-y1)); ctx.lineTo(x1,y0-(-band+2*band)/(4*band)*(y0-y1)); ctx.stroke(); ctx.setLineDash([]);
+  _txt(ctx,w/2,h-6,'banda muerta ±'+band+'° · deriva '+rate+'°C/h → activa cada '+interval.toFixed(0)+' min',{size:9,align:'center',color:C.muted});
+  el('pb_out').textContent='se activa cada '+interval.toFixed(0)+' min';
+}
+
+/* ---- SLIDE 22 · Enfriamiento/recalentamiento (animado) ---- */
+let __prT=0,__prPlaying=false;
+function drawPr(){
+  const cv=el('sim-pr'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  _bg(ctx,w,h);
+  const sel=+num('pr_sel')||0;
+  const t=__prT, Cth=2.4, Thab=21;
+  let T;
+  if(sel===0){ T=Thab+(37-Thab)*Math.exp(-t/Cth); }
+  else if(sel===1){ T=28+(37-28)*(1-Math.exp(-(t)/ (Cth/4))); }
+  else { T=28+(37-28)*(1-Math.exp(-(t)/(Cth/8))); }
+  const x0=44,y0=h-34,y1=20,x1=w-20;
+  const Tmin=20,Tmax=40;
+  const yT=TT=>y0-(TT-Tmin)/(Tmax-Tmin)*(y0-y1);
+  ctx.beginPath(); for(let i=0;i<=80;i++){ const tt=t+i/80*5; let TT; if(sel===0) TT=Thab+(37-Thab)*Math.exp(-tt/Cth); else TT=28+(37-28)*(1-Math.exp(-tt/(Cth/(sel===1?4:8)))); const x=x0+(x1-x0)*i/80; const y=yT(TT); if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);} ctx.strokeStyle=C.blood; ctx.lineWidth=2.5; ctx.stroke();
+  ctx.strokeStyle=C.amber; ctx.setLineDash([5,4]); ctx.beginPath(); ctx.moveTo(x0,yT(37)); ctx.lineTo(x1,yT(37)); ctx.stroke(); ctx.setLineDash([]);
+  _txt(ctx,w/2,h-6,(sel===0?'enfriamiento (sin mét.)':'recalentamiento '+(sel===1?'(BMR)':'(cumbre)'))+' · τr 2,4 h',{size:9,align:'center',color:C.muted});
+  el('pr_out').textContent='T → '+T.toFixed(1)+'° · τr 2,4 h';
+}
+function togglePr(){ __prPlaying=!__prPlaying; __prT=0; drawPr(); }
+
+/* ---- SLIDE 23 · Mapa de sistemas ---- */
+function drawMap(){
+  const cv=el('sim-map'); if(!cv||!cv.clientWidth) return;
+  const w=cv.clientWidth,h=cv.clientHeight; const ctx=AB.setup(cv,w,h);
+  _bg(ctx,w,h);
+  const k=+num('map_sel')||0;
+  const sys=[['Temperatura','bucle cerrado',C.blood],['Presión arterial','barorreceptor',C.teal],['Ejercicio','varios lazos',C.amber],['Pupila','con retardo',C.blood]];
+  // bloques en cascada
+  const bx=50, bw=(w-100)/sys.length;
+  sys.forEach((s,i)=>{ const x=bx+i*(bw+6); const on=(i===k); ctx.fillStyle=on?s[2]:'#efe3c8'; ctx.globalAlpha=on?1:0.85; _rect(ctx,x,h/2-22,bw-6,44,on?s[2]:C.line,on?3:1.5); ctx.globalAlpha=1; _txt(ctx,x+(bw-6)/2,h/2-2,s[0],{size:11,align:'center',bold:on,color:on?C.paper:C.muted}); _txt(ctx,x+(bw-6)/2,h/2+14,s[1],{size:9,align:'center',color:on?C.paper:C.muted}); if(i<sys.length-1){ _txt(ctx,x+bw+3,h/2+4,'→',{size:14,align:'center',color:C.muted}); } });
+  _txt(ctx,w/2,h-8,'los 4 sistemas comparten el lazo de la Fig. 13.2',{size:9,align:'center',color:C.muted});
+  el('map_out').textContent=sys[k][0]+' · '+sys[k][1];
+}
+
+
+const fns = { 1:drawBio, 2:drawBl, 3:drawFb, 4:drawTherm, 5:drawEc, 6:drawPtr, 7:drawReg,
+  8:drawBq, 9:drawOa, 10:drawCc, 11:drawSw, 12:drawCr,
+  13:drawBr, 14:drawGa, 15:drawEx, 16:drawCv, 17:drawPu, 18:drawAx, 19:drawPo,
+  20:drawCc2, 21:drawPb, 22:drawPr, 23:drawMap };
+function redrawSlide(n){ (fns[n]||function(){})(); }
+window.redrawSlide = redrawSlide;
+
+// ===================== ANIM LOOP =====================
+let __lastTs = 0;
+function animLoop(ts){
+  const dt = Math.min(0.06, ((ts - __lastTs)||0)/1000);
+  __lastTs = ts;
+  if(current===6  && __ptrPlaying){ __ptrT += dt; drawPtr(); }
+  if(current===9  && __oaPlaying){ __oaT += dt; drawOa(); }
+  if(current===12 && __crPlaying){ __crT += dt; drawCr(); }
+  if(current===19 && __poPlaying){ __poT += dt; drawPo(); }
+  if(current===22 && __prPlaying){ __prT += dt; drawPr(); }
+  requestAnimationFrame(animLoop);
+}
+requestAnimationFrame(animLoop);
+
+// ===================== BOTONES DE REPRODUCCIÓN =====================
+function togglePtr(){ __ptrPlaying=!__ptrPlaying; __ptrT=0; drawPtr(); }
+function toggleOa(){ __oaPlaying=!__oaPlaying; __oaT=0; drawOa(); }
+function toggleCr(){ __crPlaying=!__crPlaying; __crT=0; drawCr(); }
+function togglePo(){ __poPlaying=!__poPlaying; __poT=0; drawPo(); }
+function togglePr(){ __prPlaying=!__prPlaying; __prT=0; drawPr(); }
+
+// ===================== CONTROL LIVE (sliders/selects) =====================
+document.addEventListener('input', function(e){
+  const t=e.target;
+  if(t && t.id && /^(bi|fb|th|ls|tp|dy|fc|op|cc|sw|cr|br|ga|ex|cv|pu|ax|po|cc2|pb|pr|map|ec|ptr|reg|bq|oa)_/.test(t.id)) redrawSlide(current);
+});
+document.addEventListener('change', function(e){
+  const t=e.target;
+  if(t && t.id && /^(bi|fb|th|ls|tp|dy|fc|op|cc|sw|cr|br|ga|ex|cv|pu|ax|po|cc2|pb|pr|map|ec|ptr|reg|bq|oa)_/.test(t.id)) redrawSlide(current);
+});
+
+/* ── Teclado ── */
+document.addEventListener('keydown', e=>{
+  if (/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return;
+  if (e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){ e.preventDefault(); nextSlide(); }
+  else if (e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); prevSlide(); }
+  else if (e.key==='Home'){ e.preventDefault(); go(0); }
+  else if (e.key==='End'){ e.preventDefault(); go(TOTAL-1); }
+});
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  dots();
+  buildModuleTabs();
+  if (window.renderMathInElement) renderMathInElement(document.body, {
+    delimiters:[
+      {left:'\\(',right:'\\)',display:false},
+      {left:'\\[',right:'\\]',display:true}
+    ],
+    throwOnError:false
+  });
+  requestAnimationFrame(()=>redrawSlide(0));
+});
+</script>
+
+<script defer>
+/* ═══════════════════════════════════════════════════════════════
+   ESCENAS 3D · Capítulo 13 — Sistemas de Retroalimentación y Control
+   Globo de control anatómico interactivo (cuerpo PROCEDURAL, sin glb)
+   Three.js UMD (window.THREE) → funciona abierto como archivo local.
+   No toca las simulaciones 2D: vive en div.three-stage propios.
+   ═══════════════════════════════════════════════════════════════ */
+(function(){
+  function start(){
+    const THREE = window.THREE;
+    if(!THREE){ console.warn('Three.js (UMD) no disponible'); return; }
+
+    const NODES = [
+      { id:0, label:'1 Sensor',    pos:new THREE.Vector3( 1.05, 0.95, 0.25), color:0x0d6e64 },
+      { id:1, label:'2 Cerebro',   pos:new THREE.Vector3( 0.15, 1.35, 0.0 ), color:0x5d4fa8 },
+      { id:2, label:'3 Efector',   pos:new THREE.Vector3(-0.95, 0.70, 0.2 ), color:0x9a5b00 },
+      { id:3, label:'4 Respuesta', pos:new THREE.Vector3(-0.85,-0.20, 0.3 ), color:0xa92a1e },
+      { id:4, label:'5 Feed-back', pos:new THREE.Vector3( 0.95,-0.35,-0.2 ), color:0x0d6e64 }
+    ];
+
+    function MiniOrbit(camera, dom, target){
+      this.camera=camera; this.dom=dom; this.target=target;
+      this.az=Math.atan2(camera.position.z-target.z, camera.position.x-target.x);
+      this.pol=Math.acos((camera.position.y-target.y)/camera.position.distanceTo(target));
+      this.dist=camera.position.distanceTo(target);
+      this.autoRotate=true; this.rotSpeed=0.4; this.dragging=false;
+      let drag=false, lx=0, ly=0; const self=this;
+      dom.addEventListener('pointerdown', e=>{ drag=true; self.dragging=true; lx=e.clientX; ly=e.clientY; self.autoRotate=false; });
+      window.addEventListener('pointerup', ()=>{ drag=false; self.dragging=false; });
+      window.addEventListener('pointermove', e=>{
+        if(!drag) return;
+        self.az -= (e.clientX-lx)*0.01; self.pol -= (e.clientY-ly)*0.01;
+        self.pol = Math.max(0.2, Math.min(Math.PI-0.2, self.pol));
+        lx=e.clientX; ly=e.clientY; self._apply();
+      });
+      dom.addEventListener('wheel', e=>{ e.preventDefault(); self.dist *= (e.deltaY>0?1.08:0.92);
+        self.dist=Math.max(2.2, Math.min(10,self.dist)); self._apply(); }, {passive:false});
+      this._apply();
+    }
+    MiniOrbit.prototype._apply=function(){
+      const t=this.target;
+      this.camera.position.set(
+        t.x+this.dist*Math.sin(this.pol)*Math.cos(this.az),
+        t.y+this.dist*Math.cos(this.pol),
+        t.z+this.dist*Math.sin(this.pol)*Math.sin(this.az));
+      this.camera.lookAt(t);
+    };
+    MiniOrbit.prototype.update=function(dt){ if(this.autoRotate && !this.dragging){ this.az+=this.rotSpeed*dt; this._apply(); } };
+
+    function makeLabel(text, hex){
+      const cv=document.createElement('canvas'); cv.width=256; cv.height=64;
+      const cx=cv.getContext('2d');
+      cx.fillStyle='rgba(255,253,248,0.95)'; let x=4,y=4,w=248,h=56,r=12;
+      cx.beginPath(); cx.moveTo(x+r,y); cx.arcTo(x+w,y,x+w,y+h,r); cx.arcTo(x+w,y+h,x,y+h,r);
+      cx.arcTo(x,y+h,x,y,r); cx.arcTo(x,y,x+w,y,r); cx.closePath(); cx.fill();
+      cx.strokeStyle=hex; cx.lineWidth=3; cx.stroke();
+      cx.fillStyle='#22303c'; cx.font='bold 26px Karla, sans-serif'; cx.textAlign='center'; cx.textBaseline='middle';
+      cx.fillText(text,128,34);
+      const tex=new THREE.CanvasTexture(cv); tex.anisotropy=4;
+      const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex, depthTest:false, transparent:true}));
+      sp.scale.set(0.95,0.24,1); return sp;
+    }
+
+    function makeStage(containerId, opts){
+      opts=opts||{};
+      const container=document.getElementById(containerId);
+      if(!container) return null;
+      const W=()=>container.clientWidth||320, H=()=>container.clientHeight||260;
+      const scene=new THREE.Scene(); scene.background=new THREE.Color(0xf2ecdd);
+      const camera=new THREE.PerspectiveCamera(34, W()/H(), 0.1, 30);
+      camera.position.set(3.4,1.7,3.8);
+      const renderer=new THREE.WebGLRenderer({antialias:true});
+      renderer.setSize(W(),H()); renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+      renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.05;
+      container.prepend(renderer.domElement);
+      const controls=new MiniOrbit(camera, renderer.domElement, new THREE.Vector3(0,0.25,0));
+
+      scene.add(new THREE.AmbientLight(0xffffff,1.15));
+      const ml=new THREE.DirectionalLight(0xfff3e0,2.6); ml.position.set(5,8,4); scene.add(ml);
+      const fl=new THREE.DirectionalLight(0xbfd9e8,0.9); fl.position.set(-3,1,-5); scene.add(fl);
+      const rim=new THREE.DirectionalLight(0xffffff,0.5); rim.position.set(0,-2,6); scene.add(rim);
+      const grid=new THREE.GridHelper(5,20,0xb7a77e,0xd4c8a6);
+      grid.position.y=-1.05; grid.material.opacity=0.5; grid.material.transparent=true; scene.add(grid);
+
+      const material=new THREE.MeshStandardMaterial({color:0xb9835e, roughness:0.55, metalness:0.05});
+      const hl={ c:[new THREE.Vector3(0,0,0),new THREE.Vector3(0,0,0)], r:[0.0,0.0], col:new THREE.Color(0x0d6e64) };
+      material.onBeforeCompile=(sh)=>{
+        sh.uniforms.hc={value:hl.c}; sh.uniforms.hr={value:hl.r}; sh.uniforms.hcol={value:hl.col};
+        sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying vec3 vLP;')
+          .replace('#include <begin_vertex>','#include <begin_vertex>\nvLP=position;');
+        sh.fragmentShader=sh.fragmentShader.replace('#include <common>',
+          '#include <common>\nuniform vec3 hc[2];\nuniform float hr[2];\nuniform vec3 hcol;\nvarying vec3 vLP;')
+          .replace('#include <dithering_fragment>',
+          '#include <dithering_fragment>\nfloat mf=0.0;\nfor(int i=0;i<2;i++){ if(hr[i]>0.0){ float d=distance(vLP,hc[i]); if(d<hr[i]){ mf=max(mf, smoothstep(hr[i], hr[i]*0.4, d)); } } }\nif(mf>0.0){ gl_FragColor.rgb=mix(gl_FragColor.rgb, hcol, mf*0.85); }');
+      };
+
+      const body=new THREE.Group(); scene.add(body);
+      function part(geo,x,y,z){ const m=new THREE.Mesh(geo,material); m.position.set(x,y,z); body.add(m); return m; }
+      part(new THREE.SphereGeometry(0.32,24,24),0,1.45,0);
+      part(new THREE.CylinderGeometry(0.13,0.13,0.45,16),0,1.05,0);
+      part(new THREE.BoxGeometry(0.62,0.85,0.32),0,0.5,0);
+      part(new THREE.CylinderGeometry(0.1,0.1,0.7,14),0.36,0.5,0).rotation.z=0.15;
+      part(new THREE.CylinderGeometry(0.1,0.1,0.7,14),-0.36,0.5,0).rotation.z=-0.15;
+      part(new THREE.SphereGeometry(0.12,16,16),0.5,0.18,0);
+      part(new THREE.SphereGeometry(0.12,16,16),-0.5,0.18,0);
+      part(new THREE.CylinderGeometry(0.15,0.12,0.95,16),0.16,-0.5,0);
+      part(new THREE.CylinderGeometry(0.15,0.12,0.95,16),-0.16,-0.5,0);
+      part(new THREE.SphereGeometry(0.16,16,16),0.16,-1.0,0.05);
+      part(new THREE.SphereGeometry(0.16,16,16),-0.16,-1.0,0.05);
+
+      const nodeGroup=new THREE.Group(); scene.add(nodeGroup);
+      const nodeMeshes=[];
+      NODES.forEach(n=>{
+        const m=new THREE.Mesh(new THREE.SphereGeometry(0.08,20,20),
+          new THREE.MeshStandardMaterial({color:n.color, emissive:n.color, emissiveIntensity:0.35, roughness:0.4}));
+        m.position.copy(n.pos);
+        const lab=makeLabel(n.label,'#'+n.color.toString(16).padStart(6,'0'));
+        lab.position.copy(n.pos).add(new THREE.Vector3(0,0.22,0));
+        nodeGroup.add(m); nodeGroup.add(lab); nodeMeshes.push(m);
+      });
+      const loopPts=NODES.map(n=>n.pos).concat([NODES[0].pos]);
+      const loopLine=new THREE.Line(new THREE.BufferGeometry().setFromPoints(loopPts),
+        new THREE.LineBasicMaterial({color:0x9a5b00, transparent:true, opacity:0.55}));
+      scene.add(loopLine);
+      const flowDot=new THREE.Mesh(new THREE.SphereGeometry(0.055,16,16), new THREE.MeshBasicMaterial({color:0x0d6e64}));
+      flowDot.visible=!!opts.flow; scene.add(flowDot);
+      let flowOn=!!opts.flow, flowT=0, flowDir=1;
+      let activeNode=-1;
+      function setActiveNode(i){
+        activeNode=i;
+        NODES.forEach((n,k)=> nodeMeshes[k].material.emissiveIntensity=(k===i)?0.9:0.35);
+        if(i>=0){ hl.c[0].copy(NODES[i].pos); hl.r[0]=0.30; } else { hl.r[0]=0.0; }
+      }
+      setActiveNode(-1);
+      const loading=document.getElementById('load-'+(containerId==='stage-cover'?'cover':'loop'));
+      if(loading) loading.style.display='none';
+
+      function resize(){ const w=W(),h=H(); if(w<1||h<1) return; camera.aspect=w/h; camera.updateProjectionMatrix(); renderer.setSize(w,h); }
+      window.addEventListener('resize', resize);
+      if(window.ResizeObserver) new ResizeObserver(resize).observe(container);
+
+      let last=performance.now();
+      function animate(){
+        requestAnimationFrame(animate);
+        if(!container.offsetParent) return;
+        const now=performance.now(); const dt=Math.min(0.05,(now-last)/1000); last=now;
+        controls.update(dt);
+        if(flowOn){
+          flowT += 0.35*dt*flowDir;
+          if(flowT>1){ flowT=1; flowDir=-1; } if(flowT<0){ flowT=0; flowDir=1; }
+          const seg=flowT*5; const i=Math.floor(seg)%5; const f=seg-Math.floor(seg);
+          flowDot.position.lerpVectors(NODES[i].pos, NODES[(i+1)%5].pos, f); flowDot.visible=true;
+        } else flowDot.visible=false;
+        if(activeNode>=0){ const s=1+0.12*Math.sin(now*0.005); nodeMeshes[activeNode].scale.setScalar(s); }
+        renderer.render(scene,camera);
+      }
+      animate();
+
+      return {
+        toggleRotate(){ controls.autoRotate=!controls.autoRotate; return controls.autoRotate; },
+        toggleFlow(){ flowOn=!flowOn; return flowOn; },
+        setNode(i){ setActiveNode(i); },
+        resize
+      };
+    }
+
+    const stages={};
+    const api=window.__cap13={
+      init(){ stages.loop=makeStage('stage-loop',{flow:false}); },
+      toggleRotate(w){ const s=stages[w]; if(!s) return; const on=s.toggleRotate();
+        const b=document.getElementById(w+'-rotate'); if(b) b.textContent=on?'⏸ rotación':'▶ rotación'; },
+      toggleFlow(w){ const s=stages[w]; if(!s) return; const on=s.toggleFlow();
+        const b=document.getElementById(w+'-flow'); if(b) b.textContent=on?'⏸ flujo':'▶ flujo'; },
+      cycleNode(w){ const s=stages[w]; if(!s) return;
+        const i=(api._n=(api._n||-1)+1)%NODES.length; s.setNode(i);
+        const b=document.getElementById(w+'-step'); if(b) b.textContent='eslabón '+(i+1); }
+    };
+    api.init();
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', start);
+  else start();
+})();
+</script>
+</body>
+</html>
