@@ -1,6 +1,6 @@
 # ARCHITECTURE & PROTOCOL
 
-**Project:** La Mecánica del Cuerpo Humano (Interactive Web Experience)
+**Project:** La Física del Cuerpo Humano (Interactive Web Experience)
 **Phase:** 2 (Web & 3D Immersion)
 
 > [!IMPORTANT]

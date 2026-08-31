@@ -1,17 +1,19 @@
-\documentclass[10pt]{book}
+\documentclass[12pt]{book}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{newtxtext}       % Fuente serif con más peso y contraste (estilo Times)
+\usepackage{lmodern}        % Fuentes vectoriales Type 1 (igual que Cap 3)
+\usepackage{microtype}      % Mejora la legibilidad
+\usepackage[spanish]{babel}
+\usepackage[margin=2.5cm]{geometry}
 \usepackage{amsmath}
 \usepackage{amssymb}
-\usepackage{newtxmath}       % Matemáticas consistentes con newtxtext
-\usepackage{microtype}       % Mejora la legibilidad (protrusión y expansión de caracteres)
-\usepackage[spanish]{babel}
-\usepackage[paperwidth=15.44cm,paperheight=23.41cm,top=2.2cm,bottom=2.2cm,left=2cm,right=2cm]{geometry}
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{sidecap}
+\usepackage{threeparttable}
+\usepackage{enumitem}
+\usepackage{mathptmx}
 
 \graphicspath{{imagenes/}}
 
@@ -193,7 +195,7 @@ También podemos ver por qué es inteligente y una buena ingeniería que la bisa
   \label{fig:17}
 \end{figure}
 
-Como preparación para nuestra discusión sobre la estática y el movimiento del cuerpo, debemos considerar los componentes básicos del movimiento humano. Hay cuatro tipos de componentes: huesos, ligamentos, músculos y tendones. Cada uno tiene una función y propiedades mecánicas muy diferentes. Los huesos a menudo están recubiertos con cartílago articular hialino en las articulaciones sinoviales. Los ligamentos mantienen unidos los huesos. Músculos, en particular los músculos esqueléticos, son los motores que mueven los huesos alrededor de las articulaciones. (También hay músculo cardíaco —el corazón— y músculo liso —de los órganos digestivos y otros—). Los tendones conectan los músculos con los huesos. Los músculos se conectan en los puntos de origen e inserción a través de tendones; los puntos de inserción son donde ocurre la «acción». La Figura 1.8 muestra varios de los músculos más grandes del cuerpo, junto con algunos de los tendones.
+Como preparación para nuestra discusión sobre la estática y el movimiento del cuerpo, debemos considerar los componentes básicos del movimiento humano. Hay cuatro tipos de componentes: huesos, ligamentos, músculos y tendones. Cada uno tiene una función y propiedades mecánicas muy diferentes. Los huesos a menudo están recubiertos con cartílago articular hialino en las articulaciones sinoviales. Los ligamentos mantienen unidos los huesos. Músculos, en particular los músculos esqueléticos, son los motores que mueven los huesos alrededor de las articulaciones. (También hay músculo cardíaco ---el corazón--- y músculo liso ---de los órganos digestivos y otros---). Los tendones conectan los músculos con los huesos. Los músculos se conectan en los puntos de origen e inserción a través de tendones; los puntos de inserción son donde ocurre la «acción». La Figura 1.8 muestra varios de los músculos más grandes del cuerpo, junto con algunos de los tendones.
 
 Los músculos funcionan únicamente por contracción, es decir, solo al acortarse. En consecuencia, para poder mover los brazos en una dirección y luego de regreso en la dirección opuesta, se necesitan pares de músculos en la misma parte del cuerpo para cada movimiento opuesto. Tales pares opuestos, conocidos como «antagonistas», son muy comunes en el cuerpo.
 
@@ -501,8 +503,8 @@ Flexión de la cadera & 113 & 13 \\
 Abducción/aducción de la cadera & 53/31 & 12/12 \\
 Rotación medial/lateral de la cadera (prono) & 39/34 & 10/10 \\
 Rotación medial/lateral de la cadera (sentado) & 31/30 & 9/9 \\
-Flexión de la rodilla (prono)—voluntaria, con ayuda del brazo & 125, 144 & 10, 9 \\
-Flexión de la rodilla—voluntaria (de pie), forzada (de rodillas) & 113, 159 & 13, 9 \\
+Flexión de la rodilla (prono)---voluntaria, con ayuda del brazo & 125, 144 & 10, 9 \\
+Flexión de la rodilla---voluntaria (de pie), forzada (de rodillas) & 113, 159 & 13, 9 \\
 Rotación medial/lateral de la rodilla (sentado) & 35/43 & 12/12 \\
 Flexión/extensión del tobillo & 35/38 & 7/12 \\
 Inversión/eversión del pie & 24/23 & 9/7 \\
@@ -708,7 +710,7 @@ Un tipo de escalado muy diferente lo exhibe la Ley de Stevens, que caracteriza c
 P = K(S - S_0)^n
 \label{eq:1.6}
 \end{equation}
-por encima de un umbral $S_0$ \cite{35, 36}. Como se ve en la Tabla 1.15, a veces la percepción de un sentido, llamada psicopercepción, es sublineal con la intensidad del estímulo y a veces es superlineal. Tres de los sentidos involucran aspectos físicos muy significativos: la audición (Cap. 10, sonoridad) y la visión (Cap. 11), que examinaremos en detalle, y el tacto (Cap. 2, vibración, temperatura, presión en la palma, pesadez; Cap. 12, descarga eléctrica), que estudiaremos con menor detalle. Estos tres también tienen orígenes químicos y biológicos muy importantes. Los sentidos del gusto y del olfato tienen una base esencialmente química y biológica y no se discutirán más, excepto por una breve discusión de las propiedades eléctricas de las membranas de las neuronas sensoriales del gusto y del olfato en el Cap. 12. Para estos otros tres sentidos, nos concentraremos principalmente en la entrada física y el comienzo del proceso de sensación (detección). Las no linealidades inherentes a la Ley de Stevens se deben en parte al proceso de detección. Las partes finales del proceso de detección son la generación y transmisión de señales neuronales enviadas al cerebro —que cubriremos— y el procesamiento en el cerebro —que cubriremos solo brevemente—. Existen aproximadamente 12 órdenes de magnitud de sensibilidad en la audición y la visión.
+por encima de un umbral $S_0$ \cite{35, 36}. Como se ve en la Tabla 1.15, a veces la percepción de un sentido, llamada psicopercepción, es sublineal con la intensidad del estímulo y a veces es superlineal. Tres de los sentidos involucran aspectos físicos muy significativos: la audición (Cap. 10, sonoridad) y la visión (Cap. 11), que examinaremos en detalle, y el tacto (Cap. 2, vibración, temperatura, presión en la palma, pesadez; Cap. 12, descarga eléctrica), que estudiaremos con menor detalle. Estos tres también tienen orígenes químicos y biológicos muy importantes. Los sentidos del gusto y del olfato tienen una base esencialmente química y biológica y no se discutirán más, excepto por una breve discusión de las propiedades eléctricas de las membranas de las neuronas sensoriales del gusto y del olfato en el Cap. 12. Para estos otros tres sentidos, nos concentraremos principalmente en la entrada física y el comienzo del proceso de sensación (detección). Las no linealidades inherentes a la Ley de Stevens se deben en parte al proceso de detección. Las partes finales del proceso de detección son la generación y transmisión de señales neuronales enviadas al cerebro ---que cubriremos--- y el procesamiento en el cerebro ---que cubriremos solo brevemente---. Existen aproximadamente 12 órdenes de magnitud de sensibilidad en la audición y la visión.
 
 \begin{table}[htbp]
 \centering
@@ -718,12 +720,12 @@ por encima de un umbral $S_0$ \cite{35, 36}. Como se ve en la Tabla 1.15, a vece
 \toprule
 \textbf{Psicopercepción} & \textbf{$n$} & \textbf{Estímulo} \\
 \midrule
-Brillo & 0,33, 0,5 & objetivo de $5^\circ$, fuente puntual—ojo adaptado a la oscuridad \\
+Brillo & 0,33, 0,5 & objetivo de $5^\circ$, fuente puntual---ojo adaptado a la oscuridad \\
 Sonoridad & 0,54, 0,60 & Monoaural, binaural \\
 Olor & 0,55, 0,60 & Olor a café, heptano \\
-Vibración & 0,6, 0,95 & 250, 60 Hz—en el dedo \\
+Vibración & 0,6, 0,95 & 250, 60 Hz---en el dedo \\
 Gusto & 0,8, 1,3, 1,3 & Sacarina, sacarosa, sal \\
-Temperatura & 1,0, 1,6 & Frío, calor—en el brazo \\
+Temperatura & 1,0, 1,6 & Frío, calor---en el brazo \\
 Presión en la palma & 1,1 & Fuerza estática en la piel \\
 Pesadez & 1,45 & Pesas levantadas \\
 Descarga eléctrica & 3,5 & 60 Hz a través de los dedos \\
@@ -791,7 +793,7 @@ Mucho sobre el cuerpo se puede entender aprendiendo la terminología de las dire
   
   (a) ¿Cuántos grados de libertad tiene cada mano? (Ignore la articulación de la muñeca).
   
-  (b) ¿Necesitamos tantos grados de libertad? ¿Por qué? (No hay una respuesta correcta o incorrecta para esta parte. Solo piense en lo que una mano humana debería ser capaz de hacer —al agarrar, etc.— e intente expresar sus conclusiones en términos de grados de libertad).
+  (b) ¿Necesitamos tantos grados de libertad? ¿Por qué? (No hay una respuesta correcta o incorrecta para esta parte. Solo piense en lo que una mano humana debería ser capaz de hacer ---al agarrar, etc.--- e intente expresar sus conclusiones en términos de grados de libertad).
 
 \item[1.20] Estime el ángulo de cada una de las articulaciones de la mano para cada una de las siguientes funciones \cite{29}. (Defina el ángulo de cada articulación como se muestra en la mano izquierda en la Fig. 1.6b como $0^\circ$. Defina las rotaciones hacia el papel y los movimientos en el sentido de las agujas del reloj en el plano del papel como positivos).
   
@@ -1072,7 +1074,7 @@ Se asume conocida la ubicación del centro de masa de la extremidad en relación
   
   (b) ¿Implica este argumento «estático» una limitación sobre qué tan pequeño o qué tan grande puede ser un animal?
 
-\item[1.61] (a) El trabajo que un animal de dimensión $L$ necesita para propulsarse una distancia igual a su dimensión es la fuerza requerida —la cual es proporcional a su masa— multiplicada por su dimensión. Demuestre que este trabajo escala como $L^4$.
+\item[1.61] (a) El trabajo que un animal de dimensión $L$ necesita para propulsarse una distancia igual a su dimensión es la fuerza requerida ---la cual es proporcional a su masa--- multiplicada por su dimensión. Demuestre que este trabajo escala como $L^4$.
   
   (b) Esta fuerza debe ser suministrada por los músculos, y el trabajo realizado por los músculos es esta fuerza multiplicada por la distancia que los músculos pueden contraerse; esta distancia escala como la longitud de los músculos, que a su vez escala con $L$. En el Cap. 5 veremos que la fuerza ejercida por un músculo es proporcional a su área de sección transversal. Si la dimensión lateral del músculo también escala como $L$, demuestre que el trabajo máximo que puede realizar el músculo escala como $L^3$.
   
@@ -1098,7 +1100,7 @@ Se asume conocida la ubicación del centro de masa de la extremidad en relación
 \bibitem{11} C. Clauser, J.T. McConville: Aerospace Medical Research Laboratories, Wright-Patterson Air Force Base, 1964--1965
 \bibitem{12} S.S. Fitt, \textit{Dance Kinesiology}, 2.ª ed. (Schirmer/Thomson Learning, Nueva York, 1996)
 \bibitem{13} R. Floud, R.W. Fogel, B. Harris, S.C. Hong, \textit{The Changing Body: Health, Nutrition, and Human Development in the Western World since 1700} (Cambridge University Press, Cambridge, 2011)
-\bibitem{14} M.L. Foss, S.J. Keteyian, \textit{Fox’s Physiological Basis for Exercise and Sport}, 6.ª ed. (McGraw-Hill, Boston, 1998)
+\bibitem{14} M.L. Foss, S.J. Keteyian, \textit{Fox's Physiological Basis for Exercise and Sport}, 6.ª ed. (McGraw-Hill, Boston, 1998)
 \bibitem{15} R.A. Freitas Jr., \textit{Nanomedicine, Volumen I: Basic Capabilities} (Landes Bioscience, Austin, 1999)
 \bibitem{16} S.A. Gelfand, \textit{Essentials of Audiology}, 2.ª ed. (Thieme, Nueva York, 2001)
 \bibitem{17} Y. Li, C. Ortiz, M.C. Boyce, Bioinspired, mechanical, deterministic fractal model for hierarchical suture joints. \textit{Phys. Rev. E} \textbf{85}, 031901 (2012)

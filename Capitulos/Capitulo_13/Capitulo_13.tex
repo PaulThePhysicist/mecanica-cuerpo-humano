@@ -1,18 +1,21 @@
-\documentclass[12pt,a4paper]{book}
+\documentclass[12pt]{book}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{lmodern}
+\usepackage{lmodern}        % Fuentes vectoriales Type 1 (igual que Cap 3)
+\usepackage{microtype}      % Mejora la legibilidad
 \usepackage[spanish,es-nodecimaldot]{babel}
-\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage{graphicx}
 \graphicspath{{imagenes/}}
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{sidecap}
+\usepackage{threeparttable}
+\usepackage{enumitem}
+\usepackage{mathptmx}
 \usepackage{url}
-\usepackage[protrusion=true,expansion=false]{microtype}
-\usepackage[margin=2.5cm]{geometry}
-\usepackage{setspace}
 
 \AtBeginDocument{\shorthandoff{"}}
 
@@ -275,7 +278,7 @@ Con la edad avanzada, hay una menor producción metabólica de calor y vasoconst
 \subsection{Control de la presión arterial}
 \label{subsec:13.2.2}
 
-El cerebro recibe continuamente información del corazón y de los músculos y luego envía señales para controlar el corazón y los vasos sanguíneos para regular la presión arterial (Fig. 13.6). Por ejemplo, los barorreceptores del seno carotídeo (sensores de presión en la arteria carótida) emiten una señal que se transmite por el nervio del seno carotídeo que va al cerebro [18]. La frecuencia de esta señal $F$ es aproximadamente proporcional a la cantidad en que la presión arterial —detectada por los barorreceptores $p_b$— supera a una presión umbral $p_t$, y esta dependencia se ha modelado como
+El cerebro recibe continuamente información del corazón y de los músculos y luego envía señales para controlar el corazón y los vasos sanguíneos para regular la presión arterial (Fig. 13.6). Por ejemplo, los barorreceptores del seno carotídeo (sensores de presión en la arteria carótida) emiten una señal que se transmite por el nervio del seno carotídeo que va al cerebro [18]. La frecuencia de esta señal $F$ es aproximadamente proporcional a la cantidad en que la presión arterial ---detectada por los barorreceptores $p_b$--- supera a una presión umbral $p_t$, y esta dependencia se ha modelado como
 
 \begin{figure}[htbp]
   \centering

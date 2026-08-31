@@ -203,7 +203,7 @@ export default function App() {
             Tratado Interactivo Universitario
           </div>
           <h1 style={{ fontFamily: 'var(--serif, Georgia, serif)', fontSize: 'clamp(2.2rem, 4.5vw, 3.4rem)', color: 'var(--ink, #232c36)', marginBottom: '0.8rem', fontWeight: 700, letterSpacing: '-0.02em' }}>
-            La Mecánica del Cuerpo Humano
+            La Física del Cuerpo Humano
           </h1>
           <p style={{ color: 'var(--ink-2, #43505c)', fontSize: '1.05rem', fontStyle: 'italic', maxWidth: '720px', margin: '0 auto', lineHeight: 1.6 }}>
             Basado en la obra de <strong>Irving P. Herman</strong> (<em>Physics of the Human Body</em>, Springer). Modelos matemáticos, simulaciones 2D y 3D en tiempo real, fórmulas analíticas y anatomía funcional.
@@ -286,7 +286,7 @@ export default function App() {
         </div>
 
         <footer style={{ marginTop: '4rem', textAlign: 'center', color: 'var(--ink-3, #6b7885)', fontSize: '0.82rem', borderTop: '1px solid var(--line, #cfc3a9)', paddingTop: '1.6rem' }}>
-          Universidad de Paul · La Mecánica del Cuerpo Humano · Compilado con React + TypeScript + Vite + Canvas 2D + Three.js + KaTeX
+          Universidad de Paul · La Física del Cuerpo Humano · Compilado con React + TypeScript + Vite + Canvas 2D + Three.js + KaTeX
         </footer>
       </div>
     </div>

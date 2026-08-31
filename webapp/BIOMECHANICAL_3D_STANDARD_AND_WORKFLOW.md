@@ -1,7 +1,7 @@
 # 🏛️ ESTÁNDAR Y FLUJO DE TRABAJO PARA VISUALIZACIONES BIOMECÁNICAS 3D (CAPÍTULOS 3 AL 13)
 
 > **Documento de Referencia Obligatoria para Agentes de IA y Desarrolladores.**  
-> Este documento establece las normas arquitectónicas, estéticas, biomecánicas y de ejecución sistemática para implementar los capítulos restantes de la plataforma web *"La Mecánica del Cuerpo Humano"*, garantizando el nivel de excelencia de grado médico y museo interactivo alcanzado en los Capítulos 1 y 2.
+> Este documento establece las normas arquitectónicas, estéticas, biomecánicas y de ejecución sistemática para implementar los capítulos restantes de la plataforma web *"La Física del Cuerpo Humano"*, garantizando el nivel de excelencia de grado médico y museo interactivo alcanzado en los Capítulos 1 y 2.
 
 ---
 

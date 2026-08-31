@@ -10,7 +10,7 @@ export default function Layout({ children }: LayoutProps) {
     <>
       <nav className="module-bar">
         <div className="brand-mark">
-          <div className="treatise">La Mecánica del Cuerpo Humano</div>
+          <div className="treatise">La Física del Cuerpo Humano</div>
           <div className="book">I. P. Herman (2016)</div>
         </div>
         <div className="module-tab active">

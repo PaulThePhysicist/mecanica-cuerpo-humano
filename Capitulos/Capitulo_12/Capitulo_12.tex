@@ -1,18 +1,21 @@
-\documentclass[12pt,a4paper]{book}
+\documentclass[12pt]{book}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{lmodern}
+\usepackage{lmodern}        % Fuentes vectoriales Type 1 (igual que Cap 3)
+\usepackage{microtype}      % Mejora la legibilidad
 \usepackage[spanish,es-nodecimaldot]{babel}
-\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage{graphicx}
 \graphicspath{{imagenes/}}
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{sidecap}
+\usepackage{threeparttable}
+\usepackage{enumitem}
+\usepackage{mathptmx}
 \usepackage{url}
-\usepackage[protrusion=true,expansion=false]{microtype}
-\usepackage[margin=2.5cm]{geometry}
-\usepackage{setspace}
 
 \AtBeginDocument{\shorthandoff{"}}
 
@@ -323,7 +326,7 @@ Si bien existe neutralidad de carga tanto dentro como fuera de la membrana, las 
 \begin{figure}[htbp]
 \centering
   \includegraphics[width=0.8\textwidth]{1210.png}
-\caption{El potencial de reposo de la membrana de $-70\text{ mV}$ (dentro de la membrana en relación con el exterior, siempre fijo a $0\text{ mV}$) —el estado polarizado— junto con las perturbaciones del potencial que muestran la despolarización (aumentos de voltaje desde el valor del potencial de reposo), la repolarización (retorno al potencial de reposo) y la hiperpolarización (disminuciones desde el potencial de reposo).}
+\caption{El potencial de reposo de la membrana de $-70\text{ mV}$ (dentro de la membrana en relación con el exterior, siempre fijo a $0\text{ mV}$) ---el estado polarizado--- junto con las perturbaciones del potencial que muestran la despolarización (aumentos de voltaje desde el valor del potencial de reposo), la repolarización (retorno al potencial de reposo) y la hiperpolarización (disminuciones desde el potencial de reposo).}
 \label{fig:12.10}
 \end{figure}
 
@@ -335,7 +338,7 @@ Existen varias fuerzas impulsoras que determinan las concentraciones iónicas, e
 
 1. Existe la tendencia natural a que las concentraciones sean uniformes en todas partes, por lo que cuando hay gradientes de concentración a través de la membrana celular se producen flujos de estas especies desde las regiones de mayor concentración hacia las regiones de menor concentración, para igualar las concentraciones intracelular y extracelular. Esto se describe mediante la primera ley de difusión de Fick (7.64), $J_{\text{diff}} = -D_{\text{diff}} dn/dx$, donde $J_{\text{diff}}$ es el flujo de iones en la dirección $x$ (el número de iones que fluyen a través de un área unitaria en un tiempo unitario), $D_{\text{diff}}$ es la constante de difusión, $n$ es la concentración local de iones y $dn/dx$ es el gradiente de concentración local.
 
-2. Debido a que el potencial es negativo dentro de la célula, esperaríamos que los iones positivos entren en la célula y sean más dominantes en el líquido intracelular que en el extracelular y que existan tales gradientes de concentración; esto es cierto para el $\text{K}^+$ pero no para el $\text{Na}^+$. De manera similar, esperamos que los iones negativos salgan de la célula debido al potencial de reposo y sean más dominantes fuera de la célula que dentro de ella —y nuevamente que existan gradientes de concentración; esto es cierto para el $\text{Cl}^-$ pero no para las proteínas cargadas negativamente, que constituyen la mayor parte de los iones negativos diversos.
+2. Debido a que el potencial es negativo dentro de la célula, esperaríamos que los iones positivos entren en la célula y sean más dominantes en el líquido intracelular que en el extracelular y que existan tales gradientes de concentración; esto es cierto para el $\text{K}^+$ pero no para el $\text{Na}^+$. De manera similar, esperamos que los iones negativos salgan de la célula debido al potencial de reposo y sean más dominantes fuera de la célula que dentro de ella ---y nuevamente que existan gradientes de concentración; esto es cierto para el $\text{Cl}^-$ pero no para las proteínas cargadas negativamente, que constituyen la mayor parte de los iones negativos diversos.
 
 Cuando las especies cargadas están en un campo eléctrico, se aceleran y eventualmente alcanzan una velocidad de deriva en estado estacionario, $\vec{\mathbf{v}}_{\text{drift}}$, debido a las colisiones que actúan como una fuerza de arrastre. Como se muestra en el problema 12.7, la velocidad de deriva de un ion dado es
 \begin{equation}
@@ -659,7 +662,7 @@ esto corresponde a un cambio en la carga de $6 \times 10^3$ cargas elementales/$
 
 Pueden ocurrir varias cosas cuando se aplica un voltaje al axón de una neurona. Puede haber un flujo de corriente de iones cargados asociado con la resistencia dentro y alrededor del axón; el voltaje disminuiría con la distancia de acuerdo con la ley de Ohm y habría disipación de energía. Puede haber movimiento de cargas hacia y desde las membranas del axón y cambios en la energía del campo eléctrico almacenada entre estas superficies cargadas, lo cual se caracteriza por su capacitancia. También puede haber cambios en el transporte de cargas a través de estas membranas del axón.
 
-Considere una «caja de pastillas» cilíndrica, como se muestra en la Fig. 12.18, de radio $a$ y longitud $\delta x$, que se extiende desde $x$ hasta $x + \delta x$ a lo largo del axón y con la superficie cilíndrica curva dentro de la propia membrana celular. El voltaje en $x$ es $V(x)$ y el de $x + \delta x$ es $V(x + \delta x)$. La corriente que fluye (debido a los iones) dentro del axoplasma —es decir, el medio dentro del axón— hacia este volumen es $I_{\text{i}}(x)$ y la que sale es $I_{\text{i}}(x + \delta x)$. Hay una carga $+q$ en la membrana externa del axón y una carga $-q$ en la pared interna de la membrana. En la Fig. 12.19 se muestra un modelo físico de esto.
+Considere una «caja de pastillas» cilíndrica, como se muestra en la Fig. 12.18, de radio $a$ y longitud $\delta x$, que se extiende desde $x$ hasta $x + \delta x$ a lo largo del axón y con la superficie cilíndrica curva dentro de la propia membrana celular. El voltaje en $x$ es $V(x)$ y el de $x + \delta x$ es $V(x + \delta x)$. La corriente que fluye (debido a los iones) dentro del axoplasma ---es decir, el medio dentro del axón--- hacia este volumen es $I_{\text{i}}(x)$ y la que sale es $I_{\text{i}}(x + \delta x)$. Hay una carga $+q$ en la membrana externa del axón y una carga $-q$ en la pared interna de la membrana. En la Fig. 12.19 se muestra un modelo físico de esto.
 
 \begin{figure}[htbp]
   \centering
@@ -873,7 +876,7 @@ lo cual se puede demostrar por sustitución. Esto significa que la perturbación
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.7\textwidth]{1224.png}
-  \caption{Soluciones en estado estacionario para (12.79) para a) un cable semiinfinito y b)–d) cables de longitud finita $L$ con diferentes condiciones de contorno al final, con distancia característica $\lambda$ y $V = V_0$ en $x = 0$. Para las curvas (b1)–(b3), $V(L) = 0$ (voltaje fijado a cero), para $L = 0.5\lambda$, $\lambda$ y $2.0\lambda$. Para las curvas (c1)–(c3), $dV/dx = 0$ (corriente fijada a cero) en $x = L$, para $L = 0.5\lambda$, $\lambda$ y $2.0\lambda$. Para las curvas (d1) y (d2), el voltaje está fijado a $0.9V_0$ y $1.1V_0$ en $x = L$, para $L = \lambda$. Ver también el Problema 12.24 (Basado en [26]).}
+  \caption{Soluciones en estado estacionario para (12.79) para a) un cable semiinfinito y b)--d) cables de longitud finita $L$ con diferentes condiciones de contorno al final, con distancia característica $\lambda$ y $V = V_0$ en $x = 0$. Para las curvas (b1)--(b3), $V(L) = 0$ (voltaje fijado a cero), para $L = 0.5\lambda$, $\lambda$ y $2.0\lambda$. Para las curvas (c1)--(c3), $dV/dx = 0$ (corriente fijada a cero) en $x = L$, para $L = 0.5\lambda$, $\lambda$ y $2.0\lambda$. Para las curvas (d1) y (d2), el voltaje está fijado a $0.9V_0$ y $1.1V_0$ en $x = L$, para $L = \lambda$. Ver también el Problema 12.24 (Basado en [26]).}
   \label{fig:1224}
 \end{figure}
 
@@ -918,9 +921,9 @@ que tiene una atenuación exponencial global adicional en el tiempo con un tiemp
 \section[Canales Iónicos, Equilibrio y Sentidos]{Canales iónicos, células ciliadas, equilibrio, gusto y olfato}
 \label{sec:12.4}
 
-La sección anterior abordó la conducción de señales en un axón. Igualmente importante es la generación real de señales que luego se conducen a lo largo de un axón hacia el cerebro. Vimos en la sección anterior que el control del flujo de iones a través de la membrana celular —mediante cambios en la permeabilidad de las membranas a los iones por la apertura o el cierre de canales iónicos— es importante en esta conducción. También es importante en la generación de señales, como en la percepción sensorial.
+La sección anterior abordó la conducción de señales en un axón. Igualmente importante es la generación real de señales que luego se conducen a lo largo de un axón hacia el cerebro. Vimos en la sección anterior que el control del flujo de iones a través de la membrana celular ---mediante cambios en la permeabilidad de las membranas a los iones por la apertura o el cierre de canales iónicos--- es importante en esta conducción. También es importante en la generación de señales, como en la percepción sensorial.
 
-Un ejemplo interesante es la excitación de las células ciliadas, que es importante en varias partes del cuerpo. La Figura 12.25 muestra que el «pelo» en una célula ciliada es un haz de cilios compuesto por una serie asimétrica de 20–300 microvellosidades, que se vuelven sucesivamente más grandes en una dirección. Al final del haz a menudo hay un cilio grande, que se llama kinocilio. Cuando el haz de cilios se mueve hacia el kinocilio, el potencial de membrana se despolariza en relación con el potencial de reposo y cuando se aleja de él, la membrana se hiperpolariza, como se ve en la Fig. 12.26. No hay cambio en el potencial de membrana cuando el haz se mueve perpendicularmente a la dirección de las microvellosidades cada vez más grandes. Una posible explicación para esta despolarización es que los canales de iones positivos de $\text{Na}^+$ se abren cuando el haz de cilios se desplaza hacia el kinocilio. La respuesta elástica de la célula ciliada proviene de las propias microvellosidades, de los elementos elásticos (resortes de compuerta) que tiran de los canales iónicos y de los propios canales. La respuesta del pelo a las fuerzas se discutió en el Cap. 10 (texto y Problema 10.55).
+Un ejemplo interesante es la excitación de las células ciliadas, que es importante en varias partes del cuerpo. La Figura 12.25 muestra que el «pelo» en una célula ciliada es un haz de cilios compuesto por una serie asimétrica de 20--300 microvellosidades, que se vuelven sucesivamente más grandes en una dirección. Al final del haz a menudo hay un cilio grande, que se llama kinocilio. Cuando el haz de cilios se mueve hacia el kinocilio, el potencial de membrana se despolariza en relación con el potencial de reposo y cuando se aleja de él, la membrana se hiperpolariza, como se ve en la Fig. 12.26. No hay cambio en el potencial de membrana cuando el haz se mueve perpendicularmente a la dirección de las microvellosidades cada vez más grandes. Una posible explicación para esta despolarización es que los canales de iones positivos de $\text{Na}^+$ se abren cuando el haz de cilios se desplaza hacia el kinocilio. La respuesta elástica de la célula ciliada proviene de las propias microvellosidades, de los elementos elásticos (resortes de compuerta) que tiran de los canales iónicos y de los propios canales. La respuesta del pelo a las fuerzas se discutió en el Cap. 10 (texto y Problema 10.55).
 
 \begin{figure}[htbp]
   \centering
@@ -983,7 +986,7 @@ La diferencia de potencial a través de la membrana celular de la célula del m�
 
 ¿Por qué cambia este potencial con el tiempo, incluso para una sola célula muscular? Sigamos el movimiento de las cargas durante un ciclo. El campo a través de la membrana celular puede modelarse localmente como un dipolo eléctrico, con cargas positivas y negativas de igual magnitud separadas por una distancia (Fig.~12.1). Las líneas de campo eléctrico se muestran para tal dipolo puntual en la Fig.~12.1.
 
-Una célula de músculo cardíaco polarizada es una serie de tales dipolos, como se muestra en la Fig.~12.29a, con aproximadamente $-70\text{ mV}$ en el interior de la célula en relación con el exterior, alrededor de toda la célula. No se observa potencial (que en realidad es un potencial de línea de base) en el electrodo inmediatamente a la derecha de la célula. A medida que la onda de despolarización se propaga de izquierda a derecha, el potencial a la derecha aumenta y alcanza un máximo cuando la mitad de la célula está despolarizada, como en (c). A medida que la onda de despolarización llega al extremo derecho, este voltaje disminuye a cero como en (e). Esto es similar a la onda PQR en la despolarización ventricular observada en el EKG en la Fig.~12.28. Esto es lo que ocurriría si el potencial a través de la membrana fuera cero después de la despolarización. Debido a que en realidad se vuelve ligeramente positivo, el potencial en (e) debería descender ligeramente hacia valores negativos, como se observa para la onda PQR. Cuando el lado izquierdo se repolariza, el potencial se vuelve negativo y se desarrolla un pulso negativo, como en (f)–(h). Esto es similar al pulso S de repolarización ventricular en la Fig.~12.28, excepto por su signo. A diferencia de lo que ocurre en la Fig.~12.29h, el segundo pico es positivo porque la repolarización del músculo cardíaco procede en la dirección opuesta a la despolarización, como ocurre en la traza inferior. Además, la repolarización es un poco más lenta y más inhomogénea que la despolarización, por lo que el descenso negativo es más amplio (más lento) y tiene una magnitud menor (más superficial) que el primer pico.
+Una célula de músculo cardíaco polarizada es una serie de tales dipolos, como se muestra en la Fig.~12.29a, con aproximadamente $-70\text{ mV}$ en el interior de la célula en relación con el exterior, alrededor de toda la célula. No se observa potencial (que en realidad es un potencial de línea de base) en el electrodo inmediatamente a la derecha de la célula. A medida que la onda de despolarización se propaga de izquierda a derecha, el potencial a la derecha aumenta y alcanza un máximo cuando la mitad de la célula está despolarizada, como en (c). A medida que la onda de despolarización llega al extremo derecho, este voltaje disminuye a cero como en (e). Esto es similar a la onda PQR en la despolarización ventricular observada en el EKG en la Fig.~12.28. Esto es lo que ocurriría si el potencial a través de la membrana fuera cero después de la despolarización. Debido a que en realidad se vuelve ligeramente positivo, el potencial en (e) debería descender ligeramente hacia valores negativos, como se observa para la onda PQR. Cuando el lado izquierdo se repolariza, el potencial se vuelve negativo y se desarrolla un pulso negativo, como en (f)--(h). Esto es similar al pulso S de repolarización ventricular en la Fig.~12.28, excepto por su signo. A diferencia de lo que ocurre en la Fig.~12.29h, el segundo pico es positivo porque la repolarización del músculo cardíaco procede en la dirección opuesta a la despolarización, como ocurre en la traza inferior. Además, la repolarización es un poco más lenta y más inhomogénea que la despolarización, por lo que el descenso negativo es más amplio (más lento) y tiene una magnitud menor (más superficial) que el primer pico.
 
 \begin{SCfigure}[1.3][htbp]
   \centering
@@ -1141,7 +1144,7 @@ Las señales eléctricas también son importantes en otras partes del cuerpo y p
 \section{Efectos de las descargas eléctricas}
 \label{sec:12.7}
 
-Las corrientes eléctricas externas que circulan por el cuerpo pueden causar daños al interferir con el funcionamiento corporal normal —como al impedir que los músculos esqueléticos y cardíacos, que de otro modo estarían operativos, funcionen normalmente— y al destruir tejidos por calentamiento térmico (Tabla~12.7). Los músculos son controlados por una serie de impulsos eléctricos enviados por el cerebro. Las corrientes alternas (CA) externas ($60\text{ Hz}$) por encima de unos $10\text{ mA}$ anulan estas señales e impiden que se ejerza control sobre los músculos. Apenas se pueden controlar los músculos a $10\text{ mA}$ y apenas se puede «soltar» un objeto. A corrientes más altas, los músculos quedan bajo control externo, lo que posiblemente provoque dificultades respiratorias y circulatorias. La fibrilación ventricular ocurre entre $100\text{ mA}$ y $4\text{ A}$, y se produce parálisis, junto con quemaduras graves (y la muerte), por encima de $4\text{ A}$. Para descargas débiles, la sensación de descarga varía como la potencia $3{,}5$ del voltaje de $60\text{ Hz}$ aplicado (ley de Stevens~(1.6), Tabla~1.15), por lo que la percepción de una descarga eléctrica es altamente superlineal con el estímulo.
+Las corrientes eléctricas externas que circulan por el cuerpo pueden causar daños al interferir con el funcionamiento corporal normal ---como al impedir que los músculos esqueléticos y cardíacos, que de otro modo estarían operativos, funcionen normalmente--- y al destruir tejidos por calentamiento térmico (Tabla~12.7). Los músculos son controlados por una serie de impulsos eléctricos enviados por el cerebro. Las corrientes alternas (CA) externas ($60\text{ Hz}$) por encima de unos $10\text{ mA}$ anulan estas señales e impiden que se ejerza control sobre los músculos. Apenas se pueden controlar los músculos a $10\text{ mA}$ y apenas se puede «soltar» un objeto. A corrientes más altas, los músculos quedan bajo control externo, lo que posiblemente provoque dificultades respiratorias y circulatorias. La fibrilación ventricular ocurre entre $100\text{ mA}$ y $4\text{ A}$, y se produce parálisis, junto con quemaduras graves (y la muerte), por encima de $4\text{ A}$. Para descargas débiles, la sensación de descarga varía como la potencia $3{,}5$ del voltaje de $60\text{ Hz}$ aplicado (ley de Stevens~(1.6), Tabla~1.15), por lo que la percepción de una descarga eléctrica es altamente superlineal con el estímulo.
 
 \begin{SCfigure}[1.3][htbp]
 \centering
@@ -1399,7 +1402,7 @@ V(x) = \frac{V_0 \sinh((L - x)/\lambda) + V_L \sinh(x/\lambda)}{\sinh(L/\lambda)
 \noindent \textbf{12.33} (a) Utilice la secuencia normal de evolución del dipolo cardíaco para bosquejar la evolución de la señal de ECG para las derivaciones I, II y III de ECG. \\
 (b) Los potenciales de las tres derivaciones siempre deben sumar cero. Confirme que sus ECG lo hagan.
 
-\noindent \textbf{12.34} Compare los ECG de la Fig.~12.37 —tomados en dos momentos después de un ataque cardíaco— entre sí y luego con los trazados normales de la Fig.~12.33.
+\noindent \textbf{12.34} Compare los ECG de la Fig.~12.37 ---tomados en dos momentos después de un ataque cardíaco--- entre sí y luego con los trazados normales de la Fig.~12.33.
 
 \begin{thebibliography}{34}
 \bibitem{1} B.K. Ahlborn, \textit{Zoological Physics: Quantitative Models, Body Design, Actions and Physical Limitations in Animals} (Springer, Berlín, 2004)
@@ -1409,10 +1412,10 @@ V(x) = \frac{V_0 \sinh((L - x)/\lambda) + V_L \sinh(x/\lambda)}{\sinh(L/\lambda)
 \bibitem{5} R.M.J. Cotterill, \textit{Biophysics: An Introduction} (Wiley, Nueva York, 2002)
 \bibitem{6} P. Davidovits, \textit{Physics in Biology and Medicine}, 2.ª ed. (Elsevier/Academic, San Diego, 2001)
 \bibitem{7} T.A. Delcha, \textit{Physics in Medical Diagnosis} (Chapman \& Hall, Nueva York, 1997)
-\bibitem{8} D. Dubin, \textit{Rapid Interpretation of EKG’s}, 6.ª ed. (COVER, Tampa, 2000)
+\bibitem{8} D. Dubin, \textit{Rapid Interpretation of EKG's}, 6.ª ed. (COVER, Tampa, 2000)
 \bibitem{9} F.A. Duck, \textit{Physical Properties of Tissue: A Comprehensive Reference Book} (Academic, Londres, 1990)
 \bibitem{10} G.L. Fain, \textit{Sensory Transduction} (Sinauer, Sunderland, 2003)
-\bibitem{11} M.L. Foss, S.J. Keteyian, \textit{Fox’s Physiological Basis for Exercise and Sport}, 6.ª ed. (McGraw-Hill, Boston, 1998)
+\bibitem{11} M.L. Foss, S.J. Keteyian, \textit{Fox's Physiological Basis for Exercise and Sport}, 6.ª ed. (McGraw-Hill, Boston, 1998)
 \bibitem{12} R.A. Freitas Jr., \textit{Nanomedicine, Volume I: Basic Capabilities} (Landes Bioscience, Austin, 1999)
 \bibitem{13} M. Gertsch, \textit{The ECG: A Two-Step Approach to Diagnosis} (Springer, Berlín, 2004)
 \bibitem{14} N. Gimbel, C. Fox, \textit{Killing Me Softly (With His Song)}, escrita por Norman Gimbel y Charles Fox, publicada por Fox-Gimbel (BMI) y Rodali Music (BMI)
@@ -1421,7 +1424,7 @@ V(x) = \frac{V_0 \sinh((L - x)/\lambda) + V_L \sinh(x/\lambda)}{\sinh(L/\lambda)
 \bibitem{17} R.K. Hobbie, \textit{Intermediate Physics for Medicine and Biology}, 3.ª ed. (AIP, Nueva York, 1997)
 \bibitem{18} R.K. Hobbie, B.J. Roth, \textit{Intermediate Physics for Medicine and Biology}, 4.ª ed. (Springer, Berlín, 2007)
 \bibitem{19} F.C. Hoppensteadt, C.S. Peskin, \textit{Modeling and Simulation in Medicine and the Life Sciences}, 2.ª ed. (Springer, Nueva York, 2002) (La primera edición de 1992 se llamó \textit{Mathematics in Medicine and the Life Sciences})
-\bibitem{20} A.J. Hudspeth, D.P. Corey, Sensitivity, polarity, and conductance change in the response of vertebrate hair cells to controlled mechanical stimuli. \textit{Proc. Natl. Acad. Sci. USA} \textbf{74}, 2407–2411 (1977)
+\bibitem{20} A.J. Hudspeth, D.P. Corey, Sensitivity, polarity, and conductance change in the response of vertebrate hair cells to controlled mechanical stimuli. \textit{Proc. Natl. Acad. Sci. USA} \textbf{74}, 2407--2411 (1977)
 \bibitem{21} L.S. Lilly, The electrocardiogram, en \textit{Pathophysiology of Heart Disease: A Collaborative Project of Medical Students and Faculty}, 3.ª ed., ed. por L.S. Lilly (Lippincott Williams \& Wilkins, Filadelfia, 2003), Cap. 4, pp. 75--110
 \bibitem{22} R. Malhotra, E.R. Edelman, Basic cardiac structure and function, en \textit{Pathophysiology of Heart Disease: A Collaborative Project of Medical Students and Faculty}, 3.ª ed., ed. por L.S. Lilly (Lippincott Williams \& Wilkins, Filadelfia, 2003), Cap. 1, pp. 1--27
 \bibitem{23} J. Malmivuo, R. Plonsey, \textit{Bioelectromagnetism} (Oxford University Press, Nueva York, 1995)
@@ -1435,7 +1438,7 @@ V(x) = \frac{V_0 \sinh((L - x)/\lambda) + V_L \sinh(x/\lambda)}{\sinh(L/\lambda)
 \bibitem{31} A. Stalheim-Smith, G.K. Fitch, \textit{Understanding Human Anatomy and Physiology} (West, St. Paul, 1993)
 \bibitem{32} Thomas Jefferson National Accelerator Facility (U.S.), \textit{Jefferson Lab Environment, Safety, Health, and Quality Manual}. \url{http://www.jlab.org/ehs/manual/EHSbook-429.html}
 \bibitem{33} J.A. Tuszynski, J.M. Dixon, \textit{Biomedical Applications of Introductory Physics} (Wiley, Nueva York, 2002)
-\bibitem{34} J.B. West (ed.), \textit{Best and Taylor’s Physiological Basis of Medical Practice}, 12.ª ed. (Williams \& Wilkins, Baltimore, 1991)
+\bibitem{34} J.B. West (ed.), \textit{Best and Taylor's Physiological Basis of Medical Practice}, 12.ª ed. (Williams \& Wilkins, Baltimore, 1991)
 \end{thebibliography}
 
 % Control de Calidad: 43 párrafos origen -> 43 párrafos salida. Mapeo 1:1 verificado. Sin omisiones.
