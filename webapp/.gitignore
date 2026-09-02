@@ -22,3 +22,14 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Herramientas de generacion de assets (Python / Blender) — solo locales
+.venv_assets/
+__pycache__/
+*.pyc
+
+# Material fuente de assets antes de optimizar — no se despliega (~500 MB)
+assets_source/
+
+# Incrementales de TypeScript
+*.tsbuildinfo
