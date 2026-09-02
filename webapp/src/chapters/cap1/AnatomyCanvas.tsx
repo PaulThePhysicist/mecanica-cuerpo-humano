@@ -139,7 +139,11 @@ function DoubleArrow({
   labelNeg,
   subNeg,
   opacity,
-  showLabels = true
+  showLabels = true,
+  // Desplazamiento fijo de las etiquetas respecto a la punta de la flecha.
+  // El eje anterior/posterior apunta casi hacia la cámara: sus etiquetas caían
+  // sobre el torso. Con un offset hacia abajo quedan bajo la figura, legibles.
+  labelOffset = [0, 0, 0],
 }: any) {
   const radius = 0.015;
   const headRadius = 0.08;
@@ -150,8 +154,9 @@ function DoubleArrow({
   const q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), D);
   const qFlip = q.clone().multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI));
   const headOffset = D.clone().multiplyScalar(shaftLength / 2 + headLength / 2);
-  const pPos = D.clone().multiplyScalar(length / 2 + 0.3);
-  const pNeg = D.clone().multiplyScalar(-(length / 2 + 0.3));
+  const lo = new THREE.Vector3(labelOffset[0], labelOffset[1], labelOffset[2]);
+  const pPos = D.clone().multiplyScalar(length / 2 + 0.3).add(lo);
+  const pNeg = D.clone().multiplyScalar(-(length / 2 + 0.3)).add(lo);
 
   const mat = <meshStandardMaterial color={color} transparent opacity={opacity} depthTest={false} />;
 
@@ -674,7 +679,8 @@ export function Axes({ hoveredTerm, showLabels = true, showGrid = true, scale = 
         showLabels={showLabels}
       />
 
-      {/* EJE X — Anterior/Posterior */}
+      {/* EJE X — Anterior/Posterior. Apunta casi hacia la cámara, así que sus
+          etiquetas se bajan bajo la figura para no taparse con el torso. */}
       <DoubleArrow
         length={lengthX}
         color={colorX}
@@ -683,6 +689,7 @@ export function Axes({ hoveredTerm, showLabels = true, showGrid = true, scale = 
         labelNeg="-x" subNeg="Posterior / Dorsal"
         opacity={opX}
         showLabels={showLabels}
+        labelOffset={[0, -1.7, 0]}
       />
     </group>
   );

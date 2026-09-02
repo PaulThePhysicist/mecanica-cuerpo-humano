@@ -543,6 +543,12 @@
   .slide,.slide-full{padding:clamp(3.8rem,10vh,4.4rem) .7rem 3.6rem}
   .slide-full{padding-top:clamp(4.8rem,12vh,5.6rem)}
   .content-grid{grid-template-columns:1fr!important;gap:.55rem}
+  /* En una sola columna, la teoría se quedaba con todo el `1fr` y el visor
+     colapsaba: los canvas 3D (escena r3f, sin alto intrínseco) caían a
+     min-height:200px con un hueco enorme encima. Teoría pasa a `auto` y el
+     visor toma un alto real; si la teoría es larga, la diapositiva scrollea. */
+  .content-grid{grid-template-rows:auto minmax(56vh,1fr)!important}
+  .sim-area{min-height:56vh}
   .slide-full h1{font-size:2rem}
   .module-bar{padding:.3rem .7rem 0;gap:.15rem;overflow-x:auto}
   .brand-mark{display:none}

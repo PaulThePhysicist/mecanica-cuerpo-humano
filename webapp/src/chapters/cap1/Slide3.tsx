@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import BodyScene from './BodyScene';
-import HudPanel from './HudPanel';
 
 interface Slide3Props {
   regionSel?: string | null;
@@ -132,42 +131,6 @@ export default function Slide3({ regionSel: parentRegionSel, slideCount }: Slide
           </div>
         </div>
         <div className="sim-area" id="sim-regiones" style={{ position: 'relative' }}>
-
-          {/* Panel Lateral HUD de Inspección de Regiones en la esquina superior derecha */}
-          <HudPanel
-            title="NOMENCLATURA REGIONAL"
-            badge="16 REGIONES"
-            icon="🗺️"
-            footer="💡 Clic para iluminar en el esqueleto"
-          >
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3px' }}>
-              {REGIONS_LIST.map((r) => {
-                const isSel = activeRegion === r.id;
-                return (
-                  <div
-                    key={r.id}
-                    onClick={() => handleSelectRegion(r.id)}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      padding: '3px 4px',
-                      borderRadius: '4px',
-                      cursor: 'pointer',
-                      background: isSel ? 'var(--teal-tint)' : 'transparent',
-                      border: `1px solid ${isSel ? 'var(--teal)' : 'transparent'}`,
-                      transition: 'all 0.15s ease',
-                    }}
-                  >
-                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: isSel ? 'var(--teal)' : '#a3b1bf', flexShrink: 0 }} />
-                    <span style={{ fontSize: '0.62rem', fontWeight: 600, color: isSel ? 'var(--teal-deep)' : 'var(--ink)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      {r.name}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </HudPanel>
 
           <BodyScene
             id="three-container-regions"
