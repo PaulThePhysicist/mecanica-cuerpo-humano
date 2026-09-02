@@ -30,8 +30,19 @@ Todos los modelos 3D se encuentran alojados en `webapp/public/assets/cap1/` y de
 | **`human_body.glb`** | `/assets/cap1/human_body.glb` | **131 huesos anatómicos individuales** de BodyParts3D: Cráneo completo (`frontal`, `parietals`, `temporals`, `occipital`, `sphenoid`, `zygomatics`, `mandible`), columna vertebral (`cervical1..7`, `thoracic1..12`, `lumbar1..5`, `sacrum`), caja torácica, cintura escapular, miembros superiores e inferiores (`femur`, `patella`, `tibia`, `fibula`, `calcaneus`, `metatarsals`). | Esqueleto completo, articulaciones, cinemática ósea, palancas, tracciones y puntos de carga. |
 | **`human_muscles_arm.glb`** | `/assets/cap1/human_muscles_arm.glb` | Músculos individuales del hombro, brazo, antebrazo y mano (`biceps_brachii_long/short`, `brachialis`, `triceps_brachii_long/lateral/medial`, `pronator_teres`, `coracobrachialis`, etc.). | Flexión/extensión del codo, supinación, prensión manual, palancas de 1ª y 3ª clase. |
 | **`human_muscles_hip_leg.glb`** | `/assets/cap1/human_muscles_hip_leg.glb` | Músculos de la pelvis, cadera, muslo, pierna y pie (`gluteus_maximus/medius/minimus`, `quadriceps`, `hamstrings`, `gastrocnemius`, `soleus`, `tibialis_anterior`). | Apoyo monopodal de cadera, Trendelenburg, uso de bastón, sentadillas, marcha podálica. |
-| **`human_muscles_trunk.glb`** | `/assets/cap1/human_muscles_trunk.glb` | Músculos del cuello, masetero, dorso, erector espinal, recto abdominal, oblicuos y transverso. | Mordida ATM, tracción cervical, flexión/extensión lumbar, presión intradiscal. |
+| **`human_muscles_trunk.glb`** | *(no se versiona — `webapp/assets_source/`)* | Músculos del cuello, masetero, dorso, erector espinal, recto abdominal, oblicuos y transverso. | Mordida ATM, tracción cervical, flexión/extensión lumbar, presión intradiscal. |
 | **`human_muscles_full.glb`** | `/assets/cap1/human_muscles_full.glb` | Atlas muscular de cuerpo entero integrado con sistema locomotor completo. | Exploradores de cuerpo entero, síntesis biomecánica, mapas posturales globales. |
+
+> **Espacio de coordenadas compartido (crítico)**:
+> Los 5 GLB comparten **un solo sistema de coordenadas**: de pie sobre +Y, centrado
+> en el origen, 1.0 unidades de alto. El esqueleto lo define; el resto se hornea
+> con el transform canónico congelado en `webapp/scripts/bp3d_transform.json`
+> (rotar −90° X → recentrar en el centroide del esqueleto → escalar a 1/altura).
+> Consecuencia: los vientres musculares son **hermanos directos** de las mallas
+> óseas — `<mesh geometry={muscleNodes.biceps_brachii_long_head_R.geometry} />`
+> cae exactamente sobre el húmero **sin ninguna transformación en runtime**.
+> Cualquier sistema nuevo (vísceras, nervios, vasos) se genera con
+> `scripts/gen_bp3d_system.py` y hereda el mismo espacio.
 
 > **Regla de Carga Óptima**:
 > Pre-cargar siempre los assets en el pie del archivo del componente:
@@ -149,7 +160,51 @@ const headRadius = headLen * 0.35;
 
 ## 5. 🎛️ Arquitectura de Escena y Estudio de Luz
 
-Toda escena 3D debe estructurarse con el siguiente boilerplate estándar:
+**Boilerplate oficial: `src/chapters/cap1/three/`.** No repitas `<Canvas>` + luces
++ `ContactShadows` + `OrbitControls` por escena — usa la fundación compartida:
+
+```tsx
+import { AnatomyStage } from './three/AnatomyStage';
+import { useAnatomyNodes } from './three/useAnatomyNodes';
+import { materials } from './three/materials';
+import { useHarmonicClock } from './three/useHarmonicClock';
+
+function MiCanvas({ resetSignal, zoomSignal }) {
+  const nodes = useAnatomyNodes('body');            // GLB en espacio canónico
+  return (
+    <AnatomyStage
+      camera={{ position: [x, y, z], fov: 42 }}
+      target={[0, 0, 0]}
+      resetSignal={resetSignal} zoomSignal={zoomSignal}
+      fit fitPadding={1.6}                           // auto-encuadre opcional (ver nota)
+    >
+      <mesh geometry={nodes.humerus_R.geometry} material={materials.bone} />
+      {/* ...anatomía... */}
+    </AnatomyStage>
+  );
+}
+```
+
+- **`AnatomyStage`** encapsula: `<Canvas>` (dpr, gl), fondo de estudio (`STUDIO_BG`),
+  rig de 3 luces estándar, `<ContactShadows>`, `<gridHelper>` opcional,
+  `<AccessibleOrbitControls>` + `<SceneControlPad>`, y el ErrorBoundary +
+  detector de WebGL con fallback. Señales `resetSignal` / `zoomSignal` ya
+  cableadas. Props: `camera`, `target`, `minDistance/maxDistance/minPolarAngle/
+  maxPolarAngle`, `grid/gridY/gridArgs`, `shadow/shadowY/shadowScale/shadowOpacity`,
+  `autoRotate`, `fit/fitPadding/refit`, `overlay` (HTML superpuesto), `id`.
+- **`materials`** = instancias PBR compartidas (`bone`, `boneContext`, `boneGhost`,
+  `boneHighlight`, `cartilage`, `muscleActive`/`makeMuscleActive(i)`, `muscleIdle`,
+  `muscleNeutral`, `tendon`). No mutarlas; `.clone()` si necesitas variar.
+- **`useAnatomyNodes(pack)` / `useAnatomyScene(pack)`** — `pack` ∈ `body`,
+  `muscles_arm`, `muscles_hip_leg`, `muscles_full`. Precarga el esqueleto sola.
+- **`useHarmonicClock({ playing, speed }, tick, resetOn?)`** — un solo bucle rAF
+  frame-rate independiente; reemplaza los `animTimeRef`/`animRafRef` por escena.
+- **`<FitCamera>`** (o `fit` en `AnatomyStage`): encuadra los límites del contenido.
+  ⚠ **NO uses `fit` si la escena tiene un plano anatómico grande** (`showPlanes`) o
+  geometría auxiliar voluminosa: dominan el bounding box y empequeñecen el modelo.
+  Ahí usa cámara fija.
+
+<details><summary>Boilerplate manual anterior (solo si `AnatomyStage` no encaja)</summary>
 
 ```tsx
 <Canvas
@@ -199,6 +254,8 @@ Toda escena 3D debe estructurarse con el siguiente boilerplate estándar:
   </Suspense>
 </Canvas>
 ```
+
+</details>
 
 > ⚠️ **REGLA CRÍTICA DE DREI / R3F**:
 > **NUNCA** envolver componentes de Drei como `<Center>`, `<OrbitControls>`, `<Html>`, `<Line>`, `<gridHelper>` o `<ContactShadows>` dentro de otros `<Center>`. Esto provoca errores de ciclo de render y pantallas blancas.

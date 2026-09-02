@@ -1,0 +1,15 @@
+{
+  "_comment": "Transformacion canonica del atlas anatomico BodyParts3D. TODO GLB de sistema (esqueleto, musculos, y sistemas futuros) se hornea aplicando R -> T -> S en este orden para caer en el espacio de human_body.glb (de pie en Y, centrado en el origen, 1.0 de alto). Generado por gen_anatomical_body.py; NO editar a mano.",
+  "rotate": {
+    "axis": [1, 0, 0],
+    "deg": -90,
+    "note": "(x,y,z) -> (x, z, -y). BodyParts3D entrega el cuerpo acostado a lo largo de +Z."
+  },
+  "centroid_mm_post_rot": [-9.154007, 817.375300, 97.617149],
+  "scale": 0.00060913,
+  "order": "rotate, then translate by -centroid_mm_post_rot, then multiply by scale",
+  "reference_glb": "public/assets/cap1/human_body.glb",
+  "reference_bbox_size": [0.367, 1.0, 0.1328],
+  "source_stl_count": 131,
+  "trimesh_version": "5.0.0"
+}

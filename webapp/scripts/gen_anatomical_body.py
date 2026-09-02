@@ -128,6 +128,26 @@ def main():
     nb = scene.bounds
     print("bbox final: min", np.round(nb[0],3), "max", np.round(nb[1],3), "alto", round(height*scale,3))
     scene.export(OUT, file_type="glb")
+    # Congelar el transform canónico para que gen_bp3d_system.py alinee cualquier
+    # otro sistema (músculos, vísceras, nervios…) al mismo espacio del esqueleto.
+    tpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), "bp3d_transform.json")
+    with open(tpath, "w", encoding="utf-8") as tf:
+        json.dump({
+            "_comment": "Transformacion canonica del atlas anatomico BodyParts3D. "
+                        "TODO GLB de sistema se hornea aplicando R -> T -> S en este orden para "
+                        "caer en el espacio de human_body.glb (de pie en Y, centrado, 1.0 de alto). "
+                        "Generado por gen_anatomical_body.py; NO editar a mano.",
+            "rotate": {"axis": [1, 0, 0], "deg": -90,
+                       "note": "(x,y,z) -> (x, z, -y). BodyParts3D entrega el cuerpo acostado a lo largo de +Z."},
+            "centroid_mm_post_rot": [round(float(x), 6) for x in cb],
+            "scale": float(scale),
+            "order": "rotate, then translate by -centroid_mm_post_rot, then multiply by scale",
+            "reference_glb": "public/assets/cap1/human_body.glb",
+            "reference_bbox_size": [round(float(nb[1][i] - nb[0][i]), 4) for i in range(3)],
+            "source_stl_count": loaded,
+            "trimesh_version": trimesh.__version__,
+        }, tf, indent=2, ensure_ascii=False)
+    print("transform canónico ->", tpath)
     # validar
     v = trimesh.load(OUT)
     nv = sum(len(g.vertices) for g in (v.geometry.values() if isinstance(v,trimesh.Scene) else [v]))

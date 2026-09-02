@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef, Suspense } from 'react';
+import { useState, Suspense } from 'react';
 import MovementCanvas from './MovementCanvas';
+import { useHarmonicClock } from './three/useHarmonicClock';
 import type { MovementType } from './MovementCanvas';
 import HudPanel from './HudPanel';
 import ChapterImageLightbox from './ChapterImageLightbox';
@@ -153,50 +154,21 @@ export default function Slide6({ toggleMovementAnimation, slideCount }: Slide6Pr
   const [resetSignal, setResetSignal] = useState<number>(0);
   const [zoomSignal, setZoomSignal] = useState<{ type: 'in' | 'out'; time: number } | null>(null);
 
-  const animTimeRef = useRef(0);
-  const animRafRef = useRef<number | null>(null);
-
   const currentMeta = MOVEMENTS_DATA[movement];
 
   const handleSelectMovement = (mId: MovementType) => {
     setMovement(mId);
     setProgress(0.65);
-    const meta = MOVEMENTS_DATA[mId];
-    const info = document.getElementById('info-text-b3');
-    if (info && meta.desc) {
-      info.innerHTML = meta.desc;
-    }
   };
 
-  // Loop de animación continua
-  useEffect(() => {
-    if (!isAnimating) {
-      if (animRafRef.current) cancelAnimationFrame(animRafRef.current);
-      return;
+  // Loop de animación continua (reloj compartido)
+  useHarmonicClock({ playing: isAnimating, speed: animSpeed }, (t) => {
+    if (movement === 'circumduction') {
+      setProgress((t * 0.35) % 1.0);
+    } else {
+      setProgress((Math.sin(t * 1.8) + 1) / 2); // pendular suave 0..1
     }
-
-    let last = performance.now();
-    const loop = (now: number) => {
-      const dt = Math.min(0.1, (now - last) / 1000);
-      last = now;
-      animTimeRef.current += dt * animSpeed;
-      const t = animTimeRef.current;
-
-      if (movement === 'circumduction') {
-        setProgress((t * 0.35) % 1.0);
-      } else {
-        // Movimiento armónico pendular suave entre 0 y 1
-        setProgress((Math.sin(t * 1.8) + 1) / 2);
-      }
-
-      animRafRef.current = requestAnimationFrame(loop);
-    };
-
-    animRafRef.current = requestAnimationFrame(loop);
-    return () => {
-      if (animRafRef.current) cancelAnimationFrame(animRafRef.current);
-    };
-  }, [isAnimating, movement, animSpeed]);
+  });
 
   const handleZoomIn = () => setZoomSignal({ type: 'in', time: Date.now() });
   const handleZoomOut = () => setZoomSignal({ type: 'out', time: Date.now() });
@@ -592,7 +564,7 @@ export default function Slide6({ toggleMovementAnimation, slideCount }: Slide6Pr
                       fontWeight: 600,
                     }}
                   >
-                    🥩 Músculos {showMuscles ? '✓' : ''}
+                    💪 Músculos {showMuscles ? '✓' : ''}
                   </button>
                   <button
                     type="button"

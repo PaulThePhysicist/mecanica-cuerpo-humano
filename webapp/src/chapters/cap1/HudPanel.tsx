@@ -19,6 +19,8 @@ export default function HudPanel({
   footer,
   width = '215px',
 }: HudPanelProps) {
+  // Siempre colapsado al entrar: el panel no debe tapar el canvas. Se abre con el
+  // botón de icono. `defaultCollapsed={false}` explícito lo fuerza abierto.
   const [collapsed, setCollapsed] = useState(defaultCollapsed);
 
   if (collapsed) {

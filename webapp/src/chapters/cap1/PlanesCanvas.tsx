@@ -1,15 +1,16 @@
-import React, { Suspense, useMemo, useRef, useEffect } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { useGLTF, Center, Html, ContactShadows } from '@react-three/drei';
+import React, { useMemo, useRef, useEffect } from 'react';
+import { useFrame } from '@react-three/fiber';
+import { Center, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { FULL_BODY_FLOOR_Y, FULL_BODY_SCALE, FULL_BODY_SHADOW_Y } from './bodySceneGeometry';
-import { AccessibleOrbitControls, SceneControlPad } from './AccessibleOrbitControls';
+import { AnatomyStage } from './three/AnatomyStage';
+import { useAnatomyScene } from './three/useAnatomyNodes';
 import { Axes } from './AnatomyCanvas';
 
 const BONE_BASE = new THREE.Color('#e8dcc4');
 
 function AnatomyModel({ planeSel }: { planeSel?: string | null }) {
-  const { scene } = useGLTF('/assets/cap1/human_body.glb');
+  const scene = useAnatomyScene('body');
 
   const clonedScene = useMemo(() => {
     const s = scene.clone(true);
@@ -346,42 +347,6 @@ function SectionPlanesGroup({
   );
 }
 
-// Mantener la vista inicial anterior, coherente con A1 y A3.
-const DEFAULT_CAM_POS: [number, number, number] = [3.6, 1.8, 12.5];
-
-function CameraRig({ resetSignal }: { resetSignal?: number }) {
-  const { camera } = useThree();
-  useEffect(() => {
-    camera.position.set(...DEFAULT_CAM_POS);
-    camera.lookAt(0, 0.1, 0);
-  }, [camera, resetSignal]);
-  return null;
-}
-
-function ZoomHandler({
-  zoomSignal,
-  controlsRef,
-}: {
-  zoomSignal?: { type: 'in' | 'out'; time: number } | null;
-  controlsRef: React.RefObject<any>;
-}) {
-  const { camera } = useThree();
-  useEffect(() => {
-    if (!zoomSignal) return;
-    const target = controlsRef.current?.target ? controlsRef.current.target.clone() : new THREE.Vector3(0, 0.2, 0);
-    const factor = zoomSignal.type === 'in' ? 0.78 : 1.28;
-    const dir = new THREE.Vector3().subVectors(camera.position, target);
-    const newDist = THREE.MathUtils.clamp(dir.length() * factor, 3.5, 32.0);
-    dir.normalize().multiplyScalar(newDist);
-    camera.position.copy(target).add(dir);
-    camera.updateProjectionMatrix();
-    if (controlsRef.current) {
-      controlsRef.current.update();
-    }
-  }, [zoomSignal, camera, controlsRef]);
-  return null;
-}
-
 export default function PlanesCanvas({
   planeSel,
   showLabels = false,
@@ -403,70 +368,33 @@ export default function PlanesCanvas({
   resetSignal?: number;
   zoomSignal?: { type: 'in' | 'out'; time: number } | null;
 }) {
-  const controlsRef = useRef<any>(null);
-
-  useEffect(() => {
-    if (controlsRef.current) {
-      controlsRef.current.reset();
-    }
-  }, [resetSignal]);
-
   return (
-    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-      <Canvas
-        camera={{ position: DEFAULT_CAM_POS, fov: 45 }}
-        style={{
-          width: '100%',
-          height: '100%',
-          display: 'block',
-          background: 'radial-gradient(circle at 50% 40%, #ffffff 0%, #faf6ee 55%, #eee4d2 100%)',
-        }}
-      >
-      <CameraRig resetSignal={resetSignal} />
-      <ZoomHandler zoomSignal={zoomSignal} controlsRef={controlsRef} />
-      <ambientLight intensity={0.8} color="#fffcf5" />
-      <directionalLight position={[10, 15, 8]} intensity={1.3} color="#fff8eb" />
-      <directionalLight position={[-10, 8, -6]} intensity={0.6} color="#e8f4f8" />
-      <directionalLight position={[0, -5, 5]} intensity={0.2} color="#faf0e6" />
-
-      {/* Grid del piso de referencia */}
-      <gridHelper args={[8, 16, '#c6bca6', '#ded6c5']} position={[0, FULL_BODY_FLOOR_Y, 0]} />
-
-      <Suspense fallback={null}>
-        <Center position={[0, 0, 0]}>
-          <AnatomyModel planeSel={planeSel} />
-          <SectionPlanesGroup
-            planeSel={planeSel}
-            showAll={showAll}
-            showLabels={showLabels}
-            movingPlanes={movingPlanes}
-            motionSpeed={motionSpeed}
-            planeOffsets={planeOffsets}
-          />
-        </Center>
-        {/* Sombra de contacto difusa para grounding visual */}
-        <ContactShadows
-          position={[0, FULL_BODY_SHADOW_Y, 0]}
-          opacity={0.45}
-          scale={8}
-          blur={2.4}
-          far={5}
-          color="#232c36"
+    <AnatomyStage
+      camera={{ position: [3.6, 1.8, 12.5], fov: 45 }}
+      target={[0, 0.2, 0]}
+      minDistance={3.5}
+      maxDistance={32}
+      minPolarAngle={Math.PI / 6}
+      maxPolarAngle={Math.PI / 1.8}
+      autoRotate={autoRotate}
+      gridY={FULL_BODY_FLOOR_Y}
+      shadowY={FULL_BODY_SHADOW_Y}
+      shadowScale={8}
+      shadowOpacity={0.45}
+      resetSignal={resetSignal}
+      zoomSignal={zoomSignal}
+    >
+      <Center position={[0, 0, 0]}>
+        <AnatomyModel planeSel={planeSel} />
+        <SectionPlanesGroup
+          planeSel={planeSel}
+          showAll={showAll}
+          showLabels={showLabels}
+          movingPlanes={movingPlanes}
+          motionSpeed={motionSpeed}
+          planeOffsets={planeOffsets}
         />
-      </Suspense>
-
-      <AccessibleOrbitControls
-        controlsRef={controlsRef}
-        minDistance={3.5}
-        maxDistance={32}
-        minPolarAngle={Math.PI / 6}
-        maxPolarAngle={Math.PI / 1.8}
-        autoRotate={autoRotate}
-        autoRotateSpeed={1.2}
-        target={[0, 0.2, 0]}
-      />
-      </Canvas>
-      <SceneControlPad controlsRef={controlsRef} />
-    </div>
+      </Center>
+    </AnatomyStage>
   );
 }

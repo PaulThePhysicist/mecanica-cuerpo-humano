@@ -1,8 +1,8 @@
-import React, { useRef, useEffect, useMemo, Suspense } from 'react';
-import { Canvas, useThree } from '@react-three/fiber';
-import { ContactShadows, useGLTF, Html } from '@react-three/drei';
+import React, { useMemo } from 'react';
 import * as THREE from 'three';
-import { AccessibleOrbitControls, SceneControlPad } from './AccessibleOrbitControls';
+import { AnatomyStage } from './three/AnatomyStage';
+import { useAnatomyNodes } from './three/useAnatomyNodes';
+import { materials } from './three/materials';
 
 export type JointType = 'hinge' | 'pivot' | 'condylar' | 'saddle' | 'plane' | 'ball';
 
@@ -18,8 +18,6 @@ interface SynovialJointCanvasProps {
 }
 
 // ── Paleta y Materiales Anatómicos de Alta Fidelidad ──
-const BONE_IVORY = '#ede5d0';
-const BONE_DEEP = '#ded3be';
 const CARTILAGE_ICE = '#68c5b8';
 const LIGAMENT_FIBROUS = '#dfd8c7';
 const ACCENT_RED = '#b02318';
@@ -115,19 +113,13 @@ function TranslationArrow3D({
 
 // ── 1. Bisagra (Hinge · 1 GL): Codo / Húmerocubital (Humerus + Ulna + Radius) ──
 function HingeAnatomy({ angle }: { angle: number }) {
-  const { nodes } = useGLTF('/assets/cap1/human_body.glb') as any;
+  const nodes = useAnatomyNodes('body');
   const rad = (angle * Math.PI) / 180;
   // Centro anatómico de rotación troclear del codo derecho
   const P0 = useMemo(() => new THREE.Vector3(-0.126, 0.140, -0.015), []);
 
-  const boneMat = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: BONE_IVORY, roughness: 0.62, metalness: 0.04 }),
-    []
-  );
-  const fixedMat = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: BONE_DEEP, roughness: 0.65, metalness: 0.04 }),
-    []
-  );
+  const boneMat = materials.bone;
+  const fixedMat = materials.boneContext;
   const cartMat = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
@@ -183,7 +175,7 @@ function HingeAnatomy({ angle }: { angle: number }) {
 
 // ── 2. Pivote (Pivot · 1 GL): Radiocubital Proximal (Ulna + Radius con ligamento anular) ──
 function PivotAnatomy({ angle }: { angle: number }) {
-  const { nodes } = useGLTF('/assets/cap1/human_body.glb') as any;
+  const nodes = useAnatomyNodes('body');
   const rad = (angle * Math.PI) / 180;
 
   // Centro de la articulación radiocubital proximal (cabeza del radio / escotadura radial)
@@ -215,14 +207,8 @@ function PivotAnatomy({ angle }: { angle: number }) {
     P_head.z - P_mid.z,
   ];
 
-  const boneMat = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: BONE_IVORY, roughness: 0.62, metalness: 0.04 }),
-    []
-  );
-  const fixedMat = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: BONE_DEEP, roughness: 0.65, metalness: 0.04 }),
-    []
-  );
+  const boneMat = materials.bone;
+  const fixedMat = materials.boneContext;
   const cartMat = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
@@ -307,21 +293,15 @@ function PivotAnatomy({ angle }: { angle: number }) {
 
 // ── 3. Condílea (Condylar · 2 GL): Muñeca Radiocarpiana (Radius + Scaphoid + Lunate) ──
 function CondylarAnatomy({ a1, a2 }: { a1: number; a2: number }) {
-  const { nodes } = useGLTF('/assets/cap1/human_body.glb') as any;
+  const nodes = useAnatomyNodes('body');
   const r1 = (a1 * Math.PI) / 180; // Flexión/Extensión (eje X)
   const r2 = (a2 * Math.PI) / 180; // Desviación Radial/Cubital (eje Z)
 
   // Centro articular de la fosa glenoidea del radio distal
   const P0 = useMemo(() => new THREE.Vector3(-0.149, 0.000, 0.008), []);
 
-  const boneMat = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: BONE_IVORY, roughness: 0.62, metalness: 0.04 }),
-    []
-  );
-  const fixedMat = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: BONE_DEEP, roughness: 0.65, metalness: 0.04 }),
-    []
-  );
+  const boneMat = materials.bone;
+  const fixedMat = materials.boneContext;
   const cartMat = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
@@ -392,21 +372,15 @@ function CondylarAnatomy({ a1, a2 }: { a1: number; a2: number }) {
 
 // ── 4. Silla de montar (Saddle · 2 GL): Trapeciometacarpiana CMC-1 del Pulgar ──
 function SaddleAnatomy({ a1, a2 }: { a1: number; a2: number }) {
-  const { nodes } = useGLTF('/assets/cap1/human_body.glb') as any;
+  const nodes = useAnatomyNodes('body');
   const r1 = (a1 * Math.PI) / 180; // Flexión/Extensión
   const r2 = (a2 * Math.PI) / 180; // Abducción/Oposición
 
   // Centro de la articulación trapeciometacarpiana
   const P0 = useMemo(() => new THREE.Vector3(-0.163, -0.010, 0.016), []);
 
-  const boneMat = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: BONE_IVORY, roughness: 0.62, metalness: 0.04 }),
-    []
-  );
-  const fixedMat = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: BONE_DEEP, roughness: 0.65, metalness: 0.04 }),
-    []
-  );
+  const boneMat = materials.bone;
+  const fixedMat = materials.boneContext;
   const cartMat = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
@@ -474,7 +448,7 @@ function SaddleAnatomy({ a1, a2 }: { a1: number; a2: number }) {
 
 // ── 5. Esferoidal (Ball & Socket · 3 GL): Hombro Glenohumeral (Scapula + Humerus) ──
 function BallSocketAnatomy({ a1, a2, a3 }: { a1: number; a2: number; a3: number }) {
-  const { nodes } = useGLTF('/assets/cap1/human_body.glb') as any;
+  const nodes = useAnatomyNodes('body');
   const r1 = (a1 * Math.PI) / 180; // Flexión/Extensión (eje X)
   const r2 = (a2 * Math.PI) / 180; // Abducción/Aducción (eje Z)
   const r3 = (a3 * Math.PI) / 180; // Rotación Interna/Externa (eje Y)
@@ -482,14 +456,8 @@ function BallSocketAnatomy({ a1, a2, a3 }: { a1: number; a2: number; a3: number 
   // Centro articular de la cavidad glenoidea y cabeza humeral
   const P0 = useMemo(() => new THREE.Vector3(-0.092, 0.295, -0.015), []);
 
-  const boneMat = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: BONE_IVORY, roughness: 0.62, metalness: 0.04 }),
-    []
-  );
-  const fixedMat = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: BONE_DEEP, roughness: 0.65, metalness: 0.04 }),
-    []
-  );
+  const boneMat = materials.bone;
+  const fixedMat = materials.boneContext;
   const cartMat = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
@@ -584,7 +552,7 @@ function BallSocketAnatomy({ a1, a2, a3 }: { a1: number; a2: number; a3: number 
 
 // ── 6. Plana / Deslizante (Plane · 2 GL): Acromioclavicular (Scapula Acromion + Clavicle) ──
 function PlaneAnatomy({ a1, a2 }: { a1: number; a2: number }) {
-  const { nodes } = useGLTF('/assets/cap1/human_body.glb') as any;
+  const nodes = useAnatomyNodes('body');
 
   // Deslizamientos planares en mm convertidos a espacio local
   const tx = (a1 / 30) * 0.008; // Deslizamiento anteroposterior
@@ -593,14 +561,8 @@ function PlaneAnatomy({ a1, a2 }: { a1: number; a2: number }) {
   // Centro articular acromioclavicular
   const P0 = useMemo(() => new THREE.Vector3(-0.081, 0.323, -0.008), []);
 
-  const boneMat = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: BONE_IVORY, roughness: 0.62, metalness: 0.04 }),
-    []
-  );
-  const fixedMat = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: BONE_DEEP, roughness: 0.65, metalness: 0.04 }),
-    []
-  );
+  const boneMat = materials.bone;
+  const fixedMat = materials.boneContext;
   const cartMat = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
@@ -659,66 +621,6 @@ function PlaneAnatomy({ a1, a2 }: { a1: number; a2: number }) {
   );
 }
 
-// ── Manejador de Zoom reactivo ──
-function ZoomHandler({
-  zoomSignal,
-  controlsRef,
-}: {
-  zoomSignal?: { type: 'in' | 'out'; time: number } | null;
-  controlsRef: React.RefObject<any>;
-}) {
-  const { camera } = useThree();
-  useEffect(() => {
-    if (!zoomSignal) return;
-    const target = controlsRef.current?.target ? controlsRef.current.target.clone() : new THREE.Vector3(0, 0, 0);
-    const factor = zoomSignal.type === 'in' ? 0.78 : 1.28;
-    const dir = new THREE.Vector3().subVectors(camera.position, target);
-    const newDist = THREE.MathUtils.clamp(dir.length() * factor, 1.5, 24.0);
-    dir.normalize().multiplyScalar(newDist);
-    camera.position.copy(target).add(dir);
-    camera.updateProjectionMatrix();
-    if (controlsRef.current) {
-      controlsRef.current.update();
-    }
-  }, [zoomSignal, camera, controlsRef]);
-  return null;
-}
-
-const DEFAULT_JOINT_CAMERA: [number, number, number] = [5.7, 3.1, 7.0];
-
-function JointCameraRig({
-  type,
-  resetSignal,
-  controlsRef,
-}: {
-  type: JointType;
-  resetSignal: number;
-  controlsRef: React.RefObject<any>;
-}) {
-  const { camera } = useThree();
-
-  useEffect(() => {
-    // Las articulaciones se amplifican desde las unidades locales del GLB
-    // para hacer visibles las superficies óseas; esta distancia mantiene
-    // un encuadre anatómico comparable entre los seis modelos.
-    // El pivote tiene el centro articular desplazado hacia el extremo
-    // proximal; encuadrarlo evita que la articulación quede perdida entre
-    // las diáfisis largas.
-    const target: [number, number, number] = type === 'pivot' ? [0, 0.46, 0] : [0, 0, 0];
-    const position: [number, number, number] = type === 'pivot' ? [4.7, 3.0, 5.8] : DEFAULT_JOINT_CAMERA;
-    camera.position.set(...position);
-    camera.lookAt(...target);
-    camera.updateProjectionMatrix();
-    if (controlsRef.current) {
-      controlsRef.current.target.set(...target);
-      controlsRef.current.update();
-      controlsRef.current.saveState();
-    }
-  }, [camera, controlsRef, resetSignal, type]);
-
-  return null;
-}
-
 const badgeStyle = (color: string): React.CSSProperties => ({
   background: 'rgba(255, 253, 248, 0.94)',
   backdropFilter: 'blur(6px)',
@@ -743,76 +645,15 @@ const dotStyle = (color: string): React.CSSProperties => ({
   boxShadow: `0 0 5px ${color}88`,
 });
 
-// Pre-carga del GLB anatómico de alta definición
-useGLTF.preload('/assets/cap1/human_body.glb');
-
 export default function SynovialJointCanvas({
   type,
   angles,
   resetSignal = 0,
   zoomSignal = null,
 }: SynovialJointCanvasProps) {
-  const controlsRef = useRef<any>(null);
   const controlsTarget: [number, number, number] = type === 'pivot' ? [0, 0.46, 0] : [0, 0, 0];
 
-  useEffect(() => {
-    if (controlsRef.current) {
-      controlsRef.current.reset();
-    }
-  }, [resetSignal, type]);
-
-  return (
-    <div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
-      <Canvas
-        camera={{ position: DEFAULT_JOINT_CAMERA, fov: 40 }}
-        style={{
-          width: '100%',
-          height: '100%',
-          display: 'block',
-          background: 'radial-gradient(circle at 50% 40%, #ffffff 0%, #faf6ee 55%, #eee4d2 100%)',
-        }}
-      >
-        <JointCameraRig type={type} resetSignal={resetSignal} controlsRef={controlsRef} />
-        <ZoomHandler zoomSignal={zoomSignal} controlsRef={controlsRef} />
-        <ambientLight intensity={0.85} color="#fffcf5" />
-        <directionalLight position={[10, 14, 8]} intensity={1.35} color="#fff8eb" />
-        <directionalLight position={[-10, 8, -6]} intensity={0.65} color="#e8f4f8" />
-        <directionalLight position={[0, -6, 6]} intensity={0.25} color="#faf0e6" />
-
-        {/* Grid de piso suave de referencia */}
-        <gridHelper args={[6, 12, '#c6bca6', '#ded6c5']} position={[0, -1.8, 0]} />
-
-        <Suspense fallback={null}>
-          {type === 'hinge' && <HingeAnatomy angle={angles.a1} />}
-          {type === 'pivot' && <PivotAnatomy angle={angles.a1} />}
-          {type === 'condylar' && <CondylarAnatomy a1={angles.a1} a2={angles.a2} />}
-          {type === 'saddle' && <SaddleAnatomy a1={angles.a1} a2={angles.a2} />}
-          {type === 'ball' && <BallSocketAnatomy a1={angles.a1} a2={angles.a2} a3={angles.a3} />}
-          {type === 'plane' && <PlaneAnatomy a1={angles.a1} a2={angles.a2} />}
-
-          {/* Sombra de contacto difusa bajo la articulación */}
-          <ContactShadows
-            position={[0, -1.79, 0]}
-            opacity={0.42}
-            scale={5.5}
-            blur={2.2}
-            far={4}
-            color="#232c36"
-          />
-        </Suspense>
-
-        <AccessibleOrbitControls
-          controlsRef={controlsRef}
-          minDistance={1.5}
-          maxDistance={24}
-          minPolarAngle={Math.PI * 0.12}
-          maxPolarAngle={Math.PI * 0.88}
-          target={controlsTarget}
-        />
-      </Canvas>
-      <SceneControlPad controlsRef={controlsRef} />
-
-      {/* Telemetría Angular Discreta en la esquina inferior izquierda (Sin obstruir los huesos) */}
+  const overlay = (
       <div
         style={{
           position: 'absolute',
@@ -880,6 +721,34 @@ export default function SynovialJointCanvas({
           </>
         )}
       </div>
-    </div>
+  );
+
+  return (
+    <AnatomyStage
+      camera={{ position: type === 'pivot' ? [4.7, 3.0, 5.8] : [5.7, 3.1, 7.0], fov: 40 }}
+      target={controlsTarget}
+      minDistance={1.5}
+      maxDistance={24}
+      minPolarAngle={Math.PI * 0.12}
+      maxPolarAngle={Math.PI * 0.88}
+      gridArgs={[6, 12, '#c6bca6', '#ded6c5']}
+      gridY={-1.8}
+      shadowY={-1.79}
+      shadowScale={5.5}
+      shadowOpacity={0.42}
+      resetSignal={resetSignal}
+      zoomSignal={zoomSignal}
+      fit
+      fitPadding={1.5}
+      refit={type}
+      overlay={overlay}
+    >
+      {type === 'hinge' && <HingeAnatomy angle={angles.a1} />}
+      {type === 'pivot' && <PivotAnatomy angle={angles.a1} />}
+      {type === 'condylar' && <CondylarAnatomy a1={angles.a1} a2={angles.a2} />}
+      {type === 'saddle' && <SaddleAnatomy a1={angles.a1} a2={angles.a2} />}
+      {type === 'ball' && <BallSocketAnatomy a1={angles.a1} a2={angles.a2} a3={angles.a3} />}
+      {type === 'plane' && <PlaneAnatomy a1={angles.a1} a2={angles.a2} />}
+    </AnatomyStage>
   );
 }

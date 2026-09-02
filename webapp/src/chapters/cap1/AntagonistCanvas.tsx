@@ -1,9 +1,9 @@
-import React, { useRef, useEffect, useMemo, Suspense } from 'react';
-import { Canvas, useThree } from '@react-three/fiber';
-import { Center, ContactShadows, useGLTF } from '@react-three/drei';
-import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
+import React, { useMemo } from 'react';
+import { Center } from '@react-three/drei';
 import * as THREE from 'three';
-import { AccessibleOrbitControls, SceneControlPad } from './AccessibleOrbitControls';
+import { AnatomyStage } from './three/AnatomyStage';
+import { useAnatomyNodes } from './three/useAnatomyNodes';
+import { materials } from './three/materials';
 
 export type AntagonistMode = 'eye' | 'arm';
 
@@ -32,8 +32,6 @@ const MUSCLE_ACTIVE = '#b02318';
 const MUSCLE_ACTIVE_EMISSIVE = '#4a0e08';
 const MUSCLE_INACTIVE = '#8c534b';
 const TENDON_COLOR = '#f5f0e6';
-const BONE_IVORY = '#ede5d0';
-const BONE_DEEP = '#ded3be';
 const CARTILAGE_ICE = '#68c5b8';
 
 // ── 1. Componente de Banda Muscular Extraocular 3D ──
@@ -218,8 +216,8 @@ function EyeModel({ gaze, selectedMuscle }: { gaze: { x: number; y: number }; se
 
 // ── 3. Modelo 3D del Brazo con Huesos y Músculos Auténticos de BodyParts3D ──
 function RealArmAntagonistModel({ flexion }: { flexion: number }) {
-  const { nodes: boneNodes } = useGLTF('/assets/cap1/human_body.glb') as any;
-  const { nodes: muscleNodes } = useGLTF('/assets/cap1/human_muscles_arm.glb') as any;
+  const boneNodes = useAnatomyNodes('body');
+  const muscleNodes = useAnatomyNodes('muscles_arm');
 
   // Ángulo de flexión: 0° a 130°
   const angleDeg = flexion * 130;
@@ -229,49 +227,15 @@ function RealArmAntagonistModel({ flexion }: { flexion: number }) {
   const P_elbow = useMemo(() => new THREE.Vector3(-0.128, 0.142, -0.016), []);
   const P_shoulder = useMemo(() => new THREE.Vector3(-0.096, 0.306, -0.018), []);
 
-  const boneMat = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: BONE_IVORY, roughness: 0.62, metalness: 0.04 }),
-    []
-  );
-  const fixedBoneMat = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: BONE_DEEP, roughness: 0.65, metalness: 0.04 }),
-    []
-  );
+  const boneMat = materials.bone;
+  const fixedBoneMat = materials.boneContext;
 
   const bicepsActive = flexion > 0.35;
   const tricepsActive = flexion <= 0.35;
 
-  const agonistMat = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: MUSCLE_ACTIVE,
-        roughness: 0.60,
-        metalness: 0.05,
-        emissive: MUSCLE_ACTIVE_EMISSIVE,
-        emissiveIntensity: 0.5,
-      }),
-    []
-  );
-
-  const antagonistMat = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: MUSCLE_INACTIVE,
-        roughness: 0.68,
-        metalness: 0.02,
-      }),
-    []
-  );
-
-  const neutralMuscleMat = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: '#9e473e',
-        roughness: 0.64,
-        metalness: 0.04,
-      }),
-    []
-  );
+  const agonistMat = materials.muscleActive;
+  const antagonistMat = materials.muscleIdle;
+  const neutralMuscleMat = materials.muscleNeutral;
 
   // Escala anatómica 1.7x para encuadre óptimo en Three.js
   const ARM_SCALE = 1.75;
@@ -391,52 +355,6 @@ function RealArmAntagonistModel({ flexion }: { flexion: number }) {
   );
 }
 
-// ── Manejador de Cámara y Transición entre Modos ──
-function CameraManager({
-  mode,
-  zoomSignal,
-  resetSignal,
-  controlsRef,
-}: {
-  mode: AntagonistMode;
-  zoomSignal?: { type: 'in' | 'out'; time: number } | null;
-  resetSignal?: number;
-  controlsRef: React.RefObject<OrbitControlsImpl | null>;
-}) {
-  const { camera } = useThree();
-
-  useEffect(() => {
-    const targetPos = mode === 'eye' ? new THREE.Vector3(0.9, 0.45, 5.6) : new THREE.Vector3(1.5, 0.35, 4.8);
-    const targetLookAt = mode === 'eye' ? new THREE.Vector3(0, 0, 0) : new THREE.Vector3(0.1, 0.05, 0);
-
-    camera.position.copy(targetPos);
-    camera.lookAt(targetLookAt);
-    camera.updateProjectionMatrix();
-
-    if (controlsRef.current) {
-      controlsRef.current.target.copy(targetLookAt);
-      controlsRef.current.update();
-      controlsRef.current.saveState();
-    }
-  }, [mode, resetSignal, camera, controlsRef]);
-
-  useEffect(() => {
-    if (!zoomSignal) return;
-    const target = controlsRef.current?.target ? controlsRef.current.target.clone() : new THREE.Vector3(0, 0, 0);
-    const factor = zoomSignal.type === 'in' ? 0.8 : 1.25;
-    const dir = new THREE.Vector3().subVectors(camera.position, target);
-    const newDist = THREE.MathUtils.clamp(dir.length() * factor, 1.5, 20.0);
-    dir.normalize().multiplyScalar(newDist);
-    camera.position.copy(target).add(dir);
-    camera.updateProjectionMatrix();
-    if (controlsRef.current) {
-      controlsRef.current.update();
-    }
-  }, [zoomSignal, camera, controlsRef]);
-
-  return null;
-}
-
 const badgeStyle = (color: string): React.CSSProperties => ({
   background: 'rgba(255, 253, 248, 0.94)',
   backdropFilter: 'blur(6px)',
@@ -461,9 +379,6 @@ const dotStyle = (color: string): React.CSSProperties => ({
   boxShadow: `0 0 5px ${color}88`,
 });
 
-useGLTF.preload('/assets/cap1/human_body.glb');
-useGLTF.preload('/assets/cap1/human_muscles_arm.glb');
-
 export default function AntagonistCanvas({
   mode,
   gaze,
@@ -472,83 +387,20 @@ export default function AntagonistCanvas({
   resetSignal = 0,
   zoomSignal = null,
 }: AntagonistCanvasProps) {
-  const controlsRef = useRef<OrbitControlsImpl | null>(null);
-
-  useEffect(() => {
-    if (controlsRef.current) {
-      controlsRef.current.reset();
-    }
-  }, [resetSignal]);
-
-  return (
-    <div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
-      <Canvas
-        camera={{ position: [0.9, 0.45, 5.6], fov: 42 }}
-        style={{
-          width: '100%',
-          height: '100%',
-          display: 'block',
-          background: 'radial-gradient(circle at 50% 40%, #ffffff 0%, #faf6ee 55%, #eee4d2 100%)',
-        }}
-      >
-        <CameraManager
-          mode={mode}
-          zoomSignal={zoomSignal}
-          resetSignal={resetSignal}
-          controlsRef={controlsRef}
-        />
-        <ambientLight intensity={0.88} color="#fffcf5" />
-        <directionalLight position={[10, 15, 8]} intensity={1.35} color="#fff8eb" />
-        <directionalLight position={[-10, 8, -6]} intensity={0.65} color="#e8f4f8" />
-        <directionalLight position={[0, -5, 5]} intensity={0.25} color="#faf0e6" />
-
-        <gridHelper args={[6, 12, '#c6bca6', '#ded6c5']} position={[0, -1.2, 0]} />
-
-        <Suspense fallback={null}>
-          <Center position={[0, 0, 0]}>
-            {mode === 'eye' ? (
-              <EyeModel gaze={gaze} selectedMuscle={selectedMuscle} />
-            ) : (
-              <RealArmAntagonistModel flexion={armFlexion} />
-            )}
-          </Center>
-
-          {/* Sombra de contacto difusa */}
-          <ContactShadows
-            position={[0, -1.19, 0]}
-            opacity={0.42}
-            scale={4.5}
-            blur={2.0}
-            far={3.5}
-            color="#232c36"
-          />
-        </Suspense>
-
-        <AccessibleOrbitControls
-          controlsRef={controlsRef}
-          minDistance={1.5}
-          maxDistance={20}
-          minPolarAngle={Math.PI * 0.08}
-          maxPolarAngle={Math.PI * 0.92}
-          target={[0, 0, 0]}
-        />
-      </Canvas>
-      <SceneControlPad controlsRef={controlsRef} />
-
-      {/* Telemetría Discreta */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: '52px',
-          left: '12px',
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: '6px',
-          maxWidth: 'calc(100% - 24px)',
-          pointerEvents: 'none',
-          zIndex: 10,
-        }}
-      >
+  const telemetry = (
+    <div
+      style={{
+        position: 'absolute',
+        bottom: '52px',
+        left: '12px',
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: '6px',
+        maxWidth: 'calc(100% - 24px)',
+        pointerEvents: 'none',
+        zIndex: 10,
+      }}
+    >
         {mode === 'eye' ? (
           <>
             <div style={badgeStyle('#0d6e64')}>
@@ -571,7 +423,36 @@ export default function AntagonistCanvas({
             </div>
           </>
         )}
-      </div>
     </div>
+  );
+
+  return (
+    <AnatomyStage
+      camera={{ position: mode === 'eye' ? [0.9, 0.45, 5.6] : [1.5, 0.35, 4.8], fov: 42 }}
+      target={mode === 'eye' ? [0, 0, 0] : [0.1, 0.05, 0]}
+      minDistance={1.5}
+      maxDistance={20}
+      minPolarAngle={Math.PI * 0.08}
+      maxPolarAngle={Math.PI * 0.92}
+      gridArgs={[6, 12, '#c6bca6', '#ded6c5']}
+      gridY={-1.2}
+      shadowY={-1.19}
+      shadowScale={4.5}
+      shadowOpacity={0.42}
+      resetSignal={resetSignal}
+      zoomSignal={zoomSignal}
+      fit
+      fitPadding={1.7}
+      refit={mode}
+      overlay={telemetry}
+    >
+      <Center position={[0, 0, 0]}>
+        {mode === 'eye' ? (
+          <EyeModel gaze={gaze} selectedMuscle={selectedMuscle} />
+        ) : (
+          <RealArmAntagonistModel flexion={armFlexion} />
+        )}
+      </Center>
+    </AnatomyStage>
   );
 }

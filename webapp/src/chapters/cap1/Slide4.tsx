@@ -1,14 +1,58 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import KinematicsCanvas from './KinematicsCanvas';
 import type { KinematicAngles } from './KinematicsCanvas';
 import KinematicsAtlas2D from './KinematicsAtlas2D';
 import HudPanel from './HudPanel';
+import { useHarmonicClock } from './three/useHarmonicClock';
 
 interface Slide4Props {
   setGLMode?: (m: number) => void;
   toggleGLAnimation?: () => void;
   slideCount?: string;
 }
+
+// Slider angular compacto reutilizable para la barra de controles de B1.
+function AngleSlider({
+  label,
+  k,
+  value,
+  min,
+  max,
+  onSet,
+}: {
+  label: string;
+  k: keyof KinematicAngles;
+  value: number;
+  min: number;
+  max: number;
+  onSet: (k: keyof KinematicAngles, v: number) => void;
+}) {
+  return (
+    <label style={{ display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
+      <span style={{ fontWeight: 600, color: 'var(--ink-2)' }}>{label}</span>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        value={Math.round(value)}
+        onChange={(e) => onSet(k, parseFloat(e.target.value))}
+        style={{ width: '42px' }}
+      />
+      <span style={{ fontFamily: 'monospace', fontSize: '0.55rem', width: '22px' }}>{Math.round(value)}°</span>
+    </label>
+  );
+}
+
+const DOF_GROUP_STYLE: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '4px',
+  padding: '1px 5px',
+  border: '1px solid var(--line)',
+  borderRadius: '4px',
+  background: 'var(--paper-2)',
+};
+const DOF_GROUP_LABEL: React.CSSProperties = { fontWeight: 700, color: 'var(--ink-2)', fontSize: '0.55rem' };
 
 const JOINT_DESCRIPTIONS: Record<string, string> = {
   shoulder: '<b>Articulación proximal (Esferoidal · 3 GL):</b> Hombro (glenohumeral) o cadera (coxofemoral). Permite flexión/extensión (pitch), abducción/aducción (yaw) y rotación axial interna/externa (roll).',
@@ -36,9 +80,6 @@ export default function Slide4({ setGLMode: parentSetGLMode, slideCount }: Slide
     joint3: -10,     // Tobillo / Muñeca - Flexión
     joint3_yaw: 0,   // Tobillo / Muñeca - Inversión / Desviación
   });
-
-  const animTimeRef = useRef(0);
-  const animRafRef = useRef<number | null>(null);
 
   const handleSelectMode = (m: 6 | 7) => {
     setMode(m);
@@ -79,52 +120,37 @@ export default function Slide4({ setGLMode: parentSetGLMode, slideCount }: Slide
     }
   };
 
-  // Loop de animación armónica cinemática fisiológica
-  useEffect(() => {
-    if (!isAnimating) {
-      if (animRafRef.current) cancelAnimationFrame(animRafRef.current);
-      return;
+  // Loop de animación cinemática fisiológica (reloj compartido)
+  useHarmonicClock({ playing: isAnimating }, (t) => {
+    if (mode === 6) {
+      // Marcha natural de la pierna humana
+      setAngles({
+        joint1: Math.sin(t * 1.6) * 26,
+        joint1_yaw: Math.sin(t * 1.6) * 4,
+        joint1_roll: Math.cos(t * 1.6) * 6,
+        joint2: 35 + Math.sin(t * 1.6 + 0.8) * 28,
+        pivot: 0,
+        joint3: Math.sin(t * 1.6 + 1.6) * 16,
+        joint3_yaw: Math.sin(t * 1.6) * 5,
+      });
+    } else {
+      // Alcance y orientación funcional del brazo
+      setAngles({
+        joint1: Math.sin(t * 1.4) * 32,
+        joint1_yaw: 15 + Math.sin(t * 1.2) * 18,
+        joint1_roll: Math.cos(t * 1.1) * 20,
+        joint2: 50 + Math.sin(t * 1.8) * 36,
+        pivot: Math.sin(t * 1.3) * 50,
+        joint3: Math.sin(t * 2.0) * 22,
+        joint3_yaw: Math.cos(t * 1.7) * 12,
+      });
     }
+  }, mode);
 
-    let last = performance.now();
-    const loop = (now: number) => {
-      const dt = Math.min(0.1, (now - last) / 1000);
-      last = now;
-      animTimeRef.current += dt;
-      const t = animTimeRef.current;
-
-      if (mode === 6) {
-        // Marcha natural de la pierna humana
-        setAngles({
-          joint1: Math.sin(t * 1.6) * 26,
-          joint1_yaw: Math.sin(t * 1.6) * 4,
-          joint1_roll: Math.cos(t * 1.6) * 6,
-          joint2: 35 + Math.sin(t * 1.6 + 0.8) * 28,
-          pivot: 0,
-          joint3: Math.sin(t * 1.6 + 1.6) * 16,
-          joint3_yaw: Math.sin(t * 1.6) * 5,
-        });
-      } else {
-        // Alcance y orientación funcional del brazo
-        setAngles({
-          joint1: Math.sin(t * 1.4) * 32,
-          joint1_yaw: 15 + Math.sin(t * 1.2) * 18,
-          joint1_roll: Math.cos(t * 1.1) * 20,
-          joint2: 50 + Math.sin(t * 1.8) * 36,
-          pivot: Math.sin(t * 1.3) * 50,
-          joint3: Math.sin(t * 2.0) * 22,
-          joint3_yaw: Math.cos(t * 1.7) * 12,
-        });
-      }
-
-      animRafRef.current = requestAnimationFrame(loop);
-    };
-
-    animRafRef.current = requestAnimationFrame(loop);
-    return () => {
-      if (animRafRef.current) cancelAnimationFrame(animRafRef.current);
-    };
-  }, [isAnimating, mode]);
+  const setAngle = (k: keyof KinematicAngles, v: number) => {
+    setIsAnimating(false);
+    setAngles((prev) => ({ ...prev, [k]: v }));
+  };
 
   const handleZoomIn = () => setZoomSignal({ type: 'in', time: Date.now() });
   const handleZoomOut = () => setZoomSignal({ type: 'out', time: Date.now() });
@@ -515,81 +541,26 @@ export default function Slide4({ setGLMode: parentSetGLMode, slideCount }: Slide
               {mode === 6 ? 'Pierna (6 GL)' : 'Brazo (7 GL)'}
             </span>
 
-            {/* Sliders de control angular interactivo */}
-            <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center', fontSize: '0.62rem' }}>
-              <label style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
-                <span style={{ fontWeight: 600 }}>{mode === 6 ? 'Cadera' : 'Hombro'}</span>:
-                <input
-                  type="range"
-                  min={mode === 6 ? -30 : -50}
-                  max={mode === 6 ? 90 : 100}
-                  value={Math.round(angles.joint1)}
-                  onChange={(e) => {
-                    setIsAnimating(false);
-                    setAngles((prev) => ({ ...prev, joint1: parseFloat(e.target.value) }));
-                  }}
-                  style={{ width: '54px' }}
-                />
-                <span style={{ fontFamily: 'monospace', fontSize: '0.58rem', width: '24px' }}>
-                  {Math.round(angles.joint1)}°
-                </span>
-              </label>
+            {/* Sliders de control angular — TODOS los GL, agrupados por articulación */}
+            <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', fontSize: '0.6rem', flexWrap: 'wrap' }}>
+              <div style={DOF_GROUP_STYLE}>
+                <span style={DOF_GROUP_LABEL}>{mode === 6 ? 'Cadera' : 'Hombro'}</span>
+                <AngleSlider label="Flex" k="joint1" value={angles.joint1} min={mode === 6 ? -30 : -50} max={mode === 6 ? 90 : 100} onSet={setAngle} />
+                <AngleSlider label="Abd" k="joint1_yaw" value={angles.joint1_yaw || 0} min={-30} max={mode === 6 ? 45 : 90} onSet={setAngle} />
+                <AngleSlider label="Rot" k="joint1_roll" value={angles.joint1_roll || 0} min={-45} max={45} onSet={setAngle} />
+              </div>
 
-              <label style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
-                <span style={{ fontWeight: 600 }}>{mode === 6 ? 'Rodilla' : 'Codo'}</span>:
-                <input
-                  type="range"
-                  min="0"
-                  max={mode === 6 ? 135 : 140}
-                  value={Math.round(angles.joint2)}
-                  onChange={(e) => {
-                    setIsAnimating(false);
-                    setAngles((prev) => ({ ...prev, joint2: parseFloat(e.target.value) }));
-                  }}
-                  style={{ width: '54px' }}
-                />
-                <span style={{ fontFamily: 'monospace', fontSize: '0.58rem', width: '24px' }}>
-                  {Math.round(angles.joint2)}°
-                </span>
-              </label>
+              <div style={DOF_GROUP_STYLE}>
+                <span style={DOF_GROUP_LABEL}>{mode === 6 ? 'Rodilla' : 'Codo'}</span>
+                <AngleSlider label="Flex" k="joint2" value={angles.joint2} min={0} max={mode === 6 ? 135 : 140} onSet={setAngle} />
+                {mode === 7 && <AngleSlider label="Pron" k="pivot" value={angles.pivot} min={-80} max={80} onSet={setAngle} />}
+              </div>
 
-              {mode === 7 && (
-                <label style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
-                  <span style={{ fontWeight: 600 }}>Pivote</span>:
-                  <input
-                    type="range"
-                    min="-80"
-                    max="80"
-                    value={Math.round(angles.pivot)}
-                    onChange={(e) => {
-                      setIsAnimating(false);
-                      setAngles((prev) => ({ ...prev, pivot: parseFloat(e.target.value) }));
-                    }}
-                    style={{ width: '50px' }}
-                  />
-                  <span style={{ fontFamily: 'monospace', fontSize: '0.58rem', width: '24px' }}>
-                    {Math.round(angles.pivot)}°
-                  </span>
-                </label>
-              )}
-
-              <label style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
-                <span style={{ fontWeight: 600 }}>{mode === 6 ? 'Tobillo' : 'Muñeca'}</span>:
-                <input
-                  type="range"
-                  min={mode === 6 ? -40 : -50}
-                  max={mode === 6 ? 25 : 60}
-                  value={Math.round(angles.joint3)}
-                  onChange={(e) => {
-                    setIsAnimating(false);
-                    setAngles((prev) => ({ ...prev, joint3: parseFloat(e.target.value) }));
-                  }}
-                  style={{ width: '50px' }}
-                />
-                <span style={{ fontFamily: 'monospace', fontSize: '0.58rem', width: '24px' }}>
-                  {Math.round(angles.joint3)}°
-                </span>
-              </label>
+              <div style={DOF_GROUP_STYLE}>
+                <span style={DOF_GROUP_LABEL}>{mode === 6 ? 'Tobillo' : 'Muñeca'}</span>
+                <AngleSlider label="Flex" k="joint3" value={angles.joint3} min={mode === 6 ? -40 : -50} max={mode === 6 ? 25 : 60} onSet={setAngle} />
+                <AngleSlider label={mode === 6 ? 'Inv' : 'Desv'} k="joint3_yaw" value={angles.joint3_yaw || 0} min={-25} max={25} onSet={setAngle} />
+              </div>
             </div>
 
             <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.65rem', alignItems: 'center' }}>

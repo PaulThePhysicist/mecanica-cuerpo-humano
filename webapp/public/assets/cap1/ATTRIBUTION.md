@@ -16,11 +16,17 @@ posteriores (articulaciones, huesos, etc.).
 ## Paquetes musculares
 
 Los modelos `human_muscles_arm.glb`, `human_muscles_hip_leg.glb` y
-`human_muscles_full.glb` se generan a partir de
-mallas musculares de BodyParts3D usando `trimesh` y el script
-`webapp/scripts/gen_anatomical_muscles.py`. Cada músculo se conserva como una
-malla independiente con un nombre anatómico estándar para poder resaltarlo o
+`human_muscles_full.glb` se generan a partir de mallas musculares de BodyParts3D
+usando `trimesh` y el generador unificado `webapp/scripts/gen_bp3d_system.py`
+(catálogo de FMA IDs en `scripts/bp3d_systems.py`). Cada músculo se conserva como
+una malla independiente con un nombre anatómico estándar para poder resaltarlo o
 controlarlo desde Three.js.
+
+Cada malla se **hornea con el transform canónico** de `scripts/bp3d_transform.json`
+(rotar −90° X → recentrar en el centroide del esqueleto → escalar a 1/altura), de
+modo que los GLB musculares comparten el sistema de coordenadas de
+`human_body.glb` al milímetro y sus nodos se montan como hermanos directos de las
+mallas óseas, sin ningún ajuste en runtime.
 
 Los STL fuente se almacenan en `webapp/assets_source/_bp3d_stl/` (fuera de
 `public/`, para que Vite no los copie al build) y son insumos de generación; los
@@ -32,21 +38,25 @@ estos paquetes musculares.
 ## Paquetes no incluidos
 
 `human_muscles_trunk.glb` (paquete de tronco y mandíbula) no se versiona porque
-ninguna escena lo consume. Se conserva localmente en `webapp/assets_source/`.
-Es una salida independiente de
-`scripts/optimize_muscles_glb.py`, hermana de `human_muscles_full.glb` y no un
-insumo de esta: `full` se construye desde las listas de músculos
-(`ARM_MUSCLES + HIP_LEG_MUSCLES + TRUNK_MUSCLES`), no desde el archivo `trunk`.
-Si vuelve a hacer falta, se regenera desde los STL de `assets_source/_bp3d_stl/`.
+ninguna escena lo consume. Se conserva localmente en `webapp/assets_source/` y se
+regenera con `gen_bp3d_system.py --system muscular_trunk` (o `--system muscular`,
+que hace los cuatro paquetes) desde los STL de `assets_source/_bp3d_stl/`.
 
 También se retiraron dos respaldos históricos sin uso: `human_body_legacy.glb`
 (maniquí sólido Tripo previo al esqueleto BodyParts3D) y
 `human_body_placeholder_backup.glb` (placeholder de 55 KB de `gen_run.py`).
 
-## Regenerar el GLB
+## Regenerar los GLB
 ```
 cd webapp
 uv venv --python 3.13 .venv_assets
 uv pip install --python .venv_assets/Scripts/python.exe trimesh scipy
+
+# Esqueleto (además escribe scripts/bp3d_transform.json):
 env -u PYTHONPATH .venv_assets/Scripts/python.exe scripts/gen_anatomical_body.py
+# ⚠ produce un GLB de ~32 MB; el human_body.glb commiteado (5.8 MB) pasó luego
+#   por un paso de decimación externo — no recommitear sin volver a optimizar.
+
+# Músculos (ya alineados al esqueleto vía bp3d_transform.json):
+env -u PYTHONPATH .venv_assets/Scripts/python.exe scripts/gen_bp3d_system.py --system muscular
 ```

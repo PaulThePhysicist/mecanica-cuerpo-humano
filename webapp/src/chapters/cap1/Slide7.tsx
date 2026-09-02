@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import AntagonistCanvas, { type AntagonistMode, type EyeGaze } from './AntagonistCanvas';
+import { useHarmonicClock } from './three/useHarmonicClock';
 import HudPanel from './HudPanel';
 import ChapterImageLightbox from './ChapterImageLightbox';
 
@@ -79,10 +80,9 @@ export default function Slide7({ slideCount }: { slideCount?: string }) {
   const [resetSignal, setResetSignal] = useState<number>(0);
   const [zoomSignal, setZoomSignal] = useState<{ type: 'in' | 'out'; time: number } | null>(null);
 
-  const animTimeRef = useRef(0);
-  const animRafRef = useRef<number | null>(null);
-
   const currentGazeData = EYE_GAZE_PRESETS[selectedGaze];
+
+  const H_TEST_ORDER: EyeGaze[] = ['center', 'right', 'up_right', 'down_right', 'right', 'center', 'left', 'up_left', 'down_left', 'left', 'center'];
 
   const handleSelectGaze = (gId: EyeGaze) => {
     setSelectedGaze(gId);
@@ -90,11 +90,7 @@ export default function Slide7({ slideCount }: { slideCount?: string }) {
     const target = EYE_GAZE_PRESETS[gId];
     setGaze({ x: target.x, y: target.y });
     setIsAnimating(false);
-
-    const info = document.getElementById('info-text-b4');
-    if (info && target.desc) {
-      info.innerHTML = target.desc;
-    }
+    // El apunte #info-text-b4 lo renderiza React desde `currentGazeData.desc`.
   };
 
   const handleSelectMuscle = (mId: string) => {
@@ -108,42 +104,18 @@ export default function Slide7({ slideCount }: { slideCount?: string }) {
     else if (mId === 'oinferior') setGaze({ x: -0.85, y: 0.85 });
   };
 
-  // Loop de animación armónica
-  useEffect(() => {
-    if (!isAnimating) {
-      if (animRafRef.current) cancelAnimationFrame(animRafRef.current);
-      return;
+  // Loop de animación armónica (reloj compartido)
+  useHarmonicClock({ playing: isAnimating }, (t) => {
+    if (mode === 'eye') {
+      // Recorrido automático del test clínico en H
+      const gKey = H_TEST_ORDER[Math.floor((t * 0.8) % H_TEST_ORDER.length)];
+      const target = EYE_GAZE_PRESETS[gKey];
+      setSelectedGaze(gKey);
+      setGaze({ x: target.x, y: target.y });
+    } else {
+      setArmFlexion((Math.sin(t * 2.2) + 1) / 2); // flexión/extensión armónica
     }
-
-    let last = performance.now();
-    const hTestOrder: EyeGaze[] = ['center', 'right', 'up_right', 'down_right', 'right', 'center', 'left', 'up_left', 'down_left', 'left', 'center'];
-
-    const loop = (now: number) => {
-      const dt = Math.min(0.1, (now - last) / 1000);
-      last = now;
-      animTimeRef.current += dt;
-      const t = animTimeRef.current;
-
-      if (mode === 'eye') {
-        // Recorrido automático del test clínico en H
-        const step = Math.floor((t * 0.8) % hTestOrder.length);
-        const gKey = hTestOrder[step];
-        const target = EYE_GAZE_PRESETS[gKey];
-        setSelectedGaze(gKey);
-        setGaze({ x: target.x, y: target.y });
-      } else {
-        // Flexión/Extensión armónica del brazo
-        setArmFlexion((Math.sin(t * 2.2) + 1) / 2);
-      }
-
-      animRafRef.current = requestAnimationFrame(loop);
-    };
-
-    animRafRef.current = requestAnimationFrame(loop);
-    return () => {
-      if (animRafRef.current) cancelAnimationFrame(animRafRef.current);
-    };
-  }, [isAnimating, mode]);
+  }, mode);
 
   const handleZoomIn = () => setZoomSignal({ type: 'in', time: Date.now() });
   const handleZoomOut = () => setZoomSignal({ type: 'out', time: Date.now() });

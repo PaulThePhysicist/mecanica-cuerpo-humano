@@ -36,15 +36,19 @@ src/
 public/
   assets/capN/        Imágenes (PNG) y modelos 3D (.glb) servidos tal cual
 scripts/              Utilidades de generación/inspección de GLB (Python + Node); no entran al build
+                      · gen_anatomical_body.py  → human_body.glb + congela scripts/bp3d_transform.json
+                      · gen_bp3d_system.py      → GLB de sistemas (músculos, …) horneados en el
+                        espacio canónico del esqueleto; catálogo de FMA IDs en bp3d_systems.py
 ```
 
 ## Estado de los capítulos
 
-Publicados: **1 (Antropometría y Anatomía)** y **2 (Estática del Cuerpo)** — `available: true`
-en el arreglo `CHAPTERS` de `src/App.tsx`.
+Publicado: **1 (Antropometría y Anatomía)** — `available: true` en el arreglo `CHAPTERS`
+de `src/App.tsx`.
 
-Los capítulos 3–13 existen en `src/chapters/` pero están marcados `available: false`
-(botón "🔒 EN PREPARACIÓN"). Se van activando de uno en uno.
+El **2 (Estática del Cuerpo)** está completo pero de vuelta en `available: false` mientras
+se repasa (atlas muscular 3D, etc.). Los capítulos 3–13 existen en `src/chapters/` pero
+también están `available: false` (botón "🔒 EN PREPARACIÓN"). Se van activando de uno en uno.
 
 ### Activar un capítulo
 

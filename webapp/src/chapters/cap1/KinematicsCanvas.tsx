@@ -1,8 +1,9 @@
-import React, { useRef, useMemo, Suspense } from 'react';
-import { Canvas, useThree } from '@react-three/fiber';
-import { ContactShadows, useGLTF, Html } from '@react-three/drei';
+import { useMemo } from 'react';
+import { Html } from '@react-three/drei';
 import * as THREE from 'three';
-import { AccessibleOrbitControls, SceneControlPad } from './AccessibleOrbitControls';
+import { AnatomyStage } from './three/AnatomyStage';
+import { useAnatomyNodes } from './three/useAnatomyNodes';
+import { materials } from './three/materials';
 
 export interface KinematicAngles {
   joint1: number;       // Hombro / Cadera - Flexión/Extensión (Pitch)
@@ -26,9 +27,6 @@ interface KinematicsProps {
 }
 
 // ── Paleta Biomecánica Profesional ──
-const BONE_BASE = new THREE.Color('#ece4cf');      // Marfil anatómico cálido
-const BONE_DEEP = new THREE.Color('#dcd0b8');      // Hueso base fija (escápula / pelvis)
-const BONE_HIGHLIGHT = new THREE.Color('#0d6e64'); // Teal para articulación seleccionada
 const CARTILAGE_ICE = new THREE.Color('#78d0c8');  // Cartílago articular translúcido
 
 const COLOR_PITCH = '#b02318'; // Rojo · Flexión / Extensión
@@ -214,24 +212,9 @@ function RealArmKinematics({
   const scale = 11.0;
 
   // Materiales anatómicos estándar
-  const boneMat = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: BONE_BASE, roughness: 0.65, metalness: 0.04 }),
-    []
-  );
-  const baseMat = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: BONE_DEEP, roughness: 0.70, metalness: 0.04 }),
-    []
-  );
-  const highlightMat = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: BONE_HIGHLIGHT,
-        emissive: '#083c35',
-        emissiveIntensity: 0.4,
-        roughness: 0.5,
-      }),
-    []
-  );
+  const boneMat = materials.bone;
+  const baseMat = materials.boneContext;
+  const highlightMat = materials.boneHighlight;
 
 
   // 1. Ángulos articulares en radianes
@@ -263,11 +246,13 @@ function RealArmKinematics({
     []
   );
 
-  // Lista de huesos del carpo y mano
+  // Lista de huesos del carpo y mano derechos. En human_body.glb los metacarpianos
+  // van interleados L/R sin sufijo: los índices 1,2,4,6,8 son la mano derecha
+  // (x < 0), verificado por bbox.
   const carpalNames = useMemo(
     () => [
       'scaphoid_R', 'lunate_R', 'triquetral_R', 'pisiform_R',
-      'trapezium_R', 'trapezoid_L', 'capitate_R', 'hamate_R',
+      'trapezium_R', 'trapezoid_R', 'capitate_R', 'hamate_R',
       'metacarpal_1', 'metacarpal_2', 'metacarpal_4', 'metacarpal_6', 'metacarpal_8',
     ],
     []
@@ -405,24 +390,9 @@ function RealLegKinematics({
   const scale = 9.2;
 
   // Materiales anatómicos
-  const boneMat = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: BONE_BASE, roughness: 0.65, metalness: 0.04 }),
-    []
-  );
-  const baseMat = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: BONE_DEEP, roughness: 0.70, metalness: 0.04 }),
-    []
-  );
-  const highlightMat = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: BONE_HIGHLIGHT,
-        emissive: '#083c35',
-        emissiveIntensity: 0.4,
-        roughness: 0.5,
-      }),
-    []
-  );
+  const boneMat = materials.bone;
+  const baseMat = materials.boneContext;
+  const highlightMat = materials.boneHighlight;
 
   // 1. Ángulos articulares
   // Cadera (3 GL): Flexión (Pitch), Abducción (Yaw), Rotación Axial (Roll)
@@ -462,9 +432,11 @@ function RealLegKinematics({
 
   return (
     <group position={rootPos} scale={scale}>
-      {/* ── Base Fija: Pelvis (Coxal derecho hip_R) ── */}
+      {/* ── Base Fija: Pelvis completa (contexto anatómico, no un iliaco suelto) ── */}
       <group position={[-P_HIP.x, -P_HIP.y, -P_HIP.z]}>
         {nodes.hip_R && <mesh geometry={nodes.hip_R.geometry} material={baseMat} />}
+        {nodes.hip_L && <mesh geometry={nodes.hip_L.geometry} material={materials.boneGhost} />}
+        {nodes.sacrum && <mesh geometry={nodes.sacrum.geometry} material={materials.boneGhost} />}
       </group>
 
       {/* ── 1. ARTICULACIÓN DE LA CADERA (Esferoidal · 3 GL) ── */}
@@ -559,42 +531,6 @@ function RealLegKinematics({
   );
 }
 
-// ── Control de Cámara y Zoom Reactivo ──
-// Encuadre inicial equivalente a dos pasos de "Alejar" (1.28²),
-// conservando el mismo ángulo de observación de B1.
-const DEFAULT_CAM_POS: [number, number, number] = [5.57, 0.66, 8.85];
-
-function CameraRig({ resetSignal }: { resetSignal?: number }) {
-  const { camera } = useThree();
-  React.useEffect(() => {
-    camera.position.set(...DEFAULT_CAM_POS);
-    camera.lookAt(0, 0.0, 0);
-  }, [camera, resetSignal]);
-  return null;
-}
-
-function ZoomHandler({
-  zoomSignal,
-  controlsRef,
-}: {
-  zoomSignal?: { type: 'in' | 'out'; time: number } | null;
-  controlsRef: React.RefObject<any>;
-}) {
-  const { camera } = useThree();
-  React.useEffect(() => {
-    if (!zoomSignal) return;
-    const target = controlsRef.current?.target ? controlsRef.current.target.clone() : new THREE.Vector3(0, 0, 0);
-    const factor = zoomSignal.type === 'in' ? 0.78 : 1.28;
-    const dir = new THREE.Vector3().subVectors(camera.position, target);
-    const newDist = THREE.MathUtils.clamp(dir.length() * factor, 2.0, 18.0);
-    dir.normalize().multiplyScalar(newDist);
-    camera.position.copy(target).add(dir);
-    camera.updateProjectionMatrix();
-    if (controlsRef.current) controlsRef.current.update();
-  }, [zoomSignal, camera, controlsRef]);
-  return null;
-}
-
 // ── Componente Principal del Canvas 3D Cinemático ──
 export default function KinematicsCanvas({
   mode,
@@ -604,81 +540,31 @@ export default function KinematicsCanvas({
   selectedJoint = null,
   onSelectJoint = () => {},
 }: KinematicsProps) {
-  const controlsRef = useRef<any>(null);
-  const { nodes } = useGLTF('/assets/cap1/human_body.glb') as any;
-
-  React.useEffect(() => {
-    if (controlsRef.current) {
-      controlsRef.current.reset();
-    }
-  }, [resetSignal]);
+  const nodes = useAnatomyNodes('body');
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-    <Canvas
-      camera={{ position: DEFAULT_CAM_POS, fov: 40 }}
-      style={{
-        width: '100%',
-        height: '100%',
-        display: 'block',
-        background: 'radial-gradient(circle at 50% 40%, #ffffff 0%, #faf6ee 55%, #eee4d2 100%)',
-      }}
+    <AnatomyStage
+      camera={{ position: [5.57, 0.66, 8.85], fov: 40 }}
+      target={[0, 0, 0]}
+      minDistance={2.0}
+      maxDistance={16}
+      minPolarAngle={Math.PI / 8}
+      maxPolarAngle={Math.PI / 1.75}
+      gridY={-3.2}
+      shadowY={-3.19}
+      shadowOpacity={0.48}
+      resetSignal={resetSignal}
+      zoomSignal={zoomSignal}
+      fit
+      fitPadding={2.0}
+      refit={mode}
       onPointerMissed={() => onSelectJoint(null)}
     >
-      <CameraRig resetSignal={resetSignal} />
-      <ZoomHandler zoomSignal={zoomSignal} controlsRef={controlsRef} />
-
-      {/* Iluminación de estudio biomecánico */}
-      <ambientLight intensity={0.85} color="#fffcf5" />
-      <directionalLight position={[10, 15, 8]} intensity={1.35} color="#fff8eb" />
-      <directionalLight position={[-10, 8, -6]} intensity={0.65} color="#e8f4f8" />
-      <directionalLight position={[0, -5, 5]} intensity={0.25} color="#faf0e6" />
-
-      {/* Cuadrícula sutil de piso milimetrado */}
-      <gridHelper args={[8, 16, '#c6bca6', '#ded6c5']} position={[0, -3.2, 0]} />
-
-      {/* Sombra de contacto difusa bajo la cadena cinemática */}
-      <ContactShadows
-        position={[0, -3.19, 0]}
-        opacity={0.48}
-        scale={8}
-        blur={2.4}
-        far={5}
-        color="#232c36"
-      />
-
-      {/* Cadena cinemática con huesos anatómicos reales */}
-      <Suspense fallback={null}>
-        {mode === 6 ? (
-          <RealLegKinematics
-            angles={angles}
-            selectedJoint={selectedJoint}
-            onSelectJoint={onSelectJoint}
-            nodes={nodes}
-          />
-        ) : (
-          <RealArmKinematics
-            angles={angles}
-            selectedJoint={selectedJoint}
-            onSelectJoint={onSelectJoint}
-            nodes={nodes}
-          />
-        )}
-      </Suspense>
-
-      <AccessibleOrbitControls
-        controlsRef={controlsRef}
-        minDistance={2.0}
-        maxDistance={16}
-        minPolarAngle={Math.PI / 8}
-        maxPolarAngle={Math.PI / 1.75}
-        target={[0, 0.0, 0]}
-      />
-    </Canvas>
-    <SceneControlPad controlsRef={controlsRef} />
-    </div>
+      {mode === 6 ? (
+        <RealLegKinematics angles={angles} selectedJoint={selectedJoint} onSelectJoint={onSelectJoint} nodes={nodes} />
+      ) : (
+        <RealArmKinematics angles={angles} selectedJoint={selectedJoint} onSelectJoint={onSelectJoint} nodes={nodes} />
+      )}
+    </AnatomyStage>
   );
 }
-
-// Precarga del modelo anatómico
-useGLTF.preload('/assets/cap1/human_body.glb');

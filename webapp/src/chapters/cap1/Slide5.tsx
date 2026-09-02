@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import SynovialJointCanvas, { type JointType } from './SynovialJointCanvas';
+import { useHarmonicClock } from './three/useHarmonicClock';
 
 interface Slide5Props {
   toggleJointsAnimation?: () => void;
@@ -165,70 +166,36 @@ export default function Slide5({ toggleJointsAnimation, slideCount }: Slide5Prop
     a3: 0,
   });
 
-  const animTimeRef = useRef(0);
-  const animRafRef = useRef<number | null>(null);
-
   const currentMeta = JOINTS_DATA[selectedJoint];
 
   const handleSelectJoint = (jId: JointType) => {
     setSelectedJoint(jId);
     const meta = JOINTS_DATA[jId];
-    const newAngles = {
+    setAngles({
       a1: meta.sliders[0]?.default ?? 0,
       a2: meta.sliders[1]?.default ?? 0,
       a3: meta.sliders[2]?.default ?? 0,
-    };
-    setAngles(newAngles);
+    });
     setIsAnimating(false);
-
-    const info = document.getElementById('info-text-b2');
-    if (info && meta.desc) {
-      info.innerHTML = meta.desc;
-    }
+    // El apunte #info-text-b2 lo renderiza React desde `currentMeta.desc`.
   };
 
-  // Loop de animación armónica cinemática personalizada para cada articulación
-  useEffect(() => {
-    if (!isAnimating) {
-      if (animRafRef.current) cancelAnimationFrame(animRafRef.current);
-      return;
+  // Loop de animación cinemática por tipo de articulación (reloj compartido)
+  useHarmonicClock({ playing: isAnimating }, (t) => {
+    if (selectedJoint === 'hinge') {
+      setAngles({ a1: 65 + Math.sin(t * 2.2) * 55, a2: 0, a3: 0 });
+    } else if (selectedJoint === 'pivot') {
+      setAngles({ a1: Math.sin(t * 2.0) * 80, a2: 0, a3: 0 });
+    } else if (selectedJoint === 'condylar') {
+      setAngles({ a1: 20 + Math.sin(t * 1.8) * 35, a2: Math.sin(t * 2.4) * 22, a3: 0 });
+    } else if (selectedJoint === 'saddle') {
+      setAngles({ a1: Math.sin(t * 1.6) * 25, a2: Math.cos(t * 1.6) * 20, a3: 0 });
+    } else if (selectedJoint === 'plane') {
+      setAngles({ a1: Math.sin(t * 2.0) * 22, a2: Math.cos(t * 1.7) * 20, a3: 0 });
+    } else if (selectedJoint === 'ball') {
+      setAngles({ a1: Math.sin(t * 1.5) * 35, a2: Math.cos(t * 1.3) * 30, a3: Math.sin(t * 1.9) * 45 });
     }
-
-    let last = performance.now();
-    const loop = (now: number) => {
-      const dt = Math.min(0.1, (now - last) / 1000);
-      last = now;
-      animTimeRef.current += dt;
-      const t = animTimeRef.current;
-
-      if (selectedJoint === 'hinge') {
-        setAngles({ a1: 65 + Math.sin(t * 2.2) * 55, a2: 0, a3: 0 });
-      } else if (selectedJoint === 'pivot') {
-        // Pronosupinación completa: recorre el rango configurado del pivote
-        // radiocubital (-80° a +80°) para que se aprecie el cruce distal del radio.
-        setAngles({ a1: Math.sin(t * 2.0) * 80, a2: 0, a3: 0 });
-      } else if (selectedJoint === 'condylar') {
-        setAngles({ a1: 20 + Math.sin(t * 1.8) * 35, a2: Math.sin(t * 2.4) * 22, a3: 0 });
-      } else if (selectedJoint === 'saddle') {
-        setAngles({ a1: Math.sin(t * 1.6) * 25, a2: Math.cos(t * 1.6) * 20, a3: 0 });
-      } else if (selectedJoint === 'plane') {
-        setAngles({ a1: Math.sin(t * 2.0) * 22, a2: Math.cos(t * 1.7) * 20, a3: 0 });
-      } else if (selectedJoint === 'ball') {
-        setAngles({
-          a1: Math.sin(t * 1.5) * 35,
-          a2: Math.cos(t * 1.3) * 30,
-          a3: Math.sin(t * 1.9) * 45,
-        });
-      }
-
-      animRafRef.current = requestAnimationFrame(loop);
-    };
-
-    animRafRef.current = requestAnimationFrame(loop);
-    return () => {
-      if (animRafRef.current) cancelAnimationFrame(animRafRef.current);
-    };
-  }, [isAnimating, selectedJoint]);
+  }, selectedJoint);
 
   const handleZoomIn = () => setZoomSignal({ type: 'in', time: Date.now() });
   const handleZoomOut = () => setZoomSignal({ type: 'out', time: Date.now() });

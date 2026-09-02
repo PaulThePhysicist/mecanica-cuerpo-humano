@@ -1,9 +1,8 @@
-import React, { useRef, useEffect, useMemo } from 'react';
-import { Canvas, useThree } from '@react-three/fiber';
-import { ContactShadows, useGLTF } from '@react-three/drei';
-import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
+import { useMemo } from 'react';
 import * as THREE from 'three';
-import { AccessibleOrbitControls, SceneControlPad } from './AccessibleOrbitControls';
+import { AnatomyStage } from './three/AnatomyStage';
+import { useAnatomyNodes } from './three/useAnatomyNodes';
+import { materials } from './three/materials';
 
 export type MovementType =
   | 'flexion'
@@ -27,12 +26,7 @@ interface MovementCanvasProps {
 }
 
 // ── Paleta Anatómica PBR de Grado Médico ──
-const BONE_BASE_COLOR = '#ede5d0';
-const BONE_CONTEXT_COLOR = '#dfd5c2';
 const CARTILAGE_COLOR = '#68c5b8';
-const MUSCLE_ACTIVE_COLOR = '#b02318';
-const MUSCLE_ACTIVE_EMISSIVE = '#5a100a';
-const MUSCLE_INACTIVE_COLOR = '#8c534b';
 
 // ── Coordenadas Anatómicas Clave de BodyParts3D (Pose Estándar) ──
 const P_SHOULDER = new THREE.Vector3(-0.096, 0.306, -0.018);
@@ -185,47 +179,15 @@ function UpperLimbAnatomy({
   showMuscles?: boolean;
   showPlanes?: boolean;
 }) {
-  const { nodes: boneNodes } = useGLTF('/assets/cap1/human_body.glb') as any;
-  const { nodes: muscleNodes } = useGLTF('/assets/cap1/human_muscles_arm.glb') as any;
+  const boneNodes = useAnatomyNodes('body');
+  const muscleNodes = useAnatomyNodes('muscles_arm');
 
-  // Materiales PBR
-  const boneMat = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: BONE_BASE_COLOR, roughness: 0.62, metalness: 0.04 }),
-    []
-  );
-  const contextMat = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: BONE_CONTEXT_COLOR, roughness: 0.75, transparent: true, opacity: 0.45 }),
-    []
-  );
-  const activeMuscleMat = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: MUSCLE_ACTIVE_COLOR,
-        roughness: 0.55,
-        metalness: 0.05,
-        emissive: MUSCLE_ACTIVE_EMISSIVE,
-        emissiveIntensity: 0.55,
-      }),
-    []
-  );
-  const inactiveMuscleMat = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: MUSCLE_INACTIVE_COLOR,
-        roughness: 0.68,
-        metalness: 0.02,
-      }),
-    []
-  );
-  const neutralMuscleMat = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: '#9e473e',
-        roughness: 0.62,
-        metalness: 0.04,
-      }),
-    []
-  );
+  // Materiales PBR compartidos
+  const boneMat = materials.bone;
+  const contextMat = materials.boneGhost;
+  const activeMuscleMat = materials.muscleActive;
+  const inactiveMuscleMat = materials.muscleIdle;
+  const neutralMuscleMat = materials.muscleNeutral;
 
   // ── Cálculo Cinemático de Ángulos Articulares ──
   let humPitch = 0;
@@ -521,147 +483,37 @@ function UpperLimbAnatomy({
   );
 }
 
-// ── Control de Cámara y Zoom Reactivo ──
-function CameraManager({
-  movement,
-  zoomSignal,
-  resetSignal,
-  controlsRef,
-}: {
-  movement: MovementType;
-  zoomSignal?: { type: 'in' | 'out'; time: number } | null;
-  resetSignal?: number;
-  controlsRef: React.RefObject<OrbitControlsImpl | null>;
-}) {
-  const { camera } = useThree();
-
-  useEffect(() => {
-    let targetPos: THREE.Vector3;
-    let targetLookAt = new THREE.Vector3(0, 0.0, 0);
-
-    switch (movement) {
-      case 'rotation_med':
-      case 'rotation_lat':
-        targetPos = new THREE.Vector3(2.7, 1.0, 5.9);
-        break;
-      case 'pronation':
-      case 'supination':
-        targetPos = new THREE.Vector3(2.0, -0.3, 5.6);
-        break;
-      case 'abduction':
-      case 'adduction':
-        targetPos = new THREE.Vector3(0.0, 0.7, 7.4);
-        break;
-      case 'circumduction':
-        targetPos = new THREE.Vector3(3.8, 1.0, 6.8);
-        break;
-      case 'flexion':
-      case 'extension':
-      default:
-        targetPos = new THREE.Vector3(4.0, 0.7, 6.6);
-        break;
-    }
-
-    camera.position.copy(targetPos);
-    camera.lookAt(targetLookAt);
-    camera.updateProjectionMatrix();
-
-    if (controlsRef.current) {
-      controlsRef.current.target.copy(targetLookAt);
-      controlsRef.current.update();
-      controlsRef.current.saveState();
-    }
-  }, [movement, resetSignal, camera, controlsRef]);
-
-  useEffect(() => {
-    if (!zoomSignal) return;
-    const target = controlsRef.current?.target ? controlsRef.current.target.clone() : new THREE.Vector3(0, 0, 0);
-    const factor = zoomSignal.type === 'in' ? 0.8 : 1.25;
-    const dir = new THREE.Vector3().subVectors(camera.position, target);
-    const newDist = THREE.MathUtils.clamp(dir.length() * factor, 1.5, 24.0);
-    dir.normalize().multiplyScalar(newDist);
-    camera.position.copy(target).add(dir);
-    camera.updateProjectionMatrix();
-    if (controlsRef.current) {
-      controlsRef.current.update();
-    }
-  }, [zoomSignal, camera, controlsRef]);
-
-  return null;
-}
-
-useGLTF.preload('/assets/cap1/human_body.glb');
-useGLTF.preload('/assets/cap1/human_muscles_arm.glb');
-
 export default function MovementCanvas({
   movement,
   progress,
   showMuscles = true,
   showPlanes = true,
-  showLabels = true,
   resetSignal = 0,
   zoomSignal = null,
 }: MovementCanvasProps) {
-  const controlsRef = useRef<OrbitControlsImpl | null>(null);
-
-  useEffect(() => {
-    if (controlsRef.current) {
-      controlsRef.current.reset();
-    }
-  }, [resetSignal, movement]);
-
+  // Sin auto-encuadre: el plano anatómico (showPlanes) domina el bounding box y
+  // empequeñecería el brazo. Cámara fija más cerrada que la versión anterior.
   return (
-    <div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
-    <Canvas
-      camera={{ position: [2.4, 0.4, 3.4], fov: 42 }}
-      style={{
-        width: '100%',
-        height: '100%',
-        display: 'block',
-        background: 'radial-gradient(circle at 50% 40%, #ffffff 0%, #faf6ee 55%, #eee4d2 100%)',
-      }}
+    <AnatomyStage
+      camera={{ position: [2.8, 0.5, 4.9], fov: 42 }}
+      target={[0, 0, 0]}
+      minDistance={1.5}
+      maxDistance={24}
+      minPolarAngle={Math.PI * 0.08}
+      maxPolarAngle={Math.PI * 0.92}
+      gridY={-2.2}
+      shadowY={-2.19}
+      shadowScale={6.5}
+      shadowOpacity={0.42}
+      resetSignal={resetSignal}
+      zoomSignal={zoomSignal}
     >
-      <CameraManager
+      <UpperLimbAnatomy
         movement={movement}
-        zoomSignal={zoomSignal}
-        resetSignal={resetSignal}
-        controlsRef={controlsRef}
+        progress={progress}
+        showMuscles={showMuscles}
+        showPlanes={showPlanes}
       />
-      <ambientLight intensity={0.88} color="#fffcf5" />
-      <directionalLight position={[8, 12, 6]} intensity={1.35} color="#fff8eb" />
-      <directionalLight position={[-8, 6, -6]} intensity={0.65} color="#e8f4f8" />
-      <directionalLight position={[0, -4, 4]} intensity={0.25} color="#faf0e6" />
-
-      <gridHelper args={[8, 16, '#c6bca6', '#ded6c5']} position={[0, -2.2, 0]} />
-
-      <React.Suspense fallback={null}>
-        <UpperLimbAnatomy
-          movement={movement}
-          progress={progress}
-          showMuscles={showMuscles}
-          showPlanes={showPlanes}
-        />
-
-        <ContactShadows
-          position={[0, -2.19, 0]}
-          opacity={0.42}
-          scale={6.5}
-          blur={2.0}
-          far={4.5}
-          color="#232c36"
-        />
-      </React.Suspense>
-
-      <AccessibleOrbitControls
-        controlsRef={controlsRef}
-        minDistance={1.5}
-        maxDistance={24}
-        minPolarAngle={Math.PI * 0.08}
-        maxPolarAngle={Math.PI * 0.92}
-        target={[0, 0.0, 0]}
-      />
-    </Canvas>
-      <SceneControlPad controlsRef={controlsRef} />
-    </div>
+    </AnatomyStage>
   );
 }
