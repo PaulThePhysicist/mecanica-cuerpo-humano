@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import PlanesCanvas from './PlanesCanvas';
-import HudPanel from './HudPanel';
 
 interface Slide2Props {
   planeSel?: string | null;
@@ -135,79 +134,6 @@ export default function Slide2({ planeSel: parentPlaneSel, slideCount }: Slide2P
           </div>
         </div>
         <div className="sim-area" id="sim-planes" style={{ position: 'relative' }}>
-
-          {/* Panel Lateral HUD de Inspección de Planos en la esquina superior derecha */}
-          <HudPanel
-            title="PLANOS ANATÓMICOS"
-            badge="3 ORTOGONALES"
-            icon="▦"
-            footer="💡 Clic para aislar el plano en 3D"
-          >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <div
-                onClick={() => handleSelectPlane('plane-sagittal')}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '4px 6px',
-                  borderRadius: '5px',
-                  cursor: 'pointer',
-                  background: activePlane === 'plane-sagittal' ? 'var(--teal-tint)' : 'transparent',
-                  border: `1px solid ${activePlane === 'plane-sagittal' ? 'var(--teal)' : 'transparent'}`,
-                  transition: 'all 0.15s ease',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#6d5fbf' }} />
-                  <span style={{ fontSize: '0.66rem', fontWeight: 600, color: 'var(--ink)' }}>Sagital</span>
-                </div>
-                <span style={{ fontSize: '0.58rem', color: 'var(--ink-2)' }}>x = cte · Der/Izq</span>
-              </div>
-
-              <div
-                onClick={() => handleSelectPlane('plane-coronal')}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '4px 6px',
-                  borderRadius: '5px',
-                  cursor: 'pointer',
-                  background: activePlane === 'plane-coronal' ? 'var(--teal-tint)' : 'transparent',
-                  border: `1px solid ${activePlane === 'plane-coronal' ? 'var(--teal)' : 'transparent'}`,
-                  transition: 'all 0.15s ease',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#0d6e64' }} />
-                  <span style={{ fontSize: '0.66rem', fontWeight: 600, color: 'var(--ink)' }}>Coronal</span>
-                </div>
-                <span style={{ fontSize: '0.58rem', color: 'var(--ink-2)' }}>y = cte · Ant/Post</span>
-              </div>
-
-              <div
-                onClick={() => handleSelectPlane('plane-transverse')}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '4px 6px',
-                  borderRadius: '5px',
-                  cursor: 'pointer',
-                  background: activePlane === 'plane-transverse' ? 'var(--teal-tint)' : 'transparent',
-                  border: `1px solid ${activePlane === 'plane-transverse' ? 'var(--teal)' : 'transparent'}`,
-                  transition: 'all 0.15s ease',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#c0681e' }} />
-                  <span style={{ fontSize: '0.66rem', fontWeight: 600, color: 'var(--ink)' }}>Transverso</span>
-                </div>
-                <span style={{ fontSize: '0.58rem', color: 'var(--ink-2)' }}>z = cte · Sup/Inf</span>
-              </div>
-            </div>
-          </HudPanel>
 
           <PlanesCanvas
             planeSel={activePlane}

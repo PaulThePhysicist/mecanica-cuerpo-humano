@@ -67,13 +67,24 @@ export default function StevensCanvas({
       const scale = Math.max(1, Math.min(1.55, W / 420));
       const scaled = (size: number) => size * scale;
 
+      // La diapositiva puede no tener layout aún (oculta / en transición de
+      // entrada): rect = 0×0. Dibujar entonces genera radios negativos y
+      // IndexSizeError, que rompía el rAF para siempre. Reintentar sin dibujar.
+      if (W < 8 || H < 8) {
+        rafRef.current = requestAnimationFrame(render);
+        return;
+      }
+
       if (canvas.width !== W * dpr || canvas.height !== H * dpr) {
         canvas.width = W * dpr;
         canvas.height = H * dpr;
       }
 
       const ctx = canvas.getContext('2d');
-      if (!ctx) return;
+      if (!ctx) {
+        rafRef.current = requestAnimationFrame(render);
+        return;
+      }
 
       ctx.save();
       ctx.scale(dpr, dpr);

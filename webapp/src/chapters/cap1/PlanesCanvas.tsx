@@ -248,8 +248,8 @@ function AxisDirectionArrows({ showLabels }: { showLabels: boolean }) {
 
   return (
     <group>
-      {arrows.map((arrow) => (
-        <AxisDoubleArrow {...arrow} showLabels />
+      {arrows.map(({ key, ...arrow }) => (
+        <AxisDoubleArrow key={key} {...arrow} showLabels />
       ))}
     </group>
   );

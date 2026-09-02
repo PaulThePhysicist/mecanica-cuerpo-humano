@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 
 interface KinematicsAtlas2DProps {
   mode: 6 | 7; // 6 = Pierna, 7 = Brazo
@@ -21,6 +21,18 @@ export default function KinematicsAtlas2D({
   onSelectJoint = () => {},
 }: KinematicsAtlas2DProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  // Este canvas dibuja una sola vez por cambio de prop (no tiene bucle rAF). Si
+  // la primera pintura ocurre con el contenedor colapsado (slide en transición
+  // de entrada), quedaba a 200×200 hasta tocar un control. El ResizeObserver
+  // fuerza un redibujo cuando el contenedor cambia de tamaño.
+  const [resizeTick, setResizeTick] = useState(0);
+  useEffect(() => {
+    const parent = canvasRef.current?.parentElement;
+    if (!parent || typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(() => setResizeTick((n) => n + 1));
+    ro.observe(parent);
+    return () => ro.disconnect();
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -414,7 +426,7 @@ export default function KinematicsAtlas2D({
       ctx.fillText(j.gl.split('·')[0].trim(), tagX + 62, tagY + 13);
       ctx.restore();
     });
-  }, [mode, angles, layerMode, selectedJoint]);
+  }, [mode, angles, layerMode, selectedJoint, resizeTick]);
 
   // Manejador de clics interactivos en el canvas 2D
   const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {

@@ -205,26 +205,6 @@ export default function Slide4({ setGLMode: parentSetGLMode, slideCount }: Slide
             </div>
           </div>
 
-          <div className="concept-flow">
-            <span
-              id="btnGL6"
-              className={`step ${mode === 6 ? 'done' : ''}`}
-              onClick={() => handleSelectMode(6)}
-              style={{ cursor: 'pointer' }}
-            >
-              🦵 Pierna · 6 GL
-            </span>
-            <span className="arrow">→</span>
-            <span
-              id="btnGL7"
-              className={`step ${mode === 7 ? 'done' : ''}`}
-              onClick={() => handleSelectMode(7)}
-              style={{ cursor: 'pointer' }}
-            >
-              🦾 Brazo · 7 GL (Redundante)
-            </span>
-          </div>
-
           <div className="apuntes">
             <div className="a-hdr"><span>✍️</span> Apunte de cátedra</div>
             <div className="a-text" id="info-text-b1">

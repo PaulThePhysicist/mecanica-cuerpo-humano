@@ -1,22 +1,10 @@
 import React, { useState } from 'react';
 import AnatomyCanvas from './AnatomyCanvas';
-import HudPanel from './HudPanel';
 
 interface Slide1Props {
   hl?: string | null;
   slideCount?: string;
 }
-
-const TERM_DESCRIPTIONS: Record<string, string> = {
-  'axis-z': '<b>Eje Z (Superior / Inferior):</b> Superior (hacia la cabeza o cefálico) vs. Inferior (hacia los pies o podálico / caudal).',
-  'axis-x': '<b>Eje X (Anterior / Posterior):</b> Anterior (frente / ventral) vs. Posterior (espalda / dorsal).',
-  'axis-y': '<b>Eje Y (Derecha / Izquierda):</b> Siempre desde la perspectiva propia del paciente (dextral vs sinistral).',
-  'axis-medial': '<b>|y| Medial / Lateral:</b> Medial (hacia la línea media sagital) vs. Lateral (hacia los costados exteriores).',
-  'coord-r-proximal': '<b>Coordenada r (Proximal / Distal):</b> Proximal (cerca del tronco / origen del miembro) vs. Distal (lejos del tronco, hacia manos o pies).',
-  'coord-rho-superficial': '<b>Coordenada ρ (Superficial / Profundo):</b> Superficial (hacia la piel exterior) vs. Profundo (hacia el interior de los órganos y cavidades).',
-  'coord-right': '<b>Derecha del paciente:</b> y < 0 en el sistema de coordenadas corporales.',
-  'coord-left': '<b>Izquierda del paciente:</b> y > 0 en el sistema de coordenadas corporales.',
-};
 
 export default function Slide1({ hl, slideCount }: Slide1Props) {
   const [localTerm, setLocalTerm] = useState<string | null>(null);
@@ -27,17 +15,11 @@ export default function Slide1({ hl, slideCount }: Slide1Props) {
 
   const activeTerm = hl || localTerm;
 
+  // El texto del apunte (#info-text-a1) lo escribe Capitulo1.tsx desde su mapa
+  // DESCRIPTIONS, que es la única fuente. Aquí solo llevamos el estado local del
+  // resaltado (píldoras + vector 3D).
   const handleSelectTerm = (termKey: string) => {
-    const next = localTerm === termKey ? null : termKey;
-    setLocalTerm(next);
-    const info = document.getElementById('info-text-a1');
-    if (info) {
-      if (next && TERM_DESCRIPTIONS[next]) {
-        info.innerHTML = TERM_DESCRIPTIONS[next];
-      } else {
-        info.innerHTML = 'Pasa el cursor o haz clic sobre los ejes o las coordenadas locales para ver aquí el detalle anatómico de cada término.';
-      }
-    }
+    setLocalTerm((prev) => (prev === termKey ? null : termKey));
   };
 
   const handleZoomIn = () => setZoomSignal({ type: 'in', time: Date.now() });
@@ -195,142 +177,6 @@ export default function Slide1({ hl, slideCount }: Slide1Props) {
           </div>
         </div>
         <div className="sim-area" id="sim-anatomy-a1" style={{ position: 'relative' }}>
-
-          {/* Panel Lateral HUD de Inspección de Coordenadas en la esquina superior derecha */}
-          <HudPanel
-            title="SISTEMA CORPORAL"
-            badge="X · Y · Z · r · ρ"
-            icon="🧭"
-            footer="💡 Clic para iluminar en 3D"
-          >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-              <div
-                onClick={() => handleSelectTerm('axis-z')}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '3px 6px',
-                  borderRadius: '5px',
-                  cursor: 'pointer',
-                  background: activeTerm === 'axis-z' ? 'var(--teal-tint)' : 'transparent',
-                  border: `1px solid ${activeTerm === 'axis-z' ? 'var(--teal)' : 'transparent'}`,
-                  transition: 'all 0.15s ease',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#0d6e64' }} />
-                  <span style={{ fontSize: '0.64rem', fontWeight: 600, color: 'var(--ink)' }}>Eje Z</span>
-                </div>
-                <span style={{ fontSize: '0.58rem', color: 'var(--ink-2)' }}>Superior / Inferior</span>
-              </div>
-
-              <div
-                onClick={() => handleSelectTerm('axis-x')}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '3px 6px',
-                  borderRadius: '5px',
-                  cursor: 'pointer',
-                  background: activeTerm === 'axis-x' ? 'var(--teal-tint)' : 'transparent',
-                  border: `1px solid ${activeTerm === 'axis-x' ? 'var(--teal)' : 'transparent'}`,
-                  transition: 'all 0.15s ease',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#9a5b00' }} />
-                  <span style={{ fontSize: '0.64rem', fontWeight: 600, color: 'var(--ink)' }}>Eje X</span>
-                </div>
-                <span style={{ fontSize: '0.58rem', color: 'var(--ink-2)' }}>Anterior / Posterior</span>
-              </div>
-
-              <div
-                onClick={() => handleSelectTerm('axis-y')}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '3px 6px',
-                  borderRadius: '5px',
-                  cursor: 'pointer',
-                  background: activeTerm === 'axis-y' ? 'var(--teal-tint)' : 'transparent',
-                  border: `1px solid ${activeTerm === 'axis-y' ? 'var(--teal)' : 'transparent'}`,
-                  transition: 'all 0.15s ease',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#a92a1e' }} />
-                  <span style={{ fontSize: '0.64rem', fontWeight: 600, color: 'var(--ink)' }}>Eje Y</span>
-                </div>
-                <span style={{ fontSize: '0.58rem', color: 'var(--ink-2)' }}>Derecha / Izquierda</span>
-              </div>
-
-              <div
-                onClick={() => handleSelectTerm('axis-medial')}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '3px 6px',
-                  borderRadius: '5px',
-                  cursor: 'pointer',
-                  background: activeTerm === 'axis-medial' ? 'var(--teal-tint)' : 'transparent',
-                  border: `1px solid ${activeTerm === 'axis-medial' ? 'var(--teal)' : 'transparent'}`,
-                  transition: 'all 0.15s ease',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#6d5fbf' }} />
-                  <span style={{ fontSize: '0.64rem', fontWeight: 600, color: 'var(--ink)' }}>|y| Medial</span>
-                </div>
-                <span style={{ fontSize: '0.58rem', color: 'var(--ink-2)' }}>Medial / Lateral</span>
-              </div>
-
-              <div
-                onClick={() => handleSelectTerm('coord-r-proximal')}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '3px 6px',
-                  borderRadius: '5px',
-                  cursor: 'pointer',
-                  background: activeTerm === 'coord-r-proximal' ? 'var(--teal-tint)' : 'transparent',
-                  border: `1px solid ${activeTerm === 'coord-r-proximal' ? 'var(--teal)' : 'transparent'}`,
-                  transition: 'all 0.15s ease',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#0284c7' }} />
-                  <span style={{ fontSize: '0.64rem', fontWeight: 600, color: 'var(--ink)' }}>Coord. r</span>
-                </div>
-                <span style={{ fontSize: '0.58rem', color: 'var(--ink-2)' }}>Proximal / Distal</span>
-              </div>
-
-              <div
-                onClick={() => handleSelectTerm('coord-rho-superficial')}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '3px 6px',
-                  borderRadius: '5px',
-                  cursor: 'pointer',
-                  background: activeTerm === 'coord-rho-superficial' ? 'var(--teal-tint)' : 'transparent',
-                  border: `1px solid ${activeTerm === 'coord-rho-superficial' ? 'var(--teal)' : 'transparent'}`,
-                  transition: 'all 0.15s ease',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#d97706' }} />
-                  <span style={{ fontSize: '0.64rem', fontWeight: 600, color: 'var(--ink)' }}>Coord. ρ</span>
-                </div>
-                <span style={{ fontSize: '0.58rem', color: 'var(--ink-2)' }}>Superficial / Profundo</span>
-              </div>
-            </div>
-          </HudPanel>
 
           <AnatomyCanvas
             hoveredTerm={activeTerm}

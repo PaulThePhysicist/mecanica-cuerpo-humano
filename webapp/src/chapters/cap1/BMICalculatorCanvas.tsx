@@ -38,6 +38,16 @@ export default function BMICalculatorCanvas({
       const dpr = window.devicePixelRatio || 1;
       const W = rect.width;
       const H = rect.height;
+
+      // La diapositiva puede estar oculta (display:none) o en plena transición:
+      // getBoundingClientRect devuelve 0×0 y toda la geometría derivada
+      // (radios de los diales, discos) degenera y ctx.arc() lanza IndexSizeError.
+      // Saltar el frame y reintentar cuando haya layout.
+      if (W < 8 || H < 8) {
+        rafRef.current = requestAnimationFrame(render);
+        return;
+      }
+
       const scale = Math.max(1, Math.min(1.55, W / 420));
       const scaled = (size: number) => size * scale;
 
@@ -47,7 +57,10 @@ export default function BMICalculatorCanvas({
       }
 
       const ctx = canvas.getContext('2d');
-      if (!ctx) return;
+      if (!ctx) {
+        rafRef.current = requestAnimationFrame(render);
+        return;
+      }
 
       // Suavizado exponencial hacia los valores target
       const targetBMI = mass / (height * height);

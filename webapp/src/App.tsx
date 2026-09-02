@@ -1,10 +1,12 @@
-import React, { useState, Suspense, lazy } from 'react';
+import { useState, Suspense, lazy } from 'react';
 import './App.css';
 
-// Importación directa del Capítulo 1 para carga instantánea sin lazy-loading
-import Capitulo1 from './chapters/cap1/Capitulo1';
-
-// Lazy loading para capítulos futuros en preparación
+// Todos los capítulos se cargan bajo demanda. El cap1 iba importado de forma
+// estática "para carga instantánea", pero eso metía Three.js + sims.ts (~205 KB)
+// + los 17 slides en el chunk de entrada: la portada descargaba 1,88 MB aunque
+// no se abriera ningún capítulo. Con lazy(), la portada baja a decenas de KB y
+// el cap1 trae su propio chunk con el fallback de <Suspense>.
+const Capitulo1 = lazy(() => import('./chapters/cap1/Capitulo1'));
 const Capitulo2 = lazy(() => import('./chapters/cap2/Capitulo2'));
 const Capitulo3 = lazy(() => import('./chapters/cap3/Capitulo3'));
 const Capitulo4 = lazy(() => import('./chapters/cap4/Capitulo4'));
@@ -165,10 +167,6 @@ const CHAPTERS: ChapterMeta[] = [
 export default function App() {
   const [chapter, setChapter] = useState<number | null>(null);
 
-  if (chapter === 1) {
-    return <Capitulo1 onBack={() => setChapter(null)} />;
-  }
-
   if (chapter !== null) {
     const onBack = () => setChapter(null);
     return (
@@ -179,6 +177,7 @@ export default function App() {
           </div>
         }
       >
+        {chapter === 1 && <Capitulo1 onBack={onBack} />}
         {chapter === 2 && <Capitulo2 onBack={onBack} />}
         {chapter === 3 && <Capitulo3 onBack={onBack} />}
         {chapter === 4 && <Capitulo4 onBack={onBack} />}

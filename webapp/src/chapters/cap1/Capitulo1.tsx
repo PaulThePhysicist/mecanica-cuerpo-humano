@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useEngine, EngineContext } from './useEngine';
 import './legacy.css';
 import { MODULES, TOTAL, redrawSlide } from './sims';
@@ -82,10 +82,12 @@ const DESCRIPTIONS: Record<string, string> = {
   'elephant': '<b>Elefante:</b> w/L ≈ 4 — huesos macizos para 10⁴× la masa de la rata.',
 };
 
-function renderKatex() {
+function renderKatex(root: HTMLElement = document.body) {
   /* Algunas expresiones inline llegan desde JSX como texto literal. Normalizar
-     \\approx antes del auto-render evita que KaTeX lo convierta en "approx". */
-  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+     \\approx antes del auto-render evita que KaTeX lo convierta en "approx".
+     `root` acota el trabajo a la diapositiva activa: recorrer todo el body en
+     cada navegación es lento y dejaba ver el LaTeX crudo un instante. */
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
   let node: Node | null;
   while ((node = walker.nextNode())) {
     if (node.nodeValue) {
@@ -97,7 +99,7 @@ function renderKatex() {
         .split(slash + slash).join(slash);
     }
   }
-  renderMathInElement(document.body, {
+  renderMathInElement(root, {
     delimiters: [
       { left: '$$', right: '$$', display: true },
       { left: '$', right: '$', display: false },
@@ -116,15 +118,14 @@ export default function Capitulo1({ onBack }: { onBack?: () => void }) {
   const [planeSel, setPlaneSel] = useState<string | null>(null);
   const [regionSel, setRegionSel] = useState<string | null>(null);
   const infoTexts = useRef<Record<string, string>>({});
-  const [moduleTabsBuilt, setModuleTabsBuilt] = useState(false);
   // Diapositivas ya vistas: al volver a una, se omite la animación de entrada
-  // (regla .instant en legacy.css). El useMemo mantiene el valor estable
-  // durante los re-renders de una misma diapositiva; solo cambia al navegar.
+  // (regla .instant en legacy.css). `isRevisit` se lee en render; el alta en el
+  // set se hace en un efecto — un useMemo no debe tener efectos secundarios
+  // (React puede re-ejecutarlo o descartar su resultado).
   const seen = useRef<Set<number>>(new Set());
-  const isRevisit = useMemo(() => {
-    const already = seen.current.has(activeSlide);
+  const isRevisit = seen.current.has(activeSlide);
+  useEffect(() => {
     seen.current.add(activeSlide);
-    return already;
   }, [activeSlide]);
 
   // El capítulo usa rem en tarjetas, controles y navegación. Ajustamos la
@@ -170,29 +171,47 @@ export default function Capitulo1({ onBack }: { onBack?: () => void }) {
         toggle.setAttribute('aria-label', 'Ocultar controles de la visualización');
         toggle.setAttribute('aria-expanded', 'true');
 
-        const update = (collapsed: boolean) => {
+        // persist=false en la llamada inicial: así el estado por defecto NO se
+        // escribe en localStorage y sigue aplicándose en cada visita. Solo el
+        // clic del usuario persiste su elección.
+        const update = (collapsed: boolean, persist = true) => {
           panel.classList.toggle('is-collapsed', collapsed);
           toggle.textContent = collapsed ? '⚙' : '×';
           toggle.title = collapsed ? 'Mostrar controles de la visualización' : 'Ocultar controles de la visualización';
           toggle.setAttribute('aria-label', toggle.title);
           toggle.setAttribute('aria-expanded', String(!collapsed));
-          window.localStorage.setItem(storageKey, collapsed ? 'true' : 'false');
+          if (persist) window.localStorage.setItem(storageKey, collapsed ? 'true' : 'false');
         };
 
         toggle.addEventListener('click', () => update(!panel.classList.contains('is-collapsed')));
         panel.appendChild(toggle);
         const storedState = window.localStorage.getItem(storageKey);
-        update(storedState === null ? true : storedState === 'true');
+        // Por defecto EXPANDIDO (el control primario del slide visible al entrar,
+        // como dice el comentario de arriba). Solo arranca colapsado si el slide
+        // lo pide con data-default-collapsed (los 3D de terminología, donde el
+        // canvas manda). Si el usuario ya lo colapsó antes, se respeta.
+        const defaultCollapsed = panel.dataset.defaultCollapsed === 'true';
+        update(storedState === null ? defaultCollapsed : storedState === 'true', false);
       });
     }, 0);
     return () => window.clearTimeout(id);
   }, [activeSlide]);
 
   // ── KaTeX al montar + al cambiar de slide ──
-  useEffect(() => {
-    renderKatex();
-    const id = setTimeout(renderKatex, 300);
-    return () => clearTimeout(id);
+  // useLayoutEffect: renderiza ANTES de pintar, así no se ve el LaTeX crudo un
+  // instante al entrar a la diapositiva. Acotado al slide activo (+ vecinos, por
+  // si ya están montados) para que sea rápido.
+  useLayoutEffect(() => {
+    const scope = () => {
+      document
+        .querySelectorAll<HTMLElement>('.cap1-presentation .slide, .cap1-presentation .slide-full')
+        .forEach((el) => {
+          if (el.children.length > 0) renderKatex(el);
+        });
+    };
+    scope();
+    const id = window.setTimeout(scope, 120);
+    return () => window.clearTimeout(id);
   }, [activeSlide]);
 
   // ── Sincronización del dibujo de Canvas en cada cambio de slide ──
@@ -202,11 +221,13 @@ export default function Capitulo1({ onBack }: { onBack?: () => void }) {
     return () => cancelAnimationFrame(id);
   }, [activeSlide, engine]);
 
-  // ── Construir barra de módulos (module-tabs) una vez ──
+  // ── Construir barra de módulos (module-tabs) ──
+  // Idempotente y con limpieza: si el efecto se re-ejecuta (StrictMode en dev,
+  // o un remonte) se limpian los botones anteriores en vez de duplicarlos.
   useEffect(() => {
-    if (moduleTabsBuilt) return;
     const host = document.getElementById('moduleBar');
     if (!host) return;
+    const buttons: HTMLButtonElement[] = [];
     MODULES.forEach((m) => {
       if (m.id === 0) return;
       const b = document.createElement('button');
@@ -217,9 +238,12 @@ export default function Capitulo1({ onBack }: { onBack?: () => void }) {
       b.innerHTML = `<span class="mod-badge">${m.id}</span>${m.ico} ${name}`;
       b.addEventListener('click', () => goModule(m.id));
       host.appendChild(b);
+      buttons.push(b);
     });
-    setModuleTabsBuilt(true);
-  }, [moduleTabsBuilt, goModule]);
+    return () => {
+      buttons.forEach((b) => b.remove());
+    };
+  }, [goModule]);
 
   // ── Marcar pestaña de módulo activa ──
   useEffect(() => {
@@ -258,6 +282,20 @@ export default function Capitulo1({ onBack }: { onBack?: () => void }) {
   useEffect(() => {
     const $ = (id: string) => document.getElementById(id);
 
+    // Este efecto se re-ejecuta al cambiar de slide y también en cada hover de
+    // plano/región (planeSel/regionSel están en las deps). Antes cada pasada
+    // volvía a llamar addEventListener sobre los mismos nodos → los listeners
+    // se apilaban y cada slider/fila acababa disparando su draw N veces.
+    // `bindOnce` marca el nodo la primera vez y no vuelve a enlazar; al
+    // desmontarse el slide el nodo se recolecta y con él sus listeners.
+    const bindOnce = (el: Element | null, type: string, handler: EventListenerOrEventListenerObject) => {
+      if (!el) return;
+      const key = '__c1bound_' + type;
+      if ((el as any)[key]) return;
+      (el as any)[key] = true;
+      el.addEventListener(type, handler);
+    };
+
     ['a1', 'a2', 'a3', 'b1', 'b2', 'b3', 'b4', 'c1', 'c2', 'c3', 'c4', 'd1', 'd2', 'd3', 'd4'].forEach((k) => {
       const el = $('info-text-' + k);
       if (el && !infoTexts.current[k]) {
@@ -266,43 +304,31 @@ export default function Capitulo1({ onBack }: { onBack?: () => void }) {
     });
 
     ['glShoulder', 'glElbow', 'glWrist', 'glPivot'].forEach((id) => {
-      const el = $(id);
-      if (el) el.addEventListener('input', () => { glClamp(); redrawSlide(4); });
+      bindOnce($(id), 'input', () => { glClamp(); redrawSlide(4); });
     });
 
-    const antag = $('antagSlider');
-    if (antag) antag.addEventListener('input', () => redrawSlide(7));
-
-    const mass = $('massSlider');
-    if (mass) mass.addEventListener('input', () => redrawSlide(8));
-
-    const height = $('heightSlider');
-    if (height) height.addEventListener('input', () => redrawSlide(9));
+    bindOnce($('antagSlider'), 'input', () => redrawSlide(7));
+    bindOnce($('massSlider'), 'input', () => redrawSlide(8));
+    bindOnce($('heightSlider'), 'input', () => redrawSlide(9));
 
     ['bmiMass', 'bmiHeight'].forEach((id) => {
-      const el = $(id);
-      if (el) el.addEventListener('input', () => calcBMI());
+      bindOnce($(id), 'input', () => calcBMI());
     });
 
     const stevensN = $('stevensN');
-    if (stevensN) stevensN.addEventListener('input', () => drawStevens());
+    bindOnce(stevensN, 'input', () => drawStevens());
 
     const stevensSel = $('stevensSelect');
-    if (stevensSel) {
-      stevensSel.addEventListener('change', () => {
-        const v = parseFloat((stevensSel as HTMLSelectElement).value);
-        if (stevensN) (stevensN as HTMLInputElement).value = String(v);
-        const lb = $('stevensNLabel');
-        if (lb) lb.textContent = v.toFixed(2).replace('.', ',');
-        drawStevens();
-      });
-    }
+    bindOnce(stevensSel, 'change', () => {
+      const v = parseFloat((stevensSel as HTMLSelectElement).value);
+      if (stevensN) (stevensN as HTMLInputElement).value = String(v);
+      const lb = $('stevensNLabel');
+      if (lb) lb.textContent = v.toFixed(2).replace('.', ',');
+      drawStevens();
+    });
 
-    const allo = $('alloSelect');
-    if (allo) allo.addEventListener('change', () => drawAllometry());
-
-    const boneChk = $('boneScaleAllo');
-    if (boneChk) boneChk.addEventListener('change', () => drawBoneScale());
+    bindOnce($('alloSelect'), 'change', () => drawAllometry());
+    bindOnce($('boneScaleAllo'), 'change', () => drawBoneScale());
 
     const setInfo = (key: string, infoKey: string) => {
       const info = $('info-text-' + infoKey);
@@ -391,38 +417,38 @@ export default function Capitulo1({ onBack }: { onBack?: () => void }) {
 
     document.querySelectorAll('[data-joint]').forEach((tr) => {
       const j = (tr as HTMLElement).dataset.joint || '';
-      tr.addEventListener('mouseenter', () => setJoint(j));
-      tr.addEventListener('click', () => setJoint(j));
+      bindOnce(tr, 'mouseenter', () => setJoint(j));
+      bindOnce(tr, 'click', () => setJoint(j));
     });
 
     document.querySelectorAll('[data-movement]').forEach((p) => {
       const m = (p as HTMLElement).dataset.movement || '';
-      p.addEventListener('click', () => setMovement(m));
+      bindOnce(p, 'click', () => setMovement(m));
     });
 
     document.querySelectorAll('[data-prop]').forEach((tr) => {
       const p = (tr as HTMLElement).dataset.prop || '';
-      tr.addEventListener('mouseenter', () => drawProportions(p));
-      tr.addEventListener('mouseleave', () => drawProportions(null));
-      tr.addEventListener('click', () => drawProportions(p));
+      bindOnce(tr, 'mouseenter', () => drawProportions(p));
+      bindOnce(tr, 'mouseleave', () => drawProportions(null));
+      bindOnce(tr, 'click', () => drawProportions(p));
     });
 
     document.querySelectorAll('[data-mobility]').forEach((tr) => {
       const m = (tr as HTMLElement).dataset.mobility || '';
-      tr.addEventListener('mouseenter', () => drawMobility(m));
-      tr.addEventListener('mouseleave', () => drawMobility(null));
-      tr.addEventListener('click', () => drawMobility(m));
+      bindOnce(tr, 'mouseenter', () => drawMobility(m));
+      bindOnce(tr, 'mouseleave', () => drawMobility(null));
+      bindOnce(tr, 'click', () => drawMobility(m));
     });
 
     document.querySelectorAll('[data-somatotype]').forEach((p) => {
       const s = (p as HTMLElement).dataset.somatotype || '';
-      p.addEventListener('mouseenter', () => drawSomatotype(s));
-      p.addEventListener('mouseleave', () => drawSomatotype(null));
-      p.addEventListener('click', () => drawSomatotype(s));
+      bindOnce(p, 'mouseenter', () => drawSomatotype(s));
+      bindOnce(p, 'mouseleave', () => drawSomatotype(null));
+      bindOnce(p, 'click', () => drawSomatotype(s));
     });
 
     document.querySelectorAll('[data-allometry]').forEach((p) => {
-      p.addEventListener('click', () => {
+      bindOnce(p, 'click', () => {
         const v = (p as HTMLElement).dataset.allometry || '';
         document.querySelectorAll('[data-allometry]').forEach((e) => e.setAttribute('aria-pressed', e === p ? 'true' : 'false'));
         const sel = $('alloSelect');
@@ -434,7 +460,7 @@ export default function Capitulo1({ onBack }: { onBack?: () => void }) {
     });
 
     document.querySelectorAll('[data-bone]').forEach((p) => {
-      p.addEventListener('click', () => {
+      bindOnce(p, 'click', () => {
         document.querySelectorAll('[data-bone]').forEach((e) => e.setAttribute('aria-pressed', e === p ? 'true' : 'false'));
         drawBoneScale((p as HTMLElement).dataset.bone || '');
         const info = $('info-text-d2');
@@ -444,7 +470,7 @@ export default function Capitulo1({ onBack }: { onBack?: () => void }) {
     });
 
     document.querySelectorAll('[data-stevens]').forEach((tr) => {
-      tr.addEventListener('click', () => {
+      bindOnce(tr, 'click', () => {
         document.querySelectorAll('[data-stevens]').forEach((e) => e.setAttribute('aria-selected', e === tr ? 'true' : 'false'));
         const v = (tr as HTMLElement).dataset.stevens || '';
         const sel = $('stevensSelect');
@@ -458,7 +484,10 @@ export default function Capitulo1({ onBack }: { onBack?: () => void }) {
     });
 
     redrawSlide(activeSlide);
-  }, [activeSlide, planeSel, regionSel]);
+    // termSel entra en deps: los handlers .onmouseleave de [data-highlight]
+    // leen termSel y sin esto capturaban un valor obsoleto. Ya no fuga porque
+    // los addEventListener pasan por bindOnce.
+  }, [activeSlide, planeSel, regionSel, termSel]);
 
   const moduleName = (MODULES.find((m) => m.slides.includes(activeSlide)) || MODULES[0]).name;
 
@@ -485,6 +514,12 @@ export default function Capitulo1({ onBack }: { onBack?: () => void }) {
         const isCover = i === 0;
         const cls = isCover ? 'slide-full' : 'slide';
         const isActive = activeSlide === i;
+        // Solo se monta la diapositiva activa y sus vecinas inmediatas. Antes
+        // se montaban las 17 a la vez: cada canvas React (slides 8–11) tenía su
+        // propio rAF girando siempre y cada escena Three.js quedaba instanciada
+        // aunque no se viera. Con ventana ±1 el vecino ya está listo antes de
+        // navegar y el resto no consume nada.
+        const mounted = Math.abs(i - activeSlide) <= 1;
         return (
           <div
             key={i}
@@ -492,23 +527,25 @@ export default function Capitulo1({ onBack }: { onBack?: () => void }) {
             data-slide={i}
             data-module={MODULES.find((m) => m.slides.includes(i))?.id ?? 0}
           >
-            <Slide
-              isActive={isActive}
-              engine={engine}
-              go={go}
-              goModule={goModule}
-              next={next}
-              prev={prev}
-              hl={hl || termSel}
-              planeSel={planeSel}
-              regionSel={regionSel}
-              slideCount={slideCountOf(i)}
-              setGLMode={setGLMode}
-              toggleGLAnimation={toggleGLAnimation}
-              toggleJointsAnimation={toggleJointsAnimation}
-              toggleMovementAnimation={toggleMovementAnimation}
-              onBack={onBack}
-            />
+            {mounted && (
+              <Slide
+                isActive={isActive}
+                engine={engine}
+                go={go}
+                goModule={goModule}
+                next={next}
+                prev={prev}
+                hl={hl || termSel}
+                planeSel={planeSel}
+                regionSel={regionSel}
+                slideCount={slideCountOf(i)}
+                setGLMode={setGLMode}
+                toggleGLAnimation={toggleGLAnimation}
+                toggleJointsAnimation={toggleJointsAnimation}
+                toggleMovementAnimation={toggleMovementAnimation}
+                onBack={onBack}
+              />
+            )}
           </div>
         );
       })}

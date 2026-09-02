@@ -25,42 +25,67 @@ export function useEngine(): Engine {
   const [activeSlide, setActiveSlide] = useState(0);
   const current = useRef(0);
 
+  // ── Repintado por "ráfaga de asentamiento" ──────────────────────────────
+  // Antes había un rAF global que llamaba a redrawSlide() 60 veces por segundo
+  // para siempre: en los slides 4–15 eso repinta el canvas 2D entero cada
+  // frame aunque la diapositiva esté quieta (CPU al ~10 % en reposo).
+  //
+  // Ya no hace falta: las animaciones ("Animar") tienen su propio rAF
+  // autolimitado en sims.ts, los canvas React (slides 8–11) tienen el suyo, y
+  // los sliders/tablas llaman a su draw directamente. El loop global solo
+  // servía para (a) la primera pintura y (b) reasentar tras un cambio de
+  // layout. Para eso basta con repintar unos ~30 frames tras cada wake y
+  // luego parar.
+  const settleFrames = useRef(0);
+  const rafRef = useRef(0);
+
+  const tick = useCallback(() => {
+    if (settleFrames.current > 0) {
+      settleFrames.current -= 1;
+      redrawSlide(current.current);
+      rafRef.current = requestAnimationFrame(tick);
+    } else {
+      rafRef.current = 0;
+    }
+  }, []);
+
+  const wake = useCallback(() => {
+    settleFrames.current = 30;
+    if (!rafRef.current) rafRef.current = requestAnimationFrame(tick);
+  }, [tick]);
+
   const go = useCallback((n: number) => {
     if (n === undefined || isNaN(n)) return;
     n = Math.max(0, Math.min(TOTAL - 1, n));
     current.current = n;
     setActiveSlide(n);
-  }, []);
+    wake();
+  }, [wake]);
 
-  const next = useCallback(() => { current.current = Math.min(TOTAL - 1, current.current + 1); setActiveSlide(current.current); }, []);
-  const prev = useCallback(() => { current.current = Math.max(0, current.current - 1); setActiveSlide(current.current); }, []);
+  const next = useCallback(() => { current.current = Math.min(TOTAL - 1, current.current + 1); setActiveSlide(current.current); wake(); }, [wake]);
+  const prev = useCallback(() => { current.current = Math.max(0, current.current - 1); setActiveSlide(current.current); wake(); }, [wake]);
   const goModule = useCallback((m: number) => {
     const mod = MODULES.find(x => x.id === m);
-    if (mod) { current.current = mod.slides[0]; setActiveSlide(current.current); }
-  }, []);
+    if (mod) { current.current = mod.slides[0]; setActiveSlide(current.current); wake(); }
+  }, [wake]);
 
   const requestDraw = useCallback(() => {
     redrawSlide(current.current);
-  }, []);
+    wake();
+  }, [wake]);
 
-  // Loop rAF global: redibuja el slide activo cada frame. El motor 2D de cap1
-  // ya tiene sus propias animaciones (startGLRaf etc.) que se auto-ejecutan al
-  // pulsar "Animar"; este loop mantiene pintado el slide y refleja sliders sin
-  // animación. Igual que el motor legacy (redrawSlide en el rAF de go/resize).
+  // Primera pintura + reasentado al redimensionar la ventana. En reposo no
+  // hay ningún rAF vivo.
   useEffect(() => {
-    let raf = 0;
-    const loop = () => {
-      redrawSlide(current.current);
-      raf = requestAnimationFrame(loop);
-    };
-    raf = requestAnimationFrame(loop);
-    const onResize = () => redrawSlide(current.current);
+    wake();
+    const onResize = () => { redrawSlide(current.current); wake(); };
     window.addEventListener('resize', onResize);
     return () => {
-      cancelAnimationFrame(raf);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      rafRef.current = 0;
       window.removeEventListener('resize', onResize);
     };
-  }, []);
+  }, [wake]);
 
   return { activeSlide, go, next, prev, goModule, requestDraw, moduleOf: (i: number) => moduleOf(i) };
 }

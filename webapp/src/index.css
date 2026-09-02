@@ -1,5 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,600&family=Karla:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap');
-@import url('https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css');
+/* Las fuentes de Google se cargan con <link> en index.html (junto a sus
+   preconnect), no con @import: dentro del CSS son render-blocking y en serie.
+   El CSS de KaTeX se empaqueta desde main.tsx (import 'katex/dist/katex.min.css');
+   el @import a jsdelivr que había aquí lo descargaba una segunda vez. */
 
 :root {
   /* EL TRATADO ANATÓMICO INTERACTIVO — Design System */

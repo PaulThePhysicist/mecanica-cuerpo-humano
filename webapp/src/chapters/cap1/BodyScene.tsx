@@ -336,7 +336,26 @@ function AnatomyModel({ mode, selected, jointMotion }: { mode: string; selected:
     };
   }, [clonedScene]);
 
+  const resetMotionGroups = React.useCallback(() => {
+    motionGroups.shoulder.rotation.set(0, 0, 0);
+    motionGroups.elbow.rotation.set(0, 0, 0);
+    motionGroups.forearm.quaternion.copy(motionGroups.forearmBaseQuaternion);
+    motionGroups.wrist.quaternion.copy(motionGroups.wristBaseQuaternion);
+    motionGroups.hip.rotation.set(0, 0, 0);
+    motionGroups.knee.rotation.set(0, 0, 0);
+    motionGroups.ankle.rotation.set(0, 0, 0);
+  }, [motionGroups]);
+
+  // Al deseleccionar la articulación, devolver el esqueleto a la pose neutra
+  // una sola vez (antes lo hacía el useFrame en cada frame).
+  React.useEffect(() => {
+    if (jointMotion === null) resetMotionGroups();
+  }, [jointMotion, resetMotionGroups]);
+
   useFrame(({ clock }) => {
+    // Sin articulación seleccionada no hay nada que animar: evitamos resetear
+    // 7 grupos + 2 quaternions cada frame.
+    if (jointMotion === null) return;
     const phase = (Math.sin(clock.getElapsedTime() * 0.72 - Math.PI / 2) + 1) / 2;
     motionGroups.shoulder.rotation.set(0, 0, 0);
     motionGroups.elbow.rotation.set(0, 0, 0);
@@ -537,6 +556,7 @@ export default function BodyScene({
       <ThreeErrorBoundary fallback={errorFallback}>
         <Canvas
           camera={{ position: [3.6, 1.8, 12.5], fov: 45 }}
+          dpr={[1, 2]}
           gl={{
             antialias: true,
             powerPreference: 'default',

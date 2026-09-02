@@ -1511,9 +1511,6 @@ export function drawJoints() {
     jointTag(u1.x - nx*10 - 30, u1.y + ny*8 + 6, 'CÚBITO');
     jointTag(r1.x + nx*6 + 18, r1.y + ny*2 + 6, 'RADIO');
   } else if (currentJoint === 'pivot') {
-  } else if (currentJoint === 'pivot') {
-  } else if (currentJoint === 'pivot') {
-  } else if (currentJoint === 'pivot') {
     // 🔩 Pivote (1D) -> Radiocubital Proximal
     subLabel = 'Articulación Radiocubital Proximal (Trocoide)';
     const val = window.__jointVals.pivot[0];

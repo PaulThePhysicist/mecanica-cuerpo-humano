@@ -108,6 +108,14 @@ export default function AllometryCanvas({
       const dpr = window.devicePixelRatio || 1;
       const W = rect.width;
       const H = rect.height;
+
+      // Sin layout aún (slide oculta / en transición): rect = 0×0. Dibujar
+      // entonces produce IndexSizeError y mataba el rAF. Reintentar sin dibujar.
+      if (W < 8 || H < 8) {
+        rafRef.current = requestAnimationFrame(render);
+        return;
+      }
+
       // En pantalla completa el canvas crece, pero las fuentes no deben
       // quedarse con el tamaño fijo del visor compacto.
       const scale = Math.max(1, Math.min(1.6, W / 420));
@@ -119,7 +127,10 @@ export default function AllometryCanvas({
       }
 
       const ctx = canvas.getContext('2d');
-      if (!ctx) return;
+      if (!ctx) {
+        rafRef.current = requestAnimationFrame(render);
+        return;
+      }
 
       ctx.save();
       ctx.scale(dpr, dpr);

@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  webapp:
+    name: webapp · type-check + lint + build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: webapp
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: webapp/package-lock.json
+
+      - run: npm ci
+
+      # Chequeo de tipos (incluye "strict"). Bloqueante.
+      - name: Type-check
+        run: npx tsc -b
+
+      # Lint. No bloqueante todavía: hay ~50 warnings heredados en sims.ts.
+      # Quitar "|| true" cuando el backlog esté limpio.
+      - name: Lint
+        run: npx oxlint || true
+
+      # Build de producción completo.
+      - name: Build
+        run: npm run build
