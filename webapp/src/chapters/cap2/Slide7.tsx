@@ -13,7 +13,7 @@ export default function Slide7({
 }) {
   const [bodyMassKg, setBodyMassKg] = useState<number>(70);
   const [trendelenburg, setTrendelenburg] = useState<boolean>(false);
-  const [showBreakdown, setShowBreakdown] = useState<boolean>(true);
+  const [showBreakdown, setShowBreakdown] = useState<boolean>(false);
 
   const g = 9.81;
   const totalWeightN = bodyMassKg * g;
@@ -31,7 +31,7 @@ export default function Slide7({
   const handleReset = () => {
     setBodyMassKg(70);
     setTrendelenburg(false);
-    setShowBreakdown(true);
+    setShowBreakdown(false);
   };
 
   return (

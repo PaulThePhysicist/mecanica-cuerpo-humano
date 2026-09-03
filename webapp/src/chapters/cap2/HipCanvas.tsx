@@ -489,10 +489,10 @@ function HipAnatomy3D({
     0,
   ];
 
-  const MODEL_SCALE = 6.2;
+  const MODEL_SCALE = 4.7;
 
   return (
-    <group position={[0, -0.4, 0]}>
+    <group position={[0, -0.05, 0]}>
       {/* ── 1. SEGMENTO FIJO DE APOYO: Fémur Derecho y Extremidad Inferior ── */}
       <group scale={MODEL_SCALE} position={[0, 0, 0]}>
         <group position={[-P_HIP_R.x, -P_HIP_R.y, -P_HIP_R.z]}>
@@ -632,30 +632,26 @@ function HipAnatomy3D({
         </group>
       )}
 
-      {/* ── 4. Polígono de Fuerzas Vectoriales (ΣF = 0) en HUD 3D Flotante (Izquierda) ── */}
-      <Html position={[-1.75, 0.85, 0]} center>
-        <VectorPolygonCard
-          fAbductorN={fAbductorN}
-          wbN={wbN}
-          rJointN={rJointN}
-          trendelenburg={trendelenburg}
-        />
-      </Html>
-
-      {/* ── 5. Dial Manométrico de Carga Acetabular (Derecha 3D Flotante) ── */}
-      <Html position={[1.75, 0.85, 0]} center>
-        <AcetabularGauge
-          rJointN={rJointN}
-          rJointKgf={rJointKgf}
-          trendelenburg={trendelenburg}
-          maxR={3000}
-        />
-      </Html>
-
       {/* Sombra de contacto del pie derecho en el suelo */}
       <ContactShadows position={[0, -2.45, 0]} opacity={0.7} scale={3.6} blur={1.4} far={4} color="#2b2318" />
     </group>
   );
+}
+
+// Física de Pauwels (idéntica a la de HipAnatomy3D) para las tarjetas overlay.
+function hipStatics(bodyMassKg: number, trendelenburg: boolean) {
+  const g = 9.81;
+  const totalWeightN = bodyMassKg * g;
+  const wbN = (5 / 6) * totalWeightN;
+  const sin70 = Math.sin((70 * Math.PI) / 180);
+  const cos70 = Math.cos((70 * Math.PI) / 180);
+  const fAbductorN = trendelenburg
+    ? (wbN * 0.18 * 0.25) / (0.07 * sin70)
+    : (wbN * 0.18) / (0.07 * sin70);
+  const rxN = fAbductorN * cos70;
+  const ryN = fAbductorN * sin70 + wbN;
+  const rJointN = Math.hypot(rxN, ryN);
+  return { totalWeightN, wbN, fAbductorN, rJointN, rJointKgf: rJointN / g };
 }
 
 // ── 5. Componente Principal HipCanvas con Escena 3D y Controles ──
@@ -665,6 +661,7 @@ export default function HipCanvas({
   showBreakdown = true,
 }: HipCanvasProps) {
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
+  const { wbN, fAbductorN, rJointN, rJointKgf } = hipStatics(bodyMassKg, trendelenburg);
 
   const handleResetCamera = () => {
     if (controlsRef.current) {
@@ -687,7 +684,7 @@ export default function HipCanvas({
           border: '1px solid var(--line, #cbd5e1)',
           borderRadius: '6px',
           padding: '4px 9px',
-          fontSize: '0.62rem',
+          fontSize: '0.6rem',
           fontWeight: 600,
           color: 'var(--ink, #232c36)',
           cursor: 'pointer',
@@ -695,12 +692,12 @@ export default function HipCanvas({
           backdropFilter: 'blur(4px)',
         }}
       >
-        📷 Restablecer Cámara
+        📷 Cámara
       </button>
 
       {/* Canvas 3D de React Three Fiber */}
       <Canvas
-        camera={{ position: [0, 0.2, 3.8], fov: 42 }}
+        camera={{ position: [0.5, 0.15, 4.7], fov: 40 }}
         dpr={[1, 2]}
         gl={{ antialias: true, alpha: true }}
       >
@@ -730,6 +727,14 @@ export default function HipCanvas({
         />
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
+
+      {/* ── Overlays de datos anclados a las esquinas (fuera del 3D, sin recortes) ── */}
+      <div style={{ position: 'absolute', left: '10px', bottom: '10px', zIndex: 9, transform: 'scale(0.74)', transformOrigin: 'bottom left' }}>
+        <VectorPolygonCard fAbductorN={fAbductorN} wbN={wbN} rJointN={rJointN} trendelenburg={trendelenburg} />
+      </div>
+      <div style={{ position: 'absolute', right: '10px', bottom: '10px', zIndex: 9, transform: 'scale(0.74)', transformOrigin: 'bottom right' }}>
+        <AcetabularGauge rJointN={rJointN} rJointKgf={rJointKgf} trendelenburg={trendelenburg} maxR={3000} />
+      </div>
     </div>
   );
 }
