@@ -219,6 +219,28 @@ function LumbarTensionGauge({
 }
 
 // ── 3. Modelo 3D de Columna Lumbar L1-L5 Articulada con Cuñamiento Discal y Erector Espinal ──
+/** Biomecánica lumbar L5-S1 (determinista). */
+function spineStats(trunkAngleDeg: number, handLoadKg: number, bodyMassKg: number) {
+  const g = 9.81;
+  const wTrunkN = 0.65 * bodyMassKg * g;
+  const wLoadN = handLoadKg * g;
+  const alphaRad = (trunkAngleDeg * Math.PI) / 180;
+  const sinAlpha = Math.sin(alphaRad);
+  const cosAlpha = Math.cos(alphaRad);
+  const dMuscM = 0.05;
+  const thetaMRad = (12 * Math.PI) / 180;
+  const sinThetaM = Math.sin(thetaMRad);
+  const cosThetaM = Math.cos(thetaMRad);
+  const tauResNm = (wTrunkN * 0.38 + wLoadN * 0.50) * sinAlpha;
+  const fErectorN = Math.max(25, tauResNm / (dMuscM * sinThetaM));
+  const rCompN = fErectorN * cosThetaM + (wTrunkN + wLoadN) * cosAlpha;
+  const rShearN = Math.abs((wTrunkN + wLoadN) * sinAlpha - fErectorN * sinThetaM);
+  return {
+    tauResNm, fErectorN, fErectorKgf: fErectorN / g, rCompN, rCompKgf: rCompN / g, rShearN,
+    isHighTension: fErectorN > 2400, isExtremeTension: fErectorN > 3200,
+  };
+}
+
 function LumbarSpine3D({
   trunkAngleDeg,
   handLoadKg,
@@ -313,13 +335,6 @@ function LumbarSpine3D({
   // Tensión requerida en el erector espinal
   const fErectorN = Math.max(25, tauResNm / (dMuscM * sinThetaM));
   const fErectorKgf = fErectorN / g;
-
-  // Descomposición ortogonal en el platillo L5-S1:
-  // Compresión axial pura:
-  const rCompN = fErectorN * cosThetaM + (wTrunkN + wLoadN) * cosAlpha;
-  const rCompKgf = rCompN / g;
-  // Cizallamiento anterior:
-  const rShearN = Math.abs((wTrunkN + wLoadN) * sinAlpha - fErectorN * sinThetaM);
 
   const isHighTension = fErectorN > 2400;
   const isExtremeTension = fErectorN > 3200;
@@ -519,52 +534,6 @@ function LumbarSpine3D({
         />
       </group>
 
-      {/* ── 4. BADGES DE FUERZAS EN L5-S1: COMPRESIÓN Y CIZALLAMIENTO ── */}
-      <Html position={[0, 0.9, 0.45]} center>
-        <div
-          style={{
-            background: 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(8px)',
-            border: `1.5px solid ${isHighTension ? RED_ACCENT : '#cbd5e1'}`,
-            borderRadius: '10px',
-            padding: '10px 14px',
-            boxShadow: '0 6px 20px rgba(35, 44, 54, 0.14)',
-            minWidth: '160px',
-            pointerEvents: 'none',
-          }}
-        >
-          <div style={{ fontSize: '0.64rem', fontWeight: 700, color: '#232c36', marginBottom: '6px', textAlign: 'center' }}>
-            DESCOMPOSICIÓN EN PLATILLO L5-S1
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.58rem', fontFamily: 'JetBrains Mono, monospace' }}>
-            <div style={{ color: '#1e293b', display: 'flex', justifyContent: 'space-between' }}>
-              <span>Compresión Axial:</span>
-              <b>{rCompN.toFixed(0)} N</b>
-            </div>
-            <div style={{ color: AMBER_ACCENT, display: 'flex', justifyContent: 'space-between' }}>
-              <span>Cizallamiento:</span>
-              <b>{rShearN.toFixed(0)} N</b>
-            </div>
-            <div style={{ color: TEAL_ACCENT, display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #e2e8f0', paddingTop: '3px' }}>
-              <span>Torque Flexor:</span>
-              <b>{tauResNm.toFixed(0)} N·m</b>
-            </div>
-          </div>
-        </div>
-      </Html>
-
-      {/* ── 5. HUD 3D: Dial de Tensión Lumbar y Sobrecarga ── */}
-      <Html position={[1.85, 0.85, 0]} center>
-        <LumbarTensionGauge
-          fErectorN={fErectorN}
-          fErectorKgf={fErectorKgf}
-          rCompN={rCompN}
-          rShearN={rShearN}
-          isHighTension={isHighTension}
-          isExtremeTension={isExtremeTension}
-        />
-      </Html>
-
       {/* Sombra de contacto */}
       <ContactShadows position={[0, -2.45, 0]} opacity={0.62} scale={4} blur={1.7} far={4} color="#241d12" />
     </group>
@@ -578,6 +547,7 @@ export default function SpineCanvas({
   bodyMassKg = 70,
 }: SpineCanvasProps) {
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
+  const s = spineStats(trunkAngleDeg, handLoadKg, bodyMassKg);
 
   const handleResetCamera = () => {
     if (controlsRef.current) {
@@ -640,6 +610,61 @@ export default function SpineCanvas({
         />
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
+
+      {/* ── Overlays anclados a las esquinas (fuera del 3D → no tapan la columna) ── */}
+      <div
+        style={{
+          position: 'absolute',
+          left: '10px',
+          bottom: '10px',
+          zIndex: 9,
+          transform: 'scale(0.82)',
+          transformOrigin: 'bottom left',
+          background: 'rgba(255, 255, 255, 0.95)',
+          border: `1.5px solid ${s.isHighTension ? RED_ACCENT : '#cbd5e1'}`,
+          borderRadius: '10px',
+          padding: '9px 12px',
+          boxShadow: '0 6px 18px rgba(35, 44, 54, 0.14)',
+          minWidth: '150px',
+          pointerEvents: 'none',
+        }}
+      >
+        <div style={{ fontSize: '0.6rem', fontWeight: 700, color: '#232c36', marginBottom: '5px', textAlign: 'center' }}>
+          DESCOMPOSICIÓN EN PLATILLO L5-S1
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '0.56rem', fontFamily: 'JetBrains Mono, monospace' }}>
+          <div style={{ color: '#1e293b', display: 'flex', justifyContent: 'space-between' }}>
+            <span>Compresión axial:</span><b>{s.rCompN.toFixed(0)} N</b>
+          </div>
+          <div style={{ color: AMBER_ACCENT, display: 'flex', justifyContent: 'space-between' }}>
+            <span>Cizallamiento:</span><b>{s.rShearN.toFixed(0)} N</b>
+          </div>
+          <div style={{ color: TEAL_ACCENT, display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #e2e8f0', paddingTop: '2px' }}>
+            <span>Torque flexor:</span><b>{s.tauResNm.toFixed(0)} N·m</b>
+          </div>
+        </div>
+      </div>
+
+      <div
+        style={{
+          position: 'absolute',
+          right: '10px',
+          bottom: '10px',
+          zIndex: 9,
+          transform: 'scale(0.78)',
+          transformOrigin: 'bottom right',
+          pointerEvents: 'none',
+        }}
+      >
+        <LumbarTensionGauge
+          fErectorN={s.fErectorN}
+          fErectorKgf={s.fErectorKgf}
+          rCompN={s.rCompN}
+          rShearN={s.rShearN}
+          isHighTension={s.isHighTension}
+          isExtremeTension={s.isExtremeTension}
+        />
+      </div>
     </div>
   );
 }

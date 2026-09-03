@@ -107,6 +107,75 @@ const POSE_PRESETS: Record<'standing' | 'arms_up' | 'bent_forward' | 'squat', Ki
   },
 };
 
+/**
+ * Cadena cinemática Dempster → centro de gravedad global y margen de
+ * estabilidad. Determinista para (postura asentada, estatura); el 3D anima
+ * hacia estos valores, así que el gauge muestra el valor final.
+ */
+function bodySegmentStats(
+  posture: BodySegmentsCanvasProps['posture'],
+  bodyHeightCm: number,
+) {
+  const pose = POSE_PRESETS[posture];
+  const h = bodyHeightCm / 175;
+  const ankleY = 0.085 * h;
+  const shankLen = 0.44 * h;
+  const thighLen = 0.46 * h;
+  const kneeY = ankleY + shankLen * Math.cos(pose.ankleAngle);
+  const kneeZ = shankLen * Math.sin(pose.ankleAngle);
+  const hipAngleTotal = pose.ankleAngle - pose.kneeAngle;
+  const hipY = kneeY + thighLen * Math.cos(hipAngleTotal) + pose.pelvisOffsetY;
+  const hipZ = kneeZ - thighLen * Math.sin(hipAngleTotal) + pose.pelvisOffsetZ;
+  const trunkLen = 0.42 * h;
+  const trunkAngleTotal = hipAngleTotal + pose.hipAngle + pose.spineAngle;
+  const thoraxY = hipY + trunkLen * 0.55 * Math.cos(trunkAngleTotal);
+  const thoraxZ = hipZ + trunkLen * 0.55 * Math.sin(trunkAngleTotal);
+  const shoulderY = hipY + trunkLen * Math.cos(trunkAngleTotal);
+  const shoulderZ = hipZ + trunkLen * Math.sin(trunkAngleTotal);
+  const neckLen = 0.24 * h;
+  const headAngleTotal = trunkAngleTotal + pose.headAngle;
+  const headY = shoulderY + neckLen * Math.cos(headAngleTotal);
+  const headZ = shoulderZ + neckLen * Math.sin(headAngleTotal);
+  const armLen = 0.30 * h;
+  const armAngleTotal = trunkAngleTotal + pose.shoulderAngle;
+  const armMidY = shoulderY - armLen * 0.5 * Math.cos(armAngleTotal);
+  const armMidZ = shoulderZ + armLen * 0.5 * Math.sin(armAngleTotal);
+  const elbowY = shoulderY - armLen * Math.cos(armAngleTotal);
+  const elbowZ = shoulderZ + armLen * Math.sin(armAngleTotal);
+  const forearmLen = 0.28 * h;
+  const forearmAngleTotal = armAngleTotal + pose.elbowAngle;
+  const forearmMidY = elbowY - forearmLen * 0.5 * Math.cos(forearmAngleTotal);
+  const forearmMidZ = elbowZ + forearmLen * 0.5 * Math.sin(forearmAngleTotal);
+  const cms: [number, number][] = [
+    [headY, headZ],
+    [thoraxY, thoraxZ],
+    [hipY + 0.05, hipZ],
+    [armMidY, armMidZ],
+    [forearmMidY, forearmMidZ],
+    [(kneeY + hipY) / 2, (kneeZ + hipZ) / 2],
+    [(ankleY + kneeY) / 2, (0 + kneeZ) / 2],
+  ];
+  let sumY = 0, sumZ = 0, sumM = 0;
+  cms.forEach(([y, z], i) => {
+    const m = DEMPSTER_SEGMENTS[i].massPct;
+    sumY += y * m;
+    sumZ += z * m;
+    sumM += m;
+  });
+  const cgGlobalY = sumY / sumM;
+  const cgGlobalZ = sumZ / sumM;
+  const totalHeightM = bodyHeightCm / 100;
+  const cgHeightCm = cgGlobalY * 100;
+  const cgHeightPct = (cgGlobalY / totalHeightM) * 100;
+  const bosAntZ = 0.13;
+  const bosPostZ = -0.14;
+  const minMarginZ = Math.min(bosAntZ - cgGlobalZ, cgGlobalZ - bosPostZ);
+  const isStable = cgGlobalZ >= bosPostZ - 0.02 && cgGlobalZ <= bosAntZ + 0.02;
+  const isWarning = isStable && minMarginZ < 0.035;
+  const stabilityMarginPct = Math.max(0, Math.min(100, (minMarginZ / ((bosAntZ - bosPostZ) / 2)) * 100));
+  return { cgHeightCm, cgHeightPct, stabilityMarginPct, isStable, isWarning };
+}
+
 // ── 1. Marcador 3D de Centro de Masa Segmentario (CM_i) ──
 function SegmentMassMarker3D({
   position,
@@ -514,13 +583,9 @@ function DempsterSkeletonRig3D({
   const bosPostZ = -0.14;
   const bosHalfW = 0.18;
 
-  const distToAnt = bosAntZ - cgGlobalZ;
-  const distToPost = cgGlobalZ - bosPostZ;
-  const minMarginZ = Math.min(distToAnt, distToPost);
-
+  const minMarginZ = Math.min(bosAntZ - cgGlobalZ, cgGlobalZ - bosPostZ);
   const isStable = cgGlobalZ >= bosPostZ - 0.02 && cgGlobalZ <= bosAntZ + 0.02;
   const isWarning = isStable && minMarginZ < 0.035;
-  const stabilityMarginPct = Math.max(0, Math.min(100, (minMarginZ / ((bosAntZ - bosPostZ) / 2)) * 100));
 
   return (
     <group position={[0, -0.78, 0]}>
@@ -786,17 +851,6 @@ function DempsterSkeletonRig3D({
         isWarning={isWarning}
       />
 
-      {/* ── F. DIAL DE ESTABILIDAD FLOTANTE A LA DERECHA ── */}
-      <Html position={[0.55, 0.52, 0.10]} center distanceFactor={2.6}>
-        <StabilityGauge
-          cgHeightCm={cgHeightCm}
-          cgHeightPct={cgHeightPct}
-          stabilityMarginPct={stabilityMarginPct}
-          isStable={isStable}
-          isWarning={isWarning}
-          bodyMassKg={bodyMassKg}
-        />
-      </Html>
     </group>
   );
 }
@@ -808,6 +862,7 @@ export default function BodySegmentsCanvas({
   bodyMassKg = 70,
 }: BodySegmentsCanvasProps) {
   const controlsRef = useRef<OrbitControlsImpl>(null);
+  const b = bodySegmentStats(posture, bodyHeightCm);
 
   return (
     <div
@@ -855,6 +910,28 @@ export default function BodySegmentsCanvas({
         />
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
+
+      {/* Dial de estabilidad anclado a la esquina (fuera del 3D) */}
+      <div
+        style={{
+          position: 'absolute',
+          right: '10px',
+          bottom: '10px',
+          zIndex: 9,
+          transform: 'scale(0.8)',
+          transformOrigin: 'bottom right',
+          pointerEvents: 'none',
+        }}
+      >
+        <StabilityGauge
+          cgHeightCm={b.cgHeightCm}
+          cgHeightPct={b.cgHeightPct}
+          stabilityMarginPct={b.stabilityMarginPct}
+          isStable={b.isStable}
+          isWarning={b.isWarning}
+          bodyMassKg={bodyMassKg}
+        />
+      </div>
     </div>
   );
 }

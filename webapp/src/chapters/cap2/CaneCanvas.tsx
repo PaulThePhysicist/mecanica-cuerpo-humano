@@ -348,6 +348,24 @@ function ReliefGauge({
   );
 }
 
+/** Biomecánica del apoyo monopodal con bastón (determinista). */
+function caneStats(caneHand: CaneCanvasProps['caneHand'], caneForceKg: number, bodyMassKg: number) {
+  const g = 9.81;
+  const wbN = (5 / 6) * bodyMassKg * g;
+  const bwM = 0.18;
+  const bmM = 0.07;
+  const sin70 = Math.sin((70 * Math.PI) / 180);
+  const cos70 = Math.cos((70 * Math.PI) / 180);
+  const fCaneN = caneHand === 'none' ? 0 : caneForceKg * g;
+  const dCaneM = caneHand === 'contra' ? 0.30 : (caneHand === 'ipsi' ? -0.05 : 0);
+  const fAbductorN = Math.max(0, (wbN * bwM - fCaneN * dCaneM) / (bmM * sin70));
+  const rJointN = Math.hypot(fAbductorN * cos70, fAbductorN * sin70 + wbN);
+  const fAbductorBaseN = (wbN * bwM) / (bmM * sin70);
+  const rBaseN = Math.hypot(fAbductorBaseN * cos70, fAbductorBaseN * sin70 + wbN);
+  const reliefPct = Math.max(0, ((rBaseN - rJointN) / rBaseN) * 100);
+  return { g, wbN, sin70, cos70, fCaneN, dCaneM, fAbductorN, fAbductorKgf: fAbductorN / g, rxN: fAbductorN * cos70, ryN: fAbductorN * sin70 + wbN, rJointN, rJointKgf: rJointN / g, rBaseN, reliefPct, wbKgf: wbN / g };
+}
+
 // ── 4. Escena Anatómica 3D con Descarga Articular ──
 function CaneScene3D({
   caneHand,
@@ -587,17 +605,6 @@ function CaneScene3D({
         />
       )}
 
-      {/* ── 5. HUD 3D: Instrumento Comparativo de Alivio Articular ── */}
-      <Html position={[1.8, 0.75, 0]} center>
-        <ReliefGauge
-          rJointN={rJointN}
-          rBaseN={rBaseN}
-          reliefPct={reliefPct}
-          caneHand={caneHand}
-          fCaneN={fCaneN}
-        />
-      </Html>
-
       {/* Sombra de contacto principal */}
       <ContactShadows position={[0, -2.45, 0]} opacity={0.62} scale={3.8} blur={1.7} far={4} color="#241d12" />
     </group>
@@ -611,6 +618,7 @@ export default function CaneCanvas({
   bodyMassKg = 70,
 }: CaneCanvasProps) {
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
+  const stats = caneStats(caneHand, caneForceKg, bodyMassKg);
 
   const handleResetCamera = () => {
     if (controlsRef.current) {
@@ -673,6 +681,27 @@ export default function CaneCanvas({
         />
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
+
+      {/* Comparador de alivio articular anclado a la esquina (fuera del 3D) */}
+      <div
+        style={{
+          position: 'absolute',
+          right: '10px',
+          bottom: '10px',
+          zIndex: 9,
+          transform: 'scale(0.78)',
+          transformOrigin: 'bottom right',
+          pointerEvents: 'none',
+        }}
+      >
+        <ReliefGauge
+          rJointN={stats.rJointN}
+          rBaseN={stats.rBaseN}
+          reliefPct={stats.reliefPct}
+          caneHand={caneHand}
+          fCaneN={stats.fCaneN}
+        />
+      </div>
     </div>
   );
 }

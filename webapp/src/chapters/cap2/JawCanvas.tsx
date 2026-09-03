@@ -314,6 +314,15 @@ function MasseterMuscle3D({
 }
 
 // ── 4. Escena 3D del Complejo Mandíbula - ATM - Cráneo con Mallas Reales ──
+/** Palanca mandibular (determinista). */
+function jawStats(biteMode: JawCanvasProps['biteMode'], muscleForceN: number) {
+  const dMuscM = 0.050;
+  const dBiteM = biteMode === 'incisor' ? 0.075 : 0.035;
+  const fBiteN = (muscleForceN * dMuscM) / dBiteM;
+  const rAtmN = Math.abs(muscleForceN - fBiteN);
+  return { fBiteN, fBiteKgf: fBiteN / 9.81, rAtmN, rAtmKgf: rAtmN / 9.81 };
+}
+
 function Jaw3DScene({
   biteMode,
   muscleForceN,
@@ -672,17 +681,6 @@ function Jaw3DScene({
         sublabel={`(${rAtmKgf.toFixed(1)} kgf)`}
       />
 
-      {/* ── 6. HUD 3D: DINAMÓMETRO ANALÓGICO DUAL ── */}
-      <Html position={[2.05, 0.55, 0]} center>
-        <BiteDynamometerGauge
-          fBiteN={fBiteN}
-          fBiteKgf={fBiteKgf}
-          muscleForceN={muscleForceN}
-          biteMode={biteMode}
-          rAtmN={rAtmN}
-        />
-      </Html>
-
       {/* Sombra de contacto en el suelo */}
       <ContactShadows position={[0, -1.35, 0]} opacity={0.62} scale={4.0} blur={1.9} far={3.0} color="#241d12" />
     </group>
@@ -695,6 +693,7 @@ export default function JawCanvas({
   muscleForceN = 450,
 }: JawCanvasProps) {
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
+  const j = jawStats(biteMode, muscleForceN);
 
   const handleResetCamera = () => {
     if (controlsRef.current) {
@@ -757,6 +756,27 @@ export default function JawCanvas({
         />
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
+
+      {/* Dinamómetro anclado a la esquina (fuera del 3D) */}
+      <div
+        style={{
+          position: 'absolute',
+          right: '10px',
+          bottom: '10px',
+          zIndex: 9,
+          transform: 'scale(0.78)',
+          transformOrigin: 'bottom right',
+          pointerEvents: 'none',
+        }}
+      >
+        <BiteDynamometerGauge
+          fBiteN={j.fBiteN}
+          fBiteKgf={j.fBiteKgf}
+          muscleForceN={muscleForceN}
+          biteMode={biteMode}
+          rAtmN={j.rAtmN}
+        />
+      </div>
     </div>
   );
 }

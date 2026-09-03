@@ -219,6 +219,18 @@ function TractionDosimetryGauge({
 }
 
 // ── 3. Raquis Cervical C1-C7 con Apertura Discal Real-Time y Raíces Nerviosas Iluminadas ──
+/** Cifras de la tracción cervical (deterministas: sólo dependen de kg y ángulo). */
+function tractionStats(tractionKg: number, angleDeg: number) {
+  const g = 9.81;
+  const tN = tractionKg * g;
+  const angleRad = (angleDeg * Math.PI) / 180;
+  const fAxialN = tN * Math.cos(angleRad);
+  const fTransN = tN * Math.sin(angleRad);
+  const deltaH_mm = Math.min(2.5, 0.35 + (fAxialN / 150) * 1.85);
+  const isTherapeutic = tractionKg >= 5 && tractionKg <= 8;
+  return { tN, angleRad, fAxialN, fTransN, deltaH_mm, isTherapeutic };
+}
+
 function CervicalSpineRig3D({
   tractionKg,
   angleDeg,
@@ -228,13 +240,7 @@ function CervicalSpineRig3D({
 }) {
   const { nodes } = useGLTF('/assets/cap1/human_body.glb') as any;
 
-  const g = 9.81;
-  const tN = tractionKg * g;
-  const angleRad = (angleDeg * Math.PI) / 180;
-  const fAxialN = tN * Math.cos(angleRad);
-  const fTransN = tN * Math.sin(angleRad);
-  const deltaH_mm = Math.min(2.5, 0.35 + (fAxialN / 150) * 1.85);
-  const isTherapeutic = tractionKg >= 5 && tractionKg <= 8;
+  const { tN, angleRad, fAxialN, fTransN, deltaH_mm, isTherapeutic } = tractionStats(tractionKg, angleDeg);
 
   // LERP suave y vibración de cable
   const cableVibeRef = useRef<number>(0);
@@ -778,17 +784,6 @@ function CervicalSpineRig3D({
         );
       })()}
 
-      {/* ── I. DIAL DE DOSIMETRÍA FLOTANTE A LA DERECHA DE LA ESCENA ── */}
-      <Html position={[0.42, 0.45, 0.10]} center distanceFactor={2.5}>
-        <TractionDosimetryGauge
-          tN={tN}
-          fAxialN={fAxialN}
-          fTransN={fTransN}
-          deltaH_mm={deltaH_mm}
-          tractionKg={tractionKg}
-          isTherapeutic={isTherapeutic}
-        />
-      </Html>
     </group>
   );
 }
@@ -800,6 +795,7 @@ export default function JointTractionCanvas({
   tractionType = 'cervical',
 }: JointTractionCanvasProps) {
   const controlsRef = useRef<OrbitControlsImpl>(null);
+  const stats = tractionStats(tractionKg, angleDeg);
 
   return (
     <div
@@ -843,6 +839,28 @@ export default function JointTractionCanvas({
         />
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
+
+      {/* Dosímetro anclado a la esquina (fuera del 3D → nunca se recorta ni tapa la anatomía) */}
+      <div
+        style={{
+          position: 'absolute',
+          right: '10px',
+          bottom: '10px',
+          zIndex: 9,
+          transform: 'scale(0.74)',
+          transformOrigin: 'bottom right',
+          pointerEvents: 'none',
+        }}
+      >
+        <TractionDosimetryGauge
+          tN={stats.tN}
+          fAxialN={stats.fAxialN}
+          fTransN={stats.fTransN}
+          deltaH_mm={stats.deltaH_mm}
+          tractionKg={tractionKg}
+          isTherapeutic={stats.isTherapeutic}
+        />
+      </div>
     </div>
   );
 }

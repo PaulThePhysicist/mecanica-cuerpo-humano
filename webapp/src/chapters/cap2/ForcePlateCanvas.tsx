@@ -937,18 +937,16 @@ export default function ForcePlateCanvas({
           />
         </Suspense>
 
-        {/* ── Widgets HUD 3D Flotantes en el Espacio ── */}
-        {/* Mini Osciloscopio Curva M (Izquierda) */}
-        <Html position={[-1.75, 1.25, 0]} center>
-          <VerticalMCurveOscilloscope gaitPhase={gaitPhase} bodyMassKg={bodyMassKg} />
-        </Html>
-
-        {/* Dial de Presión Baropodométrica (Derecha) */}
-        <Html position={[1.75, 1.25, 0]} center>
-          <PeakPressureGauge gaitPhase={gaitPhase} />
-        </Html>
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
+
+      {/* ── Widgets HUD anclados a las esquinas (fuera del 3D → no se recortan) ── */}
+      <div style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 9, transform: 'scale(0.82)', transformOrigin: 'top left', pointerEvents: 'none' }}>
+        <VerticalMCurveOscilloscope gaitPhase={gaitPhase} bodyMassKg={bodyMassKg} />
+      </div>
+      <div style={{ position: 'absolute', right: '10px', bottom: '10px', zIndex: 9, transform: 'scale(0.8)', transformOrigin: 'bottom right', pointerEvents: 'none' }}>
+        <PeakPressureGauge gaitPhase={gaitPhase} />
+      </div>
 
       {/* ── Selector de Vistas de Cámara Flotante ── */}
       <div

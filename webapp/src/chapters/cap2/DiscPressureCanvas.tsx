@@ -270,6 +270,13 @@ function PressureManometerGauge({
 }
 
 // ── 3. Unidad Funcional Lumbo-Sacra 3D Real (L5 - S1) con Mallas Anatómicas ──
+/** Presión intradiscal objetivo (determinista; el 3D la anima hacia este valor). */
+function discStats(posture: DiscPressureCanvasProps['posture'], loadKg: number) {
+  const p = POSTURES[posture] || POSTURES.bent_back;
+  const totalPressureMPa = p.basePressureMPa + p.compMultiplier * 0.65 * (loadKg / 20);
+  return { totalPressureMPa, totalPressureBar: totalPressureMPa * 10, isCritical: totalPressureMPa >= 2.5 };
+}
+
 function SpinalFunctionalUnit3D({
   posture,
   loadKg,
@@ -370,8 +377,10 @@ function SpinalFunctionalUnit3D({
     }
   });
 
-  const totalPressureMPa = currentPressureRef.current;
-  const totalPressureBar = totalPressureMPa * 10;
+  // `useFrame` sólo muta el ref (no re-renderiza), así que las etiquetas React se
+  // quedaban congeladas en el valor inicial. Se usa el valor objetivo directo →
+  // números correctos y consistentes con el overlay de la esquina.
+  const totalPressureMPa = targetPressureMPa;
 
   // Mapa dinámico de color de estrés anular (Hoop Stress)
   const hoopStressColor = totalPressureMPa < 1.2 ? '#0d6e64' : (totalPressureMPa < 2.4 ? '#d97706' : '#b02318');
@@ -608,16 +617,6 @@ function SpinalFunctionalUnit3D({
         )}
       </group>
 
-      {/* ── 5. HUD 3D: MANÓMETRO ANALÓGICO DUAL (MPa & BAR) ── */}
-      <Html position={[2.0, 0.70, 0]} center>
-        <PressureManometerGauge
-          totalPressureMPa={totalPressureMPa}
-          totalPressureBar={totalPressureBar}
-          isCritical={isCritical}
-          loadKg={loadKg}
-        />
-      </Html>
-
       {/* Sombra de contacto suave en el suelo de estudio */}
       <ContactShadows position={[0, -1.35, 0]} opacity={0.62} scale={3.8} blur={1.9} far={3.0} color="#241d12" />
     </group>
@@ -630,6 +629,7 @@ export default function DiscPressureCanvas({
   loadKg = 15,
 }: DiscPressureCanvasProps) {
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
+  const d = discStats(posture, loadKg);
 
   const handleResetCamera = () => {
     if (controlsRef.current) {
@@ -692,6 +692,26 @@ export default function DiscPressureCanvas({
         />
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
+
+      {/* Manómetro anclado a la esquina (fuera del 3D) */}
+      <div
+        style={{
+          position: 'absolute',
+          right: '10px',
+          bottom: '10px',
+          zIndex: 9,
+          transform: 'scale(0.78)',
+          transformOrigin: 'bottom right',
+          pointerEvents: 'none',
+        }}
+      >
+        <PressureManometerGauge
+          totalPressureMPa={d.totalPressureMPa}
+          totalPressureBar={d.totalPressureBar}
+          isCritical={d.isCritical}
+          loadKg={loadKg}
+        />
+      </div>
     </div>
   );
 }
