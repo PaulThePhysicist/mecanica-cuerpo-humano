@@ -4,6 +4,8 @@ import { OrbitControls, ContactShadows, Html, useGLTF } from '@react-three/drei'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
+import { STUDIO_BG_DEEP } from '../cap1/three/materials';
+import { StudioLights } from '../cap1/three/StudioLights';
 
 interface JawCanvasProps {
   biteMode: 'incisor' | 'molar'; // Mordida incisiva (anterior) vs molar (posterior)
@@ -682,7 +684,7 @@ function Jaw3DScene({
       </Html>
 
       {/* Sombra de contacto en el suelo */}
-      <ContactShadows position={[0, -1.35, 0]} opacity={0.65} scale={4.0} blur={1.8} far={3.0} color="#2b2318" />
+      <ContactShadows position={[0, -1.35, 0]} opacity={0.62} scale={4.0} blur={1.9} far={3.0} color="#241d12" />
     </group>
   );
 }
@@ -732,12 +734,9 @@ export default function JawCanvas({
         camera={{ position: [2.5, 0.8, 2.8], fov: 46 }}
         dpr={[1, 2]}
         gl={{ antialias: true, alpha: true }}
+        style={{ background: STUDIO_BG_DEEP }}
       >
-        {/* Iluminación de Estudio Médico Cálido */}
-        <ambientLight intensity={0.95} />
-        <directionalLight position={[4, 6, 5]} intensity={1.5} castShadow />
-        <directionalLight position={[-4, 3, -3]} intensity={0.65} color="#dbeafe" />
-        <pointLight position={[0, -2, 2]} intensity={0.45} color="#fef3c7" />
+        <StudioLights keyIntensity={1.6} />
 
         <Suspense fallback={null}>
           <Jaw3DScene

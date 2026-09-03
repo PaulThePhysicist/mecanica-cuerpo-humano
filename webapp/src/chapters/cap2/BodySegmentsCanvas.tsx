@@ -4,6 +4,8 @@ import { OrbitControls, ContactShadows, Html, useGLTF } from '@react-three/drei'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
+import { STUDIO_BG_DEEP } from '../cap1/three/materials';
+import { StudioLights } from '../cap1/three/StudioLights';
 
 interface BodySegmentsCanvasProps {
   posture: 'standing' | 'arms_up' | 'bent_forward' | 'squat'; // Postura del cuerpo
@@ -814,7 +816,7 @@ export default function BodySegmentsCanvas({
         width: '100%',
         height: '100%',
         position: 'relative',
-        background: 'radial-gradient(ellipse at 46% 44%, #ffffff 0%, #faf6ee 55%, #eee4d2 100%)',
+        background: STUDIO_BG_DEEP,
         overflow: 'hidden',
       }}
     >
@@ -823,11 +825,7 @@ export default function BodySegmentsCanvas({
         gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
         dpr={[1, 2]}
       >
-        {/* Iluminación de estudio biomecánico */}
-        <ambientLight color="#fff8ee" intensity={0.95} />
-        <directionalLight position={[2.8, 4.0, 3.0]} color="#fffdf8" intensity={1.45} castShadow />
-        <directionalLight position={[-2.8, 2.5, -2.0]} color="#cde4f7" intensity={0.7} />
-        <directionalLight position={[0, -2.0, 1.0]} color="#ede2ca" intensity={0.35} />
+        <StudioLights keyIntensity={1.6} />
 
         <Suspense fallback={null}>
           <DempsterSkeletonRig3D
@@ -840,9 +838,9 @@ export default function BodySegmentsCanvas({
         {/* Sombra de contacto */}
         <ContactShadows
           position={[0, -0.78, 0]}
-          opacity={0.50}
+          opacity={0.58}
           scale={3.2}
-          blur={1.8}
+          blur={2.0}
           far={1.6}
           color="#232c36"
         />

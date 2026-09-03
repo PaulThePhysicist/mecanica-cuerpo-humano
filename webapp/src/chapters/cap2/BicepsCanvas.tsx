@@ -5,6 +5,8 @@ import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import Cap2ZoomHandler from './Cap2ZoomHandler';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
+import { STUDIO_BG_DEEP } from '../cap1/three/materials';
+import { StudioLights } from '../cap1/three/StudioLights';
 
 interface BicepsCanvasProps {
   handLoadKg: number;    // Carga en mano (0 a 25 kg)
@@ -339,15 +341,12 @@ export default function BicepsCanvas({
           width: '100%',
           height: '100%',
           display: 'block',
-          background: 'radial-gradient(circle at 50% 40%, #ffffff 0%, #faf6ee 55%, #eee4d2 100%)',
+          background: STUDIO_BG_DEEP,
         }}
       >
-        <ambientLight intensity={0.9} color="#fffcf5" />
-        <directionalLight position={[8, 12, 6]} intensity={1.35} color="#fff8eb" />
-        <directionalLight position={[-8, 6, -6]} intensity={0.65} color="#e8f4f8" />
-        <directionalLight position={[0, -4, 4]} intensity={0.25} color="#faf0e6" />
+        <StudioLights keyIntensity={1.6} />
 
-        <gridHelper args={[6, 12, '#c6bca6', '#ded6c5']} position={[0, -1.2, 0]} />
+        <gridHelper args={[6, 12, '#bdb199', '#d3c9b4']} position={[0, -1.2, 0]} />
 
         <Suspense fallback={<BicepsLoading />}>
           <RealArmBicepsScene
@@ -358,11 +357,11 @@ export default function BicepsCanvas({
 
           <ContactShadows
             position={[0, -1.19, 0]}
-            opacity={0.42}
+            opacity={0.5}
             scale={4.5}
-            blur={2.0}
+            blur={2.2}
             far={3.5}
-            color="#232c36"
+            color="#241d12"
           />
         </Suspense>
 

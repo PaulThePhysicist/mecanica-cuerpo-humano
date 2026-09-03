@@ -5,6 +5,8 @@ import * as THREE from 'three';
 import Cap2ZoomHandler from './Cap2ZoomHandler';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
+import { STUDIO_BG_DEEP } from '../cap1/three/materials';
+import { StudioLights } from '../cap1/three/StudioLights';
 
 type LeverClass = 1 | 2 | 3;
 
@@ -188,11 +190,10 @@ export default function LeverAnatomyCanvas({ leverClass }: { leverClass: LeverCl
         }}
         dpr={[1, 2]}
         gl={{ antialias: true, alpha: true }}
+        style={{ background: STUDIO_BG_DEEP }}
       >
-        <ambientLight intensity={0.95} color="#fff9ef" />
-        <directionalLight position={[3, 5, 4]} intensity={1.35} color="#fffdf8" />
-        <directionalLight position={[-3, 2, -2]} intensity={0.55} color="#dbeafe" />
-        <gridHelper args={[2.8, 14, '#c8bea9', '#e1d9ca']} position={[0, -0.48, 0]} />
+        <StudioLights keyIntensity={1.5} />
+        <gridHelper args={[2.8, 14, '#bdb199', '#d3c9b4']} position={[0, -0.48, 0]} />
         <Suspense fallback={<LeverLoading />}>
           <AnatomyRegion leverClass={leverClass} />
         </Suspense>

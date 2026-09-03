@@ -884,13 +884,15 @@ export default function ForcePlateCanvas({
           width: '100%',
           height: '100%',
           display: 'block',
-          background: 'radial-gradient(circle at 50% 40%, #ffffff 0%, #faf6ee 55%, #eee4d2 100%)',
+          background: 'radial-gradient(circle at 50% 38%, #ece3ce 0%, #ddd1b6 52%, #c6b697 100%)',
         }}
       >
         <CameraRig viewPreset={viewPreset} controlsRef={controlsRef} />
 
         {/* ── Iluminación de Estudio Anatómico ── */}
-        <ambientLight intensity={0.85} />
+        <ambientLight intensity={0.55} />
+        {/* Luz de contra que perfila la silueta contra el fondo */}
+        <directionalLight position={[-2, 3.5, -6]} intensity={0.9} color="#ffffff" />
         <directionalLight
           position={[4, 8, 5]}
           intensity={1.3}
@@ -927,10 +929,11 @@ export default function ForcePlateCanvas({
           {/* Sombra de contacto suave debajo de la plataforma */}
           <ContactShadows
             position={[0, -0.155, 0]}
-            opacity={0.45}
+            opacity={0.52}
             scale={4.8}
-            blur={1.6}
+            blur={1.8}
             far={2.2}
+            color="#241d12"
           />
         </Suspense>
 

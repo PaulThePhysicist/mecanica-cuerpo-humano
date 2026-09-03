@@ -875,13 +875,15 @@ export default function BiomechSummaryCanvas({
           width: '100%',
           height: '100%',
           display: 'block',
-          background: 'radial-gradient(circle at 45% 45%, #ffffff 0%, #faf6ee 55%, #eee4d2 100%)',
+          background: 'radial-gradient(circle at 45% 42%, #ece3ce 0%, #ddd1b6 52%, #c6b697 100%)',
         }}
       >
         <CameraRig selectedNode={selectedNode} isOverview={isOverview} controlsRef={controlsRef} />
 
         {/* ── Iluminación de Estudio Anatómico ── */}
-        <ambientLight intensity={0.90} />
+        <ambientLight intensity={0.55} />
+        {/* Luz de contra que perfila la silueta contra el fondo */}
+        <directionalLight position={[-2, 4, -7]} intensity={0.9} color="#ffffff" />
         <directionalLight
           position={[5, 10, 5]}
           intensity={1.3}
@@ -907,10 +909,11 @@ export default function BiomechSummaryCanvas({
           {/* Sombra de contacto del piso */}
           <ContactShadows
             position={[0, -2.12, 0]}
-            opacity={0.5}
+            opacity={0.58}
             scale={5.5}
-            blur={1.8}
+            blur={2.0}
             far={3.0}
+            color="#241d12"
           />
         </Suspense>
 

@@ -4,6 +4,8 @@ import { OrbitControls, ContactShadows, Html, useGLTF } from '@react-three/drei'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
+import { STUDIO_BG_DEEP } from '../cap1/three/materials';
+import { StudioLights } from '../cap1/three/StudioLights';
 
 interface JointTractionCanvasProps {
   tractionKg: number;    // Masa de tracción en kg (1 a 15 kg)
@@ -806,7 +808,7 @@ export default function JointTractionCanvas({
         width: '100%',
         height: '100%',
         position: 'relative',
-        background: 'radial-gradient(ellipse at 46% 44%, #ffffff 0%, #faf6ee 55%, #eee4d2 100%)',
+        background: STUDIO_BG_DEEP,
         overflow: 'hidden',
       }}
     >
@@ -815,11 +817,7 @@ export default function JointTractionCanvas({
         gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
         dpr={[1, 2]}
       >
-        {/* Iluminación de estudio cálido de alta fidelidad */}
-        <ambientLight color="#fff8ee" intensity={0.9} />
-        <directionalLight position={[2.5, 3.5, 2.5]} color="#fffdf8" intensity={1.4} castShadow />
-        <directionalLight position={[-2.5, 2.0, -1.5]} color="#cde4f7" intensity={0.65} />
-        <directionalLight position={[0, -2.0, 1.0]} color="#ede2ca" intensity={0.35} />
+        <StudioLights keyIntensity={1.55} />
 
         <Suspense fallback={null}>
           <CervicalSpineRig3D tractionKg={tractionKg} angleDeg={angleDeg} />
@@ -828,11 +826,11 @@ export default function JointTractionCanvas({
         {/* Sombra de contacto suave en el suelo */}
         <ContactShadows
           position={[0, -0.68, 0]}
-          opacity={0.45}
+          opacity={0.55}
           scale={2.4}
-          blur={1.8}
+          blur={2.0}
           far={1.5}
-          color="#232c36"
+          color="#241d12"
         />
 
         <OrbitControls

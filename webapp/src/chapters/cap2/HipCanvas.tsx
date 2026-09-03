@@ -4,6 +4,8 @@ import { OrbitControls, ContactShadows, Html, Line, useGLTF } from '@react-three
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
+import { STUDIO_BG_DEEP } from '../cap1/three/materials';
+import { StudioLights } from '../cap1/three/StudioLights';
 
 interface HipCanvasProps {
   bodyMassKg: number;        // Masa total en kg (40 a 120, default 70)
@@ -633,7 +635,7 @@ function HipAnatomy3D({
       )}
 
       {/* Sombra de contacto del pie derecho en el suelo */}
-      <ContactShadows position={[0, -2.45, 0]} opacity={0.7} scale={3.6} blur={1.4} far={4} color="#2b2318" />
+      <ContactShadows position={[0, -2.45, 0]} opacity={0.62} scale={3.6} blur={1.6} far={4} color="#241d12" />
     </group>
   );
 }
@@ -700,12 +702,9 @@ export default function HipCanvas({
         camera={{ position: [0.5, 0.15, 4.7], fov: 40 }}
         dpr={[1, 2]}
         gl={{ antialias: true, alpha: true }}
+        style={{ background: STUDIO_BG_DEEP }}
       >
-        {/* Iluminación de Estudio Médico Cálido */}
-        <ambientLight intensity={0.95} />
-        <directionalLight position={[4, 6, 5]} intensity={1.4} castShadow />
-        <directionalLight position={[-4, 3, -3]} intensity={0.6} color="#dbeafe" />
-        <pointLight position={[0, -2, 2]} intensity={0.4} color="#fef3c7" />
+        <StudioLights keyIntensity={1.55} />
 
         <Suspense fallback={null}>
           <HipAnatomy3D

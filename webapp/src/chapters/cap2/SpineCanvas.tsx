@@ -4,6 +4,8 @@ import { OrbitControls, ContactShadows, Html, Line, useGLTF } from '@react-three
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
+import { STUDIO_BG_DEEP } from '../cap1/three/materials';
+import { StudioLights } from '../cap1/three/StudioLights';
 
 interface SpineCanvasProps {
   trunkAngleDeg: number; // Ángulo de inclinación del tronco (0 a 90 grados, 0 = erguido, 90 = horizontal)
@@ -564,7 +566,7 @@ function LumbarSpine3D({
       </Html>
 
       {/* Sombra de contacto */}
-      <ContactShadows position={[0, -2.45, 0]} opacity={0.65} scale={4} blur={1.5} far={4} color="#2b2318" />
+      <ContactShadows position={[0, -2.45, 0]} opacity={0.62} scale={4} blur={1.7} far={4} color="#241d12" />
     </group>
   );
 }
@@ -614,12 +616,9 @@ export default function SpineCanvas({
         camera={{ position: [2.8, 0.4, 3.4], fov: 42 }}
         dpr={[1, 2]}
         gl={{ antialias: true, alpha: true }}
+        style={{ background: STUDIO_BG_DEEP }}
       >
-        {/* Iluminación de Estudio Médico Cálido */}
-        <ambientLight intensity={0.95} />
-        <directionalLight position={[5, 7, 5]} intensity={1.4} castShadow />
-        <directionalLight position={[-4, 3, -3]} intensity={0.6} color="#dbeafe" />
-        <pointLight position={[0, -2, 2]} intensity={0.4} color="#fef3c7" />
+        <StudioLights keyIntensity={1.55} />
 
         <Suspense fallback={null}>
           <LumbarSpine3D

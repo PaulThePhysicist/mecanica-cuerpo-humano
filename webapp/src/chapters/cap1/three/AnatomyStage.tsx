@@ -4,6 +4,7 @@ import { ContactShadows, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { AccessibleOrbitControls, SceneControlPad } from '../AccessibleOrbitControls';
 import { STUDIO_BG } from './materials';
+import { StudioLights } from './StudioLights';
 import { FitCamera } from './FitCamera';
 
 // ── Boundary + detección de WebGL (impl. de referencia: BodyScene.tsx) ──
@@ -220,11 +221,8 @@ export function AnatomyStage({
           <CameraRig position={camera.position} target={target} resetSignal={resetSignal} fit={fit} />
           <ZoomHandler zoomSignal={zoomSignal} />
 
-          {/* Rig de estudio médico de 3 puntos */}
-          <ambientLight intensity={0.85} color="#fffcf5" />
-          <directionalLight position={[10, 15, 8]} intensity={1.33} color="#fff8eb" />
-          <directionalLight position={[-10, 8, -6]} intensity={0.62} color="#e8f4f8" />
-          <directionalLight position={[0, -5, 5]} intensity={0.22} color="#faf0e6" />
+          {/* Rig de estudio compartido (ambiente bajo + principal + contra). */}
+          <StudioLights keyIntensity={1.55} />
 
           {grid && <gridHelper args={gridArgs} position={[0, gridY, 0]} />}
 

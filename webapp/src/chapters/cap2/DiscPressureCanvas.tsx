@@ -4,6 +4,8 @@ import { OrbitControls, ContactShadows, Html, useGLTF } from '@react-three/drei'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
+import { STUDIO_BG_DEEP } from '../cap1/three/materials';
+import { StudioLights } from '../cap1/three/StudioLights';
 
 interface DiscPressureCanvasProps {
   posture: 'upright' | 'seated' | 'knees' | 'bent_back'; // 4 posturas ergonómicas
@@ -617,7 +619,7 @@ function SpinalFunctionalUnit3D({
       </Html>
 
       {/* Sombra de contacto suave en el suelo de estudio */}
-      <ContactShadows position={[0, -1.35, 0]} opacity={0.65} scale={3.8} blur={1.8} far={3.0} color="#2b2318" />
+      <ContactShadows position={[0, -1.35, 0]} opacity={0.62} scale={3.8} blur={1.9} far={3.0} color="#241d12" />
     </group>
   );
 }
@@ -667,12 +669,9 @@ export default function DiscPressureCanvas({
         camera={{ position: [3.05, 1.5, 3.75], fov: 45 }}
         dpr={[1, 2]}
         gl={{ antialias: true, alpha: true }}
+        style={{ background: STUDIO_BG_DEEP }}
       >
-        {/* Iluminación de Estudio Médico Cálido */}
-        <ambientLight intensity={0.95} />
-        <directionalLight position={[4, 6, 5]} intensity={1.5} castShadow />
-        <directionalLight position={[-4, 3, -3]} intensity={0.65} color="#dbeafe" />
-        <pointLight position={[0, -2, 2]} intensity={0.45} color="#fef3c7" />
+        <StudioLights keyIntensity={1.6} />
 
         <Suspense fallback={null}>
           <SpinalFunctionalUnit3D

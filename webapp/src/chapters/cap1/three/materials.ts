@@ -52,5 +52,12 @@ export function makeMuscleActive(emissiveIntensity: number): THREE.MeshStandardM
   });
 }
 
-/** Fondo de estudio anatómico cálido (para el `style.background` del `<Canvas>`). */
-export const STUDIO_BG = 'radial-gradient(circle at 50% 40%, #ffffff 0%, #faf6ee 55%, #eee4d2 100%)';
+/**
+ * Fondo de estudio anatómico. Viñeta cálida: centro apagado (no blanco puro) y
+ * bordes claramente más oscuros, para que la anatomía marfil se despegue del
+ * fondo en vez de fundirse con él.
+ */
+export const STUDIO_BG = 'radial-gradient(circle at 50% 38%, #ece3ce 0%, #ddd1b6 52%, #c6b697 100%)';
+
+/** Alias del fondo profundo (mismo valor); nombre explícito para llamadas nuevas. */
+export const STUDIO_BG_DEEP = STUDIO_BG;
