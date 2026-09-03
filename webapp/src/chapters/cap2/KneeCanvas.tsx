@@ -121,127 +121,123 @@ function ForceArrow({
   );
 }
 
+// Landmarks en el espacio canónico del esqueleto (human_body.glb).
+const KNEE_C = new THREE.Vector3(-0.045, -0.250, -0.010);   // centro tibiofemoral
+const LEG_COM = new THREE.Vector3(-0.043, -0.352, -0.017);  // CdM de la pierna (mitad de la tibia)
+const ANKLE_C = new THREE.Vector3(-0.041, -0.466, -0.021);  // tobillo (carga W1)
+const TUBEROSITY = new THREE.Vector3(-0.045, -0.286, 0.012); // inserción del tendón rotuliano
+const DEG = Math.PI / 180;
+
+// Rota un punto alrededor de KNEE_C en el plano sagital (eje X).
+function swing(p: THREE.Vector3, alpha: number): THREE.Vector3 {
+  const d = p.clone().sub(KNEE_C);
+  const c = Math.cos(alpha), s = Math.sin(alpha);
+  return new THREE.Vector3(
+    KNEE_C.x + d.x,
+    KNEE_C.y + d.y * c - d.z * s,
+    KNEE_C.z + d.y * s + d.z * c,
+  );
+}
+
 function KneeAnatomy({ betaDeg, ankleLoadN, patella, showComponents }: KneeCanvasProps) {
   const bone = useAnatomyNodes('body');
   const muscle = useAnatomyNodes('muscles_hip_leg');
 
-  // Centro articular ≈ centro del bounding box de la rótula derecha.
-  const { kneeC, tuberosity } = useMemo(() => {
-    const g = bone.patella_R?.geometry as THREE.BufferGeometry | undefined;
-    let c = new THREE.Vector3(-0.05, -0.47, 0.02);
-    if (g) {
-      g.computeBoundingBox();
-      c = g.boundingBox!.getCenter(new THREE.Vector3());
-    }
-    // Tuberosidad tibial: por debajo y ligeramente anterior a la rótula.
-    const tub = c.clone().add(new THREE.Vector3(0.004, -0.055, 0.006));
-    return { kneeC: c, tuberosity: tub };
-  }, [bone]);
-
   // ── Biomecánica (2.34–2.37) ──
-  const beta = (betaDeg * Math.PI) / 180;
+  const beta = betaDeg * DEG;
   const W1 = ankleLoadN;
   const a = patella ? A_LEVER : A_LEVER_NOPAT;
   const torqueExt = (B_ARM * W1 + C_ARM * W0) * Math.cos(beta); // torque a vencer
   const M = torqueExt / (a * Math.sin(THETA));
-  const rx = M * Math.cos(THETA + beta);
-  const ry = M * Math.sin(THETA + beta) - W0 - W1;
-  const R = Math.hypot(rx, ry);
+  const Mnopat = torqueExt / (A_LEVER_NOPAT * Math.sin(THETA));
   // Compresión femoropatelar: sólo con rótula, crece al flexionar.
-  const fp = patella ? 2 * M * Math.sin((Math.PI / 2 - THETA) - beta * 0.5) : 0;
+  const fp = patella ? 2 * M * Math.sin(Math.PI / 2 - THETA - beta * 0.5) : 0;
 
   const emg = Math.min(1.4, 0.3 + M / 1600);
   const quadMat = useMemo(() => makeMuscleActive(emg), [emg]);
 
-  const S = 0.00006; // N → unidades de mundo (metros del modelo)
+  const S = 0.00005; // N → unidades de mundo (metros del modelo)
+  // La pierna canónica cuelga vertical (β = 90°); al bajar β la extendemos.
+  const alpha = -(90 - betaDeg) * DEG;
 
-  // Dirección del tendón rotuliano (rótula → tuberosidad), en el plano sagital.
-  const tendonDir = useMemo(() => {
-    const d = tuberosity.clone().sub(kneeC).normalize();
-    return d;
-  }, [kneeC, tuberosity]);
+  // Puntos de aplicación tras extender la pierna.
+  const comP = swing(LEG_COM, alpha);
+  const ankP = swing(ANKLE_C, alpha);
+  const tubP = swing(TUBEROSITY, alpha);
+  // La rótula desvía la línea del tendón hacia anterior (+Z) = más brazo de momento.
+  const patApex = KNEE_C.clone().add(new THREE.Vector3(0, 0.010, patella ? 0.028 : 0.006));
 
-  // Vector M: a lo largo del tendón, hacia proximal (tira de la tibia hacia el fémur).
-  const mVec: [number, number, number] = [-tendonDir.x * M * S, -tendonDir.y * M * S, 0];
-  // Pesos: verticales hacia abajo, aplicados en sus brazos sobre la tibia.
-  const legComW: [number, number, number] = [kneeC.x - C_ARM * Math.cos(beta), kneeC.y - C_ARM * Math.sin(beta), kneeC.z];
-  const ankleW: [number, number, number] = [kneeC.x - B_ARM * Math.cos(beta), kneeC.y - B_ARM * Math.sin(beta), kneeC.z];
+  // ── Vectores ──
   const w0Vec: [number, number, number] = [0, -W0 * S, 0];
   const w1Vec: [number, number, number] = [0, -W1 * S, 0];
-  const rVec: [number, number, number] = [-rx * S, -ry * S, 0];
+  // M tira por el tendón desde la tuberosidad hacia la rótula / cuádriceps.
+  const mDir = patApex.clone().sub(tubP).normalize();
+  const mVec: [number, number, number] = [mDir.x * M * S, mDir.y * M * S, mDir.z * M * S];
+  // R cierra ΣF = 0 en el centro articular:  R = −(M + W0 + W1).
+  const rxN = -(mDir.x * M);
+  const ryN = -(mDir.y * M - W0 - W1);
+  const rzN = -(mDir.z * M);
+  const R = Math.hypot(rxN, ryN, rzN);
+  const rVec: [number, number, number] = [rxN * S, ryN * S, rzN * S];
 
-  // Líneas de acción / brazos de momento del tendón.
-  const patApex = kneeC.clone().add(new THREE.Vector3(0, 0.012, patella ? 0.03 : 0.006));
-  const tendonWithPat: [number, number, number][] = [
-    [tuberosity.x, tuberosity.y, tuberosity.z],
-    [patApex.x, patApex.y, patApex.z],
-    [kneeC.x - 0.01, kneeC.y + 0.11, kneeC.z + (patella ? 0.018 : 0)],
+  const tendonPath: [number, number, number][] = [
+    tubP.toArray(),
+    patApex.toArray(),
+    [KNEE_C.x, KNEE_C.y + 0.14, KNEE_C.z + (patella ? 0.016 : 0)],
   ];
 
   return (
-    <group scale={5.2} position={[-0.35, 0.1, 0]}>
-    <group position={[-kneeC.x, -kneeC.y, -kneeC.z]}>
-      {/* ── Huesos ── */}
+    <group scale={3.2} position={[-0.24, -0.02, -0.14]}>
+    <group position={[-KNEE_C.x, -KNEE_C.y, -KNEE_C.z]}>
+      {/* ── Muslo fijo: fémur + cuádriceps ── */}
       {bone.femur_R && <mesh geometry={bone.femur_R.geometry} material={materials.bone} />}
-      {bone.tibia_R && <mesh geometry={bone.tibia_R.geometry} material={materials.bone} />}
-      {bone.fibula_R && <mesh geometry={bone.fibula_R.geometry} material={materials.bone} />}
-      {patella && bone.patella_R && (
-        <mesh geometry={bone.patella_R.geometry} material={materials.boneHighlight} />
-      )}
-
-      {/* ── Cuádriceps (recto femoral) ── */}
       {muscle.rectus_femoris_R && (
         <mesh geometry={muscle.rectus_femoris_R.geometry} material={quadMat} />
       )}
-      {/* Isquiotibial antagonista, tono basal */}
       {muscle.biceps_femoris_long_head_R && (
         <mesh geometry={muscle.biceps_femoris_long_head_R.geometry} material={materials.muscleIdle} />
       )}
 
+      {/* ── Pierna móvil: tibia + peroné + rótula giran sobre el centro articular ── */}
+      <group rotation={[alpha, 0, 0]} position={KNEE_C.toArray()}>
+        <group position={[-KNEE_C.x, -KNEE_C.y, -KNEE_C.z]}>
+          {bone.tibia_R && <mesh geometry={bone.tibia_R.geometry} material={materials.bone} />}
+          {bone.fibula_R && <mesh geometry={bone.fibula_R.geometry} material={materials.bone} />}
+          {patella && bone.patella_R && (
+            <mesh geometry={bone.patella_R.geometry} material={materials.boneHighlight} />
+          )}
+        </group>
+      </group>
+
       {/* Cartílago del centro articular */}
-      <mesh position={kneeC.toArray()}>
-        <sphereGeometry args={[0.014, 20, 20]} />
+      <mesh position={KNEE_C.toArray()}>
+        <sphereGeometry args={[0.013, 20, 20]} />
         <primitive object={materials.cartilage} attach="material" />
       </mesh>
 
       {/* ── Tendón rotuliano / línea de acción ── */}
-      <Line points={tendonWithPat} color={TENDON_COLOR} lineWidth={4} />
+      <Line points={tendonPath} color={TENDON_COLOR} lineWidth={patella ? 5 : 3} />
       {!patella && (
-        <Html position={[kneeC.x - 0.14, kneeC.y + 0.12, kneeC.z]} center zIndexRange={[80, 0]}>
-          <span style={{ background: 'rgba(255,255,255,0.85)', color: RED, fontSize: '0.52rem', fontWeight: 700, fontFamily: 'Karla, sans-serif', padding: '1px 4px', borderRadius: 3, whiteSpace: 'nowrap' }}>
-            sin rótula · brazo {(A_LEVER_NOPAT * 100).toFixed(1)} cm
-          </span>
-        </Html>
+        <Line points={[tubP.toArray(), [KNEE_C.x, KNEE_C.y + 0.14, KNEE_C.z]]} color={RED} lineWidth={2} dashed dashScale={40} dashSize={0.012} gapSize={0.01} />
       )}
 
-      {/* Brazo de momento perpendicular (rodilla → línea del tendón) */}
-      <Line
-        points={[[kneeC.x, kneeC.y, kneeC.z], [kneeC.x, kneeC.y, kneeC.z + (patella ? 0.045 : 0.02)]]}
-        color={patella ? TEAL : RED}
-        lineWidth={2}
-        dashed
-        dashScale={40}
-        dashSize={0.01}
-        gapSize={0.008}
-      />
-
       {/* ── Vectores de fuerza ── */}
-      <ForceArrow origin={[tuberosity.x, tuberosity.y, tuberosity.z]} vector={mVec} color={TEAL} label={`M = ${M.toFixed(0)} N`} sublabel={patella ? 'cuádriceps · con rótula' : '⚠ cuádriceps · sin rótula'} />
-      <ForceArrow origin={legComW} vector={w0Vec} color={AMBER} label={`W₀ = ${W0} N`} sublabel="peso de la pierna" />
-      <ForceArrow origin={ankleW} vector={w1Vec} color={AMBER} label={`W₁ = ${W1} N`} sublabel="carga en el tobillo" />
-      <ForceArrow origin={kneeC.toArray()} vector={rVec} color={RED} label={`R = ${R.toFixed(0)} N`} sublabel="reacción tibiofemoral" />
+      <ForceArrow origin={tubP.toArray()} vector={mVec} color={TEAL} label={`M = ${M.toFixed(0)} N`} sublabel={patella ? 'cuádriceps' : `⚠ sin rótula (con: ${Mnopat.toFixed(0)} N)`} />
+      <ForceArrow origin={comP.toArray()} vector={w0Vec} color={AMBER} label={`W₀ = ${W0} N`} sublabel="peso de la pierna" />
+      <ForceArrow origin={ankP.toArray()} vector={w1Vec} color={AMBER} label={`W₁ = ${W1} N`} sublabel="carga en el tobillo" />
+      <ForceArrow origin={KNEE_C.toArray()} vector={rVec} color={RED} label={`R = ${R.toFixed(0)} N`} sublabel="reacción tibiofemoral" />
 
       {showComponents && (
         <>
-          <ForceArrow origin={kneeC.toArray()} vector={[-rx * S, 0, 0]} color={BLUE} label={`Rx = ${rx.toFixed(0)} N`} dashed />
-          <ForceArrow origin={[kneeC.x - rx * S, kneeC.y, kneeC.z]} vector={[0, -ry * S, 0]} color={TEAL} label={`Ry = ${ry.toFixed(0)} N`} dashed />
+          <ForceArrow origin={KNEE_C.toArray()} vector={[0, 0, rzN * S]} color={BLUE} label={`R∥ = ${Math.abs(rzN).toFixed(0)} N`} dashed />
+          <ForceArrow origin={[KNEE_C.x, KNEE_C.y, KNEE_C.z + rzN * S]} vector={[0, ryN * S, 0]} color={TEAL} label={`R⊥ = ${Math.abs(ryN).toFixed(0)} N`} dashed />
         </>
       )}
 
-      {patella && fp > 0 && (
+      {patella && fp > 8 && (
         <ForceArrow
-          origin={[patApex.x, patApex.y, patApex.z]}
-          vector={[0, -0.02, fp * S]}
+          origin={patApex.toArray()}
+          vector={[0, -0.015, -fp * S]}
           color={VIOLET}
           label={`Fp = ${fp.toFixed(0)} N`}
           sublabel="compresión femoropatelar"
@@ -249,9 +245,8 @@ function KneeAnatomy({ betaDeg, ankleLoadN, patella, showComponents }: KneeCanva
         />
       )}
 
-      {/* Guías de brazo de palanca a los pesos */}
-      <Line points={[[kneeC.x, kneeC.y, kneeC.z], legComW]} color={AMBER} lineWidth={1} dashed dashScale={30} dashSize={0.012} gapSize={0.01} transparent opacity={0.5} />
-      <Line points={[[kneeC.x, kneeC.y, kneeC.z], ankleW]} color={AMBER} lineWidth={1} dashed dashScale={30} dashSize={0.012} gapSize={0.01} transparent opacity={0.4} />
+      {/* Guía del eje de la pierna (rodilla → tobillo) */}
+      <Line points={[[KNEE_C.x, KNEE_C.y, KNEE_C.z], ankP.toArray()]} color={AMBER} lineWidth={1} dashed dashScale={30} dashSize={0.012} gapSize={0.01} transparent opacity={0.4} />
     </group>
     </group>
   );
@@ -266,8 +261,8 @@ export default function KneeCanvas({
   return (
     <AnatomyStage
       className="cap2-webgl-canvas"
-      camera={{ position: [0.35, 0.25, 3.6], fov: 40 }}
-      target={[0, 0, 0]}
+      camera={{ position: [-3.1, 0.1, 1.15], fov: 36 }}
+      target={[0.02, -0.05, 0.05]}
       minDistance={1.6}
       maxDistance={7}
       grid={false}

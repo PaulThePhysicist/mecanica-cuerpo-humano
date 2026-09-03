@@ -119,111 +119,130 @@ const FOOT_NODES = [
   'metatarsal1_R', 'metatarsal2_R', 'metatarsal3_R', 'metatarsal4_R', 'metatarsal5_R',
 ];
 
+// Landmarks en el espacio canónico del esqueleto (human_body.glb).
+const ANKLE_C = new THREE.Vector3(-0.041, -0.466, -0.021);   // mortaja tibioastragalina
+const FULCRUM = new THREE.Vector3(-0.048, -0.486, 0.030);    // cabezas de los metatarsianos
+const ACH_HEEL = new THREE.Vector3(-0.015, -0.474, -0.048);  // inserción del Aquiles (calcáneo)
+const CALF_TOP = new THREE.Vector3(-0.048, -0.320, -0.030);  // vientre del tríceps sural
+const REST_BETA = 12; // ángulo del pie con el suelo en pose canónica
+const DEG = Math.PI / 180;
+
+// Rota un punto alrededor del fulcro en el plano sagital (eje X).
+function pivot(p: THREE.Vector3, g: number): THREE.Vector3 {
+  const d = p.clone().sub(FULCRUM);
+  const c = Math.cos(g), s = Math.sin(g);
+  return new THREE.Vector3(
+    FULCRUM.x + d.x,
+    FULCRUM.y + d.y * c - d.z * s,
+    FULCRUM.z + d.y * s + d.z * c,
+  );
+}
+
 function AnkleAnatomy({ betaDeg, bodyWeightN, showComponents }: AnkleCanvasProps) {
   const bone = useAnatomyNodes('body');
   const muscle = useAnatomyNodes('muscles_hip_leg');
 
-  const { ankleC, heel, forefoot } = useMemo(() => {
-    const centerOf = (name: string, fallback: THREE.Vector3) => {
-      const g = bone[name]?.geometry as THREE.BufferGeometry | undefined;
-      if (!g) return fallback;
-      g.computeBoundingBox();
-      return g.boundingBox!.getCenter(new THREE.Vector3());
-    };
-    const talus = centerOf('talus_R', new THREE.Vector3(-0.05, -0.92, 0.01));
-    const calc = centerOf('calcaneus_R', new THREE.Vector3(-0.05, -0.95, -0.03));
-    const mt1 = centerOf('metatarsal1_R', new THREE.Vector3(-0.05, -0.97, 0.09));
-    return { ankleC: talus, heel: calc, forefoot: mt1 };
-  }, [bone]);
-
   // ── Biomecánica de puntillas (2.39–2.40) ──
-  // Herman define θ y β de modo que el denominador cos(θ+β) puede salir
-  // negativo para β grandes; lo que importa son las MAGNITUDES de M y R.
-  const beta = (betaDeg * Math.PI) / 180;
+  // Herman define θ y β de modo que cos(θ+β) puede salir negativo para β
+  // grandes; lo que importa son las MAGNITUDES.
+  const beta = betaDeg * DEG;
   const Wb = bodyWeightN;
-  const denom = Math.max(0.12, Math.abs(Math.cos(THETA + beta)));
+  // El modelo de Herman tiene una singularidad en θ+β = 90° (β ≈ 45°); el
+  // slide restringe β a 55–75°, bien lejos de ella. Clamp de seguridad.
+  const denom = Math.max(0.16, Math.abs(Math.cos(THETA + beta)));
   const M = (Wb * Math.abs(Math.cos(beta))) / denom;
 
   const emg = Math.min(1.4, 0.25 + M / (Wb * 3));
   const surMat = useMemo(() => makeMuscleActive(emg), [emg]);
 
-  const S = 0.00007; // N → unidades de mundo
+  const S = 0.00006; // N → unidades de mundo
 
-  // Tendón de Aquiles: tira del calcáneo hacia arriba-atrás a θ de la horizontal.
-  const achDir = new THREE.Vector3(-Math.cos(THETA), Math.sin(THETA), 0).normalize();
-  // Normal del suelo bajo el antepié (fulcro), hacia arriba = Wb.
+  // Al ponerse de puntillas, el pie (y con él la pierna) gira sobre el fulcro
+  // metatarsiano y el talón se eleva.
+  const gamma = (betaDeg - REST_BETA) * DEG;
+  const ankP = pivot(ANKLE_C, gamma);
+  const heelP = pivot(ACH_HEEL, gamma);
+  const calfP = pivot(CALF_TOP, gamma);
+
+  // Aquiles: del calcáneo hacia el vientre del tríceps sural.
+  const achDir = calfP.clone().sub(heelP).normalize();
+  const mVec: [number, number, number] = [achDir.x * M * S, achDir.y * M * S, achDir.z * M * S];
+  // Normal del suelo bajo el fulcro, vertical hacia arriba = Wb (fija).
   const nVec: [number, number, number] = [0, Wb * S, 0];
-  // La reacción en el astrágalo cierra ΣF = 0:  R = −(N + M).
-  const rxN = -(0 + achDir.x * M);
+  // Reacción en el astrágalo:  R = −(N + M)  (cierra ΣF = 0).
+  const rxN = -(achDir.x * M);
   const ryN = -(Wb + achDir.y * M);
-  const R = Math.hypot(rxN, ryN);
-  const mVec: [number, number, number] = [achDir.x * M * S, achDir.y * M * S, 0];
-  const rVec: [number, number, number] = [rxN * S, ryN * S, 0];
+  const rzN = -(achDir.z * M);
+  const R = Math.hypot(rxN, ryN, rzN);
+  const rVec: [number, number, number] = [rxN * S, ryN * S, rzN * S];
 
-  const achilles: [number, number, number][] = [
-    [heel.x, heel.y, heel.z],
-    [heel.x + achDir.x * 0.12, heel.y + achDir.y * 0.12, heel.z],
-  ];
+  const achillesLine: [number, number, number][] = [heelP.toArray(), calfP.toArray()];
 
   return (
-    <group scale={6.6} position={[-0.35, -0.15, 0]}>
-    <group position={[-ankleC.x, -ankleC.y, -ankleC.z]}>
-      {/* ── Huesos ── */}
-      {bone.tibia_R && <mesh geometry={bone.tibia_R.geometry} material={materials.bone} />}
-      {bone.fibula_R && <mesh geometry={bone.fibula_R.geometry} material={materials.bone} />}
-      {FOOT_NODES.map((n) =>
-        bone[n] ? (
-          <mesh
-            key={n}
-            geometry={bone[n].geometry}
-            material={n === 'talus_R' ? materials.boneHighlight : materials.bone}
-          />
-        ) : null,
-      )}
+    <group scale={4.4} position={[-0.12, -0.06, -0.12]}>
+    <group position={[-FULCRUM.x, -FULCRUM.y, -FULCRUM.z]}>
+      {/* ── Pie + pierna: giran juntos sobre el fulcro metatarsiano ── */}
+      <group rotation={[gamma, 0, 0]} position={FULCRUM.toArray()}>
+        <group position={[-FULCRUM.x, -FULCRUM.y, -FULCRUM.z]}>
+          {bone.tibia_R && <mesh geometry={bone.tibia_R.geometry} material={materials.bone} />}
+          {bone.fibula_R && <mesh geometry={bone.fibula_R.geometry} material={materials.bone} />}
+          {FOOT_NODES.map((n) =>
+            bone[n] ? (
+              <mesh
+                key={n}
+                geometry={bone[n].geometry}
+                material={n === 'talus_R' ? materials.boneHighlight : materials.bone}
+              />
+            ) : null,
+          )}
+          {muscle.gastrocnemius_medial_head_R && (
+            <mesh geometry={muscle.gastrocnemius_medial_head_R.geometry} material={surMat} />
+          )}
+          {muscle.gastrocnemius_lateral_head_R && (
+            <mesh geometry={muscle.gastrocnemius_lateral_head_R.geometry} material={surMat} />
+          )}
+          {muscle.soleus_R && <mesh geometry={muscle.soleus_R.geometry} material={surMat} />}
+          <mesh position={ANKLE_C.toArray()}>
+            <sphereGeometry args={[0.012, 20, 20]} />
+            <primitive object={materials.cartilage} attach="material" />
+          </mesh>
+        </group>
+      </group>
 
-      {/* ── Tríceps sural ── */}
-      {muscle.gastrocnemius_medial_head_R && (
-        <mesh geometry={muscle.gastrocnemius_medial_head_R.geometry} material={surMat} />
-      )}
-      {muscle.gastrocnemius_lateral_head_R && (
-        <mesh geometry={muscle.gastrocnemius_lateral_head_R.geometry} material={surMat} />
-      )}
-      {muscle.soleus_R && <mesh geometry={muscle.soleus_R.geometry} material={surMat} />}
+      {/* Tendón de Aquiles (ya en coordenadas de mundo giradas) */}
+      <Line points={achillesLine} color={TENDON_COLOR} lineWidth={6} />
 
-      {/* Cartílago de la mortaja tibioastragalina */}
-      <mesh position={ankleC.toArray()}>
-        <sphereGeometry args={[0.013, 20, 20]} />
-        <primitive object={materials.cartilage} attach="material" />
-      </mesh>
-
-      {/* Tendón de Aquiles */}
-      <Line points={achilles} color={TENDON_COLOR} lineWidth={5} />
-
-      {/* Fulcro en las cabezas de los metatarsianos */}
-      <mesh position={forefoot.toArray()}>
-        <sphereGeometry args={[0.008, 16, 16]} />
+      {/* Fulcro metatarsiano */}
+      <mesh position={FULCRUM.toArray()}>
+        <sphereGeometry args={[0.007, 16, 16]} />
         <meshStandardMaterial color={SLATE} emissive={SLATE} emissiveIntensity={0.3} />
       </mesh>
-      <Html position={[forefoot.x, forefoot.y - 0.03, forefoot.z]} center zIndexRange={[80, 0]}>
+      <Html position={[FULCRUM.x, FULCRUM.y - 0.028, FULCRUM.z]} center zIndexRange={[80, 0]}>
         <span style={{ background: 'rgba(255,255,255,0.85)', color: SLATE, fontSize: '0.5rem', fontWeight: 700, fontFamily: 'Karla, sans-serif', padding: '1px 4px', borderRadius: 3, whiteSpace: 'nowrap' }}>
           fulcro · metatarsianos
         </span>
       </Html>
 
+      {/* Suelo */}
+      <mesh position={[FULCRUM.x, FULCRUM.y - 0.004, FULCRUM.z + 0.02]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[0.34, 0.26]} />
+        <meshStandardMaterial color="#e6ddc8" roughness={0.95} metalness={0} />
+      </mesh>
+
       {/* ── Vectores ── */}
-      <ForceArrow origin={[heel.x, heel.y, heel.z]} vector={mVec} color={TEAL} label={`M = ${M.toFixed(0)} N`} sublabel={`Aquiles · ${(M / Wb).toFixed(2)}·Wb`} />
-      <ForceArrow origin={forefoot.toArray()} vector={nVec} color={SLATE} label={`N = Wb = ${Wb.toFixed(0)} N`} sublabel="normal del suelo" />
-      <ForceArrow origin={ankleC.toArray()} vector={rVec} color={RED} label={`R = ${R.toFixed(0)} N`} sublabel={`astrágalo · ${(R / Wb).toFixed(2)}·Wb`} />
+      <ForceArrow origin={heelP.toArray()} vector={mVec} color={TEAL} label={`M = ${M.toFixed(0)} N`} sublabel={`Aquiles · ${(M / Wb).toFixed(2)}·Wb`} />
+      <ForceArrow origin={FULCRUM.toArray()} vector={nVec} color={SLATE} label={`N = Wb = ${Wb.toFixed(0)} N`} sublabel="normal del suelo" />
+      <ForceArrow origin={ankP.toArray()} vector={rVec} color={RED} label={`R = ${R.toFixed(0)} N`} sublabel={`astrágalo · ${(R / Wb).toFixed(2)}·Wb`} />
 
       {showComponents && (
         <>
-          <ForceArrow origin={ankleC.toArray()} vector={[rxN * S, 0, 0]} color="#0284c7" label={`Rx = ${Math.abs(rxN).toFixed(0)} N`} dashed />
-          <ForceArrow origin={[ankleC.x + rxN * S, ankleC.y, ankleC.z]} vector={[0, ryN * S, 0]} color={TEAL} label={`Ry = ${Math.abs(ryN).toFixed(0)} N`} dashed />
+          <ForceArrow origin={ankP.toArray()} vector={[0, 0, rzN * S]} color="#0284c7" label={`R∥ = ${Math.abs(rzN).toFixed(0)} N`} dashed />
+          <ForceArrow origin={[ankP.x, ankP.y, ankP.z + rzN * S]} vector={[0, ryN * S, 0]} color={TEAL} label={`R⊥ = ${Math.abs(ryN).toFixed(0)} N`} dashed />
         </>
       )}
 
       {/* Brazo de palanca fulcro → tobillo */}
-      <Line points={[forefoot.toArray(), [ankleC.x, ankleC.y, ankleC.z]]} color={AMBER} lineWidth={1} dashed dashScale={30} dashSize={0.012} gapSize={0.01} transparent opacity={0.5} />
+      <Line points={[FULCRUM.toArray(), ankP.toArray()]} color={AMBER} lineWidth={1.2} dashed dashScale={26} dashSize={0.014} gapSize={0.01} transparent opacity={0.55} />
     </group>
     </group>
   );
@@ -237,8 +256,8 @@ export default function AnkleCanvas({
   return (
     <AnatomyStage
       className="cap2-webgl-canvas"
-      camera={{ position: [0.4, 0.3, 3.4], fov: 40 }}
-      target={[0, 0, 0]}
+      camera={{ position: [-3.0, 0.35, 1.2], fov: 36 }}
+      target={[0.02, 0.0, 0.04]}
       minDistance={1.5}
       maxDistance={7}
       grid={false}

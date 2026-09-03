@@ -20,7 +20,7 @@ export default function SlideAnkle({
   const g = 9.81;
   const Wb = bodyMassKg * g;
   const beta = (betaDeg * Math.PI) / 180;
-  const denom = Math.max(0.12, Math.abs(Math.cos(THETA + beta)));
+  const denom = Math.max(0.16, Math.abs(Math.cos(THETA + beta)));
   const M = (Wb * Math.abs(Math.cos(beta))) / denom;
   // R cierra ΣF = 0:  R = −(N + M), con N = Wb vertical y M a θ de la horizontal.
   const rxN = Math.cos(THETA) * M;
@@ -122,7 +122,7 @@ export default function SlideAnkle({
             <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto', flexWrap: 'wrap' }}>
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                 <span>β pie:</span>
-                <input type="range" min="20" max="80" value={betaDeg} aria-label="Ángulo del pie con la horizontal" onChange={(e) => setBetaDeg(parseFloat(e.target.value))} style={{ width: '60px' }} />
+                <input type="range" min="55" max="75" value={betaDeg} aria-label="Ángulo del pie con la horizontal" onChange={(e) => setBetaDeg(parseFloat(e.target.value))} style={{ width: '60px' }} />
                 <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '30px' }}>{betaDeg}°</b>
               </label>
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
