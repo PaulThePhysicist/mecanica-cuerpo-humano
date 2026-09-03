@@ -45,9 +45,9 @@ export default function TorqueCanvas({
 
   const handlePointerDown = useCallback((e: React.PointerEvent<HTMLCanvasElement>) => {
     const { x, y, rect } = getPointerCoord(e);
-    const pivotX = rect.width * 0.15;
-    const pivotY = rect.height * 0.56;
-    const rPx = (rCm / 100) * (rect.width * 0.52);
+    const pivotX = rect.width * 0.09;
+    const pivotY = rect.height * 0.54;
+    const rPx = (rCm / 100) * (rect.width * 0.40);
     const armEndX = pivotX + rPx;
     const armEndY = pivotY;
 
@@ -67,9 +67,9 @@ export default function TorqueCanvas({
 
   const handlePointerMove = useCallback((e: React.PointerEvent<HTMLCanvasElement>) => {
     const { x, y, rect } = getPointerCoord(e);
-    const pivotX = rect.width * 0.15;
-    const pivotY = rect.height * 0.56;
-    const rPx = (rCm / 100) * (rect.width * 0.52);
+    const pivotX = rect.width * 0.09;
+    const pivotY = rect.height * 0.54;
+    const rPx = (rCm / 100) * (rect.width * 0.40);
     const armEndX = pivotX + rPx;
     const armEndY = pivotY;
 
@@ -175,9 +175,10 @@ export default function TorqueCanvas({
       // ─── 2. Posiciones Geométricas Principales ───
       // La escena se escala con el ancho útil. El factor anterior dejaba
       // el brazo demasiado pequeño en el navegador externo (~560 px).
-      const pivotX = W * 0.15;
-      const pivotY = H * 0.56;
-      const rPx = (rCm / 100) * (W * 0.52); // Longitud del brazo en px
+      // Columna izquierda: diagrama de la palanca. Columna derecha (~35%): dial.
+      const pivotX = W * 0.09;
+      const pivotY = H * 0.54;
+      const rPx = (rCm / 100) * (W * 0.40); // Longitud del brazo en px
 
       const armEndX = pivotX + rPx;
       const armEndY = pivotY;
@@ -315,59 +316,76 @@ export default function TorqueCanvas({
       const fEndX = armEndX + fLenPx * Math.cos(-rad);
       const fEndY = armEndY + fLenPx * Math.sin(-rad);
 
-      // Línea de acción de la fuerza prolongada (Textbook Free-Body Line)
+      const ufx = Math.cos(-rad);
+      const ufy = Math.sin(-rad);
+
+      // ─── 5b. Línea de acción de F (prolongada en ambos sentidos) ───
+      // Es la recta sobre la que "resbala" la fuerza; el brazo de momento r⊥ se
+      // mide perpendicular a ELLA desde el eje articular.
       ctx.save();
-      ctx.strokeStyle = 'rgba(107, 120, 133, 0.22)';
-      ctx.lineWidth = 1;
-      ctx.setLineDash([3, 3]);
+      ctx.strokeStyle = 'rgba(67, 80, 92, 0.45)';
+      ctx.lineWidth = 1.1;
+      ctx.setLineDash([4, 3]);
+      const actExt = Math.max(fLenPx * 1.6, rPx * 0.5);
       ctx.beginPath();
-      ctx.moveTo(armEndX - fLenPx * 0.5 * Math.cos(-rad), armEndY - fLenPx * 0.5 * Math.sin(-rad));
-      ctx.lineTo(armEndX + fLenPx * 1.3 * Math.cos(-rad), armEndY + fLenPx * 1.3 * Math.sin(-rad));
+      ctx.moveTo(armEndX - actExt * ufx, armEndY - actExt * ufy);
+      ctx.lineTo(armEndX + actExt * ufx, armEndY + actExt * ufy);
       ctx.stroke();
       ctx.setLineDash([]);
       ctx.restore();
 
-      // ─── 6. Brazo Útil Perpendicular (r_perp = r * sin(theta)) ───
-      if (Math.abs(Math.sin(rad)) > 0.08) {
+      // ─── 6. Brazo de momento perpendicular r⊥ = r · sin θ ───
+      if (Math.abs(Math.sin(rad)) > 0.06) {
         ctx.save();
-        const ufx = Math.cos(-rad);
-        const ufy = Math.sin(-rad);
-        const vax = pivotX - armEndX;
-        const vay = pivotY - armEndY;
-        const proj = vax * ufx + vay * ufy;
+        // Pie de la perpendicular bajada desde el eje (pivot) a la línea de acción.
+        const proj = (pivotX - armEndX) * ufx + (pivotY - armEndY) * ufy;
         const footX = armEndX + proj * ufx;
         const footY = armEndY + proj * ufy;
 
-        // Línea perpendicular r_perp
+        // Segmento r⊥ (eje → pie), naranja, grueso y punteado
         ctx.strokeStyle = '#d97706';
-        ctx.lineWidth = 1.3;
-        ctx.setLineDash([2, 2]);
+        ctx.lineWidth = 2;
+        ctx.setLineDash([5, 3]);
         ctx.beginPath();
         ctx.moveTo(pivotX, pivotY);
         ctx.lineTo(footX, footY);
         ctx.stroke();
         ctx.setLineDash([]);
 
-        // Símbolo de ángulo recto en el pie de la perpendicular
-        const sqLen = 5.5;
-        const sqX = footX - ufx * (proj >= 0 ? sqLen : -sqLen);
-        const sqY = footY - ufy * (proj >= 0 ? sqLen : -sqLen);
-        const perpUfx = -ufy;
-        const perpUfy = ufx;
-
+        // Glifo de ángulo recto en el pie (entre r⊥ y la línea de acción)
+        const s = 6;
+        const px = pivotX - footX, py = pivotY - footY;
+        const pl = Math.hypot(px, py) || 1;
+        const rx1 = px / pl, ry1 = py / pl;          // hacia el eje
+        const dSign = proj >= 0 ? 1 : -1;
         ctx.strokeStyle = '#d97706';
-        ctx.lineWidth = 0.9;
+        ctx.lineWidth = 1.1;
         ctx.beginPath();
-        ctx.moveTo(footX + perpUfx * sqLen, footY + perpUfy * sqLen);
-        ctx.lineTo(sqX + perpUfx * sqLen, sqY + perpUfy * sqLen);
-        ctx.lineTo(sqX, sqY);
+        ctx.moveTo(footX + rx1 * s, footY + ry1 * s);
+        ctx.lineTo(footX + rx1 * s + ufx * s * dSign, footY + ry1 * s + ufy * s * dSign);
+        ctx.lineTo(footX + ufx * s * dSign, footY + ufy * s * dSign);
         ctx.stroke();
 
-        // Badge de r_perp
+        // Punto en el pie
         ctx.fillStyle = '#d97706';
-        ctx.font = `bold ${7 * uiScale}px JetBrains Mono, monospace`;
+        ctx.beginPath();
+        ctx.arc(footX, footY, 2.4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Etiqueta r⊥ cerca del pie (sobre la línea de acción), con fondo, para
+        // no chocar con la cota "r = .. cm" que va bajo el hueso.
+        const lx = pivotX + (footX - pivotX) * 0.66 - ry1 * 14 * dSign;
+        const ly = pivotY + (footY - pivotY) * 0.66 + rx1 * 14 * dSign;
+        const rlTxt = `r⊥ = ${rPerp.toFixed(2)} m`;
+        ctx.font = `bold ${7.5 * uiScale}px JetBrains Mono, monospace`;
         ctx.textAlign = 'center';
-        ctx.fillText(`r⊥ = ${(rPerp).toFixed(3)} m`, (pivotX + footX) / 2 - 6, (pivotY + footY) / 2 - 3);
+        const rlW = ctx.measureText(rlTxt).width + 8;
+        ctx.fillStyle = 'rgba(255, 250, 242, 0.92)';
+        ctx.beginPath();
+        ctx.roundRect(lx - rlW / 2, ly - 7 * uiScale, rlW, 12 * uiScale, 3);
+        ctx.fill();
+        ctx.fillStyle = '#b8690f';
+        ctx.fillText(rlTxt, lx, ly + 3);
         ctx.restore();
       }
 
@@ -480,20 +498,15 @@ export default function TorqueCanvas({
       ctx.stroke();
 
       // Badge flotante compacto con F y ángulo theta.
-      // Se mantiene dentro del lienzo y despejado de la zona del dial (esquina
-      // superior derecha).
+      // Se mantiene dentro del lienzo y a la izquierda de la columna del dial.
       const fLabelDist = 16 * uiScale;
       const badgeW = 68 * uiScale;
       const badgeH = 20 * uiScale;
-      const dialZoneR = Math.min(W * 0.082, H * 0.15) * 2 + 46 * uiScale;
+      const dialColX = W * 0.62; // borde izquierdo de la columna del medidor
       let flx = fEndX + Math.cos(fAngle) * fLabelDist;
       let fly = fEndY + Math.sin(fAngle) * fLabelDist;
-      flx = Math.max(badgeW / 2 + 4, Math.min(flx, W - badgeW / 2 - 4));
+      flx = Math.max(badgeW / 2 + 4, Math.min(flx, dialColX - badgeW / 2 - 4));
       fly = Math.max(badgeH / 2 + 4, Math.min(fly, H - badgeH / 2 - 4));
-      // Despejar la esquina superior izquierda (dial) y superior derecha (toggle HUD).
-      if (fly < dialZoneR && (flx < dialZoneR || flx > W - dialZoneR)) {
-        fly = dialZoneR + badgeH / 2;
-      }
       ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
       ctx.shadowColor = 'rgba(35, 44, 54, 0.10)';
       ctx.shadowBlur = 4;
@@ -554,104 +567,85 @@ export default function TorqueCanvas({
         ctx.restore();
       }
 
-      // ─── 11. Dial Analógico de Torque (compacto, esquina superior izquierda;
-      // la derecha la ocupa el toggle del HudPanel) ───
-      const dialR = Math.min(W * 0.082, H * 0.15);
-      const dialX = dialR + 18 * uiScale;
-      const dialY = dialR + 22 * uiScale;
+      // ─── 11. Medidor de torque (columna derecha, estilo diagramas 2D de cap. 1) ───
+      const dialR = Math.min(W * 0.145, H * 0.215);
+      const dialX = W * 0.80;
+      const dialY = Math.max(dialR + 26 * uiScale, H * 0.44);
+      const maxTorque = 60;
+      const startAngle = Math.PI * 0.8;   // arco abierto por abajo
+      const endAngle = Math.PI * 2.2;
+      const spanAngle = endAngle - startAngle;
+      const zeroAngle = startAngle + spanAngle * 0.5;
+      const toAngle = (v: number) =>
+        zeroAngle + (Math.max(-maxTorque, Math.min(maxTorque, v)) / maxTorque) * (spanAngle * 0.5);
 
       ctx.save();
-      // Fondo cristalino con bisel
-      const dialGrad = ctx.createRadialGradient(dialX - dialR * 0.35, dialY - dialR * 0.35, 5, dialX, dialY, dialR);
-      dialGrad.addColorStop(0, '#ffffff');
-      dialGrad.addColorStop(0.65, '#faf7f0');
-      dialGrad.addColorStop(1, '#ebe0cc');
+      ctx.lineCap = 'round';
 
-      ctx.fillStyle = dialGrad;
-      ctx.shadowColor = 'rgba(35, 44, 54, 0.12)';
-      ctx.shadowBlur = 8;
+      // Zonas de signo: horario (−) rojo tenue a la izq, antihorario (+) teal tenue a la der
       ctx.beginPath();
-      ctx.arc(dialX, dialY, dialR, 0, Math.PI * 2);
+      ctx.arc(dialX, dialY, dialR, startAngle, zeroAngle);
+      ctx.strokeStyle = 'rgba(176, 35, 24, 0.16)';
+      ctx.lineWidth = 9;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(dialX, dialY, dialR, zeroAngle, endAngle);
+      ctx.strokeStyle = 'rgba(13, 110, 100, 0.16)';
+      ctx.lineWidth = 9;
+      ctx.stroke();
+
+      // Sector activo (de cero al valor actual) en color pleno
+      const curAngle = toAngle(tau);
+      ctx.beginPath();
+      ctx.arc(dialX, dialY, dialR, Math.min(zeroAngle, curAngle), Math.max(zeroAngle, curAngle));
+      ctx.strokeStyle = tauColor;
+      ctx.lineWidth = 9;
+      ctx.stroke();
+
+      // Marca de cero (arriba)
+      ctx.strokeStyle = 'rgba(67, 80, 92, 0.55)';
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(dialX + Math.cos(zeroAngle) * (dialR - 8), dialY + Math.sin(zeroAngle) * (dialR - 8));
+      ctx.lineTo(dialX + Math.cos(zeroAngle) * (dialR + 6), dialY + Math.sin(zeroAngle) * (dialR + 6));
+      ctx.stroke();
+
+      // Etiquetas de sentido en los extremos del arco
+      ctx.font = `${6.5 * uiScale}px Karla, system-ui, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.fillStyle = 'rgba(176, 35, 24, 0.75)';
+      ctx.fillText('↻ −', dialX + Math.cos(startAngle) * (dialR + 12), dialY + Math.sin(startAngle) * (dialR + 12) + 3);
+      ctx.fillStyle = 'rgba(13, 110, 100, 0.8)';
+      ctx.fillText('↺ +', dialX + Math.cos(endAngle) * (dialR + 12), dialY + Math.sin(endAngle) * (dialR + 12) + 3);
+
+      // Aguja
+      ctx.strokeStyle = tauColor;
+      ctx.lineWidth = 2.6;
+      ctx.beginPath();
+      ctx.moveTo(dialX - Math.cos(curAngle) * 8, dialY - Math.sin(curAngle) * 8);
+      ctx.lineTo(dialX + Math.cos(curAngle) * (dialR - 4), dialY + Math.sin(curAngle) * (dialR - 4));
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(dialX, dialY, 5, 0, Math.PI * 2);
+      ctx.fillStyle = tauColor;
       ctx.fill();
-      ctx.shadowBlur = 0;
-      ctx.strokeStyle = 'rgba(207, 195, 169, 0.95)';
+      ctx.strokeStyle = '#fff';
       ctx.lineWidth = 1.6;
       ctx.stroke();
 
-      // Graduación (-60 a +60 N·m)
-      const maxTorque = 60;
-      const startAngle = Math.PI * 0.75;
-      const endAngle = Math.PI * 2.25;
-      const spanAngle = endAngle - startAngle;
-      const zeroAngle = startAngle + spanAngle * 0.5;
-
-      // Pista base gris
-      ctx.beginPath();
-      ctx.arc(dialX, dialY, dialR - 8, startAngle, endAngle);
-      ctx.strokeStyle = 'rgba(107, 120, 133, 0.16)';
-      ctx.lineWidth = 5;
-      ctx.stroke();
-
-      // Sector activo coloreado
-      const clampedTau = Math.max(-maxTorque, Math.min(maxTorque, tau));
-      const curAngle = zeroAngle + (clampedTau / maxTorque) * (spanAngle * 0.5);
-
-      ctx.beginPath();
-      ctx.arc(dialX, dialY, dialR - 8, Math.min(zeroAngle, curAngle), Math.max(zeroAngle, curAngle));
-      ctx.strokeStyle = tauColor;
-      ctx.lineWidth = 5;
-      ctx.stroke();
-
-      // Ticks del cuadrante
-      for (let v = -maxTorque; v <= maxTorque; v += 10) {
-        const a = zeroAngle + (v / maxTorque) * (spanAngle * 0.5);
-        const isMajor = v % 20 === 0;
-        const tickLen = isMajor ? 6 : 4;
-        const r1 = dialR - 12;
-        const r2 = r1 - tickLen;
-
-        ctx.strokeStyle = isMajor ? 'rgba(67, 80, 92, 0.9)' : 'rgba(107, 120, 133, 0.55)';
-        ctx.lineWidth = isMajor ? 1.2 : 0.8;
-        ctx.beginPath();
-        ctx.moveTo(dialX + Math.cos(a) * r1, dialY + Math.sin(a) * r1);
-        ctx.lineTo(dialX + Math.cos(a) * r2, dialY + Math.sin(a) * r2);
-        ctx.stroke();
-
-        if (Math.abs(v) === maxTorque || v === 0) {
-          ctx.fillStyle = 'rgba(67, 80, 92, 0.75)';
-          ctx.font = `${5.4 * uiScale}px JetBrains Mono, monospace`;
-          ctx.textAlign = 'center';
-          const numR = r2 - 5;
-          ctx.fillText(`${v > 0 ? '+' : ''}${v}`, dialX + Math.cos(a) * numR, dialY + Math.sin(a) * numR + 2);
-        }
-      }
-
-      // Aguja del cuadrante
-      ctx.strokeStyle = tauColor;
-      ctx.lineWidth = 1.8;
-      ctx.beginPath();
-      ctx.moveTo(dialX - Math.cos(curAngle) * 6, dialY - Math.sin(curAngle) * 6);
-      ctx.lineTo(dialX + Math.cos(curAngle) * (dialR - 10), dialY + Math.sin(curAngle) * (dialR - 10));
-      ctx.stroke();
-
-      // Perno central de la aguja
-      ctx.beginPath();
-      ctx.arc(dialX, dialY, 3.2, 0, Math.PI * 2);
-      ctx.fillStyle = tauColor;
-      ctx.fill();
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 1.1;
-      ctx.stroke();
-
-      // Lectura τ compacta bajo el centro, dentro de la cara del dial
-      ctx.fillStyle = tauColor;
-      ctx.font = `bold ${9 * uiScale}px JetBrains Mono, monospace`;
-      ctx.textAlign = 'center';
+      // Lectura grande en el centro
       const signStr = tau > 0.05 ? '+' : (tau < -0.05 ? '−' : '');
-      ctx.fillText(`${signStr}${Math.abs(tau).toFixed(1)}`, dialX, dialY + dialR * 0.52);
-      ctx.font = `${5.6 * uiScale}px Karla, system-ui, sans-serif`;
-      ctx.fillStyle = 'rgba(107, 120, 133, 0.9)';
-      ctx.fillText('N·m', dialX, dialY + dialR * 0.52 + 7 * uiScale);
+      ctx.fillStyle = tauColor;
+      ctx.font = `bold ${17 * uiScale}px JetBrains Mono, monospace`;
+      ctx.textAlign = 'center';
+      ctx.fillText(`${signStr}${Math.abs(tau).toFixed(1)}`, dialX, dialY + dialR * 0.42);
+      ctx.font = `bold ${8.5 * uiScale}px Karla, system-ui, sans-serif`;
+      ctx.fillStyle = 'rgba(67, 80, 92, 0.8)';
+      ctx.fillText('N·m', dialX, dialY + dialR * 0.42 + 13 * uiScale);
+      ctx.font = `bold ${7.5 * uiScale}px Karla, system-ui, sans-serif`;
+      ctx.fillStyle = tauColor;
+      const senseTxt = isCCW ? 'ANTIHORARIO' : (isCW ? 'HORARIO' : 'SIN GIRO');
+      ctx.fillText(senseTxt, dialX, dialY + dialR * 0.42 + 24 * uiScale);
       ctx.restore();
 
       // ─── 12. Pista de interacción (discreta, esquina inferior) ───
