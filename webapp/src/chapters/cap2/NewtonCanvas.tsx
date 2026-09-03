@@ -11,9 +11,8 @@ interface NewtonCanvasProps {
   theta1: number;           // Ángulo F1 en grados
   f2: number;               // Magnitud F2 en N (Carga / Gravedad)
   theta2: number;           // Ángulo F2 en grados
+  armAbductionDeg: number;  // Abducción anatómica del húmero respecto al tronco
   autoEquilibrium: boolean; // Si es true, calcula R = -(F1 + F2) para ΣF = 0
-  onUpdateF1?: (f: number, theta: number) => void;
-  onUpdateF2?: (f: number, theta: number) => void;
 }
 
 const BONE_MATERIAL = new THREE.MeshStandardMaterial({
@@ -30,22 +29,27 @@ const CARTILAGE_MATERIAL = new THREE.MeshStandardMaterial({
   opacity: 0.85,
 });
 
-const LABRUM_MATERIAL = new THREE.MeshStandardMaterial({
-  color: new THREE.Color('#9bd9cf'),
-  roughness: 0.35,
-  metalness: 0.02,
-  transparent: true,
-  opacity: 0.48,
-  depthWrite: false,
+// Deltoides / manguito en reposo. Mismo tono que el cap. 1 (BodyParts3D) para
+// coherencia visual entre capítulos.
+const MUSCLE_NEUTRAL_MATERIAL = new THREE.MeshStandardMaterial({
+  color: new THREE.Color('#9e473e'),
+  roughness: 0.62,
+  metalness: 0.04,
 });
 
-const MUSCLE_MATERIAL = new THREE.MeshStandardMaterial({
-  color: new THREE.Color('#b02318'),
-  roughness: 0.55,
-  metalness: 0.08,
-  emissive: new THREE.Color('#500e08'),
-  emissiveIntensity: 0.45,
+// Deltoides bajo tensión alta (F₁ grande): se ilumina para leerse como el
+// generador de la fuerza principal del DCL.
+const MUSCLE_ACTIVE_MATERIAL = new THREE.MeshStandardMaterial({
+  color: new THREE.Color('#c0392b'),
+  roughness: 0.5,
+  metalness: 0.06,
+  emissive: new THREE.Color('#5a140d'),
+  emissiveIntensity: 0.5,
 });
+
+// Landmarks anatómicos en el espacio del GLB human_body.glb (idénticos a cap. 1).
+const P_SHOULDER = new THREE.Vector3(-0.096, 0.306, -0.018); // centro glenohumeral
+const P_ELBOW = new THREE.Vector3(-0.128, 0.142, -0.016);    // centro del codo
 
 // ── 1. Vector de Fuerza 3D con Tubo, Cono y Badge HTML ──
 function ForceVector3D({
@@ -169,29 +173,32 @@ function ForceVector3D({
   );
 }
 
-// ── 2. Articulación Glenohumeral Real de BodyParts3D con Músculo Deltoides ──
+// ── 2. Articulación glenohumeral real (BodyParts3D) + deltoides visible ──
+// `human_muscles_arm.glb` se hornea con el transform canónico de
+// `bp3d_transform.json` (ver scripts/gen_bp3d_system.py), así que comparte el
+// sistema de coordenadas de `human_body.glb` al milímetro: los vientres
+// musculares se montan como hermanos directos de las mallas óseas, sin ningún
+// ajuste en runtime.
+
 function GlenohumeralJointGLB({
   armAngle,
-  f1,
-  subluxation,
+  deltoidActivation,
   showAnatomy,
 }: {
-  armAngle: number;
-  f1: number;
-  subluxation: [number, number, number];
+  armAngle: number;          // rad; negativo = brazo elevado (abducción)
+  deltoidActivation: number; // 0..1 según F₁; ilumina el deltoides
   showAnatomy: boolean;
 }) {
   const { nodes: boneNodes } = useGLTF('/assets/cap1/human_body.glb') as any;
   const { nodes: muscleNodes } = useGLTF('/assets/cap1/human_muscles_arm.glb') as any;
 
-  // Centro anatómico de la cabeza humeral (pivote glenohumeral)
-  const jointPivot = useMemo(() => new THREE.Vector3(-0.096, 0.306, -0.018), []);
+  const shift: [number, number, number] = [-P_SHOULDER.x, -P_SHOULDER.y, -P_SHOULDER.z];
 
   if (!showAnatomy) {
     return (
-      <group position={[0, 0, 0]}>
+      <group>
         <mesh>
-          <sphereGeometry args={[0.055, 24, 24]} />
+          <sphereGeometry args={[0.05, 24, 24]} />
           <meshStandardMaterial
             color="#0d6e64"
             emissive="#0d6e64"
@@ -214,66 +221,50 @@ function GlenohumeralJointGLB({
               pointerEvents: 'none',
             }}
           >
-            Pivote articular
+            Centro articular (pivote)
           </span>
         </Html>
       </group>
     );
   }
 
-  const muscleBulge = Math.min(1.4, 0.95 + (f1 / 150) * 0.45);
+  const deltMat = deltoidActivation > 0.55 ? MUSCLE_ACTIVE_MATERIAL : MUSCLE_NEUTRAL_MATERIAL;
 
   return (
     <group>
-      {/* ── Base Fija: Escápula y Clavícula ── */}
-      <group position={[-jointPivot.x, -jointPivot.y, -jointPivot.z]}>
+      {/* ── Base fija: escápula, clavícula y manguito rotador ── */}
+      <group position={shift}>
         {boneNodes?.scapula_R && <mesh geometry={boneNodes.scapula_R.geometry} material={BONE_MATERIAL} />}
         {boneNodes?.clavicle_R && <mesh geometry={boneNodes.clavicle_R.geometry} material={BONE_MATERIAL} />}
-
-        {/* Manguito rotador estabilizador */}
         {muscleNodes?.supraspinatus_R && (
-          <mesh geometry={muscleNodes.supraspinatus_R.geometry} material={MUSCLE_MATERIAL} />
+          <mesh geometry={muscleNodes.supraspinatus_R.geometry} material={MUSCLE_NEUTRAL_MATERIAL} />
         )}
         {muscleNodes?.infraspinatus_R && (
-          <mesh geometry={muscleNodes.infraspinatus_R.geometry} material={MUSCLE_MATERIAL} />
+          <mesh geometry={muscleNodes.infraspinatus_R.geometry} material={MUSCLE_NEUTRAL_MATERIAL} />
         )}
         {muscleNodes?.subscapularis_R && (
-          <mesh geometry={muscleNodes.subscapularis_R.geometry} material={MUSCLE_MATERIAL} />
+          <mesh geometry={muscleNodes.subscapularis_R.geometry} material={MUSCLE_NEUTRAL_MATERIAL} />
         )}
       </group>
 
-      {/* ── Cartílago / Labrum Glenoideo Articular (Ice-Mint) ── */}
-      <mesh position={[0, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
-        <torusGeometry args={[0.06, 0.008, 16, 24]} />
-        <primitive object={LABRUM_MATERIAL} attach="material" />
+      {/* ── Cartílago glenoideo: esfera discreta en el centro articular ── */}
+      <mesh>
+        <sphereGeometry args={[0.02, 20, 20]} />
+        <primitive object={CARTILAGE_MATERIAL} attach="material" />
       </mesh>
 
-      {/* ── Hueso Móvil: Húmero con Abducción y Músculo Deltoides Real de BodyParts3D ── */}
-      <group position={subluxation} rotation={[0, 0, armAngle]}>
-        <group position={[-jointPivot.x, -jointPivot.y, -jointPivot.z]}>
+      {/* ── Segmento móvil: húmero + deltoides rotan juntos sobre el centro GH ── */}
+      <group rotation={[0, 0, armAngle]}>
+        <group position={shift}>
           {boneNodes?.humerus_R && <mesh geometry={boneNodes.humerus_R.geometry} material={BONE_MATERIAL} />}
-
-          {/* Músculo Deltoides Real con Abultamiento Fisiológico */}
           {muscleNodes?.deltoideus_clavicular_R && (
-            <mesh
-              geometry={muscleNodes.deltoideus_clavicular_R.geometry}
-              material={MUSCLE_MATERIAL}
-              scale={[muscleBulge, 1.0, muscleBulge]}
-            />
+            <mesh geometry={muscleNodes.deltoideus_clavicular_R.geometry} material={deltMat} />
           )}
           {muscleNodes?.deltoideus_acromial_R && (
-            <mesh
-              geometry={muscleNodes.deltoideus_acromial_R.geometry}
-              material={MUSCLE_MATERIAL}
-              scale={[muscleBulge, 1.0, muscleBulge]}
-            />
+            <mesh geometry={muscleNodes.deltoideus_acromial_R.geometry} material={deltMat} />
           )}
           {muscleNodes?.deltoideus_spinal_R && (
-            <mesh
-              geometry={muscleNodes.deltoideus_spinal_R.geometry}
-              material={MUSCLE_MATERIAL}
-              scale={[muscleBulge, 1.0, muscleBulge]}
-            />
+            <mesh geometry={muscleNodes.deltoideus_spinal_R.geometry} material={deltMat} />
           )}
         </group>
       </group>
@@ -287,6 +278,7 @@ function SceneContent({
   theta1,
   f2,
   theta2,
+  armAbductionDeg,
   autoEquilibrium,
   showComponents,
   showPolygon,
@@ -297,6 +289,7 @@ function SceneContent({
   theta1: number;
   f2: number;
   theta2: number;
+  armAbductionDeg: number;
   autoEquilibrium: boolean;
   showComponents: boolean;
   showPolygon: boolean;
@@ -321,31 +314,66 @@ function SceneContent({
   const sumFy = autoEquilibrium ? 0 : f1y + f2y;
   const fNet = Math.hypot(sumFx, sumFy);
 
-  const vScale = 0.015;
+  // N → unidades de mundo. Calibrado para que ~120 N ≈ la longitud del húmero
+  // renderizado (≈ 0,63 u), de modo que las flechas acompañen a la anatomía en
+  // vez de aplastarla (antes: 0,015 → flechas 3× el modelo).
+  const V = 0.0052;
 
-  const vec1: [number, number, number] = [f1x * vScale, f1y * vScale, 0.05];
-  const vec2: [number, number, number] = [f2x * vScale, f2y * vScale, 0.05];
-  const vecR: [number, number, number] = [rx * vScale, ry * vScale, 0.05];
-  const vecNet: [number, number, number] = [sumFx * vScale, sumFy * vScale, 0.05];
+  const armAngle = -(armAbductionDeg * Math.PI) / 180;
 
-  // La luxación glenohumeral se representa como un desplazamiento
-  // anteroinferior pequeño de la cabeza humeral, no como una traslación
-  // libre en la dirección arbitraria de la fuerza neta. El grupo anatómico
-  // está escalado 3.8x, por eso el desplazamiento local debe ser corto.
-  const subluxScale = !autoEquilibrium ? Math.min(0.045, (fNet / 100) * 0.035) : 0;
-  const subluxationPos: [number, number, number] = [
-    0.018,
-    -subluxScale,
-    0.025,
+  // ── Anclajes anatómicos (unidades de mundo, tras el escalado del modelo) ──
+  const S = 3.8;
+  const rotZ = (p: [number, number, number], a: number): [number, number, number] => {
+    const c = Math.cos(a), s = Math.sin(a);
+    return [p[0] * c - p[1] * s, p[0] * s + p[1] * c, p[2]];
+  };
+  const add = (a: [number, number, number], b: [number, number, number]): [number, number, number] => [
+    a[0] + b[0], a[1] + b[1], a[2] + b[2],
   ];
+  // Eje del húmero (hombro → codo) en unidades de mundo.
+  const humW: [number, number, number] = [
+    (P_ELBOW.x - P_SHOULDER.x) * S,
+    (P_ELBOW.y - P_SHOULDER.y) * S,
+    (P_ELBOW.z - P_SHOULDER.z) * S,
+  ];
+  // Las flechas viven en un plano ligeramente por delante de la malla (Z_BIAS)
+  // para que nunca queden ocultas dentro del deltoides o del húmero.
+  const Z_BIAS = 0.16;
+  const headW: [number, number, number] = [0, 0, Z_BIAS];               // centro glenohumeral
+  const deltInsW = rotZ([humW[0] * 0.20, humW[1] * 0.20, Z_BIAS], armAngle); // tuberosidad deltoidea
+  const armComW = rotZ([humW[0] * 0.78, humW[1] * 0.78, Z_BIAS], armAngle);  // CdM del brazo (peso)
+  const acromionW: [number, number, number] = [-0.05, 0.10, Z_BIAS];    // acromion (fijo, en la escápula)
 
-  const armAngle = -rad1 * 0.45;
+  // Vectores de fuerza anclados (plano XY, N × V).
+  const F1vec: [number, number, number] = [f1x * V, f1y * V, 0];
+  const F2vec: [number, number, number] = [f2x * V, f2y * V, 0];
+  const Rvec: [number, number, number] = [rx * V, ry * V, 0];
+  const Fnetvec: [number, number, number] = [sumFx * V, sumFy * V, 0];
 
-  // Orígenes para modo polígono cerrado (punta con cola)
-  const origin2: [number, number, number] = showPolygon ? [vec1[0], vec1[1], vec1[2]] : [0, 0, 0];
-  const originR: [number, number, number] = showPolygon
-    ? [vec1[0] + vec2[0], vec1[1] + vec2[1], vec1[2]]
-    : [0, 0, 0];
+  // El polígono se dibuja algo más grande para que se lea el cierre.
+  const VP = V * 1.7;
+  const F1p: [number, number, number] = [f1x * VP, f1y * VP, 0];
+  const F2p: [number, number, number] = [f2x * VP, f2y * VP, 0];
+  const Rp: [number, number, number] = [rx * VP, ry * VP, 0];
+  const Fnetp: [number, number, number] = [sumFx * VP, sumFy * VP, 0];
+  // Punto común (cola de F₁), centrado y ligeramente arriba del modelo.
+  const polyP: [number, number, number] = [0.06, 0.12, Z_BIAS + 0.06];
+  const polyF2Tail = add(polyP, F1p);
+  const polyRTail = add(polyF2Tail, F2p);
+
+  // Línea de acción del deltoides (guía tenue tuberosidad → acromion).
+  const deltLine: [number, number, number][] = [deltInsW, acromionW];
+  // Vertical de gravedad por el CdM del brazo.
+  const gravLine: [number, number, number][] = [
+    [armComW[0], armComW[1] + 0.12, armComW[2]],
+    [armComW[0], armComW[1] - 0.5, armComW[2]],
+  ];
+  // Frontera del DCL: anillo discontinuo que "aísla" el húmero.
+  const dclRing: [number, number, number][] = [];
+  for (let i = 0; i <= 56; i++) {
+    const a = (i / 56) * Math.PI * 2;
+    dclRing.push([Math.cos(a) * 0.5 - 0.06, Math.sin(a) * 0.5 - 0.08, -0.12]);
+  }
 
   return (
     <>
@@ -362,79 +390,109 @@ function SceneContent({
         target={[0, 0, 0]}
       />
 
-      <ambientLight intensity={0.9} color="#fffcf5" />
-      <directionalLight position={[3, 5, 4]} intensity={1.4} color="#fff8eb" castShadow />
-      <directionalLight position={[-3, 2, -3]} intensity={0.65} color="#e0f2fe" />
-      <directionalLight position={[0, -3, 2]} intensity={0.3} color="#faf0e6" />
+      <ambientLight intensity={0.92} color="#fffcf5" />
+      <directionalLight position={[3, 5, 4]} intensity={1.35} color="#fff8eb" castShadow />
+      <directionalLight position={[-3, 2, -3]} intensity={0.6} color="#e0f2fe" />
+      <directionalLight position={[0, -3, 2]} intensity={0.22} color="#faf0e6" />
 
       <ContactShadows
-        position={[0, -1.2, 0]}
-        opacity={0.42}
-        scale={4.5}
-        blur={2.0}
-        far={3.5}
+        position={[0, -0.68, 0]}
+        opacity={0.34}
+        scale={3.0}
+        blur={2.2}
+        far={2.4}
         color="#232c36"
       />
 
-      <gridHelper
-        args={[3.5, 14, '#8c7e68', '#cfc5b4']}
-        position={[0, 0, -0.35]}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-
-      <group scale={3.8} position={[0, 0, 0]}>
+      {/* Grupo de encuadre: centra articulación + brazo + vectores en el cuadro. */}
+      <group position={[-0.16, 0.04, 0]}>
+      <group scale={S} position={[0, 0, 0]}>
         <GlenohumeralJointGLB
           armAngle={armAngle}
-          f1={f1}
-          subluxation={subluxationPos}
+          deltoidActivation={Math.max(0, Math.min(1, (f1 - 20) / 80))}
           showAnatomy={showAnatomy}
         />
       </group>
 
-      {/* ── Vectores de Fuerza 3D ── */}
-      {/* F1: Deltoides (Verde Esmeralda) */}
-      <ForceVector3D
-        origin={[0, 0, 0]}
-        vector={vec1}
-        color="#0d9488"
-        label={`F₁ = ${f1.toFixed(0)} N`}
-        sublabel={`${theta1}° · Deltoides`}
-        showComponents={showComponents && !showPolygon}
-      />
-
-      {/* F2: Carga / Peso Brazo (Ámbar) */}
-      <ForceVector3D
-        origin={origin2}
-        vector={vec2}
-        color="#d97706"
-        label={`F₂ = ${f2.toFixed(0)} N`}
-        sublabel={`${theta2}° · Peso Brazo`}
-        showComponents={showComponents && !showPolygon}
-      />
-
-      {/* R: Reacción Glenoidea (Carmesí) */}
-      {autoEquilibrium && rMag > 1 && (
-        <ForceVector3D
-          origin={originR}
-          vector={vecR}
-          color="#dc2626"
-          label={`R = ${rMag.toFixed(0)} N`}
-          sublabel={`${rAngle.toFixed(0)}° · Reacción Glena`}
-          showComponents={showComponents && !showPolygon}
-        />
+      {/* ── Frontera del DCL (sólo en la vista anclada) ── */}
+      {!showPolygon && (
+        <>
+          <Line points={dclRing} color="#8a9ba8" lineWidth={1} dashed dashScale={26} dashSize={0.05} gapSize={0.04} transparent opacity={0.5} />
+          <Html position={[0.48, 0.42, 0]} center zIndexRange={[70, 0]}>
+            <span style={{ color: '#5d6b76', fontSize: '0.52rem', fontFamily: 'Karla, sans-serif', fontWeight: 700, whiteSpace: 'nowrap', pointerEvents: 'none', background: 'rgba(251,248,240,0.7)', padding: '1px 4px', borderRadius: 3 }}>
+              DCL · húmero aislado
+            </span>
+          </Html>
+        </>
       )}
 
-      {/* F_net: Fuerza Neta si hay desbalance dinámico (Violeta) */}
-      {!autoEquilibrium && fNet > 1 && (
-        <ForceVector3D
-          origin={showPolygon ? originR : [0, 0, 0]}
-          vector={vecNet}
-          color="#8b5cf6"
-          label={`F_net = ${fNet.toFixed(1)} N`}
-          sublabel="Luxación anteroinferior"
-          isDashed
-        />
+      {showPolygon ? (
+        <>
+          {/* ── Polígono de fuerzas: punta con cola; si ΣF = 0 el triángulo cierra ── */}
+          <ForceVector3D origin={polyP} vector={F1p} color="#0d9488" label={`F₁ = ${f1.toFixed(0)} N`} />
+          <ForceVector3D origin={polyF2Tail} vector={F2p} color="#d97706" label={`F₂ = ${f2.toFixed(0)} N`} />
+          {autoEquilibrium ? (
+            <ForceVector3D origin={polyRTail} vector={Rp} color="#dc2626" label={`R = ${rMag.toFixed(0)} N`} sublabel="cierra el polígono" />
+          ) : (
+            fNet > 1 && (
+              <>
+                <ForceVector3D origin={polyRTail} vector={Fnetp} color="#8b5cf6" label={`ΣF = ${fNet.toFixed(1)} N`} sublabel="el polígono NO cierra" isDashed />
+                <Line points={[polyRTail, polyP]} color="#8b5cf6" lineWidth={1.4} dashed dashScale={22} dashSize={0.05} gapSize={0.04} />
+              </>
+            )
+          )}
+        </>
+      ) : (
+        <>
+          {/* ── Vista anclada: cada fuerza en su punto de aplicación real ── */}
+          <Line points={deltLine} color="#0d9488" lineWidth={1} dashed dashScale={30} dashSize={0.04} gapSize={0.03} transparent opacity={0.55} />
+          <Line points={gravLine} color="#b8860b" lineWidth={1} dashed dashScale={30} dashSize={0.04} gapSize={0.03} transparent opacity={0.45} />
+
+          {/* F₁ · deltoides → desde la tuberosidad deltoidea */}
+          <ForceVector3D
+            origin={deltInsW}
+            vector={F1vec}
+            color="#0d9488"
+            label={`F₁ = ${f1.toFixed(0)} N`}
+            sublabel={`${theta1}° · deltoides`}
+            showComponents={showComponents}
+          />
+
+          {/* F₂ · peso del brazo + carga → desde el centro de masa */}
+          <ForceVector3D
+            origin={armComW}
+            vector={F2vec}
+            color="#d97706"
+            label={`F₂ = ${f2.toFixed(0)} N`}
+            sublabel={`${theta2}° · peso + carga`}
+            showComponents={showComponents}
+          />
+
+          {/* R · reacción glenoidea → desde el centro de la cabeza humeral */}
+          {autoEquilibrium && rMag > 1 && (
+            <ForceVector3D
+              origin={headW}
+              vector={Rvec}
+              color="#dc2626"
+              label={`R = ${rMag.toFixed(0)} N`}
+              sublabel={`${rAngle.toFixed(0)}° · reacción glenoidea`}
+            />
+          )}
+
+          {/* ΣF ≠ 0 · el segmento acelera / se subluxa */}
+          {!autoEquilibrium && fNet > 1 && (
+            <ForceVector3D
+              origin={headW}
+              vector={Fnetvec}
+              color="#8b5cf6"
+              label={`ΣF = ${fNet.toFixed(1)} N`}
+              sublabel="el húmero acelera (m·a)"
+              isDashed
+            />
+          )}
+        </>
       )}
+      </group>
     </>
   );
 }
@@ -448,17 +506,18 @@ export default function NewtonCanvas({
   theta1,
   f2,
   theta2,
+  armAbductionDeg,
   autoEquilibrium,
 }: NewtonCanvasProps) {
   const orbitRef = useRef<OrbitControlsImpl | null>(null);
-  const [showComponents, setShowComponents] = useState(true);
+  const [showComponents, setShowComponents] = useState(false);
   const [showPolygon, setShowPolygon] = useState(false);
   const [showAnatomy, setShowAnatomy] = useState(true);
 
   return (
     <div className="cap2-webgl-canvas" style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
       <Canvas
-        camera={{ position: [1.6, 0.8, 2.6], fov: 42 }}
+        camera={{ position: [0.02, 0.06, 2.62], fov: 40 }}
         style={{
           width: '100%',
           height: '100%',
@@ -467,9 +526,9 @@ export default function NewtonCanvas({
         }}
       >
         <Cap2ZoomHandler
-          initialPosition={[1.6, 0.8, 2.6]}
+          initialPosition={[0.02, 0.06, 2.62]}
           target={[0, 0, 0]}
-          minDistance={1.2}
+          minDistance={1.4}
           maxDistance={6}
         />
         <Suspense fallback={null}>
@@ -478,6 +537,7 @@ export default function NewtonCanvas({
             theta1={theta1}
             f2={f2}
             theta2={theta2}
+            armAbductionDeg={armAbductionDeg}
             autoEquilibrium={autoEquilibrium}
             showComponents={showComponents}
             showPolygon={showPolygon}
@@ -486,6 +546,44 @@ export default function NewtonCanvas({
           />
         </Suspense>
       </Canvas>
+      <div
+        aria-live="polite"
+        style={{
+          position: 'absolute',
+          left: '12px',
+          top: '12px',
+          zIndex: 10,
+          padding: '5px 9px',
+          border: '1px solid rgba(13, 110, 100, 0.35)',
+          borderRadius: '6px',
+          background: 'rgba(255, 255, 255, 0.88)',
+          color: '#0a5a52',
+          fontSize: '0.66rem',
+          fontFamily: 'Karla, sans-serif',
+          fontWeight: 700,
+          boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
+        }}
+      >
+        Húmero · abducción {armAbductionDeg}°
+      </div>
+      <div
+        role="note"
+        style={{
+          position: 'absolute',
+          right: '12px',
+          bottom: '12px',
+          zIndex: 10,
+          padding: '4px 8px',
+          borderRadius: '5px',
+          background: 'rgba(255, 255, 255, 0.82)',
+          color: '#55606d',
+          fontSize: '0.56rem',
+          fontFamily: 'Karla, sans-serif',
+          pointerEvents: 'none',
+        }}
+      >
+        Arrastra · rueda: zoom · doble clic: enfoca
+      </div>
       <SceneControlPad controlsRef={orbitRef} />
 
       {/* Controles flotantes en la esquina superior derecha */}
@@ -501,6 +599,8 @@ export default function NewtonCanvas({
       >
         <button
           type="button"
+          aria-pressed={showPolygon}
+          title="Mostrar u ocultar el polígono de fuerzas; útil para comprobar ΣF = 0"
           onClick={() => setShowPolygon((p) => !p)}
           style={{
             background: showPolygon ? 'rgba(13, 148, 136, 0.9)' : 'rgba(255, 255, 255, 0.88)',
@@ -515,10 +615,12 @@ export default function NewtonCanvas({
             transition: 'all 0.15s ease',
           }}
         >
-          {showPolygon ? '✓ Triángulo ΣF=0' : '△ Triángulo ΣF=0'}
+          {showPolygon ? '✓ Polígono' : '△ Polígono'}
         </button>
         <button
           type="button"
+          aria-pressed={showComponents}
+          title="Mostrar u ocultar las componentes ortogonales Fx y Fy"
           onClick={() => setShowComponents((c) => !c)}
           style={{
             background: showComponents ? 'rgba(13, 110, 100, 0.9)' : 'rgba(255, 255, 255, 0.88)',
@@ -533,10 +635,12 @@ export default function NewtonCanvas({
             transition: 'all 0.15s ease',
           }}
         >
-          {showComponents ? '✓ Fx / Fy' : '+ Fx / Fy'}
+          {showComponents ? '✓ Componentes' : '+ Componentes'}
         </button>
         <button
           type="button"
+          aria-pressed={showAnatomy}
+          title="Mostrar u ocultar huesos, cartílago y deltoides"
           onClick={() => setShowAnatomy((a) => !a)}
           style={{
             background: showAnatomy ? 'rgba(176, 35, 24, 0.9)' : 'rgba(255, 255, 255, 0.88)',
@@ -551,7 +655,7 @@ export default function NewtonCanvas({
             transition: 'all 0.15s ease',
           }}
         >
-          {showAnatomy ? '✓ Músculo & Hueso' : '+ Músculo & Hueso'}
+          {showAnatomy ? '✓ Anatomía' : '+ Anatomía'}
         </button>
       </div>
     </div>

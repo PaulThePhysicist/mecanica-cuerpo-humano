@@ -11,11 +11,13 @@ export default function Slide1({
   engine?: Engine;
   [key: string]: any;
 }) {
-  const [f1, setF1] = useState<number>(60);
-  const [theta1, setTheta1] = useState<number>(45);
-  const [f2, setF2] = useState<number>(50);
-  const [theta2, setTheta2] = useState<number>(135);
+  const [f1, setF1] = useState<number>(80);
+  const [theta1, setTheta1] = useState<number>(110);
+  const [f2, setF2] = useState<number>(45);
+  const [theta2, setTheta2] = useState<number>(270);
   const [autoEquilibrium, setAutoEquilibrium] = useState<boolean>(true);
+  // Ángulo anatómico de abducción del húmero, independiente de la dirección de F₁.
+  const [armAbductionDeg, setArmAbductionDeg] = useState<number>(45);
 
   // Cálculos reactivos de componentes
   const rad1 = (theta1 * Math.PI) / 180;
@@ -34,57 +36,52 @@ export default function Slide1({
   const fNetY = autoEquilibrium ? 0 : f1y + f2y;
   const fNetMag = Math.hypot(fNetX, fNetY);
 
-  const handleUpdateF1 = (f: number, theta: number) => {
-    setF1(f);
-    setTheta1(theta);
-  };
-
-  const handleUpdateF2 = (f: number, theta: number) => {
-    setF2(f);
-    setTheta2(theta);
-  };
-
   const setPreset = (name: 'gleno' | 'ortho' | 'vertical' | 'asym') => {
     if (name === 'gleno') {
-      setF1(70);
-      setTheta1(35);
-      setF2(50);
+      setArmAbductionDeg(60);
+      setF1(80);
+      setTheta1(105);
+      setF2(45);
       setTheta2(270);
       setAutoEquilibrium(true);
     } else if (name === 'ortho') {
-      setF1(80);
-      setTheta1(45);
-      setF2(60);
+      setArmAbductionDeg(90);
+      setF1(95);
+      setTheta1(100);
+      setF2(55);
       setTheta2(270);
       setAutoEquilibrium(true);
     } else if (name === 'vertical') {
+      setArmAbductionDeg(90);
       setF1(80);
       setTheta1(90);
       setF2(80);
       setTheta2(270);
       setAutoEquilibrium(true);
     } else if (name === 'asym') {
-      setF1(95);
-      setTheta1(25);
-      setF2(35);
-      setTheta2(260);
+      setArmAbductionDeg(55);
+      setF1(90);
+      setTheta1(70);
+      setF2(40);
+      setTheta2(250);
       setAutoEquilibrium(false);
     }
   };
 
   const handleReset = () => {
-    setF1(60);
-    setTheta1(45);
-    setF2(50);
-    setTheta2(135);
+    setF1(80);
+    setTheta1(110);
+    setF2(45);
+    setTheta2(270);
     setAutoEquilibrium(true);
+    setArmAbductionDeg(45);
   };
 
   return (
     <>
       <div className="module-header">
         <span className="mnum">A1</span>
-        <span className="mtitle">Fuerzas, torques y equilibrio</span>
+        <h2 className="mtitle">Fuerzas, torques y equilibrio</h2>
         <span className="msub">Las dos condiciones fundamentales de la estática biomecánica</span>
         <span className="mslide-count">1 / 2</span>
       </div>
@@ -147,7 +144,7 @@ export default function Slide1({
             title="EQUILIBRIO ESTÁTICO"
             badge={autoEquilibrium ? 'ΣF = 0 (ESTÁTICA)' : `${fNetMag.toFixed(1)} N (DINÁMICA)`}
             icon="⚖️"
-            footer="💡 Arrastra las puntas de los vectores o ajusta los controles inferiores"
+            footer="💡 Arrastra el modelo para rotarlo; usa los presets o los controles inferiores para cambiar las fuerzas"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.62rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
@@ -173,33 +170,39 @@ export default function Slide1({
             </div>
           </HudPanel>
 
+          {/* El <Canvas> WebGL sólo se monta cuando A1 está activo: evita
+              acumular ~13 contextos WebGL simultáneos (límite ~16 en Chrome →
+              pérdida de contexto y canvas en blanco). El GLB queda en la caché
+              de drei, así que volver a A1 es instantáneo. */}
           <Suspense fallback={<div className="loading-overlay">Cargando visualización 3D...</div>}>
-            <NewtonCanvas
-              f1={f1}
-              theta1={theta1}
-              f2={f2}
-              theta2={theta2}
-              autoEquilibrium={autoEquilibrium}
-              onUpdateF1={handleUpdateF1}
-              onUpdateF2={handleUpdateF2}
-            />
+            {isActive && (
+              <NewtonCanvas
+                f1={f1}
+                theta1={theta1}
+                f2={f2}
+                theta2={theta2}
+                armAbductionDeg={armAbductionDeg}
+                autoEquilibrium={autoEquilibrium}
+              />
+            )}
           </Suspense>
           <div className="prof-controls">
             <span className="badge">2.1 · Newton</span>
 
             {/* Botones de Escenarios Preestablecidos */}
             {(() => {
-              const isGleno = f1 === 70 && theta1 === 35 && f2 === 50 && theta2 === 270 && autoEquilibrium;
-              const isOrtho = f1 === 80 && theta1 === 45 && f2 === 60 && theta2 === 270 && autoEquilibrium;
-              const isVertical = f1 === 80 && theta1 === 90 && f2 === 80 && theta2 === 270 && autoEquilibrium;
-              const isAsym = f1 === 95 && theta1 === 25 && f2 === 35 && theta2 === 260 && !autoEquilibrium;
+              const isGleno = armAbductionDeg === 60 && f1 === 80 && theta1 === 105 && f2 === 45 && theta2 === 270 && autoEquilibrium;
+              const isOrtho = armAbductionDeg === 90 && f1 === 95 && theta1 === 100 && f2 === 55 && theta2 === 270 && autoEquilibrium;
+              const isVertical = armAbductionDeg === 90 && f1 === 80 && theta1 === 90 && f2 === 80 && theta2 === 270 && autoEquilibrium;
+              const isAsym = armAbductionDeg === 55 && f1 === 90 && theta1 === 70 && f2 === 40 && theta2 === 250 && !autoEquilibrium;
 
               return (
                 <div style={{ display: 'flex', gap: '3px', alignItems: 'center' }}>
                   <button
                     type="button"
                     onClick={() => setPreset('gleno')}
-                    title="Escenario Glenohumeral (Abducción 60°)"
+                    aria-pressed={isGleno}
+                    title="Escenario glenohumeral: húmero en abducción de 60°"
                     style={{
                       background: isGleno ? 'var(--teal)' : 'var(--paper-2)',
                       color: isGleno ? '#ffffff' : 'var(--ink)',
@@ -217,7 +220,8 @@ export default function Slide1({
                   <button
                     type="button"
                     onClick={() => setPreset('ortho')}
-                    title="Abducción 90° con Carga"
+                    aria-pressed={isOrtho}
+                    title="Escenario con húmero en abducción de 90° y carga"
                     style={{
                       background: isOrtho ? 'var(--teal)' : 'var(--paper-2)',
                       color: isOrtho ? '#ffffff' : 'var(--ink)',
@@ -235,7 +239,8 @@ export default function Slide1({
                   <button
                     type="button"
                     onClick={() => setPreset('vertical')}
-                    title="Tracción Vertical Antagonista"
+                    aria-pressed={isVertical}
+                    title="Equilibrio con fuerzas verticales y húmero en abducción de 90°"
                     style={{
                       background: isVertical ? 'var(--teal)' : 'var(--paper-2)',
                       color: isVertical ? '#ffffff' : 'var(--ink)',
@@ -248,12 +253,13 @@ export default function Slide1({
                       transition: 'all 0.15s ease',
                     }}
                   >
-                    Vertical
+                    Fuerzas verticales
                   </button>
                   <button
                     type="button"
                     onClick={() => setPreset('asym')}
-                    title="Desbalance Dinámico / Luxación articular"
+                    aria-pressed={isAsym}
+                    title="Desequilibrio dinámico: húmero en abducción de 60° y subluxación anteroinferior"
                     style={{
                       background: isAsym ? '#b02318' : 'var(--paper-2)',
                       color: isAsym ? '#ffffff' : '#b02318',
@@ -325,7 +331,21 @@ export default function Slide1({
                 <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '26px' }}>{theta2}°</b>
               </label>
 
-              <label style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', cursor: 'pointer', background: 'var(--paper-2)', padding: '2px 5px', borderRadius: '3px', border: '1px solid var(--line)' }}>
+              <label title="Ángulo anatómico de abducción del húmero" style={{ display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
+                <span style={{ color: 'var(--teal-deep)' }}>Húmero:</span>
+                <input
+                  type="range"
+                  min="0"
+                  max="120"
+                  value={armAbductionDeg}
+                  aria-label="Abducción anatómica del húmero"
+                  onChange={(e) => setArmAbductionDeg(parseFloat(e.target.value))}
+                  style={{ width: '45px' }}
+                />
+                <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '26px' }}>{armAbductionDeg}°</b>
+              </label>
+
+              <label title="Forzar o liberar el equilibrio de fuerzas" style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', cursor: 'pointer', background: 'var(--paper-2)', padding: '2px 5px', borderRadius: '3px', border: '1px solid var(--line)' }}>
                 <input
                   type="checkbox"
                   checked={autoEquilibrium}
