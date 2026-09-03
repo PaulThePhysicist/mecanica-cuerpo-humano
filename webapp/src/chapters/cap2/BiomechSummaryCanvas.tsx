@@ -656,28 +656,31 @@ function Interactive3DNodes({
               </mesh>
             )}
 
-            {/* Rótulo HTML Flotante */}
-            <Html position={[0.08, 0, 0]} center={false} zIndexRange={[100, 0]}>
-              <div
-                style={{
-                  background: isSelected ? 'rgba(13, 110, 100, 0.96)' : 'rgba(255, 255, 255, 0.92)',
-                  color: isSelected ? '#ffffff' : '#0f172a',
-                  backdropFilter: 'blur(6px)',
-                  border: `1.5px solid ${isSelected ? '#042f2c' : '#cbd5e1'}`,
-                  borderRadius: '4px',
-                  padding: '2px 5px',
-                  fontSize: '0.52rem',
-                  fontWeight: isSelected ? 700 : 600,
-                  fontFamily: 'JetBrains Mono, monospace',
-                  whiteSpace: 'nowrap',
-                  pointerEvents: 'none',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
-                  transform: 'translateY(-50%)',
-                }}
-              >
-                {item.icon} {item.classTag}
-              </div>
-            </Html>
+            {/* Rótulo sólo para el nódulo seleccionado o en hover: los 7 a la
+                vez saturaban el mapa. */}
+            {(isSelected || isHovered) && (
+              <Html position={[0.08, 0, 0]} center={false} zIndexRange={[100, 0]}>
+                <div
+                  style={{
+                    background: isSelected ? 'rgba(13, 110, 100, 0.96)' : 'rgba(255, 255, 255, 0.92)',
+                    color: isSelected ? '#ffffff' : '#0f172a',
+                    backdropFilter: 'blur(6px)',
+                    border: `1.5px solid ${isSelected ? '#042f2c' : '#cbd5e1'}`,
+                    borderRadius: '4px',
+                    padding: '2px 5px',
+                    fontSize: '0.52rem',
+                    fontWeight: isSelected ? 700 : 600,
+                    fontFamily: 'JetBrains Mono, monospace',
+                    whiteSpace: 'nowrap',
+                    pointerEvents: 'none',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+                    transform: 'translateY(-50%)',
+                  }}
+                >
+                  {item.icon} {item.classTag}
+                </div>
+              </Html>
+            )}
           </group>
         );
       })}
@@ -697,13 +700,16 @@ function CameraRig({
 }) {
   const { camera } = useThree();
 
-  const targetLookRef = useRef<THREE.Vector3>(new THREE.Vector3(0, 0, 0));
-  const targetPosRef = useRef<THREE.Vector3>(new THREE.Vector3(0, 0.2, 4.8));
+  const targetLookRef = useRef<THREE.Vector3>(new THREE.Vector3(-0.02, -0.12, 0));
+  const targetPosRef = useRef<THREE.Vector3>(new THREE.Vector3(0.22, 0.12, 6.5));
 
   useEffect(() => {
     if (isOverview) {
-      targetLookRef.current.set(0, -0.1, 0);
-      targetPosRef.current.set(0, 0.2, 4.8);
+      // Vista general: cámara centrada en el eje vertical del esqueleto
+      // (cabeza y=1.7 · pies y=-2.0 → mira a y≈-0.1) y suficientemente atrás
+      // para encuadrar de cráneo a metatarso.
+      targetLookRef.current.set(-0.02, -0.12, 0);
+      targetPosRef.current.set(0.22, 0.12, 6.5);
     } else {
       const node = NODES_DATA[selectedNode] || NODES_DATA.elbow;
       targetLookRef.current.set(...node.camTarget);
@@ -729,7 +735,7 @@ function CameraRig({
       dampingFactor={0.06}
       maxPolarAngle={Math.PI / 2 + 0.1}
       minDistance={0.5}
-      maxDistance={7.0}
+      maxDistance={13.0}
       target={[0, 0, 0]}
     />
   );
@@ -754,15 +760,15 @@ function BiomechInspectorCard({
         backdropFilter: 'blur(10px)',
         border: '1.5px solid var(--line, #cbd5e1)',
         borderRadius: '10px',
-        padding: '12px 14px',
+        padding: isOverview ? '10px 12px' : '12px 14px',
         boxShadow: '0 8px 24px rgba(35, 44, 54, 0.15)',
-        width: '280px',
+        width: isOverview ? '234px' : '280px',
         pointerEvents: 'auto',
       }}
     >
       {/* Cabecera */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-        <span style={{ fontSize: '0.80rem', fontWeight: 800, color: TEAL_DEEP }}>
+        <span style={{ fontSize: isOverview ? '0.72rem' : '0.80rem', fontWeight: 800, color: TEAL_DEEP }}>
           {node.icon} {node.title.toUpperCase()}
         </span>
         <span
@@ -780,10 +786,6 @@ function BiomechInspectorCard({
         </span>
       </div>
 
-      <div style={{ fontSize: '0.62rem', color: '#64748b', marginBottom: '8px' }}>
-        {node.leverType}
-      </div>
-
       {/* Bloque de Ecuación de Equilibrio Estático */}
       <div
         style={{
@@ -793,21 +795,21 @@ function BiomechInspectorCard({
           padding: '6px 8px',
           textAlign: 'center',
           fontFamily: 'JetBrains Mono, monospace',
-          fontSize: '0.66rem',
+          fontSize: isOverview ? '0.60rem' : '0.66rem',
           fontWeight: 700,
           color: TEAL_DEEP,
-          marginBottom: '8px',
+          margin: '6px 0 8px',
         }}
       >
         {node.equation}
       </div>
 
       {/* Relación Clave y Multiplicador */}
-      <div style={{ marginBottom: '6px' }}>
+      <div style={{ marginBottom: '2px' }}>
         <div style={{ fontSize: '0.56rem', fontWeight: 700, color: RED_ACCENT, textTransform: 'uppercase' }}>
           {node.ratioLabel}:
         </div>
-        <div style={{ fontSize: '0.90rem', fontWeight: 800, color: '#0f172a', fontFamily: 'JetBrains Mono, monospace' }}>
+        <div style={{ fontSize: isOverview ? '0.80rem' : '0.90rem', fontWeight: 800, color: '#0f172a', fontFamily: 'JetBrains Mono, monospace' }}>
           {node.keyRatio}
         </div>
         <div style={{ fontSize: '0.58rem', color: '#64748b' }}>
@@ -815,15 +817,21 @@ function BiomechInspectorCard({
         </div>
       </div>
 
-      <hr style={{ border: 'none', borderTop: '1px solid rgba(207, 195, 169, 0.5)', margin: '8px 0' }} />
-
-      {/* Implicación Clínica y Ergonómica */}
-      <div style={{ fontSize: '0.56rem', fontWeight: 700, color: TEAL_DEEP, marginBottom: '3px' }}>
-        IMPLICACIÓN CLÍNICA / ERGONÓMICA:
-      </div>
-      <div style={{ fontSize: '0.60rem', color: '#334155', lineHeight: 1.35, marginBottom: '10px' }}>
-        {node.clinical}
-      </div>
+      {/* Bloques verbosos: sólo al enfocar una articulación concreta */}
+      {!isOverview && (
+        <>
+          <div style={{ fontSize: '0.62rem', color: '#64748b', margin: '6px 0 4px' }}>
+            {node.leverType}
+          </div>
+          <hr style={{ border: 'none', borderTop: '1px solid rgba(207, 195, 169, 0.5)', margin: '8px 0' }} />
+          <div style={{ fontSize: '0.56rem', fontWeight: 700, color: TEAL_DEEP, marginBottom: '3px' }}>
+            IMPLICACIÓN CLÍNICA / ERGONÓMICA:
+          </div>
+          <div style={{ fontSize: '0.60rem', color: '#334155', lineHeight: 1.35, marginBottom: '10px' }}>
+            {node.clinical}
+          </div>
+        </>
+      )}
 
       {/* Botón de Enfoque / Vista General */}
       <button
@@ -831,6 +839,7 @@ function BiomechInspectorCard({
         onClick={onResetOverview}
         style={{
           width: '100%',
+          marginTop: isOverview ? '8px' : 0,
           background: isOverview ? 'var(--teal, #0d6e64)' : 'var(--paper-2, #f1f5f9)',
           color: isOverview ? '#ffffff' : 'var(--ink, #0f172a)',
           border: '1px solid var(--line, #cbd5e1)',
@@ -842,7 +851,7 @@ function BiomechInspectorCard({
           transition: 'all 0.15s ease',
         }}
       >
-        {isOverview ? '✓ Vista General (Cuerpo Completo)' : '🔍 Restablecer Vista Global'}
+        {isOverview ? '✓ Vista General · elige articulación' : '🔍 Restablecer Vista Global'}
       </button>
     </div>
   );
@@ -853,7 +862,9 @@ export default function BiomechSummaryCanvas({
   selectedNode = 'elbow',
   onSelectNode,
 }: BiomechSummaryCanvasProps) {
-  const [isOverview, setIsOverview] = useState<boolean>(false);
+  // Arranca en vista general (cuerpo completo con la articulación resaltada);
+  // el usuario acerca a una articulación con su botón.
+  const [isOverview, setIsOverview] = useState<boolean>(true);
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
 
   const handleSelect = (node: BiomechNodeId) => {
@@ -917,16 +928,28 @@ export default function BiomechSummaryCanvas({
           />
         </Suspense>
 
-        {/* ── HUD Card 3D Flotante (Inspector Biomecánico) ── */}
-        <Html position={[1.45, 0.2, 0]} center>
-          <BiomechInspectorCard
-            selectedNode={selectedNode}
-            onResetOverview={handleResetOverview}
-            isOverview={isOverview}
-          />
-        </Html>
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
+
+      {/* Inspector biomecánico anclado a la esquina inferior izquierda: los
+          vectores DCL del codo caen a la derecha del lienzo, así que esta
+          esquina queda libre y la tarjeta ya no tapa el esqueleto. */}
+      <div
+        style={{
+          position: 'absolute',
+          left: '8px',
+          bottom: '8px',
+          zIndex: 9,
+          transform: 'scale(0.66)',
+          transformOrigin: 'bottom left',
+        }}
+      >
+        <BiomechInspectorCard
+          selectedNode={selectedNode}
+          onResetOverview={handleResetOverview}
+          isOverview={isOverview}
+        />
+      </div>
     </div>
   );
 }

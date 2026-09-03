@@ -84,8 +84,10 @@ function AnatomyRegion({ leverClass }: { leverClass: LeverClass }) {
     return (
       <group position={[0, 0.03, 0]}>
         {/* La malla cervical vive alrededor de Y=.40 en el GLB. Se centra
-            aquí para conservar la escala anatómica sin perderla fuera de cámara. */}
-        <group scale={8.5} position={[0, -0.40 * 8.5, 0]}>
+            aquí para conservar la escala anatómica sin perderla fuera de cámara.
+            Escala 6.0 (antes 6.6): a 6.6 el cráneo llenaba el encuadre y dejaba
+            el fulcro C1 + los vectores aplastados en la franja inferior. */}
+        <group scale={6.0} position={[0, -0.40 * 6.0, 0]}>
           {/* Cráneo completo: la palanca de primera clase actúa sobre la
               cabeza como una unidad, no únicamente sobre el occipital. */}
           {nodes?.frontal && <mesh geometry={nodes.frontal.geometry} material={BONE} />}
@@ -124,17 +126,20 @@ function AnatomyRegion({ leverClass }: { leverClass: LeverClass }) {
             <sphereGeometry args={[0.010, 16, 16]} />
             <meshStandardMaterial color="#0d6e64" emissive="#0d6e64" emissiveIntensity={0.25} />
           </mesh>
-          <AnatomicalVector origin={[0.004, 0.455, 0.015]} vector={[0, -0.085, 0]} color="#d97706" label="W · centro de masa" labelOffset={[0.10, -0.03, 0]} />
-          <AnatomicalVector origin={[0.004, 0.425, -0.055]} vector={[0, -0.075, 0]} color="#0d6e64" label="Fm · extensores cervicales" labelOffset={[-0.10, 0.02, 0]} />
+          <AnatomicalVector origin={[0.004, 0.455, 0.015]} vector={[0, -0.085, 0]} color="#d97706" label="W · cabeza" labelOffset={[0.07, -0.03, 0]} />
+          <AnatomicalVector origin={[0.004, 0.425, -0.055]} vector={[0, -0.075, 0]} color="#0d6e64" label="Fm · extensores" labelOffset={[-0.09, 0.02, 0]} />
         </group>
       </group>
     );
   }
 
   if (leverClass === 2) {
+    // Escala 5.5 (antes 10.5, la tibia se salía por arriba). El grupo se
+    // recoloca para que el astrágalo quede en el origen.
+    const S = 5.5;
     return (
-      <group position={[0, -0.42, 0]}>
-        <group scale={10.5} position={[0.048 * 10.5, 0.496 * 10.5, 0]}>
+      <group position={[0, 0.02, 0]}>
+        <group scale={S} position={[0.041 * S, 0.466 * S, 0]}>
           {nodes?.tibia_R && <mesh geometry={nodes.tibia_R.geometry} material={BONE} />}
           {nodes?.fibula_R && <mesh geometry={nodes.fibula_R.geometry} material={BONE_DEEP} />}
           {nodes?.talus_R && <mesh geometry={nodes.talus_R.geometry} material={JOINT} />}
@@ -147,8 +152,8 @@ function AnatomyRegion({ leverClass }: { leverClass: LeverClass }) {
           {nodes?.metatarsal3_R && <mesh geometry={nodes.metatarsal3_R.geometry} material={BONE} />}
           {nodes?.metatarsal4_R && <mesh geometry={nodes.metatarsal4_R.geometry} material={BONE} />}
           {nodes?.metatarsal5_R && <mesh geometry={nodes.metatarsal5_R.geometry} material={BONE} />}
-          <AnatomicalVector origin={[-0.041, -0.463, -0.012]} vector={[0, 0.14, 0]} color="#2e8b57" label="Fm · Aquiles" labelOffset={[-0.11, 0.02, 0]} />
-          <AnatomicalVector origin={[-0.041, -0.463, -0.012]} vector={[0, -0.12, 0]} color="#d97706" label="W · cuerpo" labelOffset={[0.12, -0.03, 0]} />
+          <AnatomicalVector origin={[-0.041, -0.463, -0.012]} vector={[0, 0.055, 0]} color="#2e8b57" label="Fm · Aquiles" labelOffset={[-0.08, 0.01, 0]} />
+          <AnatomicalVector origin={[-0.041, -0.463, -0.012]} vector={[0, -0.05, 0]} color="#d97706" label="W · cuerpo" labelOffset={[0.09, -0.02, 0]} />
         </group>
       </group>
     );
@@ -157,7 +162,7 @@ function AnatomyRegion({ leverClass }: { leverClass: LeverClass }) {
   return (
     /* El recorte de B1 usa una escala mayor que el cuerpo completo: el
        codo y el antebrazo deben ser legibles, pero conservar sus proporciones. */
-    <group position={[0.3, 0.1, 0]} scale={5.5}>
+    <group position={[-0.05, 0.05, 0]} scale={5.5}>
       <group position={[0.128, -0.142, 0.016]}>
         {nodes?.scapula_R && <mesh geometry={nodes.scapula_R.geometry} material={BONE_DEEP} />}
         {nodes?.humerus_R && <mesh geometry={nodes.humerus_R.geometry} material={BONE} />}

@@ -227,7 +227,7 @@ function RealArmTricepsScene({
     []
   );
 
-  const ARM_SCALE = 3.6;
+  const ARM_SCALE = 4.0;
 
   // Posición del pico del olécranon relativo al fulcro troclear
   const olecranonOffset: [number, number, number] = [
@@ -250,7 +250,7 @@ function RealArmTricepsScene({
   const angleRad = (90 * Math.PI) / 180;
 
   return (
-    <group position={[0.3, 0.1, 0]} scale={ARM_SCALE}>
+    <group position={[-0.05, 0.05, 0]} scale={ARM_SCALE}>
       {/* ── Segmento Fijo: Húmero, Escápula y Clavícula ── */}
       <group position={[-P_ELBOW.x, -P_ELBOW.y, -P_ELBOW.z]}>
         {boneNodes?.scapula_R && <mesh geometry={boneNodes.scapula_R.geometry} material={fixedBoneMat} />}
@@ -326,8 +326,8 @@ function RealArmTricepsScene({
         origin={[0, 0, 0]}
         vector={vRj}
         color="#7c3aed"
-        label={`R_j = ${rJointN.toFixed(0)} N (${rJointKgf.toFixed(1)} kgf)`}
-        sublabel={`Compresión Aditiva (Ft + W = ${(mechanicalRatio + 1).toFixed(0)}×W)`}
+        label={`R_j = ${rJointN.toFixed(0)} N`}
+        sublabel={`compresión aditiva · ${(mechanicalRatio + 1).toFixed(0)}×W`}
       />
 
       {/* ── Segmento Móvil: Antebrazo con Olécranon Posterior ── */}
@@ -369,8 +369,8 @@ function RealArmTricepsScene({
           origin={olecranonOffset}
           vector={vFt}
           color="#dc2626"
-          label={`F_t = ${fTricepsN.toFixed(0)} N (${fTricepsKgf.toFixed(1)} kgf)`}
-          sublabel={`Tríceps (Palanca 1ª Clase · ${mechanicalRatio.toFixed(1)}×)`}
+          label={`F_t = ${fTricepsN.toFixed(0)} N`}
+          sublabel={`tríceps · 1ª clase · ${mechanicalRatio.toFixed(1)}×`}
         />
 
         {/* Vector de Fuerza de Empuje W en la Palma de la Mano */}
@@ -379,7 +379,7 @@ function RealArmTricepsScene({
           vector={vWpush}
           color="#d97706"
           label={`W = ${wPushN.toFixed(0)} N (${pushLoadKg} kg)`}
-          sublabel="Fuerza de empuje en mano (D = 35 cm)"
+          sublabel="empuje en mano · D 35 cm"
         />
       </group>
     </group>
@@ -433,7 +433,7 @@ export default function TricepsCanvas({
   return (
     <div className="cap2-webgl-canvas" style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
       <Canvas
-        camera={{ position: [1.8, 0.4, 2.4], fov: 40 }}
+        camera={{ position: [1.45, 0.3, 2.15], fov: 42 }}
         style={{
           width: '100%',
           height: '100%',

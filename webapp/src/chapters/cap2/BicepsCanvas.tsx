@@ -192,7 +192,7 @@ function RealArmBicepsScene({
     []
   );
 
-  const ARM_SCALE = 3.6;
+  const ARM_SCALE = 4.0;
 
   // Vectores calibrados proporcionalmente a los huesos reales (máx 1/4 - 1/3 del hueso)
   const fmLen = Math.min(0.11, Math.max(0.035, fMuscN * 0.00015));
@@ -205,7 +205,7 @@ function RealArmBicepsScene({
   const vRj: [number, number, number] = [0, -rjLen, 0];
 
   return (
-    <group position={[0.3, 0.1, 0]} scale={ARM_SCALE}>
+    <group position={[-0.05, 0.05, 0]} scale={ARM_SCALE}>
       {/* ── Segmento Fijo: Húmero, Escápula y Clavícula ── */}
       <group position={[-P_ELBOW.x, -P_ELBOW.y, -P_ELBOW.z]}>
         {boneNodes?.scapula_R && <mesh geometry={boneNodes.scapula_R.geometry} material={fixedBoneMat} />}
@@ -336,7 +336,7 @@ export default function BicepsCanvas({
   return (
     <div className="cap2-webgl-canvas" style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
       <Canvas
-        camera={{ position: [1.8, 0.4, 2.4], fov: 40 }}
+        camera={{ position: [1.45, 0.3, 2.15], fov: 42 }}
         style={{
           width: '100%',
           height: '100%',
@@ -375,7 +375,7 @@ export default function BicepsCanvas({
           maxDistance={5.0}
           target={cameraTarget}
         />
-        <Cap2ZoomHandler initialPosition={[1.8, 0.4, 2.4]} target={cameraTarget} minDistance={0.8} maxDistance={5} />
+        <Cap2ZoomHandler initialPosition={[1.45, 0.3, 2.15]} target={cameraTarget} minDistance={0.8} maxDistance={5} />
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
 

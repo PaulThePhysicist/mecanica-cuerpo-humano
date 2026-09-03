@@ -325,7 +325,7 @@ function MultiMuscleScene({
     []
   );
 
-  const ARM_SCALE = 3.6;
+  const ARM_SCALE = 4.0;
 
   // 90° de flexión en el codo
   const angleRad = (90 * Math.PI) / 180;
@@ -338,7 +338,7 @@ function MultiMuscleScene({
   const rjLen = Math.min(0.105, Math.max(0.030, rJointN * 0.00014));
 
   return (
-    <group position={[0.3, 0.1, 0]} scale={ARM_SCALE}>
+    <group position={[-0.05, 0.05, 0]} scale={ARM_SCALE}>
       {/* ── Segmento Fijo: Húmero, Escápula y Clavícula ── */}
       <group position={[-P_ELBOW.x, -P_ELBOW.y, -P_ELBOW.z]}>
         {/* B3 se centra en el codo; se omiten escápula y clavícula para no
@@ -400,8 +400,8 @@ function MultiMuscleScene({
         vector={[0, -rjLen, 0]}
         color="#0d9488"
         label={`R_j = ${rJointN.toFixed(0)} N`}
-        sublabel="Compresión Articular"
-        screenOffset={[-104, 108]}
+        sublabel="compresión articular"
+        screenOffset={[-52, 70]}
       />
 
       {/* ── Segmento Móvil: Antebrazo a 90° de Flexión ── */}
@@ -444,8 +444,8 @@ function MultiMuscleScene({
             vector={[brachLen * 0.08, brachLen * 0.98, -brachLen * 0.12]}
             color="#2e8b57"
             label={`Braquial = ${fBrachialisN.toFixed(0)} N`}
-            sublabel="45% Torque · d = 2,5 cm (Apófisis coronoides)"
-            screenOffset={[-104, 58]}
+            sublabel="45% τ · d 2,5 cm"
+            screenOffset={[-58, 40]}
           />
         )}
 
@@ -455,8 +455,8 @@ function MultiMuscleScene({
           vector={[bicLen * 0.14, bicLen * 0.97, -bicLen * 0.18]}
           color="#dc2626"
           label={`Bíceps = ${fBicepsN.toFixed(0)} N`}
-          sublabel={activeMuscleCount === 3 ? '40% Torque · d = 4,0 cm (Tuberosidad radial)' : '⚠️ 100% Carga Aislada (Sobrecarga)'}
-          screenOffset={[0, 82]}
+          sublabel={activeMuscleCount === 3 ? '40% τ · d 4,0 cm' : '⚠ 100% aislado'}
+          screenOffset={[0, 56]}
         />
 
         {/* Vector 3: Braquiorradial (Amber) */}
@@ -466,8 +466,8 @@ function MultiMuscleScene({
             vector={[-bradLen * 0.12, bradLen * 0.98, bradLen * 0.08]}
             color="#d97706"
             label={`Braquiorradial = ${fBrachioradialisN.toFixed(0)} N`}
-            sublabel="15% Torque · d = 25,0 cm (Shunt / Estabilizador)"
-            screenOffset={[104, 58]}
+            sublabel="15% τ · shunt d 25 cm"
+            screenOffset={[58, 40]}
           />
         )}
 
@@ -477,8 +477,8 @@ function MultiMuscleScene({
           vector={[0, -wLen, 0]}
           color="#232c36"
           label={`W = ${wHandN.toFixed(0)} N (${handLoadKg} kg)`}
-          sublabel="Carga en mano (D = 35 cm)"
-          screenOffset={[104, 104]}
+          sublabel="carga · D 35 cm"
+          screenOffset={[52, 66]}
         />
       </group>
     </group>
@@ -542,7 +542,7 @@ export default function MultiMuscleCanvas({
   return (
     <div className="cap2-webgl-canvas" style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
       <Canvas
-        camera={{ position: [1.8, 0.4, 2.4], fov: 40 }}
+        camera={{ position: [1.45, 0.3, 2.15], fov: 42 }}
         style={{
           width: '100%',
           height: '100%',
