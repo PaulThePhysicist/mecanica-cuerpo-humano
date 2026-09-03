@@ -250,8 +250,13 @@ export default function TactileThresholdCanvas({
       ctx.rect(plotLeft, plotTop, plotW, plotH);
       ctx.clip();
 
-      // 3.1 Cuenca sombreada de Pacini (250 Hz / 80 nm)
-      ctx.fillStyle = 'rgba(37, 99, 235, 0.08)';
+      // 3.1 Cuenca sombreada de Pacini (250 Hz / 80 nm). Degradado vertical que
+      // se desvanece hacia amplitudes altas: la "cuenca de sensibilidad" se lee
+      // como un pozo y no como un triángulo azul plano recortado.
+      const pacBasinGrad = ctx.createLinearGradient(0, ampToY(0.02), 0, ampToY(100));
+      pacBasinGrad.addColorStop(0, 'rgba(37, 99, 235, 0.13)');
+      pacBasinGrad.addColorStop(1, 'rgba(37, 99, 235, 0)');
+      ctx.fillStyle = pacBasinGrad;
       ctx.beginPath();
       ctx.moveTo(freqToX(40), ampToY(100));
       for (let f = 40; f <= 800; f += 5) {
@@ -262,7 +267,10 @@ export default function TactileThresholdCanvas({
       ctx.fill();
 
       // 3.2 Cuenca sombreada de Meissner (35 Hz / 1.8 µm)
-      ctx.fillStyle = 'rgba(13, 133, 119, 0.07)';
+      const meisBasinGrad = ctx.createLinearGradient(0, ampToY(0.5), 0, ampToY(100));
+      meisBasinGrad.addColorStop(0, 'rgba(13, 133, 119, 0.12)');
+      meisBasinGrad.addColorStop(1, 'rgba(13, 133, 119, 0)');
+      ctx.fillStyle = meisBasinGrad;
       ctx.beginPath();
       ctx.moveTo(freqToX(5), ampToY(100));
       for (let f = 5; f <= 160; f += 3) {
@@ -415,7 +423,10 @@ export default function TactileThresholdCanvas({
       ctx.stroke();
       ctx.setLineDash([]);
 
-      // Insignia en el eje X (Frecuencia)
+      // Insignia en el eje X (Frecuencia). beginPath() obligatorio: sin él,
+      // fill() cerraba la polilínea de proyección punteada en un triángulo
+      // azul sólido que cubría medio gráfico.
+      ctx.beginPath();
       ctx.fillStyle = dominantColor;
       ctx.roundRect(stimX - 22, plotBottom + 2, 44, 12, 2.5);
       ctx.fill();
@@ -426,6 +437,7 @@ export default function TactileThresholdCanvas({
 
       // Insignia en el eje Y (Amplitud)
       const ampBadgeText = amplitudeUm < 0.1 ? `${(amplitudeUm * 1000).toFixed(0)} nm` : `${amplitudeUm < 1 ? amplitudeUm.toFixed(2) : amplitudeUm.toFixed(1)} µm`;
+      ctx.beginPath();
       ctx.fillStyle = dominantColor;
       ctx.roundRect(plotLeft - 38, stimY - 6, 36, 12, 2.5);
       ctx.fill();
@@ -451,6 +463,7 @@ export default function TactileThresholdCanvas({
       ctx.stroke();
 
       // Rótulo flotante encima del punto
+      ctx.beginPath();
       ctx.fillStyle = 'rgba(255, 255, 255, 0.96)';
       ctx.strokeStyle = dominantColor;
       ctx.lineWidth = 0.9;

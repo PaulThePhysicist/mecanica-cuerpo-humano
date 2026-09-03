@@ -795,9 +795,10 @@ export default function MechanoreceptorsCanvas({
       const oscH = H * 0.74;
 
       ctx.save();
-      // Chasis del osciloscopio
-      ctx.fillStyle = '#0f172a';
-      ctx.strokeStyle = '#334155';
+      // Chasis del osciloscopio (azul pizarra, no negro puro: el rectángulo
+      // grande a la derecha chocaba contra el papel cálido del slide).
+      ctx.fillStyle = '#1c2733';
+      ctx.strokeStyle = '#3b4a5c';
       ctx.lineWidth = 1.8;
       ctx.roundRect(oscX, oscY, oscW, oscH, 7);
       ctx.fill();
@@ -816,8 +817,8 @@ export default function MechanoreceptorsCanvas({
       ctx.clip();
 
       const crtGrad = ctx.createRadialGradient(scrX + scrW * 0.5, scrY + scrH * 0.5, 10, scrX + scrW * 0.5, scrY + scrH * 0.5, scrW * 0.7);
-      crtGrad.addColorStop(0, '#061a1a');
-      crtGrad.addColorStop(1, '#020b0d');
+      crtGrad.addColorStop(0, '#0c2124');
+      crtGrad.addColorStop(1, '#08171b');
       ctx.fillStyle = crtGrad;
       ctx.fillRect(scrX, scrY, scrW, scrH);
 
