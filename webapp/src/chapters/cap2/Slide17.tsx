@@ -41,7 +41,7 @@ export default function Slide17({
     <>
       <div className="module-header">
         <span className="mnum">H1</span>
-        <span className="mtitle">Conversor de unidades biomecánicas</span>
+        <h2 className="mtitle">Conversor de unidades biomecánicas</h2>
         <span className="msub">Fuerza (N, kgf, lbf) · Torque (N·m, kgf·m, lbf·ft) · Presión y esfuerzo tisular (Pa, MPa, bar, mmHg)</span>
         <span className="mslide-count">1 / 2</span>
       </div>
@@ -56,27 +56,33 @@ export default function Slide17({
                 En la práctica clínica y biofísica conviven el Sistema Internacional (SI) y unidades técnicas tradicionales:
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '.62rem', marginTop: '.25rem' }}>
-                <span
+                <button
+                  type="button"
                   className="pill"
+                  aria-pressed={quantityType === 'force'}
                   style={{ borderLeft: '3px solid #0d8577', cursor: 'pointer' }}
                   onClick={() => handleSelectType('force')}
                 >
                   <b>Fuerza:</b> {'$1\\text{ kgf} = 9{,}80665\\text{ N} \\approx 2{,}205\\text{ lbf} = 10^5\\text{ dyn}$.'}
-                </span>
-                <span
+                </button>
+                <button
+                  type="button"
                   className="pill"
+                  aria-pressed={quantityType === 'torque'}
                   style={{ borderLeft: '3px solid #2563eb', cursor: 'pointer' }}
                   onClick={() => handleSelectType('torque')}
                 >
                   <b>Torque / Momento:</b> {'$1\\text{ kgf}\\cdot\\text{m} = 9{,}80665\\text{ N}\\cdot\\text{m} \\approx 7{,}233\\text{ lbf}\\cdot\\text{ft}$.'}
-                </span>
-                <span
+                </button>
+                <button
+                  type="button"
                   className="pill"
+                  aria-pressed={quantityType === 'pressure'}
                   style={{ borderLeft: '3px solid #b02318', cursor: 'pointer' }}
                   onClick={() => handleSelectType('pressure')}
                 >
                   <b>Presión y Tensión:</b> {'$1\\text{ MPa} = 10^6\\text{ Pa} = 10\\text{ bar} = 7500\\text{ mmHg} = 145\\text{ psi}$.'}
-                </span>
+                </button>
               </div>
             </div>
           </div>

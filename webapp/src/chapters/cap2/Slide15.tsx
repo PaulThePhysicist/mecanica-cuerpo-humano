@@ -139,7 +139,7 @@ export default function Slide15({
     <>
       <div className="module-header">
         <span className="mnum">G1</span>
-        <span className="mtitle">Mecanorreceptores táctiles</span>
+        <h2 className="mtitle">Mecanorreceptores táctiles</h2>
         <span className="msub">Meissner, Pacini, Merkel y Ruffini · Histología cutánea 3D y osciloscopio neurofisiológico</span>
         <span className="mslide-count">1 / 2</span>
       </div>
@@ -154,18 +154,18 @@ export default function Slide15({
                 La piel glabra de la mano procesa las deformaciones mecánicas mediante 4 clases de mecanorreceptores especializados:
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '.62rem', marginTop: '.25rem' }}>
-                <span className="pill" style={{ borderLeft: '3px solid #0d8577', cursor: 'pointer' }} onClick={() => handleSelect('meissner')}>
+                <button type="button" className="pill" aria-pressed={selectedReceptor === 'meissner'} style={{ borderLeft: '3px solid #0d8577', cursor: 'pointer' }} onClick={() => handleSelect('meissner')}>
                   <b>RA1 (Meissner):</b> {'Superficial, campo pequeño ($3\\text{--}5\\text{ mm}$), vibración baja ($10\\text{--}50\\text{ Hz}$).'}
-                </span>
-                <span className="pill" style={{ borderLeft: '3px solid #2563eb', cursor: 'pointer' }} onClick={() => handleSelect('pacini')}>
+                </button>
+                <button type="button" className="pill" aria-pressed={selectedReceptor === 'pacini'} style={{ borderLeft: '3px solid #2563eb', cursor: 'pointer' }} onClick={() => handleSelect('pacini')}>
                   <b>RA2 (Pacini):</b> {'Profundo, campo amplio difuso, vibración alta ($200\\text{--}400\\text{ Hz}$).'}
-                </span>
-                <span className="pill" style={{ borderLeft: '3px solid #b02318', cursor: 'pointer' }} onClick={() => handleSelect('merkel')}>
+                </button>
+                <button type="button" className="pill" aria-pressed={selectedReceptor === 'merkel'} style={{ borderLeft: '3px solid #b02318', cursor: 'pointer' }} onClick={() => handleSelect('merkel')}>
                   <b>SA1 (Merkel):</b> {'Estrato basal, resolución ($0{,}5\\text{ mm}$), presión estática y relieve.'}
-                </span>
-                <span className="pill" style={{ borderLeft: '3px solid #d97706', cursor: 'pointer' }} onClick={() => handleSelect('ruffini')}>
+                </button>
+                <button type="button" className="pill" aria-pressed={selectedReceptor === 'ruffini'} style={{ borderLeft: '3px solid #d97706', cursor: 'pointer' }} onClick={() => handleSelect('ruffini')}>
                   <b>SA2 (Ruffini):</b> {'Dermis reticular, tensión direccional y estiramiento tisular.'}
-                </span>
+                </button>
               </div>
             </div>
           </div>

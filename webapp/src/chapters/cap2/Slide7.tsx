@@ -38,7 +38,7 @@ export default function Slide7({
     <>
       <div className="module-header">
         <span className="mnum">C1</span>
-        <span className="mtitle">La cadera: apoyo monopodal</span>
+        <h2 className="mtitle">La cadera: apoyo monopodal</h2>
         <span className="msub">Músculos abductores (glúteo medio) y carga articular en la cabeza femoral</span>
         <span className="mslide-count">1 / 2</span>
       </div>

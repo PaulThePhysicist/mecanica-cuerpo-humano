@@ -62,7 +62,7 @@ export default function Slide14({
     <>
       <div className="module-header">
         <span className="mnum">F2</span>
-        <span className="mtitle">Plataforma de fuerza y marcha</span>
+        <h2 className="mtitle">Plataforma de fuerza y marcha</h2>
         <span className="msub">Fuerzas de reacción del suelo (GRF), centro de presiones (COP) y baropodometría</span>
         <span className="mslide-count">2 / 2</span>
       </div>

@@ -66,7 +66,7 @@ export default function Slide2({
     <>
       <div className="module-header">
         <span className="mnum">A2</span>
-        <span className="mtitle">El torque vectorial</span>
+        <h2 className="mtitle">El torque vectorial</h2>
         <span className="msub">{'$\\tau = \\vec{r} \\times \\vec{F}$ · Descomposición ortogonal y brazo de momento'}</span>
         <span className="mslide-count">2 / 2</span>
       </div>

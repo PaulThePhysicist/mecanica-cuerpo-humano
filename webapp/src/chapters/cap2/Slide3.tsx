@@ -74,7 +74,7 @@ export default function Slide3({
     <>
       <div className="module-header">
         <span className="mnum">B1</span>
-        <span className="mtitle">Las tres clases de palancas</span>
+        <h2 className="mtitle">Las tres clases de palancas</h2>
         <span className="msub">{'1ª, 2ª y 3ª clase · Ventaja mecánica $\\text{VM} = b_p / b_r$ en la anatomía humana'}</span>
         <span className="mslide-count">1 / 4</span>
       </div>
@@ -106,11 +106,16 @@ export default function Slide3({
                   const item = LEVERS_INFO[c as 1 | 2 | 3];
                   const isSel = leverClass === c;
                   return (
-                    <div
+                    <button
+                      type="button"
                       key={c}
                       onClick={() => handleSelect(c as 1 | 2 | 3)}
+                      aria-pressed={isSel}
                       style={{
                         padding: '.35rem .5rem',
+                        width: '100%',
+                        font: 'inherit',
+                        textAlign: 'left',
                         borderRadius: '5px',
                         cursor: 'pointer',
                         display: 'flex',
@@ -121,15 +126,15 @@ export default function Slide3({
                         transition: 'all 0.15s ease',
                       }}
                     >
-                      <div>
+                      <span>
                         <b style={{ color: isSel ? 'var(--teal-deep)' : 'var(--ink)', fontSize: '.68rem' }}>{item.name}</b>
                         <br />
                         <span style={{ fontSize: '.55rem', color: 'var(--ink-3)' }}>{item.anat}</span>
-                      </div>
+                      </span>
                       <span style={{ fontSize: '.60rem', fontFamily: 'JetBrains Mono, monospace', color: isSel ? 'var(--teal-deep)' : 'var(--ink-2)', fontWeight: 'bold' }}>
                         {c === 1 ? 'VM = 0,42' : (c === 2 ? 'VM = 1,80' : 'VM = 0,11')}
                       </span>
-                    </div>
+                    </button>
                   );
                 })}
               </div>
@@ -182,6 +187,7 @@ export default function Slide3({
               <button
                 type="button"
                 className={viewMode === '2d' ? 'active' : ''}
+                aria-pressed={viewMode === '2d'}
                 onClick={() => setViewMode('2d')}
               >
                 2D · Diagrama
@@ -189,6 +195,7 @@ export default function Slide3({
               <button
                 type="button"
                 className={viewMode === '3d' ? 'active' : ''}
+                aria-pressed={viewMode === '3d'}
                 onClick={() => setViewMode('3d')}
               >
                 3D · Anatomía

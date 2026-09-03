@@ -47,7 +47,7 @@ export default function Slide5({
     <>
       <div className="module-header">
         <span className="mnum">B3</span>
-        <span className="mtitle">Sinergia flexora 3D del codo</span>
+        <h2 className="mtitle">Sinergia flexora 3D del codo</h2>
         <span className="msub">Bíceps + Braquial anterior + Braquiorradial · Cooperación multi-músculo</span>
         <span className="mslide-count">3 / 4</span>
       </div>

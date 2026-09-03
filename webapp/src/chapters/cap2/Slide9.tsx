@@ -41,7 +41,7 @@ export default function Slide9({
     <>
       <div className="module-header">
         <span className="mnum">D1</span>
-        <span className="mtitle">La columna y el erector de la espina</span>
+        <h2 className="mtitle">La columna y el erector de la espina</h2>
         <span className="msub">Inclinación del tronco · La gran desventaja mecánica lumbar</span>
         <span className="mslide-count">1 / 2</span>
       </div>

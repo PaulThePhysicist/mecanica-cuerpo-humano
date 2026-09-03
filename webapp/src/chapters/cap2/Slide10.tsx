@@ -85,7 +85,7 @@ export default function Slide10({
     <>
       <div className="module-header">
         <span className="mnum">D2</span>
-        <span className="mtitle">Presión intradiscal en L5-S1</span>
+        <h2 className="mtitle">Presión intradiscal en L5-S1</h2>
         <span className="msub">Esfuerzos de compresión, cizallamiento y prevención de hernias discales</span>
         <span className="mslide-count">2 / 2</span>
       </div>

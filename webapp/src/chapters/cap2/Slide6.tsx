@@ -42,7 +42,7 @@ export default function Slide6({
     <>
       <div className="module-header">
         <span className="mnum">B4</span>
-        <span className="mtitle">Extensión del codo: el tríceps 3D</span>
+        <h2 className="mtitle">Extensión del codo: el tríceps 3D</h2>
         <span className="msub">Palanca de 1ª clase · Inserción en el olécranon y compresión articular aditiva</span>
         <span className="mslide-count">4 / 4</span>
       </div>

@@ -54,7 +54,7 @@ export default function Slide4({
     <>
       <div className="module-header">
         <span className="mnum">B2</span>
-        <span className="mtitle">Flexión del codo: el bíceps 3D</span>
+        <h2 className="mtitle">Flexión del codo: el bíceps 3D</h2>
         <span className="msub">Palanca de 3ª clase · Desventaja mecánica y fuerza de compresión articular</span>
         <span className="mslide-count">2 / 4</span>
       </div>

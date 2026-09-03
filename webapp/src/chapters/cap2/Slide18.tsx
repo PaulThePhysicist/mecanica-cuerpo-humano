@@ -90,7 +90,7 @@ export default function Slide18({
     <>
       <div className="module-header">
         <span className="mnum">H2</span>
-        <span className="mtitle">Síntesis y mapa biomecánico integral</span>
+        <h2 className="mtitle">Síntesis y mapa biomecánico integral</h2>
         <span className="msub">Mapa interactivo de palancas anatómicas, momentos de fuerza y cargas articulares del cuerpo humano</span>
         <span className="mslide-count">2 / 2</span>
       </div>

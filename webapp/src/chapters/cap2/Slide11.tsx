@@ -94,7 +94,7 @@ export default function Slide11({
     <>
       <div className="module-header">
         <span className="mnum">E1</span>
-        <span className="mtitle">La mandíbula y la ATM</span>
+        <h2 className="mtitle">La mandíbula y la ATM</h2>
         <span className="msub">Fuerzas de mordida en incisivos vs molares y carga en la articulación temporomandibular</span>
         <span className="mslide-count">1 / 2</span>
       </div>

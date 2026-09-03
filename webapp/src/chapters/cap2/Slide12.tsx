@@ -84,7 +84,7 @@ export default function Slide12({
     <>
       <div className="module-header">
         <span className="mnum">E2</span>
-        <span className="mtitle">Tracción articular y estática</span>
+        <h2 className="mtitle">Tracción articular y estática</h2>
         <span className="msub">Aparatos de tracción cervical y descomposición ortogonal de fuerzas terapéuticas</span>
         <span className="mslide-count">2 / 2</span>
       </div>

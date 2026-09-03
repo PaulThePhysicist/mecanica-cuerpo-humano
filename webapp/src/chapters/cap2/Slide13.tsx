@@ -65,7 +65,7 @@ export default function Slide13({
     <>
       <div className="module-header">
         <span className="mnum">F1</span>
-        <span className="mtitle">Método de segmentos corporales</span>
+        <h2 className="mtitle">Método de segmentos corporales</h2>
         <span className="msub">Cálculo del centro de gravedad (CG) total y polígono de sustentación</span>
         <span className="mslide-count">1 / 2</span>
       </div>

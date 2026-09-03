@@ -1,8 +1,7 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useEngine, EngineContext } from './useEngine';
 import './cap2.css';
 import { MODULES, TOTAL, redrawSlide } from './sims';
-import type { SimParams } from './sims';
 import { CAP2_ZOOM_EVENT } from './Cap2ZoomHandler';
 // @ts-ignore - katex auto-render no incluye tipos
 import renderMathInElement from 'katex/contrib/auto-render';
@@ -45,10 +44,31 @@ const SLIDES = [
   Slide10, Slide11, Slide12, Slide13, Slide14, Slide15, Slide16, Slide17, Slide18,
 ];
 
+function slideCountOf(index: number): string {
+  const mod = MODULES.find((m) => m.slides.includes(index));
+  if (!mod || mod.slides.length < 2) return '·';
+  return `${mod.slides.indexOf(index) + 1} / ${mod.slides.length}`;
+}
+
 export default function Capitulo2({ onBack }: { onBack?: () => void }) {
   const engine = useEngine();
   const { activeSlide, go, next, prev, goModule } = engine;
   const [moduleTabsBuilt, setModuleTabsBuilt] = useState(false);
+  const seen = useRef<Set<number>>(new Set());
+  const isRevisit = useMemo(() => {
+    const already = seen.current.has(activeSlide);
+    seen.current.add(activeSlide);
+    return already;
+  }, [activeSlide]);
+
+  useLayoutEffect(() => {
+    const root = document.documentElement;
+    const previousSize = root.style.fontSize;
+    root.style.fontSize = 'calc(clamp(16px, 1.32vw, 21px) + 3px)';
+    return () => {
+      root.style.fontSize = previousSize;
+    };
+  }, []);
 
   // ── Callbacks locales que delegan en engine.flagsRef + redibujo ──
   // (Sustituyen las funciones setLever/toggle*/setJawPos/etc. del HTML legacy.)
@@ -110,7 +130,6 @@ export default function Capitulo2({ onBack }: { onBack?: () => void }) {
     forceRedraw();
   };
   const convertPreset = (k: string) => {
-    const p = engine.paramsRef.current;
     if (k === 'bp') { engine.setParam('cv_p_val', 120); engine.setParam('cv_p_from', 'mmHg'); engine.setParam('cv_p_to', 'Pa'); }
     if (k === 'atm') { engine.setParam('cv_p_val', 1); engine.setParam('cv_p_from', 'atm'); engine.setParam('cv_p_to', 'Pa'); }
     if (k === 'body') { engine.setParam('cv_f_val', 70); engine.setParam('cv_f_from', 'kgf'); engine.setParam('cv_f_to', 'lb'); }
@@ -269,8 +288,8 @@ export default function Capitulo2({ onBack }: { onBack?: () => void }) {
     <EngineContext.Provider value={engine}>
       <canvas id="c2-dust" aria-hidden="true" style={{ position: 'fixed', inset: 0, width: '100%', height: '100%', zIndex: 0, pointerEvents: 'none', opacity: 0.5 }} />
 
-      <nav className="module-bar" id="moduleBar">
-        {onBack && <button onClick={onBack} style={{marginRight: '1rem', cursor: 'pointer', padding: '0.5rem'}}>← Inicio</button>}
+      <nav className="module-bar" id="moduleBar" aria-label="Módulos del Capítulo 2">
+        {onBack && <button type="button" onClick={onBack} style={{marginRight: '1rem', cursor: 'pointer', padding: '0.5rem'}}>← Inicio</button>}
         <div className="brand-mark">
           <span className="treatise">El cuerpo humano · capítulo 2</span>
           <span className="book">Física del Cuerpo Humano — I. P. Herman</span>
@@ -281,7 +300,7 @@ export default function Capitulo2({ onBack }: { onBack?: () => void }) {
         const isCover = i === 0;
         const cls = isCover ? 'slide-full' : 'slide';
         return (
-          <div key={i} className={`${cls} ${activeSlide === i ? 'active' : ''}`} data-slide={i} data-module={MODULES.find(m => m.slides.includes(i))?.id ?? 0}>
+          <div key={i} className={`${cls} ${activeSlide === i ? 'active' : ''} ${activeSlide === i && isRevisit ? 'instant' : ''}`} data-slide={i} data-module={MODULES.find(m => m.slides.includes(i))?.id ?? 0}>
             <Slide
               isActive={activeSlide === i}
               engine={engine}
@@ -305,20 +324,22 @@ export default function Capitulo2({ onBack }: { onBack?: () => void }) {
         );
       })}
 
-      <nav className="nav-bar">
-        <button className="nav-btn" onClick={prev} aria-label="Anterior">←</button>
+      <nav className="nav-bar" aria-label="Navegación de diapositivas">
+        <button type="button" className="nav-btn" onClick={prev} aria-label="Anterior">←</button>
         <div className="nav-dots" id="navDots">
           {Array.from({ length: TOTAL }).map((_, i) => (
             <button
               key={i}
+              type="button"
               className={`nav-dot ${activeSlide === i ? 'active' : ''}`}
-              title={`Ir a ${(() => { const mod = MODULES.find(m => m.slides.includes(i)); return i === 0 ? 'Inicio' : `${String.fromCharCode(64 + (mod?.id ?? 0))}${(mod?.slides.indexOf(i) ?? 0) + 1}`; })()}`}
+              title={`Ir a ${(() => { const mod = MODULES.find(m => m.slides.includes(i)); return i === 0 ? 'Inicio' : `${String.fromCharCode(64 + (mod?.id ?? 0))}${(mod?.slides.indexOf(i) ?? 0) + 1}`; })()} · ${slideCountOf(i)}`}
               aria-label={`Ir a ${(() => { const mod = MODULES.find(m => m.slides.includes(i)); return i === 0 ? 'Inicio' : `${String.fromCharCode(64 + (mod?.id ?? 0))}${(mod?.slides.indexOf(i) ?? 0) + 1}`; })()}`}
+              aria-current={activeSlide === i ? 'step' : undefined}
               onClick={() => go(i)}
             />
           ))}
         </div>
-        <button className="nav-btn" onClick={next} aria-label="Siguiente">→</button>
+        <button type="button" className="nav-btn" onClick={next} aria-label="Siguiente">→</button>
         <span className="slide-counter" id="slideCounter">{activeSlideCode}</span>
         <span className="nav-module-label" id="navModuleLabel">{moduleName}</span>
       </nav>
