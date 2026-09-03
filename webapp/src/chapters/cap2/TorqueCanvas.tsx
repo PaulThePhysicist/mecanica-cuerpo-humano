@@ -45,9 +45,9 @@ export default function TorqueCanvas({
 
   const handlePointerDown = useCallback((e: React.PointerEvent<HTMLCanvasElement>) => {
     const { x, y, rect } = getPointerCoord(e);
-    const pivotX = rect.width * 0.22;
-    const pivotY = rect.height * 0.54;
-    const rPx = (rCm / 100) * (rect.width * 0.50);
+    const pivotX = rect.width * 0.15;
+    const pivotY = rect.height * 0.56;
+    const rPx = (rCm / 100) * (rect.width * 0.52);
     const armEndX = pivotX + rPx;
     const armEndY = pivotY;
 
@@ -67,9 +67,9 @@ export default function TorqueCanvas({
 
   const handlePointerMove = useCallback((e: React.PointerEvent<HTMLCanvasElement>) => {
     const { x, y, rect } = getPointerCoord(e);
-    const pivotX = rect.width * 0.22;
-    const pivotY = rect.height * 0.54;
-    const rPx = (rCm / 100) * (rect.width * 0.50);
+    const pivotX = rect.width * 0.15;
+    const pivotY = rect.height * 0.56;
+    const rPx = (rCm / 100) * (rect.width * 0.52);
     const armEndX = pivotX + rPx;
     const armEndY = pivotY;
 
@@ -156,9 +156,9 @@ export default function TorqueCanvas({
       ctx.fillRect(0, 0, W, H);
 
       // Rejilla milimetrada técnica sutil
-      ctx.strokeStyle = 'rgba(67, 80, 92, 0.09)';
+      ctx.strokeStyle = 'rgba(67, 80, 92, 0.045)';
       ctx.lineWidth = 1;
-      const gStep = 24;
+      const gStep = 34;
       for (let x = gStep; x < W; x += gStep) {
         ctx.beginPath();
         ctx.moveTo(x, 0);
@@ -175,9 +175,9 @@ export default function TorqueCanvas({
       // ─── 2. Posiciones Geométricas Principales ───
       // La escena se escala con el ancho útil. El factor anterior dejaba
       // el brazo demasiado pequeño en el navegador externo (~560 px).
-      const pivotX = W * 0.22;
-      const pivotY = H * 0.54;
-      const rPx = (rCm / 100) * (W * 0.50); // Longitud del brazo en px
+      const pivotX = W * 0.15;
+      const pivotY = H * 0.56;
+      const rPx = (rCm / 100) * (W * 0.52); // Longitud del brazo en px
 
       const armEndX = pivotX + rPx;
       const armEndY = pivotY;
@@ -479,13 +479,21 @@ export default function TorqueCanvas({
       ctx.lineWidth = 1.6;
       ctx.stroke();
 
-      // Badge flotante compacto con F y ángulo theta
+      // Badge flotante compacto con F y ángulo theta.
+      // Se mantiene dentro del lienzo y despejado de la zona del dial (esquina
+      // superior derecha).
       const fLabelDist = 16 * uiScale;
-      const flx = fEndX + Math.cos(fAngle) * fLabelDist;
-      const fly = fEndY + Math.sin(fAngle) * fLabelDist;
-
       const badgeW = 68 * uiScale;
       const badgeH = 20 * uiScale;
+      const dialZoneR = Math.min(W * 0.082, H * 0.15) * 2 + 46 * uiScale;
+      let flx = fEndX + Math.cos(fAngle) * fLabelDist;
+      let fly = fEndY + Math.sin(fAngle) * fLabelDist;
+      flx = Math.max(badgeW / 2 + 4, Math.min(flx, W - badgeW / 2 - 4));
+      fly = Math.max(badgeH / 2 + 4, Math.min(fly, H - badgeH / 2 - 4));
+      // Despejar la esquina superior izquierda (dial) y superior derecha (toggle HUD).
+      if (fly < dialZoneR && (flx < dialZoneR || flx > W - dialZoneR)) {
+        fly = dialZoneR + badgeH / 2;
+      }
       ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
       ctx.shadowColor = 'rgba(35, 44, 54, 0.10)';
       ctx.shadowBlur = 4;
@@ -525,32 +533,32 @@ export default function TorqueCanvas({
       ctx.setLineDash([]);
       ctx.restore();
 
-      // ─── 10. Arco de Rotación Dinámico Alrededor del Fulcro ───
+      // ─── 10. Arco de Rotación Dinámico Alrededor del Fulcro (sutil) ───
       if (Math.abs(tau) > 0.05) {
         ctx.save();
-        const rotR = 32;
-        const spinSpeed = isCCW ? -t * 3.0 : t * 3.0;
+        ctx.globalAlpha = 0.4;
+        const rotR = 30;
+        const spinSpeed = isCCW ? -t * 1.6 : t * 1.6;
         ctx.strokeStyle = tauColor;
-        ctx.lineWidth = 1.8;
+        ctx.lineWidth = 1.4;
         ctx.beginPath();
-        ctx.arc(pivotX, pivotY, rotR, spinSpeed, spinSpeed + Math.PI * 0.85);
+        ctx.arc(pivotX, pivotY, rotR, spinSpeed, spinSpeed + Math.PI * 0.7);
         ctx.stroke();
-
-        // Flecha indicadora de sentido de giro
-        const arrowAngle = spinSpeed + (isCCW ? 0 : Math.PI * 0.85);
+        const arrowAngle = spinSpeed + (isCCW ? 0 : Math.PI * 0.7);
         const ax = pivotX + rotR * Math.cos(arrowAngle);
         const ay = pivotY + rotR * Math.sin(arrowAngle);
         ctx.fillStyle = tauColor;
         ctx.beginPath();
-        ctx.arc(ax, ay, 3, 0, Math.PI * 2);
+        ctx.arc(ax, ay, 2.6, 0, Math.PI * 2);
         ctx.fill();
         ctx.restore();
       }
 
-      // ─── 11. Dial Analógico de Torque de Precisión (Derecha) ───
-      const dialX = W * 0.82;
-      const dialY = H * 0.43;
-      const dialR = Math.min(W * 0.13, H * 0.22);
+      // ─── 11. Dial Analógico de Torque (compacto, esquina superior izquierda;
+      // la derecha la ocupa el toggle del HudPanel) ───
+      const dialR = Math.min(W * 0.082, H * 0.15);
+      const dialX = dialR + 18 * uiScale;
+      const dialY = dialR + 22 * uiScale;
 
       ctx.save();
       // Fondo cristalino con bisel
@@ -609,12 +617,12 @@ export default function TorqueCanvas({
         ctx.lineTo(dialX + Math.cos(a) * r2, dialY + Math.sin(a) * r2);
         ctx.stroke();
 
-        if (isMajor) {
-          ctx.fillStyle = '#43505c';
-          ctx.font = `${6.5 * uiScale}px JetBrains Mono, monospace`;
+        if (Math.abs(v) === maxTorque || v === 0) {
+          ctx.fillStyle = 'rgba(67, 80, 92, 0.75)';
+          ctx.font = `${5.4 * uiScale}px JetBrains Mono, monospace`;
           ctx.textAlign = 'center';
-          const numR = r2 - 6;
-          ctx.fillText(`${v > 0 ? '+' : ''}${v}`, dialX + Math.cos(a) * numR, dialY + Math.sin(a) * numR + 2.2);
+          const numR = r2 - 5;
+          ctx.fillText(`${v > 0 ? '+' : ''}${v}`, dialX + Math.cos(a) * numR, dialY + Math.sin(a) * numR + 2);
         }
       }
 
@@ -628,36 +636,29 @@ export default function TorqueCanvas({
 
       // Perno central de la aguja
       ctx.beginPath();
-      ctx.arc(dialX, dialY, 4, 0, Math.PI * 2);
+      ctx.arc(dialX, dialY, 3.2, 0, Math.PI * 2);
       ctx.fillStyle = tauColor;
       ctx.fill();
       ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 1.2;
+      ctx.lineWidth = 1.1;
       ctx.stroke();
 
-      // Lectura de Torque Digital inferior
+      // Lectura τ compacta bajo el centro, dentro de la cara del dial
       ctx.fillStyle = tauColor;
-      ctx.font = `bold ${13 * uiScale}px JetBrains Mono, monospace`;
+      ctx.font = `bold ${9 * uiScale}px JetBrains Mono, monospace`;
       ctx.textAlign = 'center';
       const signStr = tau > 0.05 ? '+' : (tau < -0.05 ? '−' : '');
-      ctx.fillText(`${signStr}${Math.abs(tau).toFixed(2)} N·m`, dialX, dialY + dialR + 16);
-
-      ctx.font = `bold ${7.5 * uiScale}px Karla, system-ui, sans-serif`;
-      ctx.fillStyle = '#43505c';
-      const senseTxt = isCCW ? 'Giro Antihorario (+)' : (isCW ? 'Giro Horario (−)' : 'Torque Nulo (0)');
-      ctx.fillText(senseTxt, dialX, dialY + dialR + 27);
+      ctx.fillText(`${signStr}${Math.abs(tau).toFixed(1)}`, dialX, dialY + dialR * 0.52);
+      ctx.font = `${5.6 * uiScale}px Karla, system-ui, sans-serif`;
+      ctx.fillStyle = 'rgba(107, 120, 133, 0.9)';
+      ctx.fillText('N·m', dialX, dialY + dialR * 0.52 + 7 * uiScale);
       ctx.restore();
 
-      // ─── 12. Título y Rótulo Superior ───
-      ctx.fillStyle = 'var(--ink, #232c36)';
-      ctx.font = `bold ${11 * uiScale}px Karla, system-ui, sans-serif`;
+      // ─── 12. Pista de interacción (discreta, esquina inferior) ───
+      ctx.fillStyle = 'rgba(107, 120, 133, 0.75)';
+      ctx.font = `${7 * uiScale}px Karla, system-ui, sans-serif`;
       ctx.textAlign = 'left';
-      ctx.fillText(`EL TORQUE VECTORIAL:  τ = r · F · sin(θ) = ${tau.toFixed(2)} N·m`, W * 0.04, 20);
-
-      ctx.fillStyle = 'rgba(107, 120, 133, 0.9)';
-      ctx.font = `${7.8 * uiScale}px Karla, system-ui, sans-serif`;
-      ctx.fillStyle = '#43505c';
-      ctx.fillText('💡 Arrastra el extremo del vector de fuerza para ajustar θ y magnitud.', W * 0.04, 33 * uiScale);
+      ctx.fillText('Arrastra la punta de F para cambiar θ y magnitud', W * 0.04, H - 10);
 
       ctx.restore();
       rafRef.current = requestAnimationFrame(render);
