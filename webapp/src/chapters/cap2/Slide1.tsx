@@ -1,7 +1,15 @@
 import React, { useState, Suspense } from 'react';
 import NewtonCanvas from './NewtonCanvas';
 import HudPanel from './HudPanel';
+import ThreeForceDiagram from './ThreeForceDiagram';
 import type { Engine } from './useEngine';
+
+const TF_STEP_LABELS = [
+  'N (normal en el antepié) y M (tendón rotuliano): direcciones conocidas.',
+  'Se prolongan N y M: sus rectas se cortan en P.',
+  'Con Στ = 0 y el eje en P, la reacción R también pasa por P ⟹ R ∥ QP.',
+  'Triángulo de fuerzas cerrado (cabeza con cola) ⟹ ΣF = 0.',
+];
 
 export default function Slide1({
   isActive,
@@ -18,6 +26,8 @@ export default function Slide1({
   const [autoEquilibrium, setAutoEquilibrium] = useState<boolean>(true);
   // Ángulo anatómico de abducción del húmero, independiente de la dirección de F₁.
   const [armAbductionDeg, setArmAbductionDeg] = useState<number>(45);
+  // Paso de la construcción gráfica de la regla de las tres fuerzas.
+  const [tfStep, setTfStep] = useState<1 | 2 | 3 | 4>(1);
 
   // Cálculos reactivos de componentes
   const rad1 = (theta1 * Math.PI) / 180;
@@ -127,6 +137,64 @@ export default function Slide1({
               </div>
               <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '.35rem' }}>
                 Si <b>ΣF ≠ 0</b>, la fuerza neta resultante <b>F_net = m·a</b> acelera el segmento o provoca inestabilidad / subluxación articular.
+              </p>
+            </div>
+          </div>
+          <div className="card">
+            <div className="card-hdr">
+              <span className="icon">△</span> Regla de las tres fuerzas
+            </div>
+            <div className="card-body">
+              <p style={{ fontSize: '.66rem', color: 'var(--ink-2)' }}>
+                Si <strong>solo tres fuerzas</strong> no paralelas mantienen un cuerpo en equilibrio, sus <strong>líneas de acción concurren en un punto P</strong>. Tomando el eje de momentos en P, dos de ellas dan torque nulo (su <span className="tag">r ∥ F</span>); por <span className="tag">Στ = 0</span> la tercera también ⟹ su recta pasa por P.
+              </p>
+              <ThreeForceDiagram step={tfStep} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginTop: '.3rem', flexWrap: 'wrap' }}>
+                <button
+                  type="button"
+                  onClick={() => setTfStep((s) => (s > 1 ? ((s - 1) as 1 | 2 | 3 | 4) : s))}
+                  disabled={tfStep === 1}
+                  aria-label="Paso anterior de la construcción"
+                  style={{
+                    background: 'var(--paper-2)',
+                    border: '1px solid var(--line)',
+                    borderRadius: '4px',
+                    padding: '1px 7px',
+                    fontSize: '.7rem',
+                    cursor: tfStep === 1 ? 'default' : 'pointer',
+                    opacity: tfStep === 1 ? 0.4 : 1,
+                    color: 'var(--ink)',
+                  }}
+                >
+                  ‹
+                </button>
+                <span style={{ fontSize: '.58rem', fontFamily: 'JetBrains Mono, monospace', color: 'var(--teal-deep)', fontWeight: 700 }}>
+                  Paso {tfStep} / 4
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setTfStep((s) => (s < 4 ? ((s + 1) as 1 | 2 | 3 | 4) : s))}
+                  disabled={tfStep === 4}
+                  aria-label="Paso siguiente de la construcción"
+                  style={{
+                    background: 'var(--paper-2)',
+                    border: '1px solid var(--line)',
+                    borderRadius: '4px',
+                    padding: '1px 7px',
+                    fontSize: '.7rem',
+                    cursor: tfStep === 4 ? 'default' : 'pointer',
+                    opacity: tfStep === 4 ? 0.4 : 1,
+                    color: 'var(--ink)',
+                  }}
+                >
+                  ›
+                </button>
+                <span style={{ fontSize: '.58rem', color: 'var(--ink-3)', flex: 1, minWidth: '10ch' }}>
+                  {TF_STEP_LABELS[tfStep - 1]}
+                </span>
+              </div>
+              <p style={{ fontSize: '.6rem', color: 'var(--ink-3)', marginTop: '.35rem' }}>
+                En el visor 3D, el botón <b>△ Polígono</b> muestra la otra mitad: el triángulo de fuerzas que cierra cuando <b>ΣF = 0</b>.
               </p>
             </div>
           </div>

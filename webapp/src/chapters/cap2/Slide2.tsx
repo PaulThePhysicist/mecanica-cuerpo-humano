@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import TorqueCanvas from './TorqueCanvas';
 import HudPanel from './HudPanel';
+import ThreeForceDiagram from './ThreeForceDiagram';
 import type { Engine } from './useEngine';
 
 export default function Slide2({
@@ -112,6 +113,20 @@ export default function Slide2({
               </div>
               <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '.3rem' }}>
                 {'Cuando $\\theta = 90^\\circ$, $\\sin(90^\\circ) = 1$ y el torque es máximo ($\\tau = r F$). Cuando $\\theta = 0^\\circ$ o $180^\\circ$, el torque es nulo y la fuerza es puramente compresiva o distractiva.'}
+              </p>
+            </div>
+          </div>
+          <div className="card">
+            <div className="card-hdr">
+              <span className="icon">△</span> Regla de las tres fuerzas
+            </div>
+            <div className="card-body">
+              <p style={{ fontSize: '.64rem' }}>
+                {'Aplicación directa del torque: si un cuerpo está en equilibrio bajo '}<strong>tres fuerzas</strong>{' no paralelas ('}<span style={{ color: '#2d7d4f', fontWeight: 700 }}>N</span>{', '}<span style={{ color: '#0d6e64', fontWeight: 700 }}>M</span>{', '}<span style={{ color: '#a92a1e', fontWeight: 700 }}>R</span>{'), sus líneas de acción '}<strong>concurren en un punto P</strong>.
+              </p>
+              <ThreeForceDiagram step={4} />
+              <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '.3rem' }}>
+                {'Eligiendo el eje de momentos en P, $N$ y $M$ dan $\\tau = 0$ porque su $\\vec{r}$ es (anti)paralelo a su $\\vec{F}$ — el mismo caso $\\theta = 0^\\circ/180^\\circ$ de este visor. Como $\\sum\\vec{\\tau} = 0$, la reacción $\\vec{R}$ también debe pasar por P. El triángulo de la derecha cierra ($\\sum\\vec{F} = 0$) y fija las magnitudes.'}
               </p>
             </div>
           </div>
