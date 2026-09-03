@@ -390,18 +390,22 @@ function SceneContent({
         target={[0, 0, 0]}
       />
 
-      <ambientLight intensity={0.92} color="#fffcf5" />
-      <directionalLight position={[3, 5, 4]} intensity={1.35} color="#fff8eb" castShadow />
-      <directionalLight position={[-3, 2, -3]} intensity={0.6} color="#e0f2fe" />
-      <directionalLight position={[0, -3, 2]} intensity={0.22} color="#faf0e6" />
+      {/* Iluminación con más modelado: menos ambiente (antes 0.92 aplanaba la
+          forma), luz principal más intensa y una luz de contra que perfila la
+          silueta contra el fondo. */}
+      <ambientLight intensity={0.5} color="#fffcf5" />
+      <directionalLight position={[3.5, 5, 3.5]} intensity={1.75} color="#fff6e6" castShadow />
+      <directionalLight position={[-3, 2, -3]} intensity={0.5} color="#dcecf7" />
+      <directionalLight position={[-1.2, 1.6, -4]} intensity={1.0} color="#ffffff" />
+      <directionalLight position={[0, -3, 2]} intensity={0.18} color="#faf0e6" />
 
       <ContactShadows
-        position={[0, -0.68, 0]}
-        opacity={0.34}
-        scale={3.0}
-        blur={2.2}
-        far={2.4}
-        color="#232c36"
+        position={[0, -0.56, 0]}
+        opacity={0.55}
+        scale={2.6}
+        blur={2.6}
+        far={2.2}
+        color="#241d12"
       />
 
       {/* Grupo de encuadre: centra articulación + brazo + vectores en el cuadro. */}
@@ -417,7 +421,7 @@ function SceneContent({
       {/* ── Frontera del DCL (sólo en la vista anclada) ── */}
       {!showPolygon && (
         <>
-          <Line points={dclRing} color="#8a9ba8" lineWidth={1} dashed dashScale={26} dashSize={0.05} gapSize={0.04} transparent opacity={0.5} />
+          <Line points={dclRing} color="#7a8a99" lineWidth={1.2} dashed dashScale={26} dashSize={0.05} gapSize={0.04} transparent opacity={0.68} />
           <Html position={[0.48, 0.42, 0]} center zIndexRange={[70, 0]}>
             <span style={{ color: '#5d6b76', fontSize: '0.52rem', fontFamily: 'Karla, sans-serif', fontWeight: 700, whiteSpace: 'nowrap', pointerEvents: 'none', background: 'rgba(251,248,240,0.7)', padding: '1px 4px', borderRadius: 3 }}>
               DCL · húmero aislado
@@ -522,7 +526,10 @@ export default function NewtonCanvas({
           width: '100%',
           height: '100%',
           display: 'block',
-          background: 'radial-gradient(circle at 50% 40%, #ffffff 0%, #faf6ee 55%, #eee4d2 100%)',
+          // Viñeta más marcada: centro cálido apagado, bordes claramente más
+          // oscuros. Separa la anatomía marfil del fondo (antes el centro era
+          // blanco puro y el hueso "desaparecía").
+          background: 'radial-gradient(circle at 50% 38%, #ece3ce 0%, #ddd1b6 52%, #c6b697 100%)',
         }}
       >
         <Cap2ZoomHandler
