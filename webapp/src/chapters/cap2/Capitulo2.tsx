@@ -15,6 +15,8 @@ import Slide5 from './Slide5';
 import Slide6 from './Slide6';
 import Slide7 from './Slide7';
 import Slide8 from './Slide8';
+import SlideKnee from './SlideKnee';
+import SlideAnkle from './SlideAnkle';
 import Slide9 from './Slide9';
 import Slide10 from './Slide10';
 import Slide11 from './Slide11';
@@ -40,8 +42,9 @@ function renderKatex() {
 }
 
 const SLIDES = [
-  Slide0, Slide1, Slide2, Slide3, Slide4, Slide5, Slide6, Slide7, Slide8, Slide9,
-  Slide10, Slide11, Slide12, Slide13, Slide14, Slide15, Slide16, Slide17, Slide18,
+  Slide0, Slide1, Slide2, Slide3, Slide4, Slide5, Slide6, Slide7, Slide8, SlideKnee,
+  SlideAnkle, Slide9, Slide10, Slide11, Slide12, Slide13, Slide14, Slide15, Slide16, Slide17,
+  Slide18,
 ];
 
 function slideCountOf(index: number): string {

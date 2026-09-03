@@ -57,17 +57,17 @@ export const DEFAULT_FLAGS: SimFlags = {
   faMuscles: 3, caneOn: true, backLoad: false,
 };
 
-export const TOTAL = 19;
+export const TOTAL = 21;
 export const MODULES = [
   { id: 0, name: 'Inicio', slides: [0], ico: '🏠' },
   { id: 1, name: 'A · Fuerzas · Torques', slides: [1, 2], ico: '🧲' },
   { id: 2, name: 'B · Palancas · Antebrazo', slides: [3, 4, 5, 6], ico: '⚖️' },
-  { id: 3, name: 'C · La cadera', slides: [7, 8], ico: '🦴' },
-  { id: 4, name: 'D · La espalda', slides: [9, 10], ico: '🏋️' },
-  { id: 5, name: 'E · Articulaciones · Mandíbula', slides: [11, 12], ico: '🦷' },
-  { id: 6, name: 'F · Métodos', slides: [13, 14], ico: '📐' },
-  { id: 7, name: 'G · El tacto', slides: [15, 16], ico: '✋' },
-  { id: 8, name: 'H · Unidades · Resumen', slides: [17, 18], ico: '✓' },
+  { id: 3, name: 'C · Cadera y pierna', slides: [7, 8, 9, 10], ico: '🦴' },
+  { id: 4, name: 'D · La espalda', slides: [11, 12], ico: '🏋️' },
+  { id: 5, name: 'E · Articulaciones · Mandíbula', slides: [13, 14], ico: '🦷' },
+  { id: 6, name: 'F · Métodos', slides: [15, 16], ico: '📐' },
+  { id: 7, name: 'G · El tacto', slides: [17, 18], ico: '✋' },
+  { id: 8, name: 'H · Unidades · Resumen', slides: [19, 20], ico: '✓' },
 ];
 
 export type OutFn = (id: string, text: string) => void;
@@ -832,10 +832,15 @@ export function convertUnits(p: SimParams, out: OutFn) {
 //  Despacho de redibujo por slide (sustituye a redrawSlide + SIMS del motor).
 //  Canvas por slide → función de dibujo. Para slides con 2 canvas, ambos.
 // ═══════════════════════════════════════════════════════════════════════════
+// NOTA: los slides de cap2 renderizan cada uno su propio <*Canvas> r3f; ningún
+// slide monta ya <Sim id="sim-*">, así que este mapa (y drawById) están
+// inactivos en la práctica. Se conserva sincronizado con los índices de slide
+// por si se rehabilita algún sim 2D. Slides 9 y 10 (Rodilla, Tobillo) son 3D.
 const CANVASMAP: Record<number, string[]> = {
   2: ['sim-torque'], 3: ['sim-levers'], 4: ['sim-amp'], 5: ['sim-forearm'], 6: ['sim-forearm2'],
-  7: ['sim-hip'], 8: ['sim-hipcane'], 9: ['sim-back'], 10: ['sim-disc'], 11: ['sim-shoulder', 'sim-knee'],
-  12: ['sim-ankle', 'sim-jaw'], 13: ['sim-threeforce'], 14: ['sim-segments'], 15: ['sim-touch'], 16: ['sim-thermal'],
+  7: ['sim-hip'], 8: ['sim-hipcane'], 9: ['sim-knee'], 10: ['sim-ankle'],
+  11: ['sim-back'], 12: ['sim-disc'], 13: ['sim-shoulder', 'sim-jaw'],
+  14: ['sim-threeforce'], 15: ['sim-segments'], 16: ['sim-forceplate'], 17: ['sim-touch'], 18: ['sim-thermal'],
 };
 
 function drawById(id: string, dc: AB.DrawCtx, p: SimParams, f: SimFlags, out: OutFn) {
@@ -865,7 +870,7 @@ export function canvasesForSlide(n: number): string[] {
 }
 
 export function redrawSlide(n: number, t: number, p: SimParams, f: SimFlags, out: OutFn): void {
-  if (n === 17) { convertUnits(p, out); return; }
+  if (n === 19) { convertUnits(p, out); return; }
   const ids = CANVASMAP[n];
   if (!ids) return;
   for (const id of ids) {

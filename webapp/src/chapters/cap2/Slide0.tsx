@@ -43,7 +43,7 @@ export default function Slide0({
           <span className="ico">⚖️</span> Palancas · Antebrazo
         </button>
         <button type="button" className="mpill" onClick={() => goModule(3)}>
-          <span className="ico">🦴</span> La cadera
+          <span className="ico">🦴</span> Cadera y pierna
         </button>
         <button type="button" className="mpill" onClick={() => goModule(4)}>
           <span className="ico">🏋️</span> La espalda

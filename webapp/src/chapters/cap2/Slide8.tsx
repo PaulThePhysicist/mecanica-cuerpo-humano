@@ -49,7 +49,7 @@ export default function Slide8({
         <span className="mnum">C2</span>
         <h2 className="mtitle">Uso terapéutico del bastón</h2>
         <span className="msub">¿Por qué el bastón se lleva en la mano CONTRALATERAL a la cadera lesionada?</span>
-        <span className="mslide-count">2 / 2</span>
+        <span className="mslide-count">2 / 4</span>
       </div>
       <div className="content-grid">
         <div className="theory">
