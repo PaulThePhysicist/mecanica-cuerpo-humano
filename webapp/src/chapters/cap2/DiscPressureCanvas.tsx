@@ -1,11 +1,12 @@
 import React, { Suspense, useMemo, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, ContactShadows, Html, useGLTF } from '@react-three/drei';
+import { OrbitControls, ContactShadows, useGLTF } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
 import { STUDIO_BG_DEEP } from '../cap1/three/materials';
 import { StudioLights } from '../cap1/three/StudioLights';
+import { DclTag, DclReadout } from './DclReadout';
 
 interface DiscPressureCanvasProps {
   posture: 'upright' | 'seated' | 'knees' | 'bent_back'; // 4 posturas ergonómicas
@@ -71,15 +72,13 @@ function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [0, -1, 0] as [number, number, number],
   color = '#0d6e64',
-  label = 'F',
-  sublabel = '',
+  symbol = 'F',
   isDashed = false,
 }: {
   origin?: [number, number, number];
   vector: [number, number, number];
   color: string;
-  label: string;
-  sublabel?: string;
+  symbol: string;
   isDashed?: boolean;
 }) {
   const v = useMemo(() => new THREE.Vector3(...vector), [vector]);
@@ -131,38 +130,11 @@ function ForceVector3D({
         />
       </mesh>
 
-      {/* Rótulo HTML 3D Flotante con JetBrains Mono */}
-      <Html
+      <DclTag
         position={[tipPos.x + dir.x * 0.12, tipPos.y + dir.y * 0.12, tipPos.z + dir.z * 0.12]}
-        center
-        zIndexRange={[100, 0]}
-      >
-        <div
-          style={{
-            background: 'rgba(255, 255, 255, 0.96)',
-            backdropFilter: 'blur(8px)',
-            border: `1.5px solid ${color}`,
-            borderRadius: '6px',
-            padding: '3px 8px',
-            boxShadow: `0 3px 12px ${color}33`,
-            whiteSpace: 'nowrap',
-            pointerEvents: 'none',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '1px',
-          }}
-        >
-          <span style={{ color: color, fontSize: '0.62rem', fontWeight: 800, fontFamily: 'JetBrains Mono, monospace' }}>
-            {label}
-          </span>
-          {sublabel && (
-            <span style={{ color: '#475569', fontSize: '0.52rem', fontFamily: 'system-ui, sans-serif', fontWeight: 600 }}>
-              {sublabel}
-            </span>
-          )}
-        </div>
-      </Html>
+        color={color}
+        symbol={symbol}
+      />
     </group>
   );
 }
@@ -273,8 +245,17 @@ function PressureManometerGauge({
 /** Presión intradiscal objetivo (determinista; el 3D la anima hacia este valor). */
 function discStats(posture: DiscPressureCanvasProps['posture'], loadKg: number) {
   const p = POSTURES[posture] || POSTURES.bent_back;
-  const totalPressureMPa = p.basePressureMPa + p.compMultiplier * 0.65 * (loadKg / 20);
-  return { totalPressureMPa, totalPressureBar: totalPressureMPa * 10, isCritical: totalPressureMPa >= 2.5 };
+  const loadFactor = loadKg / 20;
+  const totalPressureMPa = p.basePressureMPa + p.compMultiplier * 0.65 * loadFactor;
+  const compForceN = totalPressureMPa * 1800; // P · A (A ≈ 18 cm²)
+  const shearForceN = p.shearMultiplier * 420 * (1 + loadFactor * 0.4);
+  return {
+    totalPressureMPa,
+    totalPressureBar: totalPressureMPa * 10,
+    compForceN,
+    shearForceN,
+    isCritical: totalPressureMPa >= 2.5,
+  };
 }
 
 function SpinalFunctionalUnit3D({
@@ -437,12 +418,7 @@ function SpinalFunctionalUnit3D({
           <primitive object={cartilagePlateMat} attach="material" />
         </mesh>
 
-        {/* Badge Sacro S1 */}
-        <Html position={[0, -0.38, 0.95]} center>
-          <span style={{ background: 'rgba(255,255,255,0.92)', padding: '2px 7px', borderRadius: '4px', border: '1px solid #cbd5e1', fontSize: '0.60rem', fontWeight: 800, color: '#334155', whiteSpace: 'nowrap' }}>
-            Sacro (S1) · Base Fija
-          </span>
-        </Html>
+        <DclTag position={[0, -0.38, 0.95]} color="#5d6b76" symbol="S1" />
       </group>
 
       {/* ── 2. DISCO INTERVERTEBRAL L5-S1 (Deformable, Laminar y Viscoelástico) ── */}
@@ -501,25 +477,14 @@ function SpinalFunctionalUnit3D({
               </mesh>
 
               {/* Rótulo de Hernia Discal */}
-              <Html position={[0.22, 0.15, -0.1]} center>
-                <div style={{ background: 'rgba(176, 35, 24, 0.95)', color: '#fff', padding: '2px 6px', borderRadius: '4px', fontSize: '0.54rem', fontWeight: 800, whiteSpace: 'nowrap', boxShadow: '0 2px 8px rgba(176,35,24,0.4)' }}>
-                  💥 Extrusión Herniaria
-                </div>
-              </Html>
+              <DclTag position={[0.22, 0.15, -0.1]} color="#b02318" symbol="⚠ hernia" />
             </group>
           )}
         </group>
 
         {/* Vector de Esfuerzo de Cizallamiento Tangencial */}
         {curPosture.shearMultiplier > 0.25 && (
-          <ForceVector3D
-            origin={[0, 0, 0.86]}
-            vector={[0, 0, shearVecLen]}
-            color="#d97706"
-            label={`F_cizalla = ${shearForceN.toFixed(0)} N`}
-            sublabel="Cizallamiento L5-S1"
-            isDashed
-          />
+          <ForceVector3D origin={[0, 0, 0.86]} vector={[0, 0, shearVecLen]} color="#d97706" symbol="Ft" isDashed />
         )}
       </group>
 
@@ -565,16 +530,11 @@ function SpinalFunctionalUnit3D({
           origin={[0, 0.75 + compVecLen, 0]}
           vector={[0, -compVecLen, 0]}
           color={isCritical ? '#b02318' : (totalPressureMPa > 1.2 ? '#d97706' : '#0d6e64')}
-          label={`F_comp = ${compForceN.toFixed(0)} N`}
-          sublabel={`(${totalPressureMPa.toFixed(2)} MPa · 18 cm²)`}
+          symbol="Fn"
         />
 
         {/* Badge Vértebra L5 */}
-        <Html position={[0, 0.50, 0.95]} center>
-          <span style={{ background: 'rgba(255,255,255,0.92)', padding: '2px 7px', borderRadius: '4px', border: '1px solid #cbd5e1', fontSize: '0.60rem', fontWeight: 800, color: '#334155', whiteSpace: 'nowrap' }}>
-            Vértebra Lumbar L5
-          </span>
-        </Html>
+        <DclTag position={[0, 0.50, 0.95]} color="#5d6b76" symbol="L5" />
       </group>
 
       {/* ── 4. CANAL NEURAL, SACO TECAL Y RAÍCES NERVIOSAS L5-S1 (Posterior) ── */}
@@ -608,11 +568,7 @@ function SpinalFunctionalUnit3D({
               <sphereGeometry args={[0.11, 16, 16]} />
               <primitive object={painPulseMat} attach="material" />
             </mesh>
-            <Html position={[0.45, -0.05, 0.35]} center>
-              <div style={{ background: 'rgba(176,35,24,0.95)', color: '#fff', padding: '2px 7px', borderRadius: '4px', fontSize: '0.52rem', fontWeight: 800, whiteSpace: 'nowrap', boxShadow: '0 2px 10px rgba(176,35,24,0.5)' }}>
-                ⚡ Ciatalgia / Compresión Radicular
-              </div>
-            </Html>
+            <DclTag position={[0.45, -0.05, 0.35]} color="#b02318" symbol="⚡ ciatalgia" />
           </>
         )}
       </group>
@@ -692,6 +648,34 @@ export default function DiscPressureCanvas({
         />
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
+
+      {/* Lecturas del DCL ancladas a la esquina (fuera del 3D) */}
+      <div
+        style={{
+          position: 'absolute',
+          left: '10px',
+          bottom: '10px',
+          zIndex: 9,
+          transform: 'scale(0.82)',
+          transformOrigin: 'bottom left',
+          pointerEvents: 'none',
+        }}
+      >
+        <DclReadout
+          title="Disco L5-S1 · DCL"
+          tone={d.isCritical ? '#b02318' : '#cbd5e1'}
+          rows={[
+            { symbol: 'Fn', color: d.isCritical ? '#b02318' : '#0d6e64', value: `${d.compForceN.toFixed(0)} N`, hint: 'compresión axial', strong: true },
+            { symbol: 'Ft', color: '#d97706', value: `${d.shearForceN.toFixed(0)} N`, hint: 'cizallamiento', muted: true },
+            { symbol: 'P', color: d.isCritical ? '#b02318' : '#0d6e64', value: `${d.totalPressureMPa.toFixed(2)} MPa`, hint: `${d.totalPressureBar.toFixed(0)} bar` },
+          ]}
+          note={
+            d.isCritical
+              ? 'Presión intradiscal crítica (> 2,5 MPa): riesgo de extrusión del núcleo pulposo.'
+              : 'Presión sobre un área discal ≈ 18 cm²; la postura multiplica la carga axial.'
+          }
+        />
+      </div>
 
       {/* Manómetro anclado a la esquina (fuera del 3D) */}
       <div

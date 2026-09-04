@@ -1,11 +1,12 @@
 import React, { Suspense, useMemo, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, ContactShadows, Html, Line, useGLTF } from '@react-three/drei';
+import { OrbitControls, ContactShadows, useGLTF } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
 import { STUDIO_BG_DEEP } from '../cap1/three/materials';
 import { StudioLights } from '../cap1/three/StudioLights';
+import { DclTag, DclReadout, type DclRow } from './DclReadout';
 
 interface SpineCanvasProps {
   trunkAngleDeg: number; // Ángulo de inclinación del tronco (0 a 90 grados, 0 = erguido, 90 = horizontal)
@@ -33,15 +34,13 @@ function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [1, 0, 0] as [number, number, number],
   color = '#0d6e64',
-  label = 'F',
-  sublabel = '',
+  symbol = 'F',
   isDashed = false,
 }: {
   origin?: [number, number, number];
   vector: [number, number, number];
   color: string;
-  label: string;
-  sublabel?: string;
+  symbol: string;
   isDashed?: boolean;
 }) {
   const v = useMemo(() => new THREE.Vector3(...vector), [vector]);
@@ -93,38 +92,11 @@ function ForceVector3D({
         />
       </mesh>
 
-      {/* Rótulo HTML 3D Flotante con JetBrains Mono */}
-      <Html
+      <DclTag
         position={[tipPos.x + dir.x * 0.08, tipPos.y + dir.y * 0.08, tipPos.z + dir.z * 0.08]}
-        center
-        zIndexRange={[100, 0]}
-      >
-        <div
-          style={{
-            background: 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(6px)',
-            border: `1.5px solid ${color}`,
-            borderRadius: '6px',
-            padding: '3px 7px',
-            boxShadow: `0 2px 10px ${color}33`,
-            whiteSpace: 'nowrap',
-            pointerEvents: 'none',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '1px',
-          }}
-        >
-          <span style={{ color: color, fontSize: '0.62rem', fontWeight: 700, fontFamily: 'JetBrains Mono, monospace' }}>
-            {label}
-          </span>
-          {sublabel && (
-            <span style={{ color: '#55606d', fontSize: '0.52rem', fontFamily: 'system-ui, sans-serif' }}>
-              {sublabel}
-            </span>
-          )}
-        </div>
-      </Html>
+        color={color}
+        symbol={symbol}
+      />
     </group>
   );
 }
@@ -236,6 +208,7 @@ function spineStats(trunkAngleDeg: number, handLoadKg: number, bodyMassKg: numbe
   const rCompN = fErectorN * cosThetaM + (wTrunkN + wLoadN) * cosAlpha;
   const rShearN = Math.abs((wTrunkN + wLoadN) * sinAlpha - fErectorN * sinThetaM);
   return {
+    wTrunkN, wLoadN,
     tauResNm, fErectorN, fErectorKgf: fErectorN / g, rCompN, rCompKgf: rCompN / g, rShearN,
     isHighTension: fErectorN > 2400, isExtremeTension: fErectorN > 3200,
   };
@@ -465,13 +438,7 @@ function LumbarSpine3D({
                     </mesh>
 
                     {/* Vector Peso del Tronco W1 en Centro de Gravedad d1 = 38 cm */}
-                    <ForceVector3D
-                      origin={[0, 0.25, 0.22]}
-                      vector={[0, -wTrunkN * vScale * 1.1, 0]}
-                      color={AMBER_ACCENT}
-                      label={`W_tronco = ${wTrunkN.toFixed(0)} N`}
-                      sublabel="(0,65 W · d1 = 38 cm)"
-                    />
+                    <ForceVector3D origin={[0, 0.25, 0.22]} vector={[0, -wTrunkN * vScale * 1.1, 0]} color={AMBER_ACCENT} symbol="W₁" />
 
                     {/* Brazos y Caja de Carga Levantada en Manos (d2 = 50 cm) */}
                     {handLoadKg > 0 && (
@@ -483,13 +450,7 @@ function LumbarSpine3D({
                         </mesh>
 
                         {/* Vector Peso Carga W2 */}
-                        <ForceVector3D
-                          origin={[0, -0.15, 0]}
-                          vector={[0, -wLoadN * vScale * 1.1, 0]}
-                          color="#232c36"
-                          label={`Carga = ${handLoadKg} kg (${wLoadN.toFixed(0)} N)`}
-                          sublabel="d2 = 50 cm en manos"
-                        />
+                        <ForceVector3D origin={[0, -0.15, 0]} vector={[0, -wLoadN * vScale * 1.1, 0]} color="#232c36" symbol="W₂" />
                       </group>
                     )}
                   </group>
@@ -529,8 +490,7 @@ function LumbarSpine3D({
           origin={[0, 1.10 * Math.cos(curAlphaRad * 0.55), -1.10 * Math.sin(curAlphaRad * 0.55)]}
           vector={[0, -fErectorN * vScale * 0.75, -fErectorN * vScale * 0.20]}
           color={RED_ACCENT}
-          label={`Fm = ${fErectorN.toFixed(0)} N (${fErectorKgf.toFixed(0)} kgf)`}
-          sublabel="Erector Espinal (dm = 5 cm · θm = 12°)"
+          symbol="Fm"
         />
       </group>
 
@@ -620,29 +580,21 @@ export default function SpineCanvas({
           zIndex: 9,
           transform: 'scale(0.82)',
           transformOrigin: 'bottom left',
-          background: 'rgba(255, 255, 255, 0.95)',
-          border: `1.5px solid ${s.isHighTension ? RED_ACCENT : '#cbd5e1'}`,
-          borderRadius: '10px',
-          padding: '9px 12px',
-          boxShadow: '0 6px 18px rgba(35, 44, 54, 0.14)',
-          minWidth: '150px',
           pointerEvents: 'none',
         }}
       >
-        <div style={{ fontSize: '0.6rem', fontWeight: 700, color: '#232c36', marginBottom: '5px', textAlign: 'center' }}>
-          DESCOMPOSICIÓN EN PLATILLO L5-S1
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '0.56rem', fontFamily: 'JetBrains Mono, monospace' }}>
-          <div style={{ color: '#1e293b', display: 'flex', justifyContent: 'space-between' }}>
-            <span>Compresión axial:</span><b>{s.rCompN.toFixed(0)} N</b>
-          </div>
-          <div style={{ color: AMBER_ACCENT, display: 'flex', justifyContent: 'space-between' }}>
-            <span>Cizallamiento:</span><b>{s.rShearN.toFixed(0)} N</b>
-          </div>
-          <div style={{ color: TEAL_ACCENT, display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #e2e8f0', paddingTop: '2px' }}>
-            <span>Torque flexor:</span><b>{s.tauResNm.toFixed(0)} N·m</b>
-          </div>
-        </div>
+        <DclReadout
+          title="Grúa lumbar L5-S1 · DCL"
+          tone={s.isHighTension ? RED_ACCENT : '#cbd5e1'}
+          rows={[
+            { symbol: 'Fm', color: RED_ACCENT, value: `${s.fErectorN.toFixed(0)} N`, hint: 'erector espinal' },
+            { symbol: 'W₁', color: AMBER_ACCENT, value: `${s.wTrunkN.toFixed(0)} N`, hint: '0,65 W · tronco' },
+            { symbol: 'W₂', color: '#232c36', value: `${s.wLoadN.toFixed(0)} N`, hint: 'carga en manos' },
+            { symbol: 'Rn', color: '#1e293b', value: `${s.rCompN.toFixed(0)} N`, hint: 'compresión axial', strong: true },
+            { symbol: 'Rt', color: AMBER_ACCENT, value: `${s.rShearN.toFixed(0)} N`, hint: 'cizallamiento', muted: true },
+          ]}
+          note={`Desventaja de palanca 10:1 (dm ≈ 5 cm): torque flexor ${s.tauResNm.toFixed(0)} N·m ⟹ el erector tira ${s.fErectorN.toFixed(0)} N.`}
+        />
       </div>
 
       <div

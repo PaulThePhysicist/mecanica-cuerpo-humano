@@ -217,8 +217,8 @@ function KneeAnatomy({ betaDeg, ankleLoadN, patella, showComponents }: KneeCanva
 
       {showComponents && (
         <>
-          <ForceArrow origin={KNEE_C.toArray()} vector={[0, 0, rzN * S]} color={BLUE} symbol="R∥" dashed />
-          <ForceArrow origin={[KNEE_C.x, KNEE_C.y, KNEE_C.z + rzN * S]} vector={[0, ryN * S, 0]} color={TEAL} symbol="R⊥" dashed />
+          <ForceArrow origin={KNEE_C.toArray()} vector={[0, 0, rzN * S]} color={BLUE} symbol="Rt" dashed />
+          <ForceArrow origin={[KNEE_C.x, KNEE_C.y, KNEE_C.z + rzN * S]} vector={[0, ryN * S, 0]} color={TEAL} symbol="Rn" dashed />
         </>
       )}
 
@@ -254,8 +254,8 @@ export default function KneeCanvas({
     { symbol: 'R', color: RED, value: `${s.R.toFixed(0)} N`, hint: 'tibiofemoral', strong: true },
   ];
   if (showComponents) {
-    rows.push({ symbol: 'R∥', color: BLUE, value: `${Math.abs(s.rzN).toFixed(0)} N`, hint: 'cizalla', muted: true });
-    rows.push({ symbol: 'R⊥', color: TEAL, value: `${Math.abs(s.ryN).toFixed(0)} N`, hint: 'compresión', muted: true });
+    rows.push({ symbol: 'Rt', color: BLUE, value: `${Math.abs(s.rzN).toFixed(0)} N`, hint: 'cizalla', muted: true });
+    rows.push({ symbol: 'Rn', color: TEAL, value: `${Math.abs(s.ryN).toFixed(0)} N`, hint: 'compresión', muted: true });
   }
   if (patella && s.fp > 8) {
     rows.push({ symbol: 'Fp', color: VIOLET, value: `${s.fp.toFixed(0)} N`, hint: 'femoropatelar', muted: true });

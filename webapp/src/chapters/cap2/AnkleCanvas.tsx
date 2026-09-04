@@ -218,8 +218,8 @@ function AnkleAnatomy({ betaDeg, bodyWeightN, showComponents }: AnkleCanvasProps
 
       {showComponents && (
         <>
-          <ForceArrow origin={ankP.toArray()} vector={[0, 0, rzN * S]} color="#0284c7" symbol="R∥" dashed />
-          <ForceArrow origin={[ankP.x, ankP.y, ankP.z + rzN * S]} vector={[0, ryN * S, 0]} color={TEAL} symbol="R⊥" dashed />
+          <ForceArrow origin={ankP.toArray()} vector={[0, 0, rzN * S]} color="#0284c7" symbol="Rt" dashed />
+          <ForceArrow origin={[ankP.x, ankP.y, ankP.z + rzN * S]} vector={[0, ryN * S, 0]} color={TEAL} symbol="Rn" dashed />
         </>
       )}
 
@@ -242,8 +242,8 @@ export default function AnkleCanvas({
     { symbol: 'R', color: RED, value: `${s.R.toFixed(0)} N`, hint: `${(s.R / s.Wb).toFixed(2)}·Wb`, strong: true },
   ];
   if (showComponents) {
-    rows.push({ symbol: 'R∥', color: '#0284c7', value: `${Math.abs(s.rzN).toFixed(0)} N`, hint: 'cizalla', muted: true });
-    rows.push({ symbol: 'R⊥', color: TEAL, value: `${Math.abs(s.ryN).toFixed(0)} N`, hint: 'compresión', muted: true });
+    rows.push({ symbol: 'Rt', color: '#0284c7', value: `${Math.abs(s.rzN).toFixed(0)} N`, hint: 'cizalla', muted: true });
+    rows.push({ symbol: 'Rn', color: TEAL, value: `${Math.abs(s.ryN).toFixed(0)} N`, hint: 'compresión', muted: true });
   }
 
   return (
