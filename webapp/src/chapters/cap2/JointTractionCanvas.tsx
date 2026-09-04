@@ -1,6 +1,7 @@
 import React, { Suspense, useMemo, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, ContactShadows, Html, useGLTF } from '@react-three/drei';
+import { OrbitControls, ContactShadows, useGLTF } from '@react-three/drei';
+import { DclTag, DclReadout } from './DclReadout';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
@@ -30,15 +31,13 @@ function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [1, 0, 0] as [number, number, number],
   color = TEAL_ACCENT,
-  label = 'F',
-  sublabel = '',
+  symbol = 'F',
   isDashed = false,
 }: {
   origin?: [number, number, number];
   vector: [number, number, number];
   color: string;
-  label: string;
-  sublabel?: string;
+  symbol: string;
   isDashed?: boolean;
 }) {
   const v = useMemo(() => new THREE.Vector3(...vector), [vector]);
@@ -90,38 +89,11 @@ function ForceVector3D({
         />
       </mesh>
 
-      {/* Badge Flotante 3D */}
-      <Html
+      <DclTag
         position={[tipPos.x + dir.x * 0.05, tipPos.y + dir.y * 0.05, tipPos.z + dir.z * 0.05]}
-        center
-        zIndexRange={[100, 0]}
-      >
-        <div
-          style={{
-            background: 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(6px)',
-            border: `1.5px solid ${color}`,
-            borderRadius: '6px',
-            padding: '3px 7px',
-            boxShadow: `0 2px 10px ${color}33`,
-            whiteSpace: 'nowrap',
-            pointerEvents: 'none',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '1px',
-          }}
-        >
-          <span style={{ color: color, fontSize: '0.62rem', fontWeight: 700, fontFamily: 'JetBrains Mono, monospace' }}>
-            {label}
-          </span>
-          {sublabel && (
-            <span style={{ color: '#55606d', fontSize: '0.52rem', fontFamily: 'system-ui, sans-serif' }}>
-              {sublabel}
-            </span>
-          )}
-        </div>
-      </Html>
+        color={color}
+        symbol={symbol}
+      />
     </group>
   );
 }
@@ -694,24 +666,7 @@ function CervicalSpineRig3D({
         </mesh>
 
         {/* Etiqueta 3D en la pesa */}
-        <Html position={[0, -0.028 * Math.round(tractionKg / 2) - 0.05, 0.08]} center>
-          <div
-            style={{
-              background: '#0f172a',
-              color: '#f8fafc',
-              border: '1px solid #475569',
-              borderRadius: '4px',
-              padding: '2px 6px',
-              fontFamily: 'JetBrains Mono, monospace',
-              fontSize: '0.60rem',
-              fontWeight: 700,
-              whiteSpace: 'nowrap',
-              pointerEvents: 'none',
-            }}
-          >
-            {tractionKg} kg ({tN.toFixed(0)} N)
-          </div>
-        </Html>
+        <DclTag position={[0, -0.028 * Math.round(tractionKg / 2) - 0.05, 0.08]} color="#334155" symbol={`${tractionKg} kg`} />
       </group>
 
       {/* ── H. DESCOMPOSICIÓN ORTOGONAL DE FUERZAS 3D (VECTORES CALIBRADOS) ── */}
@@ -733,31 +688,13 @@ function CervicalSpineRig3D({
         return (
           <group position={attachPoint}>
             {/* 1. Vector Resultante T (Tensión total en cable) */}
-            <ForceVector3D
-              origin={[0, 0, 0]}
-              vector={[tVecX, tVecY, tVecZ]}
-              color={TEAL_ACCENT}
-              label={`T = ${tN.toFixed(0)} N`}
-              sublabel={`Cable (β = ${angleDeg}°)`}
-            />
+            <ForceVector3D origin={[0, 0, 0]} vector={[tVecX, tVecY, tVecZ]} color={TEAL_ACCENT} symbol="T" />
 
             {/* 2. Vector F_axial (Descompresión raquídea longitudinal) */}
-            <ForceVector3D
-              origin={[0, 0, 0]}
-              vector={[0, axVecY, 0]}
-              color={EMERALD_DECOMP}
-              label={`F_axial = ${fAxialN.toFixed(0)} N`}
-              sublabel={`Δh = +${deltaH_mm.toFixed(2)} mm`}
-            />
+            <ForceVector3D origin={[0, 0, 0]} vector={[0, axVecY, 0]} color={EMERALD_DECOMP} symbol="F_ax" />
 
             {/* 3. Vector F_trans (Momento flexor anterior) */}
-            <ForceVector3D
-              origin={[0, axVecY, 0]}
-              vector={[0, 0, trVecZ]}
-              color={AMBER_ACCENT}
-              label={`F_trans = ${fTransN.toFixed(0)} N`}
-              sublabel="Flexión Cefálica"
-            />
+            <ForceVector3D origin={[0, axVecY, 0]} vector={[0, 0, trVecZ]} color={AMBER_ACCENT} symbol="F_tr" />
 
             {/* Líneas de proyección ortogonal punteadas */}
             <mesh position={[0, axVecY / 2, trVecZ]}>
@@ -839,6 +776,34 @@ export default function JointTractionCanvas({
         />
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
+
+      {/* Lecturas del DCL ancladas a la esquina (fuera del 3D) */}
+      <div
+        style={{
+          position: 'absolute',
+          left: '10px',
+          bottom: '10px',
+          zIndex: 9,
+          transform: 'scale(0.82)',
+          transformOrigin: 'bottom left',
+          pointerEvents: 'none',
+        }}
+      >
+        <DclReadout
+          title="Tracción cervical · DCL"
+          tone={stats.isTherapeutic ? '#0d6e64' : '#d97706'}
+          rows={[
+            { symbol: 'T', color: '#0d6e64', value: `${stats.tN.toFixed(0)} N`, hint: `${tractionKg} kg · β ${angleDeg}°` },
+            { symbol: 'F_ax', color: '#2e8b57', value: `${stats.fAxialN.toFixed(0)} N`, hint: `Δh +${stats.deltaH_mm.toFixed(2)} mm`, strong: true },
+            { symbol: 'F_tr', color: '#d97706', value: `${stats.fTransN.toFixed(0)} N`, hint: 'flexión cefálica', muted: true },
+          ]}
+          note={
+            stats.isTherapeutic
+              ? 'Rango terapéutico (5–8 kg): descompresión axial sin flexión cefálica excesiva.'
+              : 'Un ángulo β alto desvía tracción a F_trans (flexión) en vez de a la descompresión axial.'
+          }
+        />
+      </div>
 
       {/* Dosímetro anclado a la esquina (fuera del 3D → nunca se recorta ni tapa la anatomía) */}
       <div

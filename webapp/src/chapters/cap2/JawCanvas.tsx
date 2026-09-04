@@ -1,6 +1,7 @@
 import React, { Suspense, useMemo, useRef, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, ContactShadows, Html, useGLTF } from '@react-three/drei';
+import { OrbitControls, ContactShadows, useGLTF } from '@react-three/drei';
+import { DclTag, DclReadout } from './DclReadout';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
@@ -28,15 +29,13 @@ function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [0, 1, 0] as [number, number, number],
   color = '#0d6e64',
-  label = 'F',
-  sublabel = '',
+  symbol = 'F',
   isDashed = false,
 }: {
   origin?: [number, number, number];
   vector: [number, number, number];
   color: string;
-  label: string;
-  sublabel?: string;
+  symbol: string;
   isDashed?: boolean;
 }) {
   const v = useMemo(() => new THREE.Vector3(...vector), [vector]);
@@ -88,38 +87,11 @@ function ForceVector3D({
         />
       </mesh>
 
-      {/* Rótulo HTML 3D Flotante con JetBrains Mono */}
-      <Html
+      <DclTag
         position={[tipPos.x + dir.x * 0.10, tipPos.y + dir.y * 0.10, tipPos.z + dir.z * 0.10]}
-        center
-        zIndexRange={[100, 0]}
-      >
-        <div
-          style={{
-            background: 'rgba(255, 255, 255, 0.96)',
-            backdropFilter: 'blur(8px)',
-            border: `1.5px solid ${color}`,
-            borderRadius: '6px',
-            padding: '3px 8px',
-            boxShadow: `0 3px 12px ${color}33`,
-            whiteSpace: 'nowrap',
-            pointerEvents: 'none',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '1px',
-          }}
-        >
-          <span style={{ color: color, fontSize: '0.62rem', fontWeight: 800, fontFamily: 'JetBrains Mono, monospace' }}>
-            {label}
-          </span>
-          {sublabel && (
-            <span style={{ color: '#475569', fontSize: '0.52rem', fontFamily: 'system-ui, sans-serif', fontWeight: 600 }}>
-              {sublabel}
-            </span>
-          )}
-        </div>
-      </Html>
+        color={color}
+        symbol={symbol}
+      />
     </group>
   );
 }
@@ -529,11 +501,7 @@ function Jaw3DScene({
             <cylinderGeometry args={[0.09, 0.09, 0.028, 20]} />
             <primitive object={cartilageAtmMat} attach="material" />
           </mesh>
-          <Html position={[0.22, 0.08, 0]} center>
-            <span style={{ background: 'rgba(255,255,255,0.92)', padding: '2px 6px', borderRadius: '4px', border: '1px solid #34d399', fontSize: '0.54rem', fontWeight: 800, color: '#047857', whiteSpace: 'nowrap' }}>
-              ATM (Fulcro) · Menisco Bicóncavo
-            </span>
-          </Html>
+          <DclTag position={[0.22, 0.08, 0]} color="#047857" symbol="ATM · fulcro" />
         </group>
 
         {/* ATM Izquierda */}
@@ -544,12 +512,6 @@ function Jaw3DScene({
           </mesh>
         </group>
 
-        {/* Rótulo Cráneo */}
-        <Html position={[0, 0.85, 0.2]} center>
-          <span style={{ background: 'rgba(255,255,255,0.92)', padding: '2px 7px', borderRadius: '4px', border: '1px solid #cbd5e1', fontSize: '0.60rem', fontWeight: 800, color: '#334155', whiteSpace: 'nowrap' }}>
-            Cráneo y Maxilar Superior (Fijo)
-          </span>
-        </Html>
       </group>
 
       {/* ── 2. MANDÍBULA MÓVIL (Pivota en el eje de la ATM) ── */}
@@ -569,12 +531,6 @@ function Jaw3DScene({
           </group>
         )}
 
-        {/* Rótulo Mandíbula */}
-        <Html position={[0, -0.85, 0.6]} center>
-          <span style={{ background: 'rgba(255,255,255,0.92)', padding: '2px 7px', borderRadius: '4px', border: '1px solid #cbd5e1', fontSize: '0.60rem', fontWeight: 800, color: '#334155', whiteSpace: 'nowrap' }}>
-            Mandíbula Móvil · Palanca de 3ª Clase
-          </span>
-        </Html>
       </group>
 
       {/* ── 3. MÚSCULO MASETERO ACTIVO (Bilateral con Contracción y Abombamiento) ── */}
@@ -619,23 +575,12 @@ function Jaw3DScene({
           </mesh>
         )}
 
-        {/* Badge del alimento */}
-        <Html position={[0, 0.14, 0]} center>
-          <span
-            style={{
-              background: biteMode === 'incisor' ? 'rgba(34,197,94,0.95)' : 'rgba(249,115,22,0.95)',
-              color: '#ffffff',
-              padding: '2px 6px',
-              borderRadius: '4px',
-              fontSize: '0.52rem',
-              fontWeight: 800,
-              whiteSpace: 'nowrap',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-            }}
-          >
-            {biteMode === 'incisor' ? '🥕 Borde Incisal (d = 7,5 cm)' : '🥜 Oclusión Molar (d = 3,5 cm)'}
-          </span>
-        </Html>
+        {/* Punto de mordida · brazo de resistencia según el diente */}
+        <DclTag
+          position={[0, 0.14, 0]}
+          color={biteMode === 'incisor' ? '#16a34a' : '#ea580c'}
+          symbol={biteMode === 'incisor' ? '🥕 d 7,5 cm' : '🥜 d 3,5 cm'}
+        />
       </group>
 
       {/* Partículas 3D de fractura eyectadas */}
@@ -653,33 +598,10 @@ function Jaw3DScene({
         ))}
       </group>
 
-      {/* ── 5. VECTORES BIOMECÁNICOS DCL (Fm, F_bite, R_atm) ── */}
-      {/* Vector Fm (Tensión Maseterina) */}
-      <ForceVector3D
-        origin={gonionRightPos}
-        vector={vFm}
-        color="#b91c1c"
-        label={`Fm = ${muscleForceN} N`}
-        sublabel="Tensión Masetero"
-      />
-
-      {/* Vector F_bite (Fuerza de Mordida / Resistencia Dental) */}
-      <ForceVector3D
-        origin={[foodPos[0], foodPos[1] + 0.05, foodPos[2]]}
-        vector={vBite}
-        color="#0d6e64"
-        label={`F_bite = ${fBiteN.toFixed(0)} N`}
-        sublabel={`(${fBiteKgf.toFixed(1)} kgf · ${mechAdv.toFixed(2)}× Fm)`}
-      />
-
-      {/* Vector R_atm (Reacción Cóndilo ATM) */}
-      <ForceVector3D
-        origin={[0.38, 0.02, 0.05]}
-        vector={vRAtm}
-        color="#43505c"
-        label={`R_atm = ${rAtmN.toFixed(0)} N`}
-        sublabel={`(${rAtmKgf.toFixed(1)} kgf)`}
-      />
+      {/* ── 5. VECTORES BIOMECÁNICOS DCL (Fm, F_mord, R_ATM) ── */}
+      <ForceVector3D origin={gonionRightPos} vector={vFm} color="#b91c1c" symbol="Fm" />
+      <ForceVector3D origin={[foodPos[0], foodPos[1] + 0.05, foodPos[2]]} vector={vBite} color="#0d6e64" symbol="F_mord" />
+      <ForceVector3D origin={[0.38, 0.02, 0.05]} vector={vRAtm} color="#43505c" symbol="R_ATM" />
 
       {/* Sombra de contacto en el suelo */}
       <ContactShadows position={[0, -1.35, 0]} opacity={0.62} scale={4.0} blur={1.9} far={3.0} color="#241d12" />
@@ -756,6 +678,34 @@ export default function JawCanvas({
         />
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
+
+      {/* Lecturas del DCL ancladas a la esquina (fuera del 3D) */}
+      <div
+        style={{
+          position: 'absolute',
+          left: '10px',
+          bottom: '10px',
+          zIndex: 9,
+          transform: 'scale(0.82)',
+          transformOrigin: 'bottom left',
+          pointerEvents: 'none',
+        }}
+      >
+        <DclReadout
+          title="Mandíbula · ATM · DCL"
+          tone="#0d6e64"
+          rows={[
+            { symbol: 'Fm', color: '#b91c1c', value: `${muscleForceN.toFixed(0)} N`, hint: 'masetero' },
+            { symbol: 'F_mord', color: '#0d6e64', value: `${j.fBiteN.toFixed(0)} N`, hint: `${j.fBiteKgf.toFixed(0)} kgf`, strong: true },
+            { symbol: 'R_ATM', color: '#43505c', value: `${j.rAtmN.toFixed(0)} N`, hint: 'cóndilo' },
+          ]}
+          note={
+            biteMode === 'incisor'
+              ? 'Incisivos (d ≈ 7,5 cm): brazo de resistencia largo ⟹ mordida débil.'
+              : 'Molares (d ≈ 3,5 cm): muy cerca del fulcro (ATM) ⟹ mordida potente.'
+          }
+        />
+      </div>
 
       {/* Dinamómetro anclado a la esquina (fuera del 3D) */}
       <div
