@@ -1,9 +1,10 @@
 import React, { Suspense, useMemo, useRef, useState, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, ContactShadows, Html, Line, useGLTF } from '@react-three/drei';
+import { OrbitControls, ContactShadows, Line, useGLTF } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
+import { DclTag } from './DclReadout';
 
 interface ForcePlateCanvasProps {
   gaitPhase: 'heel_strike' | 'mid_stance' | 'toe_off';
@@ -96,16 +97,14 @@ function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [0, 1, 0] as [number, number, number],
   color = '#0d6e64',
-  label = 'F',
-  sublabel = '',
+  symbol = 'F',
   shaftRadius = 0.012,
   showBadge = true,
 }: {
   origin?: [number, number, number];
   vector: [number, number, number];
   color: string;
-  label: string;
-  sublabel?: string;
+  symbol: string;
   shaftRadius?: number;
   showBadge?: boolean;
 }) {
@@ -155,39 +154,13 @@ function ForceVector3D({
         />
       </mesh>
 
-      {/* Rótulo HTML Flotante 3D */}
+      {/* Etiqueta mínima: sólo el símbolo; las cifras van en el panel de esquina. */}
       {showBadge && (
-        <Html
+        <DclTag
           position={[tipPos.x + dir.x * 0.06, tipPos.y + dir.y * 0.06, tipPos.z + dir.z * 0.06]}
-          center
-          zIndexRange={[100, 0]}
-        >
-          <div
-            style={{
-              background: 'rgba(255, 255, 255, 0.95)',
-              backdropFilter: 'blur(8px)',
-              border: `1.5px solid ${color}`,
-              borderRadius: '6px',
-              padding: '2px 7px',
-              boxShadow: `0 2px 12px ${color}33`,
-              whiteSpace: 'nowrap',
-              pointerEvents: 'none',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: '1px',
-            }}
-          >
-            <span style={{ color: color, fontSize: '0.62rem', fontWeight: 700, fontFamily: 'JetBrains Mono, monospace' }}>
-              {label}
-            </span>
-            {sublabel && (
-              <span style={{ color: '#64748b', fontSize: '0.52rem', fontFamily: 'system-ui, sans-serif' }}>
-                {sublabel}
-              </span>
-            )}
-          </div>
-        </Html>
+          color={color}
+          symbol={symbol}
+        />
       )}
     </group>
   );
@@ -349,12 +322,6 @@ function ForcePlatform3D() {
             />
           </mesh>
 
-          {/* Rótulo del sensor piezoeléctrico */}
-          <Html position={[0, 0.12, 0]} center>
-            <div style={{ fontSize: '0.48rem', fontFamily: 'JetBrains Mono, monospace', color: '#047857', fontWeight: 700, pointerEvents: 'none' }}>
-              {`S${i + 1} (Piezo)`}
-            </div>
-          </Html>
         </group>
       ))}
 
@@ -369,11 +336,7 @@ function ForcePlatform3D() {
           color="#059669"
           lineWidth={2.2}
         />
-        <Html position={[0, 0, 0.50]} center>
-          <span style={{ fontSize: '0.52rem', fontFamily: 'JetBrains Mono, monospace', color: '#059669', fontWeight: 700, pointerEvents: 'none' }}>
-            +Fy (Anterior)
-          </span>
-        </Html>
+        <DclTag position={[0, 0, 0.50]} color="#059669" symbol="+Fy" />
 
         {/* Eje +Fx (Mediolateral) */}
         <Line
@@ -384,11 +347,7 @@ function ForcePlatform3D() {
           color="#2563eb"
           lineWidth={2.2}
         />
-        <Html position={[0.40, 0, 0]} center>
-          <span style={{ fontSize: '0.52rem', fontFamily: 'JetBrains Mono, monospace', color: '#2563eb', fontWeight: 700, pointerEvents: 'none' }}>
-            +Fx (Mediolateral)
-          </span>
-        </Html>
+        <DclTag position={[0.40, 0, 0]} color="#2563eb" symbol="+Fx" />
       </group>
     </group>
   );
@@ -590,46 +549,14 @@ function CopAndGrfVectors3D({
           />
         </mesh>
 
-        {/* Rótulo del COP */}
-        <Html position={[0, -0.06, 0.08]} center>
-          <div
-            style={{
-              background: 'rgba(239, 68, 68, 0.95)',
-              color: '#ffffff',
-              fontSize: '0.52rem',
-              fontWeight: 800,
-              padding: '1px 5px',
-              borderRadius: '4px',
-              fontFamily: 'JetBrains Mono, monospace',
-              boxShadow: '0 2px 8px rgba(239, 68, 68, 0.4)',
-              pointerEvents: 'none',
-            }}
-          >
-            COP
-          </div>
-        </Html>
+        <DclTag position={[0, -0.06, 0.08]} color="#ef4444" symbol="COP" />
       </group>
 
       {/* ── Vector Resultante de la Reacción del Suelo (GRF) ── */}
-      <ForceVector3D
-        origin={copPos}
-        vector={grfVec}
-        color={TEAL_ACCENT}
-        label={`GRF = ${grfResultantN.toFixed(0)} N`}
-        sublabel={`${(grfResultantN / (bodyMassKg * 9.81)).toFixed(2)}× W`}
-        shaftRadius={0.016}
-      />
+      <ForceVector3D origin={copPos} vector={grfVec} color={TEAL_ACCENT} symbol="GRF" shaftRadius={0.016} />
 
       {/* ── Componente Vertical Fz (Verde Esmeralda) ── */}
-      <ForceVector3D
-        origin={copPos}
-        vector={fzVec}
-        color={GREEN_ACCENT}
-        label={`Fz = ${fzN.toFixed(0)} N`}
-        sublabel={`(${cfg.fzMult}× W)`}
-        shaftRadius={0.012}
-        showBadge={false}
-      />
+      <ForceVector3D origin={copPos} vector={fzVec} color={GREEN_ACCENT} symbol="Fz" shaftRadius={0.012} showBadge={false} />
 
       {/* ── Componente Anteroposterior Fy (Frenado / Propulsión) ── */}
       {Math.abs(fyN) > 5 && (
@@ -637,8 +564,7 @@ function CopAndGrfVectors3D({
           origin={copPos}
           vector={fyVec}
           color={fyN > 0 ? '#10b981' : RED_ACCENT}
-          label={`Fy = ${fyN > 0 ? `+${fyN}` : fyN} N`}
-          sublabel={fyN > 0 ? 'Propulsión' : 'Frenado'}
+          symbol="Fy"
           shaftRadius={0.010}
           showBadge={false}
         />
@@ -650,7 +576,7 @@ function CopAndGrfVectors3D({
           origin={copPos}
           vector={fxVec}
           color={BLUE_ACCENT}
-          label={`Fx = ${fxN > 0 ? `+${fxN}` : fxN} N`}
+          symbol="Fx"
           shaftRadius={0.008}
           showBadge={false}
         />

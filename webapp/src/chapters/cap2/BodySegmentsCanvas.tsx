@@ -1,6 +1,7 @@
 import React, { Suspense, useMemo, useRef, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, ContactShadows, Html, useGLTF } from '@react-three/drei';
+import { OrbitControls, ContactShadows, useGLTF } from '@react-three/drei';
+import { DclTag, DclReadout } from './DclReadout';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
@@ -216,27 +217,11 @@ function SegmentMassMarker3D({
         <meshBasicMaterial color="#232c36" />
       </mesh>
 
-      {/* Badge HTML con JetBrains Mono */}
-      <Html position={[labelOffset[0], labelOffset[1], labelOffset[2]]} center distanceFactor={3.2}>
-        <div
-          style={{
-            background: 'rgba(255, 255, 255, 0.94)',
-            backdropFilter: 'blur(4px)',
-            border: '1px solid #7c6a4e',
-            borderRadius: '4px',
-            padding: '2px 5px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
-            whiteSpace: 'nowrap',
-            pointerEvents: 'none',
-            fontSize: '0.54rem',
-            fontFamily: 'JetBrains Mono, monospace',
-            fontWeight: 700,
-            color: '#232c36',
-          }}
-        >
-          {shortName} ({(massPct * 100).toFixed(0)}%)
-        </div>
-      </Html>
+      <DclTag
+        position={[labelOffset[0], labelOffset[1], labelOffset[2]]}
+        color="#7c6a4e"
+        symbol={`${shortName} ${(massPct * 100).toFixed(0)}%`}
+      />
     </group>
   );
 }
@@ -615,24 +600,7 @@ function DempsterSkeletonRig3D({
         <gridHelper args={[2.4, 24, '#c5b593', '#e8dfcc']} position={[0, 0.001, 0]} />
 
         {/* Rótulo 3D del BOS */}
-        <Html position={[0, 0.01, bosAntZ + 0.08]} center>
-          <div
-            style={{
-              background: 'rgba(255, 255, 255, 0.92)',
-              border: `1.2px solid ${!isStable ? RED_ACCENT : TEAL_ACCENT}`,
-              borderRadius: '4px',
-              padding: '2px 6px',
-              fontFamily: 'Karla, sans-serif',
-              fontSize: '0.54rem',
-              fontWeight: 700,
-              color: !isStable ? RED_ACCENT : TEAL_ACCENT,
-              whiteSpace: 'nowrap',
-              pointerEvents: 'none',
-            }}
-          >
-            Base de Sustentación (BOS)
-          </div>
-        </Html>
+        <DclTag position={[0, 0.01, bosAntZ + 0.08]} color={!isStable ? RED_ACCENT : TEAL_ACCENT} symbol="BoS" />
       </group>
 
       {/* ── B. ESQUELETO COMPLETO ARTICULADO (MESHES REALES DE HUMAN_BODY.GLB) ── */}
@@ -817,31 +785,8 @@ function DempsterSkeletonRig3D({
           <meshBasicMaterial color="#fca5a5" />
         </mesh>
 
-        {/* Badge HTML Flotante de Telemetría del CG */}
-        <Html position={[0.12, 0.02, 0]} center distanceFactor={2.8}>
-          <div
-            style={{
-              background: 'rgba(255, 255, 255, 0.96)',
-              backdropFilter: 'blur(6px)',
-              border: '1.5px solid #dc2626',
-              borderRadius: '6px',
-              padding: '3px 8px',
-              boxShadow: '0 4px 14px rgba(220, 38, 38, 0.25)',
-              whiteSpace: 'nowrap',
-              pointerEvents: 'none',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
-            <span style={{ color: '#b91c1c', fontSize: '0.65rem', fontWeight: 800, fontFamily: 'JetBrains Mono, monospace' }}>
-              CG = {cgHeightCm.toFixed(1)} cm
-            </span>
-            <span style={{ color: '#475569', fontSize: '0.52rem', fontFamily: 'system-ui, sans-serif' }}>
-              ({cgHeightPct.toFixed(1)}% H)
-            </span>
-          </div>
-        </Html>
+        {/* Marcador del centro de gravedad global */}
+        <DclTag position={[0.12, 0.02, 0]} color="#b91c1c" symbol="CG" />
       </group>
 
       {/* ── E. LÍNEA DE PLOMADA Y PLOMADA DE BRONCE AL SUELO ── */}
@@ -910,6 +855,29 @@ export default function BodySegmentsCanvas({
         />
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
+
+      {/* Lecturas ancladas a la esquina (fuera del 3D) */}
+      <div
+        style={{
+          position: 'absolute',
+          left: '10px',
+          bottom: '10px',
+          zIndex: 9,
+          transform: 'scale(0.82)',
+          transformOrigin: 'bottom left',
+          pointerEvents: 'none',
+        }}
+      >
+        <DclReadout
+          title="Centro de gravedad · estabilidad"
+          tone={!b.isStable ? RED_ACCENT : (b.isWarning ? '#d97706' : '#cbd5e1')}
+          rows={[
+            { symbol: 'CG', color: '#b91c1c', value: `${b.cgHeightCm.toFixed(1)} cm`, hint: `${b.cgHeightPct.toFixed(0)}% H`, strong: true },
+            { symbol: 'margen', color: !b.isStable ? RED_ACCENT : TEAL_ACCENT, value: `${b.stabilityMarginPct.toFixed(0)} %`, hint: b.isStable ? (b.isWarning ? 'al límite' : 'estable') : 'fuera de la BoS' },
+          ]}
+          note="El CG global es la media ponderada por masa de los centros de masa segmentarios (Dempster); debe caer dentro de la base de sustentación."
+        />
+      </div>
 
       {/* Dial de estabilidad anclado a la esquina (fuera del 3D) */}
       <div
