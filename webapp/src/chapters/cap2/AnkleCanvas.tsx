@@ -1,9 +1,10 @@
 import React, { useMemo } from 'react';
-import { Html, Line } from '@react-three/drei';
+import { Line } from '@react-three/drei';
 import * as THREE from 'three';
 import { AnatomyStage } from '../cap1/three/AnatomyStage';
 import { useAnatomyNodes, preloadAnatomy } from '../cap1/three/useAnatomyNodes';
 import { materials, makeMuscleActive } from '../cap1/three/materials';
+import { DclTag, DclReadout, type DclRow } from './DclReadout';
 
 /**
  * C4 · Estática del tobillo — de puntillas sobre un pie (Herman §2.3.3,
@@ -37,15 +38,13 @@ function ForceArrow({
   origin,
   vector,
   color,
-  label,
-  sublabel,
+  symbol,
   dashed = false,
 }: {
   origin: [number, number, number];
   vector: [number, number, number];
   color: string;
-  label: string;
-  sublabel?: string;
+  symbol: string;
   dashed?: boolean;
 }) {
   const v = useMemo(() => new THREE.Vector3(...vector), [vector]);
@@ -86,29 +85,7 @@ function ForceArrow({
         <coneGeometry args={[headLen * 0.42, headLen, 18]} />
         <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.5} roughness={0.25} metalness={0.2} />
       </mesh>
-      <Html position={[tip.x + dir.x * 0.03, tip.y + dir.y * 0.03, tip.z + dir.z * 0.03]} center zIndexRange={[90, 0]}>
-        <div
-          style={{
-            background: 'rgba(255,255,255,0.94)',
-            border: `1.5px solid ${color}`,
-            borderRadius: 5,
-            padding: '2px 6px',
-            whiteSpace: 'nowrap',
-            pointerEvents: 'none',
-            fontFamily: 'JetBrains Mono, monospace',
-            textAlign: 'center',
-            lineHeight: 1.25,
-          }}
-        >
-          <span style={{ color, fontSize: '0.6rem', fontWeight: 700 }}>{label}</span>
-          {sublabel && (
-            <>
-              <br />
-              <span style={{ color: '#55606d', fontSize: '0.5rem', fontFamily: 'system-ui, sans-serif' }}>{sublabel}</span>
-            </>
-          )}
-        </div>
-      </Html>
+      <DclTag position={[tip.x + dir.x * 0.03, tip.y + dir.y * 0.03, tip.z + dir.z * 0.03]} color={color} symbol={symbol} />
     </group>
   );
 }
@@ -138,42 +115,51 @@ function pivot(p: THREE.Vector3, g: number): THREE.Vector3 {
   );
 }
 
+/**
+ * Estática del tobillo de puntillas (2.39–2.40) + geometría del DCL. Fuente
+ * única compartida por `AnkleAnatomy` (flechas) y `AnkleCanvas` (panel de
+ * lecturas) para que las cifras coincidan siempre.
+ */
+function ankleSolve(betaDeg: number, bodyWeightN: number) {
+  // Herman define θ y β de modo que cos(θ+β) puede salir negativo para β
+  // grandes; lo que importa son las MAGNITUDES. Singularidad en θ+β = 90°
+  // (β ≈ 45°); el slide restringe β a 55–75°. Clamp de seguridad.
+  const beta = betaDeg * DEG;
+  const Wb = bodyWeightN;
+  const denom = Math.max(0.16, Math.abs(Math.cos(THETA + beta)));
+  const M = (Wb * Math.abs(Math.cos(beta))) / denom;
+
+  const gamma = (betaDeg - REST_BETA) * DEG;
+  const ankP = pivot(ANKLE_C, gamma);
+  const heelP = pivot(ACH_HEEL, gamma);
+  const calfP = pivot(CALF_TOP, gamma);
+  const achDir = calfP.clone().sub(heelP).normalize();
+
+  // Reacción en el astrágalo:  R = −(N + M)  (cierra ΣF = 0).
+  const rxN = -(achDir.x * M);
+  const ryN = -(Wb + achDir.y * M);
+  const rzN = -(achDir.z * M);
+  const R = Math.hypot(rxN, ryN, rzN);
+
+  return { beta, Wb, M, gamma, ankP, heelP, calfP, achDir, rxN, ryN, rzN, R };
+}
+
 function AnkleAnatomy({ betaDeg, bodyWeightN, showComponents }: AnkleCanvasProps) {
   const bone = useAnatomyNodes('body');
   const muscle = useAnatomyNodes('muscles_hip_leg');
 
-  // ── Biomecánica de puntillas (2.39–2.40) ──
-  // Herman define θ y β de modo que cos(θ+β) puede salir negativo para β
-  // grandes; lo que importa son las MAGNITUDES.
-  const beta = betaDeg * DEG;
-  const Wb = bodyWeightN;
-  // El modelo de Herman tiene una singularidad en θ+β = 90° (β ≈ 45°); el
-  // slide restringe β a 55–75°, bien lejos de ella. Clamp de seguridad.
-  const denom = Math.max(0.16, Math.abs(Math.cos(THETA + beta)));
-  const M = (Wb * Math.abs(Math.cos(beta))) / denom;
+  // ── Biomecánica de puntillas (2.39–2.40) + geometría del DCL ──
+  const { Wb, M, gamma, ankP, heelP, calfP, achDir, rxN, ryN, rzN, R } =
+    ankleSolve(betaDeg, bodyWeightN);
 
   const emg = Math.min(1.4, 0.25 + M / (Wb * 3));
   const surMat = useMemo(() => makeMuscleActive(emg), [emg]);
 
   const S = 0.00006; // N → unidades de mundo
 
-  // Al ponerse de puntillas, el pie (y con él la pierna) gira sobre el fulcro
-  // metatarsiano y el talón se eleva.
-  const gamma = (betaDeg - REST_BETA) * DEG;
-  const ankP = pivot(ANKLE_C, gamma);
-  const heelP = pivot(ACH_HEEL, gamma);
-  const calfP = pivot(CALF_TOP, gamma);
-
-  // Aquiles: del calcáneo hacia el vientre del tríceps sural.
-  const achDir = calfP.clone().sub(heelP).normalize();
   const mVec: [number, number, number] = [achDir.x * M * S, achDir.y * M * S, achDir.z * M * S];
   // Normal del suelo bajo el fulcro, vertical hacia arriba = Wb (fija).
   const nVec: [number, number, number] = [0, Wb * S, 0];
-  // Reacción en el astrágalo:  R = −(N + M)  (cierra ΣF = 0).
-  const rxN = -(achDir.x * M);
-  const ryN = -(Wb + achDir.y * M);
-  const rzN = -(achDir.z * M);
-  const R = Math.hypot(rxN, ryN, rzN);
   const rVec: [number, number, number] = [rxN * S, ryN * S, rzN * S];
 
   const achillesLine: [number, number, number][] = [heelP.toArray(), calfP.toArray()];
@@ -217,11 +203,7 @@ function AnkleAnatomy({ betaDeg, bodyWeightN, showComponents }: AnkleCanvasProps
         <sphereGeometry args={[0.007, 16, 16]} />
         <meshStandardMaterial color={SLATE} emissive={SLATE} emissiveIntensity={0.3} />
       </mesh>
-      <Html position={[FULCRUM.x, FULCRUM.y - 0.028, FULCRUM.z]} center zIndexRange={[80, 0]}>
-        <span style={{ background: 'rgba(255,255,255,0.85)', color: SLATE, fontSize: '0.5rem', fontWeight: 700, fontFamily: 'Karla, sans-serif', padding: '1px 4px', borderRadius: 3, whiteSpace: 'nowrap' }}>
-          fulcro · metatarsianos
-        </span>
-      </Html>
+      <DclTag position={[FULCRUM.x, FULCRUM.y - 0.026, FULCRUM.z]} color={SLATE} symbol="fulcro" />
 
       {/* Suelo */}
       <mesh position={[FULCRUM.x, FULCRUM.y - 0.004, FULCRUM.z + 0.02]} rotation={[-Math.PI / 2, 0, 0]}>
@@ -229,15 +211,15 @@ function AnkleAnatomy({ betaDeg, bodyWeightN, showComponents }: AnkleCanvasProps
         <meshStandardMaterial color="#e6ddc8" roughness={0.95} metalness={0} />
       </mesh>
 
-      {/* ── Vectores ── */}
-      <ForceArrow origin={heelP.toArray()} vector={mVec} color={TEAL} label={`M = ${M.toFixed(0)} N`} sublabel={`Aquiles · ${(M / Wb).toFixed(2)}·Wb`} />
-      <ForceArrow origin={FULCRUM.toArray()} vector={nVec} color={SLATE} label={`N = Wb = ${Wb.toFixed(0)} N`} sublabel="normal del suelo" />
-      <ForceArrow origin={ankP.toArray()} vector={rVec} color={RED} label={`R = ${R.toFixed(0)} N`} sublabel={`astrágalo · ${(R / Wb).toFixed(2)}·Wb`} />
+      {/* ── Vectores (símbolo mínimo; magnitudes en el panel de esquina) ── */}
+      <ForceArrow origin={heelP.toArray()} vector={mVec} color={TEAL} symbol="M" />
+      <ForceArrow origin={FULCRUM.toArray()} vector={nVec} color={SLATE} symbol="N" />
+      <ForceArrow origin={ankP.toArray()} vector={rVec} color={RED} symbol="R" />
 
       {showComponents && (
         <>
-          <ForceArrow origin={ankP.toArray()} vector={[0, 0, rzN * S]} color="#0284c7" label={`R∥ = ${Math.abs(rzN).toFixed(0)} N`} dashed />
-          <ForceArrow origin={[ankP.x, ankP.y, ankP.z + rzN * S]} vector={[0, ryN * S, 0]} color={TEAL} label={`R⊥ = ${Math.abs(ryN).toFixed(0)} N`} dashed />
+          <ForceArrow origin={ankP.toArray()} vector={[0, 0, rzN * S]} color="#0284c7" symbol="R∥" dashed />
+          <ForceArrow origin={[ankP.x, ankP.y, ankP.z + rzN * S]} vector={[0, ryN * S, 0]} color={TEAL} symbol="R⊥" dashed />
         </>
       )}
 
@@ -253,6 +235,17 @@ export default function AnkleCanvas({
   bodyWeightN = 882,
   showComponents = false,
 }: AnkleCanvasProps) {
+  const s = ankleSolve(betaDeg, bodyWeightN);
+  const rows: DclRow[] = [
+    { symbol: 'M', color: TEAL, value: `${s.M.toFixed(0)} N`, hint: `${(s.M / s.Wb).toFixed(2)}·Wb` },
+    { symbol: 'N', color: SLATE, value: `${s.Wb.toFixed(0)} N`, hint: '= Wb' },
+    { symbol: 'R', color: RED, value: `${s.R.toFixed(0)} N`, hint: `${(s.R / s.Wb).toFixed(2)}·Wb`, strong: true },
+  ];
+  if (showComponents) {
+    rows.push({ symbol: 'R∥', color: '#0284c7', value: `${Math.abs(s.rzN).toFixed(0)} N`, hint: 'cizalla', muted: true });
+    rows.push({ symbol: 'R⊥', color: TEAL, value: `${Math.abs(s.ryN).toFixed(0)} N`, hint: 'compresión', muted: true });
+  }
+
   return (
     <AnatomyStage
       className="cap2-webgl-canvas"
@@ -262,6 +255,26 @@ export default function AnkleCanvas({
       maxDistance={7}
       grid={false}
       shadow={false}
+      overlay={
+        <div
+          style={{
+            position: 'absolute',
+            left: '10px',
+            bottom: '10px',
+            zIndex: 9,
+            transform: 'scale(0.82)',
+            transformOrigin: 'bottom left',
+            pointerEvents: 'none',
+          }}
+        >
+          <DclReadout
+            title="De puntillas · DCL del tobillo"
+            tone="#0d6e64"
+            rows={rows}
+            note={`Palanca de 2ª clase: para β = ${betaDeg}°, tanto M como R superan con creces el peso corporal.`}
+          />
+        </div>
+      }
     >
       <AnkleAnatomy betaDeg={betaDeg} bodyWeightN={bodyWeightN} showComponents={showComponents} />
     </AnatomyStage>

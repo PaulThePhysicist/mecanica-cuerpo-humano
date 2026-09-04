@@ -1,11 +1,12 @@
 import React, { Suspense, useMemo, useRef, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, ContactShadows, Html, Line, useGLTF } from '@react-three/drei';
+import { OrbitControls, ContactShadows, Line, useGLTF } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
 import { STUDIO_BG_DEEP } from '../cap1/three/materials';
 import { StudioLights } from '../cap1/three/StudioLights';
+import { DclTag } from './DclReadout';
 
 interface HipCanvasProps {
   bodyMassKg: number;        // Masa total en kg (40 a 120, default 70)
@@ -32,16 +33,14 @@ function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [1, 0, 0] as [number, number, number],
   color = '#0d6e64',
-  label = 'F',
-  sublabel = '',
+  symbol = 'F',
   showComponents = false,
   isDashed = false,
 }: {
   origin?: [number, number, number];
   vector: [number, number, number];
   color: string;
-  label: string;
-  sublabel?: string;
+  symbol: string;
   showComponents?: boolean;
   isDashed?: boolean;
 }) {
@@ -113,38 +112,12 @@ function ForceVector3D({
         </group>
       )}
 
-      {/* Rótulo HTML 3D Flotante con tipografía técnica */}
-      <Html
-        position={[tipPos.x + dir.x * 0.08, tipPos.y + dir.y * 0.08, tipPos.z + dir.z * 0.08]}
-        center
-        zIndexRange={[100, 0]}
-      >
-        <div
-          style={{
-            background: 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(6px)',
-            border: `1.5px solid ${color}`,
-            borderRadius: '6px',
-            padding: '3px 7px',
-            boxShadow: `0 2px 10px ${color}33`,
-            whiteSpace: 'nowrap',
-            pointerEvents: 'none',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '1px',
-          }}
-        >
-          <span style={{ color: color, fontSize: '0.62rem', fontWeight: 700, fontFamily: 'JetBrains Mono, monospace' }}>
-            {label}
-          </span>
-          {sublabel && (
-            <span style={{ color: '#55606d', fontSize: '0.52rem', fontFamily: 'system-ui, sans-serif' }}>
-              {sublabel}
-            </span>
-          )}
-        </div>
-      </Html>
+      {/* Etiqueta mínima: sólo el símbolo; las cifras van en las tarjetas de esquina. */}
+      <DclTag
+        position={[tipPos.x + dir.x * 0.07, tipPos.y + dir.y * 0.07, tipPos.z + dir.z * 0.07]}
+        color={color}
+        symbol={symbol}
+      />
     </group>
   );
 }
@@ -440,7 +413,6 @@ function HipAnatomy3D({
   const totalWeightN = bodyMassKg * g;
   // Peso suprayacente + pierna suspendida = Wb = (5/6) * W
   const wbN = (5 / 6) * totalWeightN;
-  const wbKgf = wbN / g;
 
   const bwM = 0.18; // 18 cm al centro de gravedad
   const bmM = 0.07; // 7 cm al trocánter mayor
@@ -452,13 +424,11 @@ function HipAnatomy3D({
   const fAbductorN = trendelenburg
     ? (wbN * bwM * 0.25) / (bmM * sin70)
     : (wbN * bwM) / (bmM * sin70);
-  const fAbductorKgf = fAbductorN / g;
 
   // Reacción acetabular R
   const rxN = fAbductorN * cos70;
   const ryN = fAbductorN * sin70 + wbN;
   const rJointN = Math.hypot(rxN, ryN);
-  const rJointKgf = rJointN / g;
 
   // Animación suave del signo de Trendelenburg (LERP senoidal)
   useFrame((state, delta) => {
@@ -554,13 +524,7 @@ function HipAnatomy3D({
         </mesh>
 
         {/* Vector Peso del Cuerpo Wb */}
-        <ForceVector3D
-          origin={wbOrigin3D}
-          vector={wbVec3D}
-          color={AMBER_ACCENT}
-          label={`Wb = ${wbN.toFixed(0)} N`}
-          sublabel={`(${wbKgf.toFixed(1)} kgf · 5/6 W)`}
-        />
+        <ForceVector3D origin={wbOrigin3D} vector={wbVec3D} color={AMBER_ACCENT} symbol="Wb" />
 
         {/* Guía acotada del brazo de palanca bw = 18 cm */}
         <Line
@@ -584,8 +548,7 @@ function HipAnatomy3D({
         origin={[-0.30, 0.06, 0]}
         vector={faVec3D}
         color={trendelenburg ? '#e28880' : RED_ACCENT}
-        label={trendelenburg ? `Fa (Paresia) = ${fAbductorN.toFixed(0)} N` : `Fa = ${fAbductorN.toFixed(0)} N`}
-        sublabel={trendelenburg ? '⚠️ Insuficiencia Glútea' : `(${fAbductorKgf.toFixed(1)} kgf · θm = 70°)`}
+        symbol={trendelenburg ? 'Fa ⚠' : 'Fa'}
       />
 
       {/* Guía acotada del brazo bm = 7 cm */}
@@ -607,8 +570,7 @@ function HipAnatomy3D({
         origin={[0, 0, 0]}
         vector={rVec3D}
         color={TEAL_ACCENT}
-        label={`R = ${rJointN.toFixed(0)} N`}
-        sublabel={`(${rJointKgf.toFixed(1)} kgf · ${(rJointN / totalWeightN).toFixed(2)}× W)`}
+        symbol="R"
         showComponents={showBreakdown}
       />
 
@@ -620,7 +582,7 @@ function HipAnatomy3D({
             origin={[0, 0, 0]}
             vector={[-rxN * vectorScale, 0, 0]}
             color="#0284c7"
-            label={`Rx = ${rxN.toFixed(0)} N`}
+            symbol="Rx"
             isDashed
           />
           {/* Componente Ry */}
@@ -628,7 +590,7 @@ function HipAnatomy3D({
             origin={[-rxN * vectorScale, 0, 0]}
             vector={[0, -ryN * vectorScale, 0]}
             color={TEAL_ACCENT}
-            label={`Ry = ${ryN.toFixed(0)} N`}
+            symbol="Ry"
             isDashed
           />
         </group>
