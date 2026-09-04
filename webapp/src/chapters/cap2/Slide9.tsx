@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import SpineCanvas from './SpineCanvas';
 import HudPanel from './HudPanel';
+import { AnimateButton } from './AnimateButton';
+import { useHarmonicClock } from '../cap1/three/useHarmonicClock';
 import type { Engine } from './useEngine';
 
 export default function Slide9({
@@ -14,6 +16,14 @@ export default function Slide9({
   const [trunkAngleDeg, setTrunkAngleDeg] = useState<number>(60);
   const [handLoadKg, setHandLoadKg] = useState<number>(15);
   const [bodyMassKg, setBodyMassKg] = useState<number>(70);
+  const [isAnimating, setIsAnimating] = useState<boolean>(false);
+
+  // Ciclo de levantamiento: el tronco se inclina (α≈78°) y se endereza (α≈8°).
+  // Lento (speed 0.6) para leer cómo se dispara la tensión del erector.
+  useHarmonicClock({ playing: isAnimating }, (t) => {
+    const s = (Math.sin(t * 0.6 - Math.PI / 2) + 1) / 2;
+    setTrunkAngleDeg(8 + 70 * s);
+  });
 
   const g = 9.81;
   const wTrunkN = 0.65 * bodyMassKg * g;
@@ -32,6 +42,7 @@ export default function Slide9({
   const rShearN = Math.abs((wTrunkN + wLoadN) * sinAlpha - fErectorN * sinThetaM);
 
   const handleReset = () => {
+    setIsAnimating(false);
     setTrunkAngleDeg(60);
     setHandLoadKg(15);
     setBodyMassKg(70);
@@ -170,11 +181,13 @@ export default function Slide9({
                   min="0"
                   max="90"
                   value={trunkAngleDeg}
-                  onChange={(e) => setTrunkAngleDeg(parseFloat(e.target.value))}
+                  onChange={(e) => { setIsAnimating(false); setTrunkAngleDeg(parseFloat(e.target.value)); }}
                   style={{ width: '50px' }}
                 />
-                <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '24px' }}>{trunkAngleDeg}°</b>
+                <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '24px' }}>{trunkAngleDeg.toFixed(0)}°</b>
               </label>
+
+              <AnimateButton playing={isAnimating} onToggle={() => setIsAnimating((a) => !a)} label="Levantar" />
 
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
                 <span>Carga:</span>

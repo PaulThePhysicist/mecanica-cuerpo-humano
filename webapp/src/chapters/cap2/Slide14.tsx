@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import ForcePlateCanvas from './ForcePlateCanvas';
 import HudPanel from './HudPanel';
+import { AnimateButton } from './AnimateButton';
+import { useHarmonicClock } from '../cap1/three/useHarmonicClock';
 import type { Engine } from './useEngine';
 
 interface GaitPhaseOption {
@@ -41,14 +43,24 @@ export default function Slide14({
 }) {
   const [gaitPhase, setGaitPhase] = useState<'heel_strike' | 'mid_stance' | 'toe_off'>('heel_strike');
   const [bodyMassKg, setBodyMassKg] = useState<number>(70);
+  const [isAnimating, setIsAnimating] = useState<boolean>(false);
+
+  // Ciclo de la fase de apoyo de la marcha: contacto de talón → apoyo medio →
+  // despegue de dedos, ~1,7 s por fase.
+  useHarmonicClock({ playing: isAnimating }, (t) => {
+    const order = ['heel_strike', 'mid_stance', 'toe_off'] as const;
+    setGaitPhase(order[Math.floor((t * 0.58) % 3)]);
+  });
 
   const curPhase = PHASES.find((p) => p.id === gaitPhase) || PHASES[0];
 
   const handleSelect = (id: 'heel_strike' | 'mid_stance' | 'toe_off') => {
+    setIsAnimating(false);
     setGaitPhase(id);
   };
 
   const handleReset = () => {
+    setIsAnimating(false);
     setGaitPhase('heel_strike');
     setBodyMassKg(70);
   };
@@ -189,6 +201,8 @@ export default function Slide14({
                 />
                 <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '28px' }}>{bodyMassKg} kg</b>
               </label>
+
+              <AnimateButton playing={isAnimating} onToggle={() => setIsAnimating((a) => !a)} label="Marcha" />
 
               <button
                 type="button"

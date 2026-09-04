@@ -1,6 +1,8 @@
 import React, { Suspense, useState } from 'react';
 import KneeCanvas from './KneeCanvas';
 import HudPanel from './HudPanel';
+import { AnimateButton } from './AnimateButton';
+import { useHarmonicClock } from '../cap1/three/useHarmonicClock';
 import type { Engine } from './useEngine';
 
 // C3 · Estática de la rodilla (Herman §2.3.3, Figs. 2.23–2.27).
@@ -22,6 +24,13 @@ export default function SlideKnee({
   const [ankleLoadN, setAnkleLoadN] = useState<number>(150);
   const [patella, setPatella] = useState<boolean>(true);
   const [showComponents, setShowComponents] = useState<boolean>(false);
+  const [isAnimating, setIsAnimating] = useState<boolean>(false);
+
+  // Ciclo de extensión de la rodilla: de casi colgando (β≈82°) a extendida (β≈8°).
+  useHarmonicClock({ playing: isAnimating }, (t) => {
+    const s = (Math.sin(t * 0.9 - Math.PI / 2) + 1) / 2; // 0→1→0 suave, arranca en β alto
+    setBetaDeg(82 - 74 * s);
+  });
 
   const beta = (betaDeg * Math.PI) / 180;
   const a = patella ? A_LEVER : A_LEVER_NOPAT;
@@ -33,6 +42,7 @@ export default function SlideKnee({
   const Mnopat = torqueExt / (A_LEVER_NOPAT * Math.sin(THETA));
 
   const handleReset = () => {
+    setIsAnimating(false);
     setBetaDeg(45);
     setAnkleLoadN(150);
     setPatella(true);
@@ -134,8 +144,8 @@ export default function SlideKnee({
             <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto', flexWrap: 'wrap' }}>
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                 <span>β pierna:</span>
-                <input type="range" min="0" max="90" value={betaDeg} aria-label="Ángulo de la pierna con la horizontal" onChange={(e) => setBetaDeg(parseFloat(e.target.value))} style={{ width: '58px' }} />
-                <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '30px' }}>{betaDeg}°</b>
+                <input type="range" min="0" max="90" value={betaDeg} aria-label="Ángulo de la pierna con la horizontal" onChange={(e) => { setIsAnimating(false); setBetaDeg(parseFloat(e.target.value)); }} style={{ width: '58px' }} />
+                <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '30px' }}>{betaDeg.toFixed(0)}°</b>
               </label>
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                 <span>W₁ tobillo:</span>
@@ -164,6 +174,7 @@ export default function SlideKnee({
                 <input type="checkbox" checked={showComponents} onChange={(e) => setShowComponents(e.target.checked)} />
                 <span style={{ color: 'var(--ink-2)' }}>Rx, Ry</span>
               </label>
+              <AnimateButton playing={isAnimating} onToggle={() => setIsAnimating((a) => !a)} label="Extender" />
               <button
                 type="button"
                 onClick={handleReset}

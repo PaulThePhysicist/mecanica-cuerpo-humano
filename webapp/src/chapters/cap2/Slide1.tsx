@@ -2,6 +2,8 @@ import React, { useState, Suspense } from 'react';
 import NewtonCanvas from './NewtonCanvas';
 import HudPanel from './HudPanel';
 import ThreeForceDiagram from './ThreeForceDiagram';
+import { AnimateButton } from './AnimateButton';
+import { useHarmonicClock } from '../cap1/three/useHarmonicClock';
 import type { Engine } from './useEngine';
 
 const TF_STEP_LABELS = [
@@ -28,6 +30,13 @@ export default function Slide1({
   const [armAbductionDeg, setArmAbductionDeg] = useState<number>(45);
   // Paso de la construcción gráfica de la regla de las tres fuerzas.
   const [tfStep, setTfStep] = useState<1 | 2 | 3 | 4>(1);
+  const [isAnimating, setIsAnimating] = useState<boolean>(false);
+
+  // Ciclo de abducción / aducción del húmero (brazo pegado ↔ elevado a 95°).
+  useHarmonicClock({ playing: isAnimating }, (t) => {
+    const s = (Math.sin(t * 0.85 - Math.PI / 2) + 1) / 2;
+    setArmAbductionDeg(10 + 85 * s);
+  });
 
   // Cálculos reactivos de componentes
   const rad1 = (theta1 * Math.PI) / 180;
@@ -79,6 +88,7 @@ export default function Slide1({
   };
 
   const handleReset = () => {
+    setIsAnimating(false);
     setF1(80);
     setTheta1(110);
     setF2(45);
@@ -407,11 +417,13 @@ export default function Slide1({
                   max="120"
                   value={armAbductionDeg}
                   aria-label="Abducción anatómica del húmero"
-                  onChange={(e) => setArmAbductionDeg(parseFloat(e.target.value))}
+                  onChange={(e) => { setIsAnimating(false); setArmAbductionDeg(parseFloat(e.target.value)); }}
                   style={{ width: '45px' }}
                 />
-                <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '26px' }}>{armAbductionDeg}°</b>
+                <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '26px' }}>{armAbductionDeg.toFixed(0)}°</b>
               </label>
+
+              <AnimateButton playing={isAnimating} onToggle={() => setIsAnimating((a) => !a)} label="Abducir" />
 
               <label title="Forzar o liberar el equilibrio de fuerzas" style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', cursor: 'pointer', background: 'var(--paper-2)', padding: '2px 5px', borderRadius: '3px', border: '1px solid var(--line)' }}>
                 <input

@@ -1,6 +1,8 @@
 import React, { Suspense, useState } from 'react';
 import AnkleCanvas from './AnkleCanvas';
 import HudPanel from './HudPanel';
+import { AnimateButton } from './AnimateButton';
+import { useHarmonicClock } from '../cap1/three/useHarmonicClock';
 import type { Engine } from './useEngine';
 
 // C4 · Estática del tobillo — de puntillas (Herman §2.3.3, Figs. 2.28–2.29).
@@ -16,6 +18,14 @@ export default function SlideAnkle({
   const [betaDeg, setBetaDeg] = useState<number>(60);
   const [bodyMassKg, setBodyMassKg] = useState<number>(90);
   const [showComponents, setShowComponents] = useState<boolean>(false);
+  const [isAnimating, setIsAnimating] = useState<boolean>(false);
+
+  // Ciclo de "ponerse de puntillas": el pie oscila entre apoyo casi plano
+  // (β≈55°) y máxima elevación del talón (β≈75°).
+  useHarmonicClock({ playing: isAnimating }, (t) => {
+    const s = (Math.sin(t * 1.25 - Math.PI / 2) + 1) / 2;
+    setBetaDeg(55 + 20 * s);
+  });
 
   const g = 9.81;
   const Wb = bodyMassKg * g;
@@ -28,6 +38,7 @@ export default function SlideAnkle({
   const R = Math.hypot(rxN, ryN);
 
   const handleReset = () => {
+    setIsAnimating(false);
     setBetaDeg(60);
     setBodyMassKg(90);
     setShowComponents(false);
@@ -122,8 +133,8 @@ export default function SlideAnkle({
             <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto', flexWrap: 'wrap' }}>
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                 <span>β pie:</span>
-                <input type="range" min="55" max="75" value={betaDeg} aria-label="Ángulo del pie con la horizontal" onChange={(e) => setBetaDeg(parseFloat(e.target.value))} style={{ width: '60px' }} />
-                <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '30px' }}>{betaDeg}°</b>
+                <input type="range" min="55" max="75" value={betaDeg} aria-label="Ángulo del pie con la horizontal" onChange={(e) => { setIsAnimating(false); setBetaDeg(parseFloat(e.target.value)); }} style={{ width: '60px' }} />
+                <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '30px' }}>{betaDeg.toFixed(0)}°</b>
               </label>
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                 <span>Masa:</span>
@@ -134,6 +145,7 @@ export default function SlideAnkle({
                 <input type="checkbox" checked={showComponents} onChange={(e) => setShowComponents(e.target.checked)} />
                 <span style={{ color: 'var(--ink-2)' }}>Rx, Ry</span>
               </label>
+              <AnimateButton playing={isAnimating} onToggle={() => setIsAnimating((a) => !a)} label="De puntillas" />
               <button
                 type="button"
                 onClick={handleReset}

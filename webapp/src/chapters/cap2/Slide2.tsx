@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import TorqueCanvas from './TorqueCanvas';
 import HudPanel from './HudPanel';
 import ThreeForceDiagram from './ThreeForceDiagram';
+import { AnimateButton } from './AnimateButton';
+import { useHarmonicClock } from '../cap1/three/useHarmonicClock';
 import type { Engine } from './useEngine';
 
 export default function Slide2({
@@ -15,6 +17,13 @@ export default function Slide2({
   const [theta, setTheta] = useState<number>(60);
   const [rCm, setRCm] = useState<number>(70);
   const [fN, setFN] = useState<number>(60);
+  const [isAnimating, setIsAnimating] = useState<boolean>(false);
+
+  // Barrido continuo de θ: la fuerza gira alrededor del eje y se ve el torque
+  // pasar por su máximo (θ = 90°/270°) y anularse (θ = 0°/180°).
+  useHarmonicClock({ playing: isAnimating }, (t) => {
+    setTheta((t * 42) % 360);
+  });
 
   const rM = rCm / 100;
   const rad = (theta * Math.PI) / 180;
@@ -28,6 +37,7 @@ export default function Slide2({
   const tauColor = isCCW ? '#0d6e64' : (isCW ? '#b02318' : '#6b7885');
 
   const handleUpdate = (newTheta: number, newR: number, newF: number) => {
+    setIsAnimating(false);
     setTheta(newTheta);
     setRCm(newR);
     setFN(newF);
@@ -58,6 +68,7 @@ export default function Slide2({
   };
 
   const handleReset = () => {
+    setIsAnimating(false);
     setTheta(60);
     setRCm(70);
     setFN(60);
@@ -290,11 +301,13 @@ export default function Slide2({
                   min="0"
                   max="360"
                   value={theta}
-                  onChange={(e) => setTheta(parseFloat(e.target.value))}
+                  onChange={(e) => { setIsAnimating(false); setTheta(parseFloat(e.target.value)); }}
                   style={{ width: '45px' }}
                 />
-                <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '26px' }}>{theta}°</b>
+                <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '26px' }}>{theta.toFixed(0)}°</b>
               </label>
+
+              <AnimateButton playing={isAnimating} onToggle={() => setIsAnimating((a) => !a)} label="Girar θ" />
 
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
                 <span>r:</span>

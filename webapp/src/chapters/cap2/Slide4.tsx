@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import BicepsCanvas from './BicepsCanvas';
 import HudPanel from './HudPanel';
+import { AnimateButton } from './AnimateButton';
+import { useHarmonicClock } from '../cap1/three/useHarmonicClock';
 import type { Engine } from './useEngine';
 
 export default function Slide4({
@@ -14,6 +16,13 @@ export default function Slide4({
   const [handLoadKg, setHandLoadKg] = useState<number>(5);
   const [insertCm, setInsertCm] = useState<number>(4.0);
   const [elbowAngleDeg, setElbowAngleDeg] = useState<number>(90);
+  const [isAnimating, setIsAnimating] = useState<boolean>(false);
+
+  // Ciclo de flexión / extensión del codo (55° casi extendido ↔ 130° flexionado).
+  useHarmonicClock({ playing: isAnimating }, (t) => {
+    const s = (Math.sin(t * 1.1 - Math.PI / 2) + 1) / 2;
+    setElbowAngleDeg(55 + 75 * s);
+  });
 
   const g = 9.81;
   const wForearmN = 1.5 * g;
@@ -45,6 +54,7 @@ export default function Slide4({
   };
 
   const handleReset = () => {
+    setIsAnimating(false);
     setHandLoadKg(5);
     setInsertCm(4.0);
     setElbowAngleDeg(90);
@@ -259,11 +269,13 @@ export default function Slide4({
                   min="45"
                   max="135"
                   value={elbowAngleDeg}
-                  onChange={(e) => setElbowAngleDeg(parseFloat(e.target.value))}
+                  onChange={(e) => { setIsAnimating(false); setElbowAngleDeg(parseFloat(e.target.value)); }}
                   style={{ width: '45px' }}
                 />
-                <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '26px' }}>{elbowAngleDeg}°</b>
+                <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '26px' }}>{elbowAngleDeg.toFixed(0)}°</b>
               </label>
+
+              <AnimateButton playing={isAnimating} onToggle={() => setIsAnimating((a) => !a)} label="Flexionar" />
 
               <button
                 type="button"
