@@ -7,6 +7,20 @@ import Cap2ZoomHandler from './Cap2ZoomHandler';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
 import { STUDIO_BG_DEEP } from '../cap1/three/materials';
 import { StudioLights } from '../cap1/three/StudioLights';
+import { DclTag, DclReadout, type DclRow } from './DclReadout';
+
+/** Estática del codo en flexión (fuente única: escena + panel de lecturas). */
+function elbowSolve(handLoadKg: number, insertCm: number, elbowAngleDeg: number) {
+  const g = 9.81;
+  const wForearmN = 1.5 * g;
+  const wHandN = handLoadKg * g;
+  const flexRad = (elbowAngleDeg * Math.PI) / 180;
+  const tauResNm = (wForearmN * 0.14 + wHandN * 0.35) * Math.sin(flexRad);
+  const dM = insertCm / 100;
+  const fMuscN = tauResNm / (dM * Math.max(0.2, Math.sin(flexRad)));
+  const rJointN = Math.max(0, fMuscN - (wForearmN + wHandN));
+  return { g, wForearmN, wHandN, flexRad, tauResNm, fMuscN, fMuscKgf: fMuscN / g, rJointN };
+}
 
 interface BicepsCanvasProps {
   handLoadKg: number;    // Carga en mano (0 a 25 kg)
@@ -42,15 +56,13 @@ function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [1, 0, 0] as [number, number, number],
   color = '#0d6e64',
-  label = 'F',
-  sublabel = '',
+  symbol = 'F',
   labelOffset = [0, 0, 0] as [number, number, number],
 }: {
   origin?: [number, number, number];
   vector: [number, number, number];
   color: string;
-  label: string;
-  sublabel?: string;
+  symbol: string;
   labelOffset?: [number, number, number];
 }) {
   const v = useMemo(() => new THREE.Vector3(...vector), [vector]);
@@ -102,37 +114,11 @@ function ForceVector3D({
         />
       </mesh>
 
-      <Html
+      <DclTag
         position={[tipPos.x + dir.x * 0.04 + labelOffset[0], tipPos.y + dir.y * 0.04 + labelOffset[1], tipPos.z + dir.z * 0.04 + labelOffset[2]]}
-        center
-        zIndexRange={[100, 0]}
-      >
-        <div
-          style={{
-            background: 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(4px)',
-            border: `1.6px solid ${color}`,
-            borderRadius: '4px',
-            padding: '4px 8px',
-            boxShadow: `0 2px 8px rgba(20, 28, 36, 0.18)`,
-            whiteSpace: 'nowrap',
-            pointerEvents: 'none',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '2px',
-          }}
-        >
-          <span style={{ color: '#17212b', fontSize: '0.70rem', lineHeight: 1.15, fontWeight: 800, fontFamily: 'JetBrains Mono, monospace' }}>
-            {label}
-          </span>
-          {sublabel && (
-            <span style={{ color: '#334155', fontSize: '0.60rem', lineHeight: 1.15, fontWeight: 600, fontFamily: 'Karla, sans-serif' }}>
-              {sublabel}
-            </span>
-          )}
-        </div>
-      </Html>
+        color={color}
+        symbol={symbol}
+      />
     </group>
   );
 }
@@ -150,16 +136,8 @@ function RealArmBicepsScene({
   const { nodes: boneNodes } = useGLTF('/assets/cap1/human_body.glb') as any;
   const { nodes: muscleNodes } = useGLTF('/assets/cap1/human_muscles_arm.glb') as any;
 
-  // Física del codo
-  const g = 9.81;
-  const wForearmN = 1.5 * g;
-  const wHandN = handLoadKg * g;
-  const flexRad = (elbowAngleDeg * Math.PI) / 180;
-  const tauResNm = (wForearmN * 0.14 + wHandN * 0.35) * Math.sin(flexRad);
-  const dM = insertCm / 100;
-  const fMuscN = tauResNm / (dM * Math.max(0.2, Math.sin(flexRad)));
-  const fMuscKgf = fMuscN / g;
-  const rJointN = Math.max(0, fMuscN - (wForearmN + wHandN));
+  // Física del codo (fuente única)
+  const { wHandN, fMuscN, rJointN } = elbowSolve(handLoadKg, insertCm, elbowAngleDeg);
 
   // Ángulo de rotación del antebrazo en Three.js
   const angleRad = ((180 - elbowAngleDeg) * Math.PI) / 180;
@@ -267,9 +245,8 @@ function RealArmBicepsScene({
         origin={[0, 0, 0]}
         vector={vRj}
         color="#dc2626"
-        label={`R_j = ${rJointN.toFixed(0)} N`}
-        sublabel="Compresión Troclear"
-          labelOffset={[-0.12, -0.03, 0]}
+        symbol="R_j"
+        labelOffset={[-0.12, -0.03, 0]}
       />
 
       {/* ── Segmento Móvil: Antebrazo y Mano Rotatorio ── */}
@@ -290,24 +267,10 @@ function RealArmBicepsScene({
         </group>
 
         {/* Vector de Fuerza Muscular Fm en la tuberosidad bicipital */}
-        <ForceVector3D
-          origin={[0, 0, 0]}
-          vector={vFm}
-          color="#0d9488"
-          label={`F_m = ${fMuscN.toFixed(0)} N`}
-          sublabel={`d = ${insertCm.toFixed(1)} cm · Bíceps`}
-          labelOffset={[-0.08, 0.035, 0]}
-        />
+        <ForceVector3D origin={[0, 0, 0]} vector={vFm} color="#0d9488" symbol="F_m" labelOffset={[-0.08, 0.035, 0]} />
 
         {/* Vector de Carga W en la mano */}
-        <ForceVector3D
-          origin={[0, 0, 0]}
-          vector={vWh}
-          color="#d97706"
-          label={`W = ${wHandN.toFixed(0)} N`}
-          sublabel={`${handLoadKg} kg en mano (D = 35 cm)`}
-          labelOffset={[0.13, -0.025, 0]}
-        />
+        <ForceVector3D origin={[0, 0, 0]} vector={vWh} color="#d97706" symbol="W" labelOffset={[0.13, -0.025, 0]} />
       </group>
     </group>
   );
@@ -324,14 +287,12 @@ export default function BicepsCanvas({
 }: BicepsCanvasProps) {
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
 
-  const g = 9.81;
-  const wForearmN = 1.5 * g;
-  const wHandN = handLoadKg * g;
-  const flexRad = (elbowAngleDeg * Math.PI) / 180;
-  const tauResNm = (wForearmN * 0.14 + wHandN * 0.35) * Math.sin(flexRad);
-  const dM = insertCm / 100;
-  const fMuscN = tauResNm / (dM * Math.max(0.2, Math.sin(flexRad)));
-  const rJointN = Math.max(0, fMuscN - (wForearmN + wHandN));
+  const { wHandN, fMuscN, fMuscKgf, rJointN } = elbowSolve(handLoadKg, insertCm, elbowAngleDeg);
+  const rows: DclRow[] = [
+    { symbol: 'F_m', color: '#0d9488', value: `${fMuscN.toFixed(0)} N`, hint: `${fMuscKgf.toFixed(1)} kgf` },
+    { symbol: 'W', color: '#d97706', value: `${wHandN.toFixed(0)} N`, hint: `${handLoadKg} kg` },
+    { symbol: 'R_j', color: '#dc2626', value: `${rJointN.toFixed(0)} N`, hint: 'troclear', strong: true },
+  ];
 
   return (
     <div className="cap2-webgl-canvas" style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
@@ -379,57 +340,24 @@ export default function BicepsCanvas({
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
 
-      {/* Telemetría 3D Discreta */}
+      {/* Lecturas del DCL ancladas a la esquina (fuera del 3D) */}
       <div
         style={{
           position: 'absolute',
-          bottom: '10px',
           left: '10px',
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: '6px',
-          pointerEvents: 'none',
+          bottom: '10px',
           zIndex: 10,
+          transform: 'scale(0.82)',
+          transformOrigin: 'bottom left',
+          pointerEvents: 'none',
         }}
       >
-        <div
-          style={{
-            background: 'rgba(255, 253, 248, 0.94)',
-            backdropFilter: 'blur(6px)',
-            border: '1px solid rgba(13, 110, 100, 0.4)',
-            borderRadius: '5px',
-            padding: '3px 7px',
-            fontSize: '0.58rem',
-            fontFamily: 'JetBrains Mono, monospace',
-            color: '#0d6e64',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px',
-            boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
-          }}
-        >
-          <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#0d6e64' }} />
-          Bíceps (Fm): <b>{fMuscN.toFixed(0)} N ({(fMuscN / 9.81).toFixed(1)} kgf)</b>
-        </div>
-        <div
-          style={{
-            background: 'rgba(255, 253, 248, 0.94)',
-            backdropFilter: 'blur(6px)',
-            border: '1px solid rgba(220, 38, 38, 0.4)',
-            borderRadius: '5px',
-            padding: '3px 7px',
-            fontSize: '0.58rem',
-            fontFamily: 'JetBrains Mono, monospace',
-            color: '#dc2626',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px',
-            boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
-          }}
-        >
-          <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#dc2626' }} />
-          Compresión Troclear (Rj): <b>{rJointN.toFixed(0)} N</b>
-        </div>
+        <DclReadout
+          title="Flexión de codo · DCL"
+          tone="#0d9488"
+          rows={rows}
+          note="Palanca de 3ª clase: el bíceps sacrifica fuerza (d ≈ 4 cm) por velocidad y rango de la mano (D ≈ 35 cm)."
+        />
       </div>
     </div>
   );

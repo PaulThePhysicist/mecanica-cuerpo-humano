@@ -17,10 +17,13 @@ export function DclTag({
   position,
   color,
   symbol,
+  screenOffset = [0, 0],
 }: {
   position: [number, number, number];
   color: string;
   symbol: string;
+  /** Desplazamiento en píxeles de pantalla, para separar tags que se solapan. */
+  screenOffset?: [number, number];
 }) {
   return (
     <Html position={position} center zIndexRange={[60, 0]} style={{ pointerEvents: 'none' }}>
@@ -39,6 +42,10 @@ export function DclTag({
           whiteSpace: 'nowrap',
           pointerEvents: 'none',
           boxShadow: '0 1px 3px rgba(0, 0, 0, 0.12)',
+          transform:
+            screenOffset[0] || screenOffset[1]
+              ? `translate(${screenOffset[0]}px, ${screenOffset[1]}px)`
+              : undefined,
         }}
       >
         {symbol}

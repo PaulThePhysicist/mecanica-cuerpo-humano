@@ -5,6 +5,7 @@ import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import Cap2ZoomHandler from './Cap2ZoomHandler';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
+import { DclTag, DclReadout, type DclRow } from './DclReadout';
 
 interface NewtonCanvasProps {
   f1: number;               // Magnitud F1 en N (Deltoides / Músculo)
@@ -56,16 +57,14 @@ function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [1, 0, 0] as [number, number, number],
   color = '#0d6e64',
-  label = 'F',
-  sublabel = '',
+  symbol = 'F',
   showComponents = false,
   isDashed = false,
 }: {
   origin?: [number, number, number];
   vector: [number, number, number];
   color: string;
-  label: string;
-  sublabel?: string;
+  symbol: string;
   showComponents?: boolean;
   isDashed?: boolean;
 }) {
@@ -137,38 +136,12 @@ function ForceVector3D({
         </group>
       )}
 
-      {/* Rótulo HTML 3D Flotante Nativo */}
-      <Html
-        position={[tipPos.x + dir.x * 0.16, tipPos.y + dir.y * 0.16, tipPos.z + dir.z * 0.16]}
-        center
-        zIndexRange={[100, 0]}
-      >
-        <div
-          style={{
-            background: 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(4px)',
-            border: `1.5px solid ${color}`,
-            borderRadius: '5px',
-            padding: '3px 7px',
-            boxShadow: `0 2px 8px ${color}28`,
-            whiteSpace: 'nowrap',
-            pointerEvents: 'none',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '1px',
-          }}
-        >
-          <span style={{ color: color, fontSize: '0.62rem', fontWeight: 700, fontFamily: 'JetBrains Mono, monospace' }}>
-            {label}
-          </span>
-          {sublabel && (
-            <span style={{ color: '#55606d', fontSize: '0.52rem', fontFamily: 'Karla, sans-serif' }}>
-              {sublabel}
-            </span>
-          )}
-        </div>
-      </Html>
+      {/* Etiqueta mínima: sólo el símbolo; las cifras van en el panel de esquina. */}
+      <DclTag
+        position={[tipPos.x + dir.x * 0.14, tipPos.y + dir.y * 0.14, tipPos.z + dir.z * 0.14]}
+        color={color}
+        symbol={symbol}
+      />
     </group>
   );
 }
@@ -433,14 +406,14 @@ function SceneContent({
       {showPolygon ? (
         <>
           {/* ── Polígono de fuerzas: punta con cola; si ΣF = 0 el triángulo cierra ── */}
-          <ForceVector3D origin={polyP} vector={F1p} color="#0d9488" label={`F₁ = ${f1.toFixed(0)} N`} />
-          <ForceVector3D origin={polyF2Tail} vector={F2p} color="#d97706" label={`F₂ = ${f2.toFixed(0)} N`} />
+          <ForceVector3D origin={polyP} vector={F1p} color="#0d9488" symbol="F₁" />
+          <ForceVector3D origin={polyF2Tail} vector={F2p} color="#d97706" symbol="F₂" />
           {autoEquilibrium ? (
-            <ForceVector3D origin={polyRTail} vector={Rp} color="#dc2626" label={`R = ${rMag.toFixed(0)} N`} sublabel="cierra el polígono" />
+            <ForceVector3D origin={polyRTail} vector={Rp} color="#dc2626" symbol="R" />
           ) : (
             fNet > 1 && (
               <>
-                <ForceVector3D origin={polyRTail} vector={Fnetp} color="#8b5cf6" label={`ΣF = ${fNet.toFixed(1)} N`} sublabel="el polígono NO cierra" isDashed />
+                <ForceVector3D origin={polyRTail} vector={Fnetp} color="#8b5cf6" symbol="ΣF ≠ 0" isDashed />
                 <Line points={[polyRTail, polyP]} color="#8b5cf6" lineWidth={1.4} dashed dashScale={22} dashSize={0.05} gapSize={0.04} />
               </>
             )
@@ -453,46 +426,19 @@ function SceneContent({
           <Line points={gravLine} color="#b8860b" lineWidth={1} dashed dashScale={30} dashSize={0.04} gapSize={0.03} transparent opacity={0.45} />
 
           {/* F₁ · deltoides → desde la tuberosidad deltoidea */}
-          <ForceVector3D
-            origin={deltInsW}
-            vector={F1vec}
-            color="#0d9488"
-            label={`F₁ = ${f1.toFixed(0)} N`}
-            sublabel={`${theta1}° · deltoides`}
-            showComponents={showComponents}
-          />
+          <ForceVector3D origin={deltInsW} vector={F1vec} color="#0d9488" symbol="F₁" showComponents={showComponents} />
 
           {/* F₂ · peso del brazo + carga → desde el centro de masa */}
-          <ForceVector3D
-            origin={armComW}
-            vector={F2vec}
-            color="#d97706"
-            label={`F₂ = ${f2.toFixed(0)} N`}
-            sublabel={`${theta2}° · peso + carga`}
-            showComponents={showComponents}
-          />
+          <ForceVector3D origin={armComW} vector={F2vec} color="#d97706" symbol="F₂" showComponents={showComponents} />
 
           {/* R · reacción glenoidea → desde el centro de la cabeza humeral */}
           {autoEquilibrium && rMag > 1 && (
-            <ForceVector3D
-              origin={headW}
-              vector={Rvec}
-              color="#dc2626"
-              label={`R = ${rMag.toFixed(0)} N`}
-              sublabel={`${rAngle.toFixed(0)}° · reacción glenoidea`}
-            />
+            <ForceVector3D origin={headW} vector={Rvec} color="#dc2626" symbol="R" />
           )}
 
           {/* ΣF ≠ 0 · el segmento acelera / se subluxa */}
           {!autoEquilibrium && fNet > 1 && (
-            <ForceVector3D
-              origin={headW}
-              vector={Fnetvec}
-              color="#8b5cf6"
-              label={`ΣF = ${fNet.toFixed(1)} N`}
-              sublabel="el húmero acelera (m·a)"
-              isDashed
-            />
+            <ForceVector3D origin={headW} vector={Fnetvec} color="#8b5cf6" symbol="ΣF ≠ 0" isDashed />
           )}
         </>
       )}
@@ -516,6 +462,20 @@ export default function NewtonCanvas({
   const orbitRef = useRef<OrbitControlsImpl | null>(null);
   const [showComponents, setShowComponents] = useState(false);
   const [showPolygon, setShowPolygon] = useState(false);
+
+  // Estática del DCL glenohumeral para el panel de lecturas (fuera del 3D).
+  const rad1 = (theta1 * Math.PI) / 180;
+  const rad2 = (theta2 * Math.PI) / 180;
+  const sumFx = f1 * Math.cos(rad1) + f2 * Math.cos(rad2);
+  const sumFy = f1 * Math.sin(rad1) + f2 * Math.sin(rad2);
+  const rMag = Math.hypot(sumFx, sumFy);
+  const dclRows: DclRow[] = [
+    { symbol: 'F₁', color: '#0d9488', value: `${f1.toFixed(0)} N`, hint: `${theta1}° · deltoides` },
+    { symbol: 'F₂', color: '#d97706', value: `${f2.toFixed(0)} N`, hint: `${theta2}° · peso + carga` },
+    autoEquilibrium
+      ? { symbol: 'R', color: '#dc2626', value: `${rMag.toFixed(0)} N`, hint: 'reacción glenoidea', strong: true }
+      : { symbol: 'ΣF', color: '#8b5cf6', value: `${rMag.toFixed(1)} N`, hint: 'el húmero acelera (m·a)', strong: true },
+  ];
   const [showAnatomy, setShowAnatomy] = useState(true);
 
   return (
@@ -592,6 +552,30 @@ export default function NewtonCanvas({
         Arrastra · rueda: zoom · doble clic: enfoca
       </div>
       <SceneControlPad controlsRef={orbitRef} />
+
+      {/* Lecturas del DCL ancladas a la esquina (fuera del 3D) */}
+      <div
+        style={{
+          position: 'absolute',
+          left: '12px',
+          bottom: '12px',
+          zIndex: 10,
+          transform: 'scale(0.82)',
+          transformOrigin: 'bottom left',
+          pointerEvents: 'none',
+        }}
+      >
+        <DclReadout
+          title="DCL glenohumeral"
+          tone={autoEquilibrium ? '#0d6e64' : '#8b5cf6'}
+          rows={dclRows}
+          note={
+            autoEquilibrium
+              ? 'Tres fuerzas concurrentes en equilibrio: R cierra el polígono (ΣF = 0).'
+              : 'ΣF ≠ 0: el polígono no cierra y el segmento se acelera / subluxa.'
+          }
+        />
+      </div>
 
       {/* Controles flotantes en la esquina superior derecha */}
       <div

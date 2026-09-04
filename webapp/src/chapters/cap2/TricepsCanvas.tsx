@@ -6,6 +6,19 @@ import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
 import { STUDIO_BG_DEEP } from '../cap1/three/materials';
 import { StudioLights } from '../cap1/three/StudioLights';
+import { DclTag, DclReadout, type DclRow } from './DclReadout';
+
+/** Estática de la extensión de codo (palanca de 1ª clase). Fuente única. */
+function tricepsSolve(pushLoadKg: number, insertCm: number) {
+  const g = 9.81;
+  const wPushN = pushLoadKg * g;
+  const dHandM = 0.35;
+  const dM = insertCm / 100;
+  const mechanicalRatio = dHandM / dM;
+  const fTricepsN = wPushN * mechanicalRatio;
+  const rJointN = fTricepsN + wPushN; // aditiva (misma dirección)
+  return { g, wPushN, mechanicalRatio, fTricepsN, fTricepsKgf: fTricepsN / g, rJointN, rJointKgf: rJointN / g };
+}
 
 interface TricepsCanvasProps {
   pushLoadKg?: number; // Fuerza de empuje en mano en kg (1 a 25 kg, default: 6)
@@ -26,14 +39,12 @@ function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [1, 0, 0] as [number, number, number],
   color = '#0d6e64',
-  label = 'F',
-  sublabel = '',
+  symbol = 'F',
 }: {
   origin?: [number, number, number];
   vector: [number, number, number];
   color: string;
-  label: string;
-  sublabel?: string;
+  symbol: string;
 }) {
   const v = useMemo(() => new THREE.Vector3(...vector), [vector]);
   const len = v.length();
@@ -82,39 +93,11 @@ function ForceVector3D({
         />
       </mesh>
 
-      {/* Badge Flotante HTML Calibrado */}
-      <Html
+      <DclTag
         position={[tipPos.x + dir.x * 0.038, tipPos.y + dir.y * 0.038, tipPos.z + dir.z * 0.038]}
-        center
-        zIndexRange={[100, 0]}
-      >
-        <div
-          style={{
-            background: 'rgba(255, 255, 255, 0.96)',
-            backdropFilter: 'blur(6px)',
-            border: `1.2px solid ${color}`,
-            borderRadius: '5px',
-            padding: '2px 7px',
-            boxShadow: `0 2px 8px ${color}30, 0 1px 3px rgba(0,0,0,0.08)`,
-            whiteSpace: 'nowrap',
-            pointerEvents: 'none',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '1px',
-            transform: 'translateY(-2px)',
-          }}
-        >
-          <span style={{ color: color, fontSize: '0.58rem', fontWeight: 800, fontFamily: 'JetBrains Mono, monospace' }}>
-            {label}
-          </span>
-          {sublabel && (
-            <span style={{ color: '#43505c', fontSize: '0.49rem', fontWeight: 600, fontFamily: 'Karla, sans-serif' }}>
-              {sublabel}
-            </span>
-          )}
-        </div>
-      </Html>
+        color={color}
+        symbol={symbol}
+      />
     </group>
   );
 }
@@ -179,20 +162,9 @@ function RealArmTricepsScene({
   const { nodes: boneNodes } = useGLTF('/assets/cap1/human_body.glb') as any;
   const { nodes: muscleNodes } = useGLTF('/assets/cap1/human_muscles_arm.glb') as any;
 
-  // ── Física del Tríceps (Palanca de 1ª Clase) ──
-  const g = 9.81;
-  const wPushN = pushLoadKg * g;
-  const dHandM = 0.35;       // Distancia desde la tróclea a la palma (35 cm)
-  const dOlecranonM = insertCm / 100; // Brazo del olécranon (2.5 cm)
-
-  // Relación de palanca: Ft * d = W * D => Ft = W * (D / d)
-  const mechanicalRatio = dHandM / dOlecranonM;
-  const fTricepsN = wPushN * mechanicalRatio;
-  const fTricepsKgf = fTricepsN / g;
-
-  // Reacción articular ADITIVA: Rj = Ft + W (ambas fuerzas tiran/empujan comprimiendo la tróclea)
+  // ── Física del Tríceps (Palanca de 1ª Clase) — fuente única ──
+  const { wPushN, mechanicalRatio, fTricepsN } = tricepsSolve(pushLoadKg, insertCm);
   const rJointN = fTricepsN + wPushN;
-  const rJointKgf = rJointN / g;
 
   // Abultamiento muscular y activación EMG proporcional a Ft
   const tricepsBulge = Math.min(1.45, 0.96 + (fTricepsN / 450) * 0.38);
@@ -322,13 +294,7 @@ function RealArmTricepsScene({
       </mesh>
 
       {/* Vector Reacción Articular ADITIVA R_j en la Tróclea */}
-      <ForceVector3D
-        origin={[0, 0, 0]}
-        vector={vRj}
-        color="#7c3aed"
-        label={`R_j = ${rJointN.toFixed(0)} N`}
-        sublabel={`compresión aditiva · ${(mechanicalRatio + 1).toFixed(0)}×W`}
-      />
+      <ForceVector3D origin={[0, 0, 0]} vector={vRj} color="#7c3aed" symbol="R_j" />
 
       {/* ── Segmento Móvil: Antebrazo con Olécranon Posterior ── */}
       <group rotation={[angleRad, 0, 0]}>
@@ -365,22 +331,10 @@ function RealArmTricepsScene({
         />
 
         {/* Vector de Tracción del Tríceps Ft en el Pico del Olécranon */}
-        <ForceVector3D
-          origin={olecranonOffset}
-          vector={vFt}
-          color="#dc2626"
-          label={`F_t = ${fTricepsN.toFixed(0)} N`}
-          sublabel={`tríceps · 1ª clase · ${mechanicalRatio.toFixed(1)}×`}
-        />
+        <ForceVector3D origin={olecranonOffset} vector={vFt} color="#dc2626" symbol="F_t" />
 
         {/* Vector de Fuerza de Empuje W en la Palma de la Mano */}
-        <ForceVector3D
-          origin={[-0.040, -0.350, 0.045]}
-          vector={vWpush}
-          color="#d97706"
-          label={`W = ${wPushN.toFixed(0)} N (${pushLoadKg} kg)`}
-          sublabel="empuje en mano · D 35 cm"
-        />
+        <ForceVector3D origin={[-0.040, -0.350, 0.045]} vector={vWpush} color="#d97706" symbol="W" />
       </group>
     </group>
   );
@@ -397,15 +351,12 @@ export default function TricepsCanvas({
   const [cameraView, setCameraView] = useState<'default' | 'lateral' | 'posterior' | 'anterior'>('default');
   const [showTelemetry, setShowTelemetry] = useState(false);
 
-  const g = 9.81;
-  const wPushN = pushLoadKg * g;
-  const dHandM = 0.35;
-  const dM = insertCm / 100;
-  const mechanicalRatio = dHandM / dM;
-  const fTricepsN = wPushN * mechanicalRatio;
-  const rJointN = fTricepsN + wPushN;
-  const fTricepsKgf = fTricepsN / g;
-  const rJointKgf = rJointN / g;
+  const { wPushN, mechanicalRatio, fTricepsN, fTricepsKgf, rJointN, rJointKgf } = tricepsSolve(pushLoadKg, insertCm);
+  const dclRows: DclRow[] = [
+    { symbol: 'F_t', color: '#dc2626', value: `${fTricepsN.toFixed(0)} N`, hint: `${mechanicalRatio.toFixed(1)}× W` },
+    { symbol: 'W', color: '#d97706', value: `${wPushN.toFixed(0)} N`, hint: `${pushLoadKg} kg` },
+    { symbol: 'R_j', color: '#7c3aed', value: `${rJointN.toFixed(0)} N`, hint: 'troclear (aditiva)', strong: true },
+  ];
 
   const setView = (view: 'default' | 'lateral' | 'posterior' | 'anterior') => {
     setCameraView(view);
@@ -474,6 +425,26 @@ export default function TricepsCanvas({
       </Canvas>
 
       <SceneControlPad controlsRef={controlsRef} />
+
+      {/* Lecturas del DCL ancladas a la esquina (fuera del 3D) */}
+      <div
+        style={{
+          position: 'absolute',
+          left: '10px',
+          bottom: '10px',
+          zIndex: 11,
+          transform: 'scale(0.8)',
+          transformOrigin: 'bottom left',
+          pointerEvents: 'none',
+        }}
+      >
+        <DclReadout
+          title="Extensión de codo · DCL"
+          tone="#7c3aed"
+          rows={dclRows}
+          note={`Palanca de 1ª clase: brazos ${insertCm.toFixed(1)} cm vs 35 cm → el tríceps tira ${mechanicalRatio.toFixed(1)}× la carga; la reacción troclear es aditiva.`}
+        />
+      </div>
 
       {/* Selector de Vistas de Cámara en Esquina Superior Izquierda */}
       <div

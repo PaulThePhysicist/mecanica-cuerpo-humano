@@ -1,11 +1,12 @@
 import React, { Suspense, useRef, useMemo, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, ContactShadows, Html, useGLTF } from '@react-three/drei';
+import { OrbitControls, ContactShadows, useGLTF } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
 import { STUDIO_BG_DEEP } from '../cap1/three/materials';
 import { StudioLights } from '../cap1/three/StudioLights';
+import { DclTag, DclReadout, type DclRow } from './DclReadout';
 
 interface MultiMuscleCanvasProps {
   handLoadKg?: number;       // Carga en mano (1 a 20 kg, default: 7)
@@ -26,15 +27,13 @@ function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [1, 0, 0] as [number, number, number],
   color = '#0d6e64',
-  label = 'F',
-  sublabel = '',
+  symbol = 'F',
   screenOffset = [0, 0] as [number, number],
 }: {
   origin?: [number, number, number];
   vector: [number, number, number];
   color: string;
-  label: string;
-  sublabel?: string;
+  symbol: string;
   screenOffset?: [number, number];
 }) {
   const v = useMemo(() => new THREE.Vector3(...vector), [vector]);
@@ -88,39 +87,12 @@ function ForceVector3D({
         />
       </mesh>
 
-      {/* Badge Flotante HTML Calibrado */}
-      <Html
+      <DclTag
         position={[tipPos.x + dir.x * 0.038, tipPos.y + dir.y * 0.038, tipPos.z + dir.z * 0.038]}
-        center
-        zIndexRange={[100, 0]}
-      >
-        <div
-          style={{
-            background: 'rgba(255, 255, 255, 0.96)',
-            backdropFilter: 'blur(6px)',
-            border: `1.6px solid ${color}`,
-            borderRadius: '5px',
-            padding: '4px 8px',
-            boxShadow: '0 3px 10px rgba(20,28,36,0.18)',
-            whiteSpace: 'nowrap',
-            pointerEvents: 'none',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '2px',
-            transform: `translate(${screenOffset[0]}px, ${screenOffset[1] - 2}px)`,
-          }}
-        >
-          <span style={{ color: '#17212b', fontSize: '0.64rem', lineHeight: 1.15, fontWeight: 800, fontFamily: 'JetBrains Mono, monospace' }}>
-            {label}
-          </span>
-          {sublabel && (
-            <span style={{ color: '#334155', fontSize: '0.55rem', lineHeight: 1.15, fontWeight: 600, fontFamily: 'Karla, sans-serif' }}>
-              {sublabel}
-            </span>
-          )}
-        </div>
-      </Html>
+        color={color}
+        symbol={symbol}
+        screenOffset={[screenOffset[0] * 0.4, screenOffset[1] * 0.4]}
+      />
     </group>
   );
 }
@@ -395,14 +367,7 @@ function MultiMuscleScene({
       </mesh>
 
       {/* Vector Reacción Articular R_j en la Tróclea */}
-      <ForceVector3D
-        origin={[0, 0, 0]}
-        vector={[0, -rjLen, 0]}
-        color="#0d9488"
-        label={`R_j = ${rJointN.toFixed(0)} N`}
-        sublabel="compresión articular"
-        screenOffset={[-52, 70]}
-      />
+      <ForceVector3D origin={[0, 0, 0]} vector={[0, -rjLen, 0]} color="#0d9488" symbol="R_j" screenOffset={[-52, 70]} />
 
       {/* ── Segmento Móvil: Antebrazo a 90° de Flexión ── */}
       <group rotation={[angleRad, 0, 0]}>
@@ -443,8 +408,7 @@ function MultiMuscleScene({
             origin={[-0.018, -0.025, 0.010]}
             vector={[brachLen * 0.08, brachLen * 0.98, -brachLen * 0.12]}
             color="#2e8b57"
-            label={`Braquial = ${fBrachialisN.toFixed(0)} N`}
-            sublabel="45% τ · d 2,5 cm"
+            symbol="Braq"
             screenOffset={[-58, 40]}
           />
         )}
@@ -454,8 +418,7 @@ function MultiMuscleScene({
           origin={[0.030, -0.040, 0.020]}
           vector={[bicLen * 0.14, bicLen * 0.97, -bicLen * 0.18]}
           color="#dc2626"
-          label={`Bíceps = ${fBicepsN.toFixed(0)} N`}
-          sublabel={activeMuscleCount === 3 ? '40% τ · d 4,0 cm' : '⚠ 100% aislado'}
+          symbol={activeMuscleCount === 3 ? 'Bíc' : 'Bíc ⚠'}
           screenOffset={[0, 56]}
         />
 
@@ -465,8 +428,7 @@ function MultiMuscleScene({
             origin={[-0.022, -0.250, 0.018]}
             vector={[-bradLen * 0.12, bradLen * 0.98, bradLen * 0.08]}
             color="#d97706"
-            label={`Braquiorradial = ${fBrachioradialisN.toFixed(0)} N`}
-            sublabel="15% τ · shunt d 25 cm"
+            symbol="Brad"
             screenOffset={[58, 40]}
           />
         )}
@@ -476,8 +438,7 @@ function MultiMuscleScene({
           origin={[-0.040, -0.350, 0.045]}
           vector={[0, -wLen, 0]}
           color="#232c36"
-          label={`W = ${wHandN.toFixed(0)} N (${handLoadKg} kg)`}
-          sublabel="carga · D 35 cm"
+          symbol="W"
           screenOffset={[52, 66]}
         />
       </group>
@@ -519,6 +480,18 @@ export default function MultiMuscleCanvas({
     fBicN * Math.sin((80 * Math.PI) / 180) +
     fBradN * Math.sin((15 * Math.PI) / 180);
   const rJointN = Math.max(0, verticalMuscleForce - (wHandN + wForearmN));
+
+  const dclRows: DclRow[] = [
+    ...(activeMuscleCount === 3
+      ? [{ symbol: 'Braq', color: '#2e8b57', value: `${fBrachN.toFixed(0)} N`, hint: '45% τ' }]
+      : []),
+    { symbol: 'Bíc', color: '#dc2626', value: `${fBicN.toFixed(0)} N`, hint: activeMuscleCount === 3 ? '40% τ' : '100% aislado' },
+    ...(activeMuscleCount === 3
+      ? [{ symbol: 'Brad', color: '#d97706', value: `${fBradN.toFixed(0)} N`, hint: '15% · shunt' }]
+      : []),
+    { symbol: 'W', color: '#232c36', value: `${wHandN.toFixed(0)} N`, hint: `${handLoadKg} kg` },
+    { symbol: 'R_j', color: '#0d9488', value: `${rJointN.toFixed(0)} N`, hint: 'compresión', strong: true },
+  ];
 
   const setView = (view: 'default' | 'lateral' | 'anterior' | 'top') => {
     setCameraView(view);
@@ -582,6 +555,30 @@ export default function MultiMuscleCanvas({
         />
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
+
+      {/* Lecturas del DCL ancladas a la esquina (fuera del 3D) */}
+      <div
+        style={{
+          position: 'absolute',
+          left: '10px',
+          bottom: '10px',
+          zIndex: 12,
+          transform: 'scale(0.8)',
+          transformOrigin: 'bottom left',
+          pointerEvents: 'none',
+        }}
+      >
+        <DclReadout
+          title="Sinergia flexora · DCL"
+          tone="#0d9488"
+          rows={dclRows}
+          note={
+            activeMuscleCount === 3
+              ? 'Tres flexores reparten el torque: menos tensión por músculo y menos compresión articular.'
+              : 'Bíceps aislado: asume el 100 % del torque → tensión y compresión máximas.'
+          }
+        />
+      </div>
 
       {/* Selector de Vistas de Cámara en Esquina Superior Izquierda */}
       <div
