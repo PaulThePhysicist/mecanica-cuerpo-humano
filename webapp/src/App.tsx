@@ -50,7 +50,9 @@ const CHAPTERS: ChapterMeta[] = [
     desc: 'Equilibrio estático, palancas corporales (clases 1, 2 y 3), fuerzas en articulaciones, columna lumbar y mandíbula.',
     icon: '⚖️',
     badgeColor: '#0d6e64',
-    available: false,
+    // El cap2 está completo pero en rework (letreros, GL compartido): se abre en
+    // desarrollo y sigue oculto ("en preparación") en el build de producción.
+    available: import.meta.env.DEV,
   },
   {
     id: 3,
