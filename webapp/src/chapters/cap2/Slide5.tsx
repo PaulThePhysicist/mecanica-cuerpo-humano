@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import MultiMuscleCanvas from './MultiMuscleCanvas';
+import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
 import type { Engine } from './useEngine';
 
@@ -12,6 +13,9 @@ export default function Slide5({
   [key: string]: any;
 }) {
   const [handLoadKg, setHandLoadKg] = useState<number>(7);
+  // Los letreros del visor los enciende el texto de abajo, no un botón
+  // sobre el lienzo: el mando cuelga del párrafo que los explica.
+  const [showLabels, setShowLabels] = useState<boolean>(false);
   const [activeMuscleCount, setActiveMuscleCount] = useState<1 | 3>(3);
 
   const g = 9.81;
@@ -72,6 +76,13 @@ export default function Slide5({
                   <b>3. Braquiorradial:</b> {'$d = 25{,}0\\text{ cm}$, $\\theta = 15^\\circ$. Brazo de palanca muy largo; estabilizador dinámico y shunt (~15% del torque).'}
                 </span>
               </div>
+            
+              <div style={{ marginTop: '.4rem' }}>
+                <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
+                  <b>🏷️ Rotular los tres flexores</b>
+                </TheoryToggle>
+              </div>
+              <TheoryCue>Pone sobre cada vientre muscular la fuerza que aporta, para ver de un vistazo cómo se reparten el torque.</TheoryCue>
             </div>
           </div>
           <div className="card">
@@ -123,7 +134,7 @@ export default function Slide5({
             </div>
           </HudPanel>
 
-          <MultiMuscleCanvas
+          <MultiMuscleCanvas showLabels={showLabels}
             handLoadKg={handLoadKg}
             activeMuscleCount={activeMuscleCount}
           />

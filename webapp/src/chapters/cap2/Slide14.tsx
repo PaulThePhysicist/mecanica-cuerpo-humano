@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import ForcePlateCanvas from './ForcePlateCanvas';
+import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
 import { AnimateButton } from './AnimateButton';
 import { useHarmonicClock } from '../cap1/three/useHarmonicClock';
@@ -42,6 +43,9 @@ export default function Slide14({
   [key: string]: any;
 }) {
   const [gaitPhase, setGaitPhase] = useState<'heel_strike' | 'mid_stance' | 'toe_off'>('heel_strike');
+  // Los letreros del visor los enciende el texto de abajo, no un botón
+  // sobre el lienzo: el mando cuelga del párrafo que los explica.
+  const [showLabels, setShowLabels] = useState<boolean>(false);
   const [bodyMassKg, setBodyMassKg] = useState<number>(70);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
 
@@ -99,6 +103,13 @@ export default function Slide14({
                   <b>Fx (Mediolateral):</b> {'Balance de estabilidad lateral ($\\approx 5\\text{--}10\\%\\, W$).'}
                 </span>
               </div>
+            
+              <div style={{ marginTop: '.4rem' }}>
+                <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
+                  <b>🏷️ Rotular la GRF y el COP</b>
+                </TheoryToggle>
+              </div>
+              <TheoryCue>Etiqueta la resultante <b>GRF</b>, sus componentes <b>+F<sub>x</sub></b> y <b>+F<sub>y</sub></b>, y el centro de presiones.</TheoryCue>
             </div>
           </div>
           <div className="card">
@@ -157,7 +168,7 @@ export default function Slide14({
             </div>
           </HudPanel>
 
-          <ForcePlateCanvas
+          <ForcePlateCanvas showLabels={showLabels}
             gaitPhase={gaitPhase}
             bodyMassKg={bodyMassKg}
           />

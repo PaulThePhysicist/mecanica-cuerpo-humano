@@ -5,10 +5,20 @@ import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
 import { DclTag } from './DclReadout';
+import {
+  Callout,
+  CalloutProvider,
+  CalloutRail,
+  CalloutSource,
+  useCalloutStore,
+} from '../cap1/three/Callouts';
 
 interface ForcePlateCanvasProps {
   gaitPhase: 'heel_strike' | 'mid_stance' | 'toe_off';
   bodyMassKg: number;
+  /** Lo enciende la columna de teoría del slide, no un botón sobre el lienzo:
+   *  el mando cuelga del párrafo que explica estas magnitudes. */
+  showLabels?: boolean;
 }
 
 interface GaitPhaseConfig {
@@ -97,16 +107,19 @@ function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [0, 1, 0] as [number, number, number],
   color = '#0d6e64',
-  symbol = 'F',
+  label,
+  sub,
+  emphasis,
   shaftRadius = 0.012,
-  showBadge = true,
 }: {
   origin?: [number, number, number];
   vector: [number, number, number];
   color: string;
-  symbol: string;
+  /** Letrero para el riel lateral (símbolo = valor). */
+  label: string;
+  sub?: string;
+  emphasis?: 'strong' | 'muted';
   shaftRadius?: number;
-  showBadge?: boolean;
 }) {
   const v = useMemo(() => new THREE.Vector3(...vector), [vector]);
   const len = v.length();
@@ -154,14 +167,14 @@ function ForceVector3D({
         />
       </mesh>
 
-      {/* Etiqueta mínima: sólo el símbolo; las cifras van en el panel de esquina. */}
-      {showBadge && (
-        <DclTag
-          position={[tipPos.x + dir.x * 0.06, tipPos.y + dir.y * 0.06, tipPos.z + dir.z * 0.06]}
-          color={color}
-          symbol={symbol}
-        />
-      )}
+      {/* Letrero → riel lateral (símbolo = valor), con línea guía a la punta. */}
+      <Callout
+        position={[tipPos.x + dir.x * 0.06, tipPos.y + dir.y * 0.06, tipPos.z + dir.z * 0.06]}
+        label={label}
+        sub={sub}
+        color={color}
+        emphasis={emphasis}
+      />
     </group>
   );
 }
@@ -503,6 +516,12 @@ function CopAndGrfVectors3D({
     fyVec[2],
   ];
 
+  // Letreros del riel lateral (la fase de marcha llena estas cifras).
+  const lGRF = `GRF = ${grfResultantN.toFixed(0)} N`;
+  const lFz = `Fz = ${fzN.toFixed(0)} N`;
+  const lFy = `Fy = ${fyN.toFixed(0)} N`;
+  const lFx = `Fx = ${fxN.toFixed(0)} N`;
+
   useFrame((state, delta) => {
     const lerpSpeed = Math.min(1, delta * 8);
     curCopRef.current.x += (cfg.copRelX - curCopRef.current.x) * lerpSpeed;
@@ -549,14 +568,15 @@ function CopAndGrfVectors3D({
           />
         </mesh>
 
+        {/* COP: referencia anclada, se queda sobre la plataforma. */}
         <DclTag position={[0, -0.06, 0.08]} color="#ef4444" symbol="COP" />
       </group>
 
       {/* ── Vector Resultante de la Reacción del Suelo (GRF) ── */}
-      <ForceVector3D origin={copPos} vector={grfVec} color={TEAL_ACCENT} symbol="GRF" shaftRadius={0.016} />
+      <ForceVector3D origin={copPos} vector={grfVec} color={TEAL_ACCENT} label={lGRF} sub={`${(grfResultantN / weightN).toFixed(2)}·W`} emphasis="strong" shaftRadius={0.016} />
 
       {/* ── Componente Vertical Fz (Verde Esmeralda) ── */}
-      <ForceVector3D origin={copPos} vector={fzVec} color={GREEN_ACCENT} symbol="Fz" shaftRadius={0.012} showBadge={false} />
+      <ForceVector3D origin={copPos} vector={fzVec} color={GREEN_ACCENT} label={lFz} sub={`vertical · ${cfg.fzMult.toFixed(2)} W`} emphasis="muted" shaftRadius={0.012} />
 
       {/* ── Componente Anteroposterior Fy (Frenado / Propulsión) ── */}
       {Math.abs(fyN) > 5 && (
@@ -564,9 +584,10 @@ function CopAndGrfVectors3D({
           origin={copPos}
           vector={fyVec}
           color={fyN > 0 ? '#10b981' : RED_ACCENT}
-          symbol="Fy"
+          label={lFy}
+          sub={fyN > 0 ? 'propulsión anterior' : 'frenado'}
+          emphasis="muted"
           shaftRadius={0.010}
-          showBadge={false}
         />
       )}
 
@@ -576,9 +597,10 @@ function CopAndGrfVectors3D({
           origin={copPos}
           vector={fxVec}
           color={BLUE_ACCENT}
-          symbol="Fx"
+          label={lFx}
+          sub="mediolateral"
+          emphasis="muted"
           shaftRadius={0.008}
-          showBadge={false}
         />
       )}
 
@@ -596,6 +618,9 @@ function CopAndGrfVectors3D({
         dashSize={0.06}
         gapSize={0.03}
       />
+
+      {/* Proyecta cada <Callout> de la escena a píxeles para el riel lateral. */}
+      <CalloutSource />
     </group>
   );
 }
@@ -765,7 +790,7 @@ function CameraRig({ viewPreset, controlsRef }: { viewPreset: 'iso' | 'sagittal'
 
   useEffect(() => {
     if (viewPreset === 'iso') {
-      camera.position.set(2.2, 1.8, 2.6);
+      camera.position.set(1.85, 1.5, 2.18);
       camera.lookAt(0, 0.35, 0);
     } else if (viewPreset === 'sagittal') {
       camera.position.set(3.4, 0.4, 0.0);
@@ -794,17 +819,20 @@ function CameraRig({ viewPreset, controlsRef }: { viewPreset: 'iso' | 'sagittal'
 
 // ── COMPONENTE PRINCIPAL: ForcePlateCanvas ──
 export default function ForcePlateCanvas({
+  showLabels = false,
   gaitPhase = 'heel_strike',
   bodyMassKg = 70,
 }: ForcePlateCanvasProps) {
   const [viewPreset, setViewPreset] = useState<'iso' | 'sagittal' | 'frontal' | 'top'>('iso');
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
+  const callouts = useCalloutStore();
 
   return (
+    <CalloutProvider store={callouts} visible={showLabels}>
     <div className="cap2-webgl-canvas" style={{ width: '100%', height: '100%', position: 'relative', touchAction: 'none' }}>
       <Canvas
         shadows
-        camera={{ position: [2.2, 1.8, 2.6], fov: 40 }}
+        camera={{ position: [1.85, 1.5, 2.18], fov: 40 }}
         dpr={[1, 2]}
         style={{
           width: '100%',
@@ -865,6 +893,9 @@ export default function ForcePlateCanvas({
 
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
+
+      {/* Lecturas de la GRF → riel lateral con línea guía a cada flecha */}
+      <CalloutRail store={callouts} side="right" reserveBottom={120} />
 
       {/* ── Widgets HUD anclados a las esquinas (fuera del 3D → no se recortan) ── */}
       <div style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 9, transform: 'scale(0.82)', transformOrigin: 'top left', pointerEvents: 'none' }}>
@@ -957,6 +988,7 @@ export default function ForcePlateCanvas({
         </button>
       </div>
     </div>
+    </CalloutProvider>
   );
 }
 

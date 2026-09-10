@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import BicepsCanvas from './BicepsCanvas';
+import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
 import { AnimateButton } from './AnimateButton';
 import { useHarmonicClock } from '../cap1/three/useHarmonicClock';
@@ -14,6 +15,9 @@ export default function Slide4({
   [key: string]: any;
 }) {
   const [handLoadKg, setHandLoadKg] = useState<number>(5);
+  // Los letreros del visor los enciende el texto de abajo, no un botón
+  // sobre el lienzo: el mando cuelga del párrafo que los explica.
+  const [showLabels, setShowLabels] = useState<boolean>(false);
   const [insertCm, setInsertCm] = useState<number>(4.0);
   const [elbowAngleDeg, setElbowAngleDeg] = useState<number>(90);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
@@ -87,6 +91,13 @@ export default function Slide4({
               <div className="eq-block" style={{ fontSize: '.72rem' }}>
                 {'\\[ F_m = W_h \\left(\\frac{D}{d}\\right) + W_a \\left(\\frac{D_a}{d}\\right) \\approx 8{,}75\\, W_h + 3{,}5\\, W_a \\]'}
               </div>
+            
+              <div style={{ marginTop: '.4rem' }}>
+                <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
+                  <b>🏷️ Rotular F_m, W y R_j</b>
+                </TheoryToggle>
+              </div>
+              <TheoryCue>Cuelga de cada flecha su valor en newtons: la tensión del bíceps, la carga en la mano y la reacción sobre la tróclea.</TheoryCue>
             </div>
           </div>
           <div className="card">
@@ -145,7 +156,7 @@ export default function Slide4({
             </div>
           </HudPanel>
 
-          <BicepsCanvas
+          <BicepsCanvas showLabels={showLabels}
             handLoadKg={handLoadKg}
             insertCm={insertCm}
             elbowAngleDeg={elbowAngleDeg}

@@ -1,5 +1,7 @@
 import React, { useState, Suspense } from 'react';
 import NewtonCanvas from './NewtonCanvas';
+import type { FocusForce } from './NewtonCanvas';
+import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
 import ThreeForceDiagram from './ThreeForceDiagram';
 import { AnimateButton } from './AnimateButton';
@@ -31,6 +33,29 @@ export default function Slide1({
   // Paso de la construcción gráfica de la regla de las tres fuerzas.
   const [tfStep, setTfStep] = useState<1 | 2 | 3 | 4>(1);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
+
+  // ── Qué muestra el visor 3D ──
+  // Vive aquí, no dentro de NewtonCanvas, porque quien lo enciende es el texto:
+  // cada mando cuelga del párrafo que explica ese concepto. El lienzo se queda
+  // solo con el modelo y el pad ⚙ (mismo criterio que cap1).
+  const [showLabels, setShowLabels] = useState<boolean>(false);
+  const [showPolygon, setShowPolygon] = useState<boolean>(false);
+  const [showComponents, setShowComponents] = useState<boolean>(false);
+  const [showAnatomy, setShowAnatomy] = useState<boolean>(true);
+  const [focusForce, setFocusForce] = useState<FocusForce>(null);
+
+  // Pinchar una fuerza del texto la aísla en el modelo (las otras se atenúan) y
+  // enciende los letreros; volver a pincharla devuelve las tres al mismo plano.
+  const toggleForce = (f: Exclude<FocusForce, null>) => {
+    setFocusForce((cur) => (cur === f ? null : f));
+    setShowLabels(true);
+  };
+  const toggleLabels = () => {
+    setShowLabels((v) => {
+      if (v) setFocusForce(null); // sin letreros no tiene sentido el foco
+      return !v;
+    });
+  };
 
   // Ciclo de abducción / aducción del húmero (brazo pegado ↔ elevado a 95°).
   useHarmonicClock({ playing: isAnimating }, (t) => {
@@ -95,6 +120,11 @@ export default function Slide1({
     setTheta2(270);
     setAutoEquilibrium(true);
     setArmAbductionDeg(45);
+    setShowLabels(false);
+    setShowPolygon(false);
+    setShowComponents(false);
+    setShowAnatomy(true);
+    setFocusForce(null);
   };
 
   return (
@@ -122,8 +152,20 @@ export default function Slide1({
                 {'\\[ \\sum \\vec{\\tau} = 0 \\quad\\iff\\quad \\sum \\tau_x = 0, \\; \\sum \\tau_y = 0, \\; \\sum \\tau_z = 0 \\]'}
               </div>
               <p style={{ fontSize: '.64rem', color: 'var(--ink-3)' }}>
-                El equilibrio rige para todo el cuerpo o para <strong>cualquier articulación aislada (DCL)</strong>, como la articulación glenohumeral del hombro.
+                Que la suma se anule <em>eje a eje</em> es lo que permite resolver el problema: cada fuerza se parte en sus proyecciones ortogonales y se suman por separado.
               </p>
+              <TheoryToggle
+                on={showComponents}
+                onClick={() => setShowComponents((v) => !v)}
+                title="Proyecta cada fuerza sobre los ejes en el visor 3D"
+              >
+                <b>⊹ Descomponer en Fx y Fy</b>
+              </TheoryToggle>
+              <TheoryCue>
+                Dibuja en el modelo la proyección de cada fuerza sobre los ejes. El equilibrio rige
+                igual para todo el cuerpo o para <strong>cualquier articulación aislada (DCL)</strong>,
+                como la glenohumeral del hombro.
+              </TheoryCue>
             </div>
           </div>
           <div className="card">
@@ -135,16 +177,47 @@ export default function Slide1({
                 En la abducción del brazo, interactúan tres fuerzas concurrentes fundamentales:
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '.62rem', marginTop: '.25rem' }}>
-                <span className="pill" style={{ borderLeft: '3px solid #0d6e64' }}>
-                  <b>F₁ (Músculo Deltoides):</b> Tensión activa que eleva y sostiene el húmero.
-                </span>
-                <span className="pill" style={{ borderLeft: '3px solid #d97706' }}>
-                  <b>F₂ (Gravedad / Carga):</b> Peso del miembro superior y objetos sostenidos.
-                </span>
-                <span className="pill" style={{ borderLeft: '3px solid #b02318' }}>
-                  <b>R (Reacción Glenoidea):</b> Compresión de la fosa glenoidea que evita la luxación.
-                </span>
+                <TheoryToggle
+                  on={focusForce === 'F1'}
+                  onClick={() => toggleForce('F1')}
+                  accent="#0d6e64"
+                  title="Aísla F₁ en el visor 3D"
+                >
+                  <b>F₁ (Músculo Deltoides):</b>&nbsp;Tensión activa que eleva y sostiene el húmero.
+                </TheoryToggle>
+                <TheoryToggle
+                  on={focusForce === 'F2'}
+                  onClick={() => toggleForce('F2')}
+                  accent="#d97706"
+                  title="Aísla F₂ en el visor 3D"
+                >
+                  <b>F₂ (Gravedad / Carga):</b>&nbsp;Peso del miembro superior y objetos sostenidos.
+                </TheoryToggle>
+                <TheoryToggle
+                  on={focusForce === 'R'}
+                  onClick={() => toggleForce('R')}
+                  accent="#b02318"
+                  title="Aísla R en el visor 3D"
+                >
+                  <b>R (Reacción Glenoidea):</b>&nbsp;Compresión de la fosa glenoidea que evita la luxación.
+                </TheoryToggle>
               </div>
+              <TheoryCue>
+                Pincha una fuerza para aislarla en el modelo; vuelve a pincharla para ver las tres a
+                la vez. También puedes{' '}
+                <TheoryToggle on={showLabels} onClick={toggleLabels} title="Rotula las fuerzas sobre el modelo">
+                  <b>🏷️ rotularlas</b>
+                </TheoryToggle>{' '}
+                o cambiar entre{' '}
+                <TheoryToggle
+                  on={!showAnatomy}
+                  onClick={() => setShowAnatomy((v) => !v)}
+                  title="Alterna entre el hueso real y el DCL abstracto"
+                >
+                  <b>● solo el punto articular</b>
+                </TheoryToggle>{' '}
+                y el hueso real: el DCL es precisamente esa abstracción.
+              </TheoryCue>
               <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '.35rem' }}>
                 Si <b>ΣF ≠ 0</b>, la fuerza neta resultante <b>F_net = m·a</b> acelera el segmento o provoca inestabilidad / subluxación articular.
               </p>
@@ -203,9 +276,19 @@ export default function Slide1({
                   {TF_STEP_LABELS[tfStep - 1]}
                 </span>
               </div>
-              <p style={{ fontSize: '.6rem', color: 'var(--ink-3)', marginTop: '.35rem' }}>
-                En el visor 3D, el botón <b>△ Polígono</b> muestra la otra mitad: el triángulo de fuerzas que cierra cuando <b>ΣF = 0</b>.
-              </p>
+              <div style={{ marginTop: '.35rem' }}>
+                <TheoryToggle
+                  on={showPolygon}
+                  onClick={() => setShowPolygon((v) => !v)}
+                  title="Recoloca las tres fuerzas cabeza con cola en el visor 3D"
+                >
+                  <b>△ Ver el polígono de fuerzas</b>
+                </TheoryToggle>
+              </div>
+              <TheoryCue>
+                Es la otra mitad del argumento: el visor recoloca las tres fuerzas cabeza con cola y
+                el triángulo <strong>cierra</strong> justo cuando <b>ΣF = 0</b>.
+              </TheoryCue>
             </div>
           </div>
           <div className="apuntes">
@@ -261,6 +344,11 @@ export default function Slide1({
                 theta2={theta2}
                 armAbductionDeg={armAbductionDeg}
                 autoEquilibrium={autoEquilibrium}
+                showLabels={showLabels}
+                showPolygon={showPolygon}
+                showComponents={showComponents}
+                showAnatomy={showAnatomy}
+                focusForce={focusForce}
               />
             )}
           </Suspense>

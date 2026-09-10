@@ -6,12 +6,21 @@ import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
 import { STUDIO_BG_DEEP } from '../cap1/three/materials';
 import { StudioLights } from '../cap1/three/StudioLights';
-import { DclTag, DclReadout, type DclRow } from './DclReadout';
+import {
+  Callout,
+  CalloutProvider,
+  CalloutRail,
+  CalloutSource,
+  useCalloutStore,
+} from '../cap1/three/Callouts';
 
 interface SpineCanvasProps {
   trunkAngleDeg: number; // Ángulo de inclinación del tronco (0 a 90 grados, 0 = erguido, 90 = horizontal)
   handLoadKg: number;    // Carga en manos en kg (0 a 40 kg)
   bodyMassKg: number;    // Masa corporal (70 kg default)
+  /** Lo enciende la columna de teoría del slide, no un botón sobre el lienzo:
+   *  el mando cuelga del párrafo que explica estas magnitudes. */
+  showLabels?: boolean;
 }
 
 // ── Colores y Paleta Anatómica de Grado Médico ──
@@ -34,13 +43,18 @@ function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [1, 0, 0] as [number, number, number],
   color = '#0d6e64',
-  symbol = 'F',
+  label,
+  sub,
+  emphasis,
   isDashed = false,
 }: {
   origin?: [number, number, number];
   vector: [number, number, number];
   color: string;
-  symbol: string;
+  /** Letrero para el riel lateral (símbolo = valor). */
+  label: string;
+  sub?: string;
+  emphasis?: 'strong' | 'muted';
   isDashed?: boolean;
 }) {
   const v = useMemo(() => new THREE.Vector3(...vector), [vector]);
@@ -92,10 +106,13 @@ function ForceVector3D({
         />
       </mesh>
 
-      <DclTag
+      {/* Letrero → riel lateral (símbolo = valor), con línea guía a la punta. */}
+      <Callout
         position={[tipPos.x + dir.x * 0.08, tipPos.y + dir.y * 0.08, tipPos.z + dir.z * 0.08]}
+        label={label}
+        sub={sub}
         color={color}
-        symbol={symbol}
+        emphasis={emphasis}
       />
     </group>
   );
@@ -312,6 +329,17 @@ function LumbarSpine3D({
   const isHighTension = fErectorN > 2400;
   const isExtremeTension = fErectorN > 3200;
 
+  // Reacción sobre el disco L5-S1 (misma fórmula que `spineStats`).
+  const rCompN = fErectorN * cosThetaM + (wTrunkN + wLoadN) * cosAlpha;
+  const rShearN = Math.abs((wTrunkN + wLoadN) * sinAlpha - fErectorN * sinThetaM);
+
+  // Letreros del riel lateral (mismos valores que llenaban el DclReadout de esquina).
+  const lFm = `Fm = ${fErectorN.toFixed(0)} N`;
+  const lW1 = `W₁ = ${wTrunkN.toFixed(0)} N`;
+  const lW2 = `W₂ = ${wLoadN.toFixed(0)} N`;
+  const lRn = `Rn = ${rCompN.toFixed(0)} N`;
+  const lRt = `Rt = ${rShearN.toFixed(0)} N`;
+
   // LERP suave de inclinación del tronco y micro-vibraciones musculares de fatiga/alta carga
   useFrame((state, delta) => {
     const t = state.clock.getElapsedTime();
@@ -438,7 +466,7 @@ function LumbarSpine3D({
                     </mesh>
 
                     {/* Vector Peso del Tronco W1 en Centro de Gravedad d1 = 38 cm */}
-                    <ForceVector3D origin={[0, 0.25, 0.22]} vector={[0, -wTrunkN * vScale * 1.1, 0]} color={AMBER_ACCENT} symbol="W₁" />
+                    <ForceVector3D origin={[0, 0.25, 0.22]} vector={[0, -wTrunkN * vScale * 1.1, 0]} color={AMBER_ACCENT} label={lW1} sub="0,65 W · tronco" />
 
                     {/* Brazos y Caja de Carga Levantada en Manos (d2 = 50 cm) */}
                     {handLoadKg > 0 && (
@@ -450,7 +478,7 @@ function LumbarSpine3D({
                         </mesh>
 
                         {/* Vector Peso Carga W2 */}
-                        <ForceVector3D origin={[0, -0.15, 0]} vector={[0, -wLoadN * vScale * 1.1, 0]} color="#232c36" symbol="W₂" />
+                        <ForceVector3D origin={[0, -0.15, 0]} vector={[0, -wLoadN * vScale * 1.1, 0]} color="#232c36" label={lW2} sub="carga en manos" />
                       </group>
                     )}
                   </group>
@@ -490,9 +518,17 @@ function LumbarSpine3D({
           origin={[0, 1.10 * Math.cos(curAlphaRad * 0.55), -1.10 * Math.sin(curAlphaRad * 0.55)]}
           vector={[0, -fErectorN * vScale * 0.75, -fErectorN * vScale * 0.20]}
           color={RED_ACCENT}
-          symbol="Fm"
+          label={lFm}
+          sub="erector espinal"
         />
       </group>
+
+      {/* Reacción sobre el disco L5-S1: sin flecha propia, pero su valor y punto
+          de aplicación (la unión lumbosacra) van al riel. */}
+      <Callout position={[0, 0.92, 0.02]} label={lRn} sub="compresión axial" color="#1e293b" emphasis="strong" />
+      <Callout position={[0, 0.78, 0.02]} label={lRt} sub="cizallamiento" color={AMBER_ACCENT} emphasis="muted" />
+
+      <CalloutSource />
 
       {/* Sombra de contacto */}
       <ContactShadows position={[0, -2.45, 0]} opacity={0.62} scale={4} blur={1.7} far={4} color="#241d12" />
@@ -502,12 +538,14 @@ function LumbarSpine3D({
 
 // ── 4. Componente Principal SpineCanvas con R3F ──
 export default function SpineCanvas({
+  showLabels = false,
   trunkAngleDeg = 60,
   handLoadKg = 15,
   bodyMassKg = 70,
 }: SpineCanvasProps) {
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
   const s = spineStats(trunkAngleDeg, handLoadKg, bodyMassKg);
+  const callouts = useCalloutStore();
 
   const handleResetCamera = () => {
     if (controlsRef.current) {
@@ -516,6 +554,7 @@ export default function SpineCanvas({
   };
 
   return (
+    <CalloutProvider store={callouts} visible={showLabels}>
     <div className="cap2-webgl-canvas" style={{ width: '100%', height: '100%', position: 'relative' }}>
       {/* Botón flotante para reset de cámara */}
       <button
@@ -543,7 +582,7 @@ export default function SpineCanvas({
 
       {/* Canvas 3D de React Three Fiber */}
       <Canvas
-        camera={{ position: [2.8, 0.4, 3.4], fov: 42 }}
+        camera={{ position: [2.15, 1.05, 4.55], fov: 42 }}
         dpr={[1, 2]}
         gl={{ antialias: true, alpha: true }}
         style={{ background: STUDIO_BG_DEEP }}
@@ -567,35 +606,17 @@ export default function SpineCanvas({
           maxDistance={6.5}
           maxPolarAngle={Math.PI / 2 + 0.15}
           dampingFactor={0.08}
+          target={[0, 0.4, 0]}
         />
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
 
-      {/* ── Overlays anclados a las esquinas (fuera del 3D → no tapan la columna) ── */}
-      <div
-        style={{
-          position: 'absolute',
-          left: '10px',
-          bottom: '10px',
-          zIndex: 9,
-          transform: 'scale(0.82)',
-          transformOrigin: 'bottom left',
-          pointerEvents: 'none',
-        }}
-      >
-        <DclReadout
-          title="Grúa lumbar L5-S1 · DCL"
-          tone={s.isHighTension ? RED_ACCENT : '#cbd5e1'}
-          rows={[
-            { symbol: 'Fm', color: RED_ACCENT, value: `${s.fErectorN.toFixed(0)} N`, hint: 'erector espinal' },
-            { symbol: 'W₁', color: AMBER_ACCENT, value: `${s.wTrunkN.toFixed(0)} N`, hint: '0,65 W · tronco' },
-            { symbol: 'W₂', color: '#232c36', value: `${s.wLoadN.toFixed(0)} N`, hint: 'carga en manos' },
-            { symbol: 'Rn', color: '#1e293b', value: `${s.rCompN.toFixed(0)} N`, hint: 'compresión axial', strong: true },
-            { symbol: 'Rt', color: AMBER_ACCENT, value: `${s.rShearN.toFixed(0)} N`, hint: 'cizallamiento', muted: true },
-          ]}
-          note={`Desventaja de palanca 10:1 (dm ≈ 5 cm): torque flexor ${s.tauResNm.toFixed(0)} N·m ⟹ el erector tira ${s.fErectorN.toFixed(0)} N.`}
-        />
-      </div>
+      {/* Lecturas del DCL → riel lateral con línea guía a cada flecha */}
+      <CalloutRail
+        store={callouts}
+        side="left"
+        note={`Desventaja de palanca 10:1 (dm ≈ 5 cm): torque flexor ${s.tauResNm.toFixed(0)} N·m ⟹ el erector tira ${s.fErectorN.toFixed(0)} N.`}
+      />
 
       <div
         style={{
@@ -618,6 +639,7 @@ export default function SpineCanvas({
         />
       </div>
     </div>
+    </CalloutProvider>
   );
 }
 

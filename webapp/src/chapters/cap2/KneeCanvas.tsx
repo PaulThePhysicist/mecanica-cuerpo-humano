@@ -4,7 +4,13 @@ import * as THREE from 'three';
 import { AnatomyStage } from '../cap1/three/AnatomyStage';
 import { useAnatomyNodes, preloadAnatomy } from '../cap1/three/useAnatomyNodes';
 import { materials, makeMuscleActive } from '../cap1/three/materials';
-import { DclTag, DclReadout, type DclRow } from './DclReadout';
+import {
+  Callout,
+  CalloutProvider,
+  CalloutRail,
+  CalloutSource,
+  useCalloutStore,
+} from '../cap1/three/Callouts';
 
 /**
  * C3 · Estática de la rodilla (Herman §2.3.3, Figs. 2.23–2.27).
@@ -26,6 +32,9 @@ export interface KneeCanvasProps {
   ankleLoadN: number;   // W1 · peso añadido en el tobillo
   patella: boolean;     // rótula presente (polea) vs. ausente (tendón en cuerda)
   showComponents: boolean;
+  /** Lo enciende la columna de teoría del slide, no un botón sobre el lienzo:
+   *  el mando cuelga del párrafo que explica estas magnitudes. */
+  showLabels?: boolean;
 }
 
 const A_LEVER = 0.048;      // brazo de momento del tendón con rótula (~4,8 cm)
@@ -46,13 +55,18 @@ function ForceArrow({
   origin,
   vector,
   color,
-  symbol,
+  label,
+  sub,
+  emphasis,
   dashed = false,
 }: {
   origin: [number, number, number];
   vector: [number, number, number];
   color: string;
-  symbol: string;
+  /** Letrero para el riel lateral (símbolo = valor). */
+  label: string;
+  sub?: string;
+  emphasis?: 'strong' | 'muted';
   dashed?: boolean;
 }) {
   const v = useMemo(() => new THREE.Vector3(...vector), [vector]);
@@ -93,7 +107,14 @@ function ForceArrow({
         <coneGeometry args={[headLen * 0.42, headLen, 18]} />
         <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.5} roughness={0.25} metalness={0.2} />
       </mesh>
-      <DclTag position={[tip.x + dir.x * 0.03, tip.y + dir.y * 0.03, tip.z + dir.z * 0.03]} color={color} symbol={symbol} />
+      {/* Letrero → riel lateral (símbolo = valor), con línea guía a la punta. */}
+      <Callout
+        position={[tip.x + dir.x * 0.03, tip.y + dir.y * 0.03, tip.z + dir.z * 0.03]}
+        label={label}
+        sub={sub}
+        color={color}
+        emphasis={emphasis}
+      />
     </group>
   );
 }
@@ -154,7 +175,7 @@ function KneeAnatomy({ betaDeg, ankleLoadN, patella, showComponents }: KneeCanva
   const muscle = useAnatomyNodes('muscles_hip_leg');
 
   // ── Biomecánica (2.34–2.37) + geometría del DCL ──
-  const { W1, M, fp, alpha, comP, ankP, tubP, patApex, mDir, rxN, ryN, rzN, R } =
+  const { W1, M, fp, alpha, ankP, tubP, patApex, mDir, rxN, ryN, rzN, R } =
     kneeSolve(betaDeg, ankleLoadN, patella);
 
   const emg = Math.min(1.4, 0.3 + M / 1600);
@@ -163,10 +184,14 @@ function KneeAnatomy({ betaDeg, ankleLoadN, patella, showComponents }: KneeCanva
   const S = 0.00005; // N → unidades de mundo (metros del modelo)
 
   // ── Vectores ──
-  const w0Vec: [number, number, number] = [0, -W0 * S, 0];
   const w1Vec: [number, number, number] = [0, -W1 * S, 0];
   const mVec: [number, number, number] = [mDir.x * M * S, mDir.y * M * S, mDir.z * M * S];
   const rVec: [number, number, number] = [rxN * S, ryN * S, rzN * S];
+
+  // Letreros del riel lateral (mismos valores que llenaban el DclReadout de esquina).
+  const lM = `M = ${M.toFixed(0)} N`;
+  const lW1 = `W₁ = ${W1.toFixed(0)} N`;
+  const lR = `R = ${R.toFixed(0)} N`;
 
   const tendonPath: [number, number, number][] = [
     tubP.toArray(),
@@ -209,16 +234,18 @@ function KneeAnatomy({ betaDeg, ankleLoadN, patella, showComponents }: KneeCanva
         <Line points={[tubP.toArray(), [KNEE_C.x, KNEE_C.y + 0.14, KNEE_C.z]]} color={RED} lineWidth={2} dashed dashScale={40} dashSize={0.012} gapSize={0.01} />
       )}
 
-      {/* ── Vectores de fuerza (símbolo mínimo; magnitudes en el panel de esquina) ── */}
-      <ForceArrow origin={tubP.toArray()} vector={mVec} color={TEAL} symbol={patella ? 'M' : 'M ⚠'} />
-      <ForceArrow origin={comP.toArray()} vector={w0Vec} color={AMBER} symbol="W₀" />
-      <ForceArrow origin={ankP.toArray()} vector={w1Vec} color={AMBER} symbol="W₁" />
-      <ForceArrow origin={KNEE_C.toArray()} vector={rVec} color={RED} symbol="R" />
+      {/* ── Vectores de fuerza (letrero → riel lateral con línea guía) ──
+          W₀ (peso de la pierna, ~45 N) es diminuto frente a M/R: no dibuja
+          flecha ni ocupa el riel; su valor está en la ecuación del slide.
+          W₁ solo aparece cuando la carga del tobillo basta para verse. */}
+      <ForceArrow origin={tubP.toArray()} vector={mVec} color={TEAL} label={lM} sub={patella ? 'cuádriceps' : 'sin rótula ⚠'} />
+      <ForceArrow origin={ankP.toArray()} vector={w1Vec} color={AMBER} label={lW1} sub="carga en el tobillo" emphasis="muted" />
+      <ForceArrow origin={KNEE_C.toArray()} vector={rVec} color={RED} label={lR} sub="tibiofemoral" emphasis="strong" />
 
       {showComponents && (
         <>
-          <ForceArrow origin={KNEE_C.toArray()} vector={[0, 0, rzN * S]} color={BLUE} symbol="Rt" dashed />
-          <ForceArrow origin={[KNEE_C.x, KNEE_C.y, KNEE_C.z + rzN * S]} vector={[0, ryN * S, 0]} color={TEAL} symbol="Rn" dashed />
+          <ForceArrow origin={KNEE_C.toArray()} vector={[0, 0, rzN * S]} color={BLUE} label={`Rt = ${Math.abs(rzN).toFixed(0)} N`} sub="cizalla" emphasis="muted" dashed />
+          <ForceArrow origin={[KNEE_C.x, KNEE_C.y, KNEE_C.z + rzN * S]} vector={[0, ryN * S, 0]} color={TEAL} label={`Rn = ${Math.abs(ryN).toFixed(0)} N`} sub="compresión" emphasis="muted" dashed />
         </>
       )}
 
@@ -227,7 +254,9 @@ function KneeAnatomy({ betaDeg, ankleLoadN, patella, showComponents }: KneeCanva
           origin={patApex.toArray()}
           vector={[0, -0.015, -fp * S]}
           color={VIOLET}
-          symbol="Fp"
+          label={`Fp = ${fp.toFixed(0)} N`}
+          sub="femoropatelar"
+          emphasis="muted"
           dashed
         />
       )}
@@ -240,63 +269,39 @@ function KneeAnatomy({ betaDeg, ankleLoadN, patella, showComponents }: KneeCanva
 }
 
 export default function KneeCanvas({
+  showLabels = false,
   betaDeg = 45,
   ankleLoadN = 150,
   patella = true,
   showComponents = false,
 }: KneeCanvasProps) {
+  const callouts = useCalloutStore();
   const s = kneeSolve(betaDeg, ankleLoadN, patella);
   const mWithPatella = kneeSolve(betaDeg, ankleLoadN, true).M;
-  const rows: DclRow[] = [
-    { symbol: 'M', color: TEAL, value: `${s.M.toFixed(0)} N`, hint: 'cuádriceps' },
-    { symbol: 'W₀', color: AMBER, value: `${W0} N`, hint: 'peso pierna' },
-    { symbol: 'W₁', color: AMBER, value: `${ankleLoadN.toFixed(0)} N`, hint: 'carga tobillo' },
-    { symbol: 'R', color: RED, value: `${s.R.toFixed(0)} N`, hint: 'tibiofemoral', strong: true },
-  ];
-  if (showComponents) {
-    rows.push({ symbol: 'Rt', color: BLUE, value: `${Math.abs(s.rzN).toFixed(0)} N`, hint: 'cizalla', muted: true });
-    rows.push({ symbol: 'Rn', color: TEAL, value: `${Math.abs(s.ryN).toFixed(0)} N`, hint: 'compresión', muted: true });
-  }
-  if (patella && s.fp > 8) {
-    rows.push({ symbol: 'Fp', color: VIOLET, value: `${s.fp.toFixed(0)} N`, hint: 'femoropatelar', muted: true });
-  }
+  const railNote = patella
+    ? `Rótula = polea: brazo a ≈ 4,8 cm. Sin ella (a ≈ 2,2 cm) el cuádriceps tiraría M ≈ ${s.Mnopat.toFixed(0)} N.`
+    : `Sin rótula: brazo a ≈ 2,2 cm → M ≈ ${s.M.toFixed(0)} N. Con rótula bastarían ${mWithPatella.toFixed(0)} N.`;
 
   return (
-    <AnatomyStage
-      className="cap2-webgl-canvas"
-      camera={{ position: [-3.1, 0.1, 1.15], fov: 36 }}
-      target={[0.02, -0.05, 0.05]}
-      minDistance={1.6}
-      maxDistance={7}
-      grid={false}
-      shadow={false}
-      overlay={
-        <div
-          style={{
-            position: 'absolute',
-            left: '10px',
-            bottom: '10px',
-            zIndex: 9,
-            transform: 'scale(0.82)',
-            transformOrigin: 'bottom left',
-            pointerEvents: 'none',
-          }}
-        >
-          <DclReadout
-            title="Extensión de rodilla · DCL"
-            tone={patella ? '#0d6e64' : '#b02318'}
-            rows={rows}
-            note={
-              patella
-                ? `Rótula = polea: brazo a ≈ 4,8 cm. Sin ella (a ≈ 2,2 cm) el cuádriceps tiraría M ≈ ${s.Mnopat.toFixed(0)} N.`
-                : `Sin rótula: brazo a ≈ 2,2 cm → M ≈ ${s.M.toFixed(0)} N. Con rótula bastarían ${mWithPatella.toFixed(0)} N.`
-            }
-          />
-        </div>
-      }
-    >
-      <KneeAnatomy betaDeg={betaDeg} ankleLoadN={ankleLoadN} patella={patella} showComponents={showComponents} />
-    </AnatomyStage>
+    <CalloutProvider store={callouts} visible={showLabels}>
+      <AnatomyStage
+        className="cap2-webgl-canvas"
+        camera={{ position: [-3.1, 0.1, 1.15], fov: 36 }}
+        target={[0.02, -0.05, 0.05]}
+        minDistance={1.6}
+        maxDistance={7}
+        grid={false}
+        shadow={false}
+        overlay={
+          <>
+            <CalloutRail store={callouts} side="left" note={railNote} />
+          </>
+        }
+      >
+        <KneeAnatomy betaDeg={betaDeg} ankleLoadN={ankleLoadN} patella={patella} showComponents={showComponents} />
+        <CalloutSource />
+      </AnatomyStage>
+    </CalloutProvider>
   );
 }
 

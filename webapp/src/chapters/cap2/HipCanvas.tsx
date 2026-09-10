@@ -6,12 +6,21 @@ import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
 import { STUDIO_BG_DEEP } from '../cap1/three/materials';
 import { StudioLights } from '../cap1/three/StudioLights';
-import { DclTag } from './DclReadout';
+import {
+  Callout,
+  CalloutProvider,
+  CalloutRail,
+  CalloutSource,
+  useCalloutStore,
+} from '../cap1/three/Callouts';
 
 interface HipCanvasProps {
   bodyMassKg: number;        // Masa total en kg (40 a 120, default 70)
   trendelenburg: boolean;    // Si es true, simula insuficiencia del glúteo medio (pelvis cae)
   showBreakdown: boolean;    // Si es true, desglosa componentes x e y de la fuerza articular
+  /** Lo enciende la columna de teoría del slide, no un botón sobre el lienzo:
+   *  el mando cuelga del párrafo que explica estas magnitudes. */
+  showLabels?: boolean;
 }
 
 // ── Colores y Paleta Anatómica de Grado Médico ──
@@ -33,14 +42,19 @@ function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [1, 0, 0] as [number, number, number],
   color = '#0d6e64',
-  symbol = 'F',
+  label,
+  sub,
+  emphasis,
   showComponents = false,
   isDashed = false,
 }: {
   origin?: [number, number, number];
   vector: [number, number, number];
   color: string;
-  symbol: string;
+  /** Letrero para el riel lateral (símbolo = valor). */
+  label: string;
+  sub?: string;
+  emphasis?: 'strong' | 'muted';
   showComponents?: boolean;
   isDashed?: boolean;
 }) {
@@ -112,11 +126,13 @@ function ForceVector3D({
         </group>
       )}
 
-      {/* Etiqueta mínima: sólo el símbolo; las cifras van en las tarjetas de esquina. */}
-      <DclTag
+      {/* Letrero → riel lateral (símbolo = valor), con línea guía a la punta. */}
+      <Callout
         position={[tipPos.x + dir.x * 0.07, tipPos.y + dir.y * 0.07, tipPos.z + dir.z * 0.07]}
+        label={label}
+        sub={sub}
         color={color}
-        symbol={symbol}
+        emphasis={emphasis}
       />
     </group>
   );
@@ -234,17 +250,8 @@ function AcetabularGauge({
 }
 
 // ── 3. Diagrama de Polígono Vectorial Cerrado ΣF = 0 (SVG Interactivo) ──
-function VectorPolygonCard({
-  fAbductorN,
-  wbN,
-  rJointN,
-  trendelenburg,
-}: {
-  fAbductorN: number;
-  wbN: number;
-  rJointN: number;
-  trendelenburg: boolean;
-}) {
+// Solo el diagrama: las magnitudes Fa/Wb/R viven ahora en el riel lateral.
+function VectorPolygonCard({ trendelenburg }: { trendelenburg: boolean }) {
   return (
     <div
       style={{
@@ -314,17 +321,6 @@ function VectorPolygonCard({
         )}
       </svg>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '0.56rem', fontFamily: 'JetBrains Mono, monospace', marginTop: '4px' }}>
-        <div style={{ color: RED_ACCENT, display: 'flex', justifyContent: 'space-between' }}>
-          <span>Fa (Glúteos):</span> <b>{fAbductorN.toFixed(0)} N</b>
-        </div>
-        <div style={{ color: AMBER_ACCENT, display: 'flex', justifyContent: 'space-between' }}>
-          <span>Wb (5/6 W):</span> <b>{wbN.toFixed(0)} N</b>
-        </div>
-        <div style={{ color: TEAL_ACCENT, display: 'flex', justifyContent: 'space-between' }}>
-          <span>R (Acetábulo):</span> <b>{rJointN.toFixed(0)} N</b>
-        </div>
-      </div>
     </div>
   );
 }
@@ -461,6 +457,11 @@ function HipAnatomy3D({
     0,
   ];
 
+  // Letreros del riel lateral (símbolo = valor).
+  const lWb = `Wb = ${wbN.toFixed(0)} N`;
+  const lFa = `Fa = ${fAbductorN.toFixed(0)} N`;
+  const lR = `R = ${rJointN.toFixed(0)} N`;
+
   const MODEL_SCALE = 4.7;
 
   return (
@@ -524,7 +525,7 @@ function HipAnatomy3D({
         </mesh>
 
         {/* Vector Peso del Cuerpo Wb */}
-        <ForceVector3D origin={wbOrigin3D} vector={wbVec3D} color={AMBER_ACCENT} symbol="Wb" />
+        <ForceVector3D origin={wbOrigin3D} vector={wbVec3D} color={AMBER_ACCENT} label={lWb} sub="5/6 W · centro de gravedad" />
 
         {/* Guía acotada del brazo de palanca bw = 18 cm */}
         <Line
@@ -548,7 +549,8 @@ function HipAnatomy3D({
         origin={[-0.30, 0.06, 0]}
         vector={faVec3D}
         color={trendelenburg ? '#e28880' : RED_ACCENT}
-        symbol={trendelenburg ? 'Fa ⚠' : 'Fa'}
+        label={lFa}
+        sub={trendelenburg ? 'glúteo medio insuficiente ⚠' : 'glúteo medio'}
       />
 
       {/* Guía acotada del brazo bm = 7 cm */}
@@ -570,7 +572,9 @@ function HipAnatomy3D({
         origin={[0, 0, 0]}
         vector={rVec3D}
         color={TEAL_ACCENT}
-        symbol="R"
+        label={lR}
+        sub="reacción acetabular"
+        emphasis="strong"
         showComponents={showBreakdown}
       />
 
@@ -582,7 +586,9 @@ function HipAnatomy3D({
             origin={[0, 0, 0]}
             vector={[-rxN * vectorScale, 0, 0]}
             color="#0284c7"
-            symbol="Rx"
+            label={`Rx = ${rxN.toFixed(0)} N`}
+            sub="horizontal"
+            emphasis="muted"
             isDashed
           />
           {/* Componente Ry */}
@@ -590,7 +596,9 @@ function HipAnatomy3D({
             origin={[-rxN * vectorScale, 0, 0]}
             vector={[0, -ryN * vectorScale, 0]}
             color={TEAL_ACCENT}
-            symbol="Ry"
+            label={`Ry = ${ryN.toFixed(0)} N`}
+            sub="vertical"
+            emphasis="muted"
             isDashed
           />
         </group>
@@ -620,12 +628,14 @@ function hipStatics(bodyMassKg: number, trendelenburg: boolean) {
 
 // ── 5. Componente Principal HipCanvas con Escena 3D y Controles ──
 export default function HipCanvas({
+  showLabels = false,
   bodyMassKg = 70,
   trendelenburg = false,
   showBreakdown = true,
 }: HipCanvasProps) {
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
-  const { wbN, fAbductorN, rJointN, rJointKgf } = hipStatics(bodyMassKg, trendelenburg);
+  const { rJointN, rJointKgf } = hipStatics(bodyMassKg, trendelenburg);
+  const callouts = useCalloutStore();
 
   const handleResetCamera = () => {
     if (controlsRef.current) {
@@ -634,6 +644,7 @@ export default function HipCanvas({
   };
 
   return (
+    <CalloutProvider store={callouts} visible={showLabels}>
     <div className="cap2-webgl-canvas" style={{ width: '100%', height: '100%', position: 'relative' }}>
       {/* Botón flotante para reset de cámara */}
       <button
@@ -661,7 +672,7 @@ export default function HipCanvas({
 
       {/* Canvas 3D de React Three Fiber */}
       <Canvas
-        camera={{ position: [0.5, 0.15, 4.7], fov: 40 }}
+        camera={{ position: [0.42, 0.12, 3.75], fov: 40 }}
         dpr={[1, 2]}
         gl={{ antialias: true, alpha: true }}
         style={{ background: STUDIO_BG_DEEP }}
@@ -686,17 +697,26 @@ export default function HipCanvas({
           maxPolarAngle={Math.PI / 2 + 0.15}
           dampingFactor={0.08}
         />
+
+        {/* Proyecta cada <Callout> de la escena a píxeles para el riel lateral. */}
+        <CalloutSource />
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
 
-      {/* ── Overlays de datos anclados a las esquinas (fuera del 3D, sin recortes) ── */}
+      {/* Lecturas del DCL → riel lateral con línea guía a cada flecha.
+          `reserveBottom` mantiene los letreros por encima del polígono vectorial
+          anclado a la esquina inferior izquierda. */}
+      <CalloutRail store={callouts} side="left" reserveBottom={122} />
+
+      {/* ── Esquemas anclados a las esquinas (fuera del 3D, sin recortes) ── */}
       <div style={{ position: 'absolute', left: '10px', bottom: '10px', zIndex: 9, transform: 'scale(0.74)', transformOrigin: 'bottom left' }}>
-        <VectorPolygonCard fAbductorN={fAbductorN} wbN={wbN} rJointN={rJointN} trendelenburg={trendelenburg} />
+        <VectorPolygonCard trendelenburg={trendelenburg} />
       </div>
       <div style={{ position: 'absolute', right: '10px', bottom: '10px', zIndex: 9, transform: 'scale(0.74)', transformOrigin: 'bottom right' }}>
         <AcetabularGauge rJointN={rJointN} rJointKgf={rJointKgf} trendelenburg={trendelenburg} maxR={3000} />
       </div>
     </div>
+    </CalloutProvider>
   );
 }
 

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import CaneCanvas from './CaneCanvas';
+import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
 import type { Engine } from './useEngine';
 
@@ -12,6 +13,9 @@ export default function Slide8({
   [key: string]: any;
 }) {
   const [caneHand, setCaneHand] = useState<'contra' | 'ipsi' | 'none'>('contra');
+  // Los letreros del visor los enciende el texto de abajo, no un botón
+  // sobre el lienzo: el mando cuelga del párrafo que los explica.
+  const [showLabels, setShowLabels] = useState<boolean>(false);
   const [caneForceKg, setCaneForceKg] = useState<number>(10);
   const [bodyMassKg, setBodyMassKg] = useState<number>(70);
 
@@ -70,6 +74,13 @@ export default function Slide8({
               <p style={{ fontSize: '.64rem', color: 'var(--ink-3)' }}>
                 {'Apoyar apenas $10\\text{ kgf}$ ($98\\text{ N}$) en el bastón reduce la tensión del glúteo medio y descarga la cabeza femoral en casi un $\\mathbf{50\\%}$.'}
               </p>
+            
+              <div style={{ marginTop: '.4rem' }}>
+                <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
+                  <b>🏷️ Rotular las fuerzas de la cadera</b>
+                </TheoryToggle>
+              </div>
+              <TheoryCue>Muestra sobre el modelo cuánto baja la reacción articular <b>R</b> al descargar peso en el bastón.</TheoryCue>
             </div>
           </div>
           <div className="card">
@@ -129,7 +140,7 @@ export default function Slide8({
             </div>
           </HudPanel>
 
-          <CaneCanvas
+          <CaneCanvas showLabels={showLabels}
             caneHand={caneHand}
             caneForceKg={caneForceKg}
             bodyMassKg={bodyMassKg}

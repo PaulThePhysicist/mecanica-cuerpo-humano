@@ -7,7 +7,13 @@ import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
 import { STUDIO_BG_DEEP } from '../cap1/three/materials';
 import { StudioLights } from '../cap1/three/StudioLights';
-import { DclTag, DclReadout } from './DclReadout';
+import {
+  Callout,
+  CalloutProvider,
+  CalloutRail,
+  CalloutSource,
+  useCalloutStore,
+} from '../cap1/three/Callouts';
 
 type LeverClass = 1 | 2 | 3;
 
@@ -44,13 +50,13 @@ function AnatomicalVector({
   vector,
   color,
   symbol,
-  labelOffset,
+  sub,
 }: {
   origin: [number, number, number];
   vector: [number, number, number];
   color: string;
   symbol: string;
-  labelOffset?: [number, number, number];
+  sub: string;
 }) {
   const v = new THREE.Vector3(...vector);
   const len = v.length();
@@ -60,12 +66,6 @@ function AnatomicalVector({
   const base = new THREE.Vector3(...origin);
   const mid = base.clone().add(dir.clone().multiplyScalar(shaft / 2));
   const tip = base.clone().add(v);
-  const labelShift = labelOffset ?? [0, 0, 0];
-  const labelPosition: [number, number, number] = [
-    tip.x + dir.x * 0.035 + labelShift[0],
-    tip.y + dir.y * 0.035 + labelShift[1],
-    tip.z + dir.z * 0.035 + labelShift[2],
-  ];
 
   return (
     <group>
@@ -77,12 +77,12 @@ function AnatomicalVector({
         <coneGeometry args={[0.0085, 0.019, 12]} />
         <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.25} />
       </mesh>
-      <DclTag position={labelPosition} color={color} symbol={symbol} />
+      <Callout position={[tip.x, tip.y, tip.z]} label={symbol} sub={sub} color={color} />
     </group>
   );
 }
 
-function AnatomyRegion({ leverClass }: { leverClass: LeverClass }) {
+function AnatomyRegion({ leverClass }: { leverClass: LeverClass; showLabels?: boolean }) {
   const { nodes } = useGLTF('/assets/cap1/human_body.glb') as any;
   const { nodes: muscleNodes } = useGLTF('/assets/cap1/human_muscles_arm.glb') as any;
 
@@ -132,8 +132,8 @@ function AnatomyRegion({ leverClass }: { leverClass: LeverClass }) {
             <sphereGeometry args={[0.010, 16, 16]} />
             <meshStandardMaterial color="#0d6e64" emissive="#0d6e64" emissiveIntensity={0.25} />
           </mesh>
-          <AnatomicalVector origin={[0.004, 0.455, 0.015]} vector={[0, -0.085, 0]} color="#d97706" symbol="W" labelOffset={[0.07, -0.03, 0]} />
-          <AnatomicalVector origin={[0.004, 0.425, -0.055]} vector={[0, -0.075, 0]} color="#0d6e64" symbol="Fm" labelOffset={[-0.09, 0.02, 0]} />
+          <AnatomicalVector origin={[0.004, 0.455, 0.015]} vector={[0, -0.085, 0]} color="#d97706" symbol="W" sub={LEVER_LEGEND[1].w} />
+          <AnatomicalVector origin={[0.004, 0.425, -0.055]} vector={[0, -0.075, 0]} color="#0d6e64" symbol="Fm" sub={LEVER_LEGEND[1].fm} />
         </group>
       </group>
     );
@@ -158,8 +158,8 @@ function AnatomyRegion({ leverClass }: { leverClass: LeverClass }) {
           {nodes?.metatarsal3_R && <mesh geometry={nodes.metatarsal3_R.geometry} material={BONE} />}
           {nodes?.metatarsal4_R && <mesh geometry={nodes.metatarsal4_R.geometry} material={BONE} />}
           {nodes?.metatarsal5_R && <mesh geometry={nodes.metatarsal5_R.geometry} material={BONE} />}
-          <AnatomicalVector origin={[-0.041, -0.463, -0.012]} vector={[0, 0.055, 0]} color="#2e8b57" symbol="Fm" labelOffset={[-0.08, 0.01, 0]} />
-          <AnatomicalVector origin={[-0.041, -0.463, -0.012]} vector={[0, -0.05, 0]} color="#d97706" symbol="W" labelOffset={[0.09, -0.02, 0]} />
+          <AnatomicalVector origin={[-0.041, -0.463, -0.012]} vector={[0, 0.055, 0]} color="#2e8b57" symbol="Fm" sub={LEVER_LEGEND[2].fm} />
+          <AnatomicalVector origin={[-0.041, -0.463, -0.012]} vector={[0, -0.05, 0]} color="#d97706" symbol="W" sub={LEVER_LEGEND[2].w} />
         </group>
       </group>
     );
@@ -184,15 +184,24 @@ function AnatomyRegion({ leverClass }: { leverClass: LeverClass }) {
       </mesh>
       {/* Ambos vectores comparten el fulcro del codo y el eje del antebrazo
           calibrado en BicepsCanvas; no son marcadores flotantes. */}
-      <AnatomicalVector origin={[0.01, 0.005, 0.01]} vector={[0.01, 0.11, -0.01]} color="#b02318" symbol="Fm" labelOffset={[-0.11, 0.02, 0]} />
-      <AnatomicalVector origin={[0.01, 0.005, 0.01]} vector={[0, -0.08, 0]} color="#d97706" symbol="W" labelOffset={[0.12, -0.03, 0]} />
+      <AnatomicalVector origin={[0.01, 0.005, 0.01]} vector={[0.01, 0.11, -0.01]} color="#b02318" symbol="Fm" sub={LEVER_LEGEND[3].fm} />
+      <AnatomicalVector origin={[0.01, 0.005, 0.01]} vector={[0, -0.08, 0]} color="#d97706" symbol="W" sub={LEVER_LEGEND[3].w} />
     </group>
   );
 }
 
-export default function LeverAnatomyCanvas({ leverClass }: { leverClass: LeverClass }) {
+export default function LeverAnatomyCanvas({
+  leverClass,
+  showLabels = false,
+}: {
+  leverClass: LeverClass;
+  /** Lo enciende la columna de teoría del slide, no un botón sobre el lienzo. */
+  showLabels?: boolean;
+}) {
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
+  const callouts = useCalloutStore();
   return (
+    <CalloutProvider store={callouts} visible={showLabels}>
     <div className="lever-anatomy-canvas cap2-webgl-canvas">
       <Canvas
         camera={{
@@ -215,32 +224,18 @@ export default function LeverAnatomyCanvas({ leverClass }: { leverClass: LeverCl
           maxDistance={3.2}
         />
         <OrbitControls ref={controlsRef} enableDamping dampingFactor={0.08} minDistance={0.55} maxDistance={3.2} target={[0, 0.12, 0]} />
+        <CalloutSource />
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
 
-      {/* Leyenda de la palanca anclada a la esquina (fuera del 3D) */}
-      <div
-        style={{
-          position: 'absolute',
-          left: '10px',
-          bottom: '10px',
-          zIndex: 9,
-          transform: 'scale(0.82)',
-          transformOrigin: 'bottom left',
-          pointerEvents: 'none',
-        }}
-      >
-        <DclReadout
-          title={TITLES[leverClass]}
-          tone="#0d6e64"
-          rows={[
-            { symbol: 'Fm', color: leverClass === 2 ? '#2e8b57' : (leverClass === 3 ? '#b02318' : '#0d6e64'), value: LEVER_LEGEND[leverClass].fm },
-            { symbol: 'W', color: '#d97706', value: LEVER_LEGEND[leverClass].w },
-          ]}
-          note={LEVER_LEGEND[leverClass].klass}
-        />
-      </div>
+      {/* Leyenda de la palanca → riel lateral con línea guía a cada vector */}
+      <CalloutRail
+        store={callouts}
+        side="left"
+        note={`${TITLES[leverClass]} · ${LEVER_LEGEND[leverClass].klass}`}
+      />
     </div>
+    </CalloutProvider>
   );
 }
 

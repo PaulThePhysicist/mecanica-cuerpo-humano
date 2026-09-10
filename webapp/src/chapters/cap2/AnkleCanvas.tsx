@@ -4,7 +4,14 @@ import * as THREE from 'three';
 import { AnatomyStage } from '../cap1/three/AnatomyStage';
 import { useAnatomyNodes, preloadAnatomy } from '../cap1/three/useAnatomyNodes';
 import { materials, makeMuscleActive } from '../cap1/three/materials';
-import { DclTag, DclReadout, type DclRow } from './DclReadout';
+import { DclTag } from './DclReadout';
+import {
+  Callout,
+  CalloutProvider,
+  CalloutRail,
+  CalloutSource,
+  useCalloutStore,
+} from '../cap1/three/Callouts';
 
 /**
  * C4 · Estática del tobillo — de puntillas sobre un pie (Herman §2.3.3,
@@ -24,6 +31,9 @@ export interface AnkleCanvasProps {
   betaDeg: number;     // ángulo pie–horizontal
   bodyWeightN: number; // Wb (normal del suelo bajo el antepié)
   showComponents: boolean;
+  /** Lo enciende la columna de teoría del slide, no un botón sobre el lienzo:
+   *  el mando cuelga del párrafo que explica estas magnitudes. */
+  showLabels?: boolean;
 }
 
 const THETA = (45 * Math.PI) / 180; // ángulo del tendón de Aquiles con la horizontal
@@ -38,13 +48,18 @@ function ForceArrow({
   origin,
   vector,
   color,
-  symbol,
+  label,
+  sub,
+  emphasis,
   dashed = false,
 }: {
   origin: [number, number, number];
   vector: [number, number, number];
   color: string;
-  symbol: string;
+  /** Letrero para el riel lateral (símbolo = valor). */
+  label: string;
+  sub?: string;
+  emphasis?: 'strong' | 'muted';
   dashed?: boolean;
 }) {
   const v = useMemo(() => new THREE.Vector3(...vector), [vector]);
@@ -85,7 +100,14 @@ function ForceArrow({
         <coneGeometry args={[headLen * 0.42, headLen, 18]} />
         <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.5} roughness={0.25} metalness={0.2} />
       </mesh>
-      <DclTag position={[tip.x + dir.x * 0.03, tip.y + dir.y * 0.03, tip.z + dir.z * 0.03]} color={color} symbol={symbol} />
+      {/* Letrero → riel lateral (símbolo = valor), con línea guía a la punta. */}
+      <Callout
+        position={[tip.x + dir.x * 0.03, tip.y + dir.y * 0.03, tip.z + dir.z * 0.03]}
+        label={label}
+        sub={sub}
+        color={color}
+        emphasis={emphasis}
+      />
     </group>
   );
 }
@@ -162,6 +184,11 @@ function AnkleAnatomy({ betaDeg, bodyWeightN, showComponents }: AnkleCanvasProps
   const nVec: [number, number, number] = [0, Wb * S, 0];
   const rVec: [number, number, number] = [rxN * S, ryN * S, rzN * S];
 
+  // Letreros del riel lateral (mismos valores que llenaban el DclReadout de esquina).
+  const lM = `M = ${M.toFixed(0)} N`;
+  const lN = `N = ${Wb.toFixed(0)} N`;
+  const lR = `R = ${R.toFixed(0)} N`;
+
   const achillesLine: [number, number, number][] = [heelP.toArray(), calfP.toArray()];
 
   return (
@@ -211,15 +238,15 @@ function AnkleAnatomy({ betaDeg, bodyWeightN, showComponents }: AnkleCanvasProps
         <meshStandardMaterial color="#e6ddc8" roughness={0.95} metalness={0} />
       </mesh>
 
-      {/* ── Vectores (símbolo mínimo; magnitudes en el panel de esquina) ── */}
-      <ForceArrow origin={heelP.toArray()} vector={mVec} color={TEAL} symbol="M" />
-      <ForceArrow origin={FULCRUM.toArray()} vector={nVec} color={SLATE} symbol="N" />
-      <ForceArrow origin={ankP.toArray()} vector={rVec} color={RED} symbol="R" />
+      {/* ── Vectores (letrero → riel lateral con línea guía) ── */}
+      <ForceArrow origin={heelP.toArray()} vector={mVec} color={TEAL} label={lM} sub={`${(M / Wb).toFixed(2)}·Wb · tríceps sural`} />
+      <ForceArrow origin={FULCRUM.toArray()} vector={nVec} color={SLATE} label={lN} sub="= Wb (normal del suelo)" />
+      <ForceArrow origin={ankP.toArray()} vector={rVec} color={RED} label={lR} sub={`${(R / Wb).toFixed(2)}·Wb · astrágalo`} emphasis="strong" />
 
       {showComponents && (
         <>
-          <ForceArrow origin={ankP.toArray()} vector={[0, 0, rzN * S]} color="#0284c7" symbol="Rt" dashed />
-          <ForceArrow origin={[ankP.x, ankP.y, ankP.z + rzN * S]} vector={[0, ryN * S, 0]} color={TEAL} symbol="Rn" dashed />
+          <ForceArrow origin={ankP.toArray()} vector={[0, 0, rzN * S]} color="#0284c7" label={`Rt = ${Math.abs(rzN).toFixed(0)} N`} sub="cizalla" emphasis="muted" dashed />
+          <ForceArrow origin={[ankP.x, ankP.y, ankP.z + rzN * S]} vector={[0, ryN * S, 0]} color={TEAL} label={`Rn = ${Math.abs(ryN).toFixed(0)} N`} sub="compresión" emphasis="muted" dashed />
         </>
       )}
 
@@ -231,53 +258,37 @@ function AnkleAnatomy({ betaDeg, bodyWeightN, showComponents }: AnkleCanvasProps
 }
 
 export default function AnkleCanvas({
+  showLabels = false,
   betaDeg = 60,
   bodyWeightN = 882,
   showComponents = false,
 }: AnkleCanvasProps) {
-  const s = ankleSolve(betaDeg, bodyWeightN);
-  const rows: DclRow[] = [
-    { symbol: 'M', color: TEAL, value: `${s.M.toFixed(0)} N`, hint: `${(s.M / s.Wb).toFixed(2)}·Wb` },
-    { symbol: 'N', color: SLATE, value: `${s.Wb.toFixed(0)} N`, hint: '= Wb' },
-    { symbol: 'R', color: RED, value: `${s.R.toFixed(0)} N`, hint: `${(s.R / s.Wb).toFixed(2)}·Wb`, strong: true },
-  ];
-  if (showComponents) {
-    rows.push({ symbol: 'Rt', color: '#0284c7', value: `${Math.abs(s.rzN).toFixed(0)} N`, hint: 'cizalla', muted: true });
-    rows.push({ symbol: 'Rn', color: TEAL, value: `${Math.abs(s.ryN).toFixed(0)} N`, hint: 'compresión', muted: true });
-  }
+  const callouts = useCalloutStore();
 
   return (
-    <AnatomyStage
-      className="cap2-webgl-canvas"
-      camera={{ position: [-3.0, 0.35, 1.2], fov: 36 }}
-      target={[0.02, 0.0, 0.04]}
-      minDistance={1.5}
-      maxDistance={7}
-      grid={false}
-      shadow={false}
-      overlay={
-        <div
-          style={{
-            position: 'absolute',
-            left: '10px',
-            bottom: '10px',
-            zIndex: 9,
-            transform: 'scale(0.82)',
-            transformOrigin: 'bottom left',
-            pointerEvents: 'none',
-          }}
-        >
-          <DclReadout
-            title="De puntillas · DCL del tobillo"
-            tone="#0d6e64"
-            rows={rows}
-            note={`Palanca de 2ª clase: para β = ${betaDeg}°, tanto M como R superan con creces el peso corporal.`}
-          />
-        </div>
-      }
-    >
-      <AnkleAnatomy betaDeg={betaDeg} bodyWeightN={bodyWeightN} showComponents={showComponents} />
-    </AnatomyStage>
+    <CalloutProvider store={callouts} visible={showLabels}>
+      <AnatomyStage
+        className="cap2-webgl-canvas"
+        camera={{ position: [-3.0, 0.35, 1.2], fov: 36 }}
+        target={[0.02, 0.0, 0.04]}
+        minDistance={1.5}
+        maxDistance={7}
+        grid={false}
+        shadow={false}
+        overlay={
+          <>
+            <CalloutRail
+              store={callouts}
+              side="left"
+              note={`Palanca de 2ª clase: para β = ${betaDeg}°, tanto M como R superan con creces el peso corporal.`}
+            />
+          </>
+        }
+      >
+        <AnkleAnatomy betaDeg={betaDeg} bodyWeightN={bodyWeightN} showComponents={showComponents} />
+        <CalloutSource />
+      </AnatomyStage>
+    </CalloutProvider>
   );
 }
 

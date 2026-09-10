@@ -1,7 +1,14 @@
 import React, { Suspense, useMemo, useRef, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, ContactShadows, useGLTF } from '@react-three/drei';
-import { DclTag, DclReadout } from './DclReadout';
+import { DclTag } from './DclReadout';
+import {
+  Callout,
+  CalloutProvider,
+  CalloutRail,
+  CalloutSource,
+  useCalloutStore,
+} from '../cap1/three/Callouts';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
@@ -12,6 +19,9 @@ interface BodySegmentsCanvasProps {
   posture: 'standing' | 'arms_up' | 'bent_forward' | 'squat'; // Postura del cuerpo
   bodyHeightCm: number;                                       // Estatura en cm (150 a 200, default 175)
   bodyMassKg: number;                                         // Masa corporal en kg (70 kg default)
+  /** Lo enciende la columna de teoría del slide, no un botón sobre el lienzo:
+   *  el mando cuelga del párrafo que explica estas magnitudes. */
+  showLabels?: boolean;
 }
 
 // ── Paleta y Materiales de Grado Museo Anatómico ──
@@ -571,6 +581,14 @@ function DempsterSkeletonRig3D({
   const minMarginZ = Math.min(bosAntZ - cgGlobalZ, cgGlobalZ - bosPostZ);
   const isStable = cgGlobalZ >= bosPostZ - 0.02 && cgGlobalZ <= bosAntZ + 0.02;
   const isWarning = isStable && minMarginZ < 0.035;
+  const stabilityMarginPct = Math.max(0, Math.min(100, (minMarginZ / ((bosAntZ - bosPostZ) / 2)) * 100));
+
+  // Letreros del riel lateral (la tabla de esquina «CG · estabilidad»).
+  const lCG = `CG = ${cgHeightCm.toFixed(1)} cm`;
+  const sCG = `${cgHeightPct.toFixed(0)}% de la estatura`;
+  const lMargen = `margen = ${stabilityMarginPct.toFixed(0)} %`;
+  const sMargen = isStable ? (isWarning ? 'al límite anterior' : 'dentro de la BoS') : 'fuera de la BoS';
+  const cgColor = !isStable ? RED_ACCENT : isWarning ? AMBER_ACCENT : TEAL_ACCENT;
 
   return (
     <group position={[0, -0.78, 0]}>
@@ -796,20 +814,29 @@ function DempsterSkeletonRig3D({
         isWarning={isWarning}
       />
 
+      {/* ── F. LECTURA CG · ESTABILIDAD → riel lateral (línea guía al contacto
+             de la plomada con el suelo, el punto que se compara con la BoS) ── */}
+      <Callout position={[cgGlobalX, 0.10, cgGlobalZ]} label={lCG} sub={sCG} color="#b91c1c" emphasis="strong" />
+      <Callout position={[cgGlobalX, 0.03, cgGlobalZ]} label={lMargen} sub={sMargen} color={cgColor} />
+
+      <CalloutSource />
     </group>
   );
 }
 
 // ── 5. Componente Principal 3D con React Three Fiber ──
 export default function BodySegmentsCanvas({
+  showLabels = false,
   posture = 'standing',
   bodyHeightCm = 175,
   bodyMassKg = 70,
 }: BodySegmentsCanvasProps) {
   const controlsRef = useRef<OrbitControlsImpl>(null);
   const b = bodySegmentStats(posture, bodyHeightCm);
+  const callouts = useCalloutStore();
 
   return (
+    <CalloutProvider store={callouts} visible={showLabels}>
     <div
       className="cap2-webgl-canvas"
       style={{
@@ -856,28 +883,12 @@ export default function BodySegmentsCanvas({
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
 
-      {/* Lecturas ancladas a la esquina (fuera del 3D) */}
-      <div
-        style={{
-          position: 'absolute',
-          left: '10px',
-          bottom: '10px',
-          zIndex: 9,
-          transform: 'scale(0.82)',
-          transformOrigin: 'bottom left',
-          pointerEvents: 'none',
-        }}
-      >
-        <DclReadout
-          title="Centro de gravedad · estabilidad"
-          tone={!b.isStable ? RED_ACCENT : (b.isWarning ? '#d97706' : '#cbd5e1')}
-          rows={[
-            { symbol: 'CG', color: '#b91c1c', value: `${b.cgHeightCm.toFixed(1)} cm`, hint: `${b.cgHeightPct.toFixed(0)}% H`, strong: true },
-            { symbol: 'margen', color: !b.isStable ? RED_ACCENT : TEAL_ACCENT, value: `${b.stabilityMarginPct.toFixed(0)} %`, hint: b.isStable ? (b.isWarning ? 'al límite' : 'estable') : 'fuera de la BoS' },
-          ]}
-          note="El CG global es la media ponderada por masa de los centros de masa segmentarios (Dempster); debe caer dentro de la base de sustentación."
-        />
-      </div>
+      {/* Lectura CG · estabilidad → riel lateral con línea guía */}
+      <CalloutRail
+        store={callouts}
+        side="left"
+        note="El CG global es la media ponderada por masa de los centros de masa segmentarios (Dempster); debe caer dentro de la base de sustentación."
+      />
 
       {/* Dial de estabilidad anclado a la esquina (fuera del 3D) */}
       <div
@@ -901,5 +912,6 @@ export default function BodySegmentsCanvas({
         />
       </div>
     </div>
+    </CalloutProvider>
   );
 }

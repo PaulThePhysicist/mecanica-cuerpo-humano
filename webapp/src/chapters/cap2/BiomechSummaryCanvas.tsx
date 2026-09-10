@@ -4,13 +4,22 @@ import { OrbitControls, ContactShadows, Html, Line, useGLTF } from '@react-three
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
-import { DclTag } from './DclReadout';
+import {
+  Callout,
+  CalloutProvider,
+  CalloutRail,
+  CalloutSource,
+  useCalloutStore,
+} from '../cap1/three/Callouts';
 
 export type BiomechNodeId = 'neck' | 'jaw' | 'elbow' | 'spine' | 'hip' | 'ankle' | 'foot';
 
 interface BiomechSummaryCanvasProps {
   selectedNode: BiomechNodeId;
   onSelectNode?: (node: BiomechNodeId) => void;
+  /** Lo enciende la columna de teoría del slide, no un botón sobre el lienzo:
+   *  el mando cuelga del párrafo que explica estas magnitudes. */
+  showLabels?: boolean;
 }
 
 interface BiomechNodeInfo {
@@ -177,13 +186,18 @@ function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [0, 1, 0] as [number, number, number],
   color = '#0d6e64',
-  symbol = 'F',
+  label,
+  sub,
+  emphasis,
   shaftRadius = 0.010,
 }: {
   origin?: [number, number, number];
   vector: [number, number, number];
   color: string;
-  symbol: string;
+  /** Letrero para el riel lateral (símbolo · rol). */
+  label: string;
+  sub?: string;
+  emphasis?: 'strong' | 'muted';
   shaftRadius?: number;
 }) {
   const v = useMemo(() => new THREE.Vector3(...vector), [vector]);
@@ -232,10 +246,13 @@ function ForceVector3D({
         />
       </mesh>
 
-      <DclTag
+      {/* Letrero → riel lateral, con línea guía a la punta. */}
+      <Callout
         position={[tipPos.x + dir.x * 0.05, tipPos.y + dir.y * 0.05, tipPos.z + dir.z * 0.05]}
+        label={label}
+        sub={sub}
         color={color}
-        symbol={symbol}
+        emphasis={emphasis}
       />
     </group>
   );
@@ -351,21 +368,25 @@ function JointDCLVectors3D({ selectedNode }: { selectedNode: BiomechNodeId }) {
           origin={[0.04, 1.50, 0.12]}
           vector={[0, 0.24, 0]}
           color={RED_ACCENT}
-          symbol="F_mas"
+          label="F_mas"
+          sub="masetero"
         />
         {/* Fmordida (Hacia abajo en molares) */}
         <ForceVector3D
           origin={[0.02, 1.62, 0.19]}
           vector={[0, -0.22, 0]}
           color={BLUE_ACCENT}
-          symbol="F_mordida"
+          label="F_mordida"
+          sub="en el diente"
         />
         {/* R ATM (Reacción articular) */}
         <ForceVector3D
           origin={[-0.04, 1.64, 0.08]}
           vector={[0, -0.16, -0.04]}
           color={TEAL_DEEP}
-          symbol="R_ATM"
+          label="R_ATM"
+          sub="reacción de la ATM"
+          emphasis="strong"
         />
       </group>
     );
@@ -379,21 +400,25 @@ function JointDCLVectors3D({ selectedNode }: { selectedNode: BiomechNodeId }) {
           origin={[-0.02, 1.58, -0.09]}
           vector={[-0.02, -0.24, -0.10]}
           color={RED_ACCENT}
-          symbol="F_m"
+          label="F_m"
+          sub="trapecio / esplenio"
         />
         {/* W Cabeza (Hacia abajo, anterior a C1) */}
         <ForceVector3D
           origin={[0.02, 1.65, 0.08]}
           vector={[0, -0.20, 0]}
           color={BLUE_ACCENT}
-          symbol="W"
+          label="W"
+          sub="peso del cráneo"
         />
         {/* R C1 Atlas (Reacción de soporte hacia arriba) */}
         <ForceVector3D
           origin={[0.0, 1.56, -0.03]}
           vector={[0.01, 0.30, 0.02]}
           color={TEAL_DEEP}
-          symbol="R_C1"
+          label="R_C1"
+          sub="reacción del atlas"
+          emphasis="strong"
         />
       </group>
     );
@@ -407,21 +432,25 @@ function JointDCLVectors3D({ selectedNode }: { selectedNode: BiomechNodeId }) {
           origin={[-0.47, 0.56, 0.02]}
           vector={[0, 0.38, 0.05]}
           color={RED_ACCENT}
-          symbol="F_bíceps"
+          label="F_bíceps"
+          sub="×8,75 la carga"
         />
         {/* W Mano (Hacia abajo en la palma a 35 cm) */}
         <ForceVector3D
           origin={[-0.38, 0.28, 0.06]}
           vector={[0, -0.24, 0]}
           color={BLUE_ACCENT}
-          symbol="W_mano"
+          label="W_mano"
+          sub="carga distal"
         />
         {/* R Articular (Compresión húmerocubital) */}
         <ForceVector3D
           origin={[-0.50, 0.58, -0.04]}
           vector={[0, -0.30, -0.04]}
           color={TEAL_DEEP}
-          symbol="R"
+          label="R"
+          sub="compresión húmerocubital"
+          emphasis="strong"
         />
       </group>
     );
@@ -435,21 +464,25 @@ function JointDCLVectors3D({ selectedNode }: { selectedNode: BiomechNodeId }) {
           origin={[-0.02, 0.30, -0.12]}
           vector={[0, 0.44, -0.14]}
           color={RED_ACCENT}
-          symbol="F_erector"
+          label="F_erector"
+          sub="desventaja 10:1"
         />
         {/* W Tronco + Carga (Hacia abajo a 50 cm de momento) */}
         <ForceVector3D
           origin={[0.02, 0.48, 0.20]}
           vector={[0, -0.32, 0]}
           color={BLUE_ACCENT}
-          symbol="W_total"
+          label="W_total"
+          sub="tronco + carga"
         />
         {/* R L5-S1 (Compresión masiva) */}
         <ForceVector3D
           origin={[0.0, 0.28, -0.05]}
           vector={[0, -0.48, -0.06]}
           color={TEAL_DEEP}
-          symbol="R"
+          label="R"
+          sub="compresión L5-S1"
+          emphasis="strong"
         />
       </group>
     );
@@ -463,21 +496,25 @@ function JointDCLVectors3D({ selectedNode }: { selectedNode: BiomechNodeId }) {
           origin={[-0.28, 0.08, 0.0]}
           vector={[-0.12, 0.36, 0]}
           color={RED_ACCENT}
-          symbol="F_abd"
+          label="F_abd"
+          sub="glúteo medio"
         />
         {/* Wb Peso Corporal Suprayacente (Hacia abajo en CG) */}
         <ForceVector3D
           origin={[0.18, 0.12, 0.0]}
           vector={[0, -0.32, 0]}
           color={AMBER_ACCENT}
-          symbol="W_b"
+          label="W_b"
+          sub="peso suprayacente"
         />
         {/* R Acetábulo (Reacción en cabeza femoral) */}
         <ForceVector3D
           origin={[-0.16, 0.00, 0.0]}
           vector={[0.08, -0.44, 0]}
           color={TEAL_DEEP}
-          symbol="R"
+          label="R"
+          sub="reacción acetabular (~2,7·W)"
+          emphasis="strong"
         />
       </group>
     );
@@ -491,21 +528,25 @@ function JointDCLVectors3D({ selectedNode }: { selectedNode: BiomechNodeId }) {
           origin={[-0.19, -1.84, -0.14]}
           vector={[0, 0.36, -0.05]}
           color={RED_ACCENT}
-          symbol="F_aquiles"
+          label="F_aquiles"
+          sub="tríceps sural"
         />
         {/* W Peso Suelo (Hacia abajo en tibia) */}
         <ForceVector3D
           origin={[-0.19, -1.75, -0.04]}
           vector={[0, -0.34, 0]}
           color={BLUE_ACCENT}
-          symbol="W"
+          label="W"
+          sub="peso del cuerpo"
         />
         {/* GRF Antepié (Hacia arriba en cabezas metatarsales) */}
         <ForceVector3D
           origin={[-0.19, -1.98, 0.14]}
           vector={[0, 0.34, 0]}
           color={TEAL_DEEP}
-          symbol="GRF"
+          label="GRF"
+          sub="normal del antepié"
+          emphasis="strong"
         />
       </group>
     );
@@ -519,21 +560,27 @@ function JointDCLVectors3D({ selectedNode }: { selectedNode: BiomechNodeId }) {
           origin={[-0.19, -1.98, 0.08]}
           vector={[0, 0.42, 0]}
           color={GREEN_ACCENT}
-          symbol="F_z"
+          label="F_z"
+          sub="vertical (~1,2·W)"
+          emphasis="muted"
         />
         {/* Fy Propulsión */}
         <ForceVector3D
           origin={[-0.19, -1.98, 0.08]}
           vector={[0, 0, 0.22]}
           color={AMBER_ACCENT}
-          symbol="F_y"
+          label="F_y"
+          sub="propulsión anterior"
+          emphasis="muted"
         />
         {/* GRF Resultante */}
         <ForceVector3D
           origin={[-0.19, -1.98, 0.08]}
           vector={[0, 0.44, 0.22]}
           color={TEAL_DEEP}
-          symbol="GRF"
+          label="GRF"
+          sub="resultante"
+          emphasis="strong"
         />
       </group>
     );
@@ -810,6 +857,7 @@ function BiomechInspectorCard({
 
 // ── COMPONENTE PRINCIPAL: BiomechSummaryCanvas ──
 export default function BiomechSummaryCanvas({
+  showLabels = false,
   selectedNode = 'elbow',
   onSelectNode,
 }: BiomechSummaryCanvasProps) {
@@ -827,7 +875,10 @@ export default function BiomechSummaryCanvas({
     setIsOverview((prev) => !prev);
   };
 
+  const callouts = useCalloutStore();
+
   return (
+    <CalloutProvider store={callouts} visible={showLabels}>
     <div className="cap2-webgl-canvas" style={{ width: '100%', height: '100%', position: 'relative', touchAction: 'none' }}>
       <Canvas
         shadows
@@ -866,6 +917,9 @@ export default function BiomechSummaryCanvas({
 
             {/* 3. 7 Nódulos Anatómicos Interactivos Brillantes */}
             <Interactive3DNodes selectedNode={selectedNode} onSelectNode={handleSelect} />
+
+            {/* Proyecta cada <Callout> de la escena a píxeles para el riel lateral. */}
+            <CalloutSource />
           </group>
 
           {/* Sombra de contacto del piso */}
@@ -881,6 +935,9 @@ export default function BiomechSummaryCanvas({
 
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
+
+      {/* Vectores DCL de la articulación → riel lateral derecho con línea guía */}
+      <CalloutRail store={callouts} side="right" />
 
       {/* Inspector biomecánico anclado a la esquina inferior izquierda: los
           vectores DCL del codo caen a la derecha del lienzo, así que esta
@@ -902,6 +959,7 @@ export default function BiomechSummaryCanvas({
         />
       </div>
     </div>
+    </CalloutProvider>
   );
 }
 

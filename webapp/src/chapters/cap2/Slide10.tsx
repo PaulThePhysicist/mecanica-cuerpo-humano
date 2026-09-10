@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import DiscPressureCanvas from './DiscPressureCanvas';
+import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
 import type { Engine } from './useEngine';
 
@@ -56,6 +57,9 @@ export default function Slide10({
   [key: string]: any;
 }) {
   const [posture, setPosture] = useState<'upright' | 'seated' | 'knees' | 'bent_back'>('bent_back');
+  // Los letreros del visor los enciende el texto de abajo, no un botón
+  // sobre el lienzo: el mando cuelga del párrafo que los explica.
+  const [showLabels, setShowLabels] = useState<boolean>(false);
   const [loadKg, setLoadKg] = useState<number>(15);
 
   const curDetail = POSTURE_LIST.find((p) => p.id === posture) || POSTURE_LIST[3];
@@ -105,6 +109,13 @@ export default function Slide10({
               <p style={{ fontSize: '.64rem', color: 'var(--ink-3)' }}>
                 {'Umbral fisiológico seguro: $< 1{,}5\\text{ MPa}$. Carga lesiva: $> 2{,}5\\text{ MPa}$ ($25\\text{ bar}$). Límite de fractura trabecular del platillo vertebral: $\\sim 3{,}5\\text{ MPa}$.'}
               </p>
+            
+              <div style={{ marginTop: '.4rem' }}>
+                <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
+                  <b>🏷️ Rotular el disco y la compresión</b>
+                </TheoryToggle>
+              </div>
+              <TheoryCue>Marca los cuerpos vertebrales <b>L5</b> y <b>S1</b>, la zona de herniación y la compresión <b>F<sub>n</sub></b> sobre el disco.</TheoryCue>
             </div>
           </div>
           <div className="card">
@@ -187,7 +198,7 @@ export default function Slide10({
             </div>
           </HudPanel>
 
-          <DiscPressureCanvas
+          <DiscPressureCanvas showLabels={showLabels}
             posture={posture}
             loadKg={loadKg}
           />

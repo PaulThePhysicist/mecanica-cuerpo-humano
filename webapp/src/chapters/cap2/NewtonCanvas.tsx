@@ -1,11 +1,21 @@
-import React, { Suspense, useRef, useState, useMemo } from 'react';
+import React, { Suspense, useRef, useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, ContactShadows, Html, Line, useGLTF } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import Cap2ZoomHandler from './Cap2ZoomHandler';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
-import { DclTag, DclReadout, type DclRow } from './DclReadout';
+import {
+  Callout,
+  CalloutProvider,
+  CalloutRail,
+  CalloutSource,
+  useCalloutStore,
+  useLabelsVisible,
+} from '../cap1/three/Callouts';
+
+/** Fuerza del DCL que el texto ha puesto en foco (las otras se atenúan). */
+export type FocusForce = 'F1' | 'F2' | 'R' | null;
 
 interface NewtonCanvasProps {
   f1: number;               // Magnitud F1 en N (Deltoides / Músculo)
@@ -14,6 +24,15 @@ interface NewtonCanvasProps {
   theta2: number;           // Ángulo F2 en grados
   armAbductionDeg: number;  // Abducción anatómica del húmero respecto al tronco
   autoEquilibrium: boolean; // Si es true, calcula R = -(F1 + F2) para ΣF = 0
+  // ── Estado de presentación: lo gobierna la columna de teoría del slide ──
+  // Estos cuatro eran `useState` locales con su fila de botones sobre el lienzo.
+  // Ahora los pulsa el propio texto (ver Slide1.tsx), que es quien explica cada
+  // uno; el lienzo se queda solo con el modelo y el pad ⚙.
+  showLabels: boolean;
+  showPolygon: boolean;
+  showComponents: boolean;
+  showAnatomy: boolean;
+  focusForce: FocusForce;
 }
 
 const BONE_MATERIAL = new THREE.MeshStandardMaterial({
@@ -57,16 +76,24 @@ function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [1, 0, 0] as [number, number, number],
   color = '#0d6e64',
-  symbol = 'F',
+  label,
+  sub,
+  emphasis,
   showComponents = false,
   isDashed = false,
+  dim = false,
 }: {
   origin?: [number, number, number];
   vector: [number, number, number];
   color: string;
-  symbol: string;
+  /** Letrero para el riel lateral (símbolo = valor). */
+  label: string;
+  sub?: string;
+  emphasis?: 'strong' | 'muted';
   showComponents?: boolean;
   isDashed?: boolean;
+  /** El texto ha puesto el foco en OTRA fuerza: esta se apaga a segundo plano. */
+  dim?: boolean;
 }) {
   const v = useMemo(() => new THREE.Vector3(...vector), [vector]);
   const len = v.length();
@@ -99,9 +126,9 @@ function ForceVector3D({
           roughness={0.3}
           metalness={0.2}
           emissive={color}
-          emissiveIntensity={0.35}
-          transparent={isDashed}
-          opacity={isDashed ? 0.75 : 1.0}
+          emissiveIntensity={dim ? 0.1 : 0.35}
+          transparent={isDashed || dim}
+          opacity={dim ? 0.22 : isDashed ? 0.75 : 1.0}
         />
       </mesh>
 
@@ -113,7 +140,9 @@ function ForceVector3D({
           roughness={0.25}
           metalness={0.3}
           emissive={color}
-          emissiveIntensity={0.5}
+          emissiveIntensity={dim ? 0.15 : 0.5}
+          transparent={dim}
+          opacity={dim ? 0.22 : 1}
         />
       </mesh>
 
@@ -136,11 +165,15 @@ function ForceVector3D({
         </group>
       )}
 
-      {/* Etiqueta mínima: sólo el símbolo; las cifras van en el panel de esquina. */}
-      <DclTag
+      {/* Letrero → riel lateral (símbolo = valor), con línea a la punta.
+          `Callout` se apaga solo cuando el provider lleva visible={false}. */}
+      <Callout
         position={[tipPos.x + dir.x * 0.14, tipPos.y + dir.y * 0.14, tipPos.z + dir.z * 0.14]}
+        label={label}
+        sub={sub}
         color={color}
-        symbol={symbol}
+        emphasis={emphasis}
+        dim={dim}
       />
     </group>
   );
@@ -162,6 +195,7 @@ function GlenohumeralJointGLB({
   deltoidActivation: number; // 0..1 según F₁; ilumina el deltoides
   showAnatomy: boolean;
 }) {
+  const showLabels = useLabelsVisible();
   const { nodes: boneNodes } = useGLTF('/assets/cap1/human_body.glb') as any;
   const { nodes: muscleNodes } = useGLTF('/assets/cap1/human_muscles_arm.glb') as any;
 
@@ -180,23 +214,25 @@ function GlenohumeralJointGLB({
             opacity={0.78}
           />
         </mesh>
-        <Html position={[0.10, 0.09, 0.04]} center zIndexRange={[80, 0]}>
-          <span
-            style={{
-              background: 'rgba(255,255,255,0.92)',
-              border: '1px solid #0d6e64',
-              borderRadius: '4px',
-              padding: '2px 5px',
-              color: '#0a5a52',
-              fontSize: '0.52rem',
-              fontWeight: 700,
-              whiteSpace: 'nowrap',
-              pointerEvents: 'none',
-            }}
-          >
-            Centro articular (pivote)
-          </span>
-        </Html>
+        {showLabels && (
+          <Html position={[0.10, 0.09, 0.04]} center zIndexRange={[80, 0]}>
+            <span
+              style={{
+                background: 'rgba(255,255,255,0.92)',
+                border: '1px solid #0d6e64',
+                borderRadius: '4px',
+                padding: '2px 5px',
+                color: '#0a5a52',
+                fontSize: '0.52rem',
+                fontWeight: 700,
+                whiteSpace: 'nowrap',
+                pointerEvents: 'none',
+              }}
+            >
+              Centro articular (pivote)
+            </span>
+          </Html>
+        )}
       </group>
     );
   }
@@ -256,6 +292,7 @@ function SceneContent({
   showComponents,
   showPolygon,
   showAnatomy,
+  focusForce,
   orbitRef,
 }: {
   f1: number;
@@ -267,8 +304,14 @@ function SceneContent({
   showComponents: boolean;
   showPolygon: boolean;
   showAnatomy: boolean;
+  focusForce: FocusForce;
   orbitRef: React.RefObject<OrbitControlsImpl | null>;
 }) {
+  const showLabels = useLabelsVisible();
+  // Foco puesto desde el texto: el resto de fuerzas pasa a segundo plano.
+  const dimF1 = focusForce !== null && focusForce !== 'F1';
+  const dimF2 = focusForce !== null && focusForce !== 'F2';
+  const dimR = focusForce !== null && focusForce !== 'R';
   const rad1 = (theta1 * Math.PI) / 180;
   const rad2 = (theta2 * Math.PI) / 180;
 
@@ -286,6 +329,15 @@ function SceneContent({
   const sumFx = autoEquilibrium ? 0 : f1x + f2x;
   const sumFy = autoEquilibrium ? 0 : f1y + f2y;
   const fNet = Math.hypot(sumFx, sumFy);
+
+  // Letreros del riel (mismos valores que llenaban el DclReadout).
+  const lF1 = `F₁ = ${f1.toFixed(0)} N`;
+  const sF1 = `${theta1}° · deltoides`;
+  const lF2 = `F₂ = ${f2.toFixed(0)} N`;
+  const sF2 = `${theta2}° · peso + carga`;
+  const lR = autoEquilibrium ? `R = ${rMag.toFixed(0)} N` : `ΣF = ${rMag.toFixed(1)} N`;
+  const sR = autoEquilibrium ? 'reacción glenoidea' : 'el húmero acelera (m·a)';
+  const cR = autoEquilibrium ? '#dc2626' : '#8b5cf6';
 
   // N → unidades de mundo. Calibrado para que ~120 N ≈ la longitud del húmero
   // renderizado (≈ 0,63 u), de modo que las flechas acompañen a la anatomía en
@@ -323,14 +375,39 @@ function SceneContent({
   const Rvec: [number, number, number] = [rx * V, ry * V, 0];
   const Fnetvec: [number, number, number] = [sumFx * V, sumFy * V, 0];
 
-  // El polígono se dibuja algo más grande para que se lea el cierre.
-  const VP = V * 1.7;
+  // ── Polígono de fuerzas: centrado y autoescalado ──
+  // Antes usaba un factor fijo (V × 1,7) y una cola fija en [0.06, 0.12], así que
+  // en cuanto F₁ crecía el triángulo se salía del encuadre por arriba. Ahora se
+  // mide el recuadro que ocupa el recorrido cabeza-con-cola y se elige la escala
+  // y el desplazamiento para que quepa siempre y quede centrado en el cuadro.
+  // Recorrido en newtons: cola → F₁ → F₂ → (cierre con R, o ΣF si no hay equilibrio).
+  const walk: [number, number][] = [
+    [0, 0],
+    [f1x, f1y],
+    [f1x + f2x, f1y + f2y],
+  ];
+  if (!autoEquilibrium) walk.push([f1x + f2x + sumFx, f1y + f2y + sumFy]);
+  const wx = walk.map((p) => p[0]);
+  const wy = walk.map((p) => p[1]);
+  const minX = Math.min(...wx), maxX = Math.max(...wx);
+  const minY = Math.min(...wy), maxY = Math.max(...wy);
+  // Lado útil del encuadre a la profundidad del polígono (cámara a 1,85 con fov 42).
+  const POLY_FIT = 0.94;
+  const VP = Math.min(
+    V * 1.7,
+    POLY_FIT / Math.max(maxX - minX, 1e-6),
+    POLY_FIT / Math.max(maxY - minY, 1e-6),
+  );
   const F1p: [number, number, number] = [f1x * VP, f1y * VP, 0];
   const F2p: [number, number, number] = [f2x * VP, f2y * VP, 0];
   const Rp: [number, number, number] = [rx * VP, ry * VP, 0];
   const Fnetp: [number, number, number] = [sumFx * VP, sumFy * VP, 0];
-  // Punto común (cola de F₁), centrado y ligeramente arriba del modelo.
-  const polyP: [number, number, number] = [0.06, 0.12, Z_BIAS + 0.06];
+  // Cola de F₁ tal que el centro del recuadro caiga en el eje de cámara.
+  const polyP: [number, number, number] = [
+    -((minX + maxX) / 2) * VP,
+    -((minY + maxY) / 2) * VP,
+    Z_BIAS + 0.06,
+  ];
   const polyF2Tail = add(polyP, F1p);
   const polyRTail = add(polyF2Tail, F2p);
 
@@ -382,7 +459,7 @@ function SceneContent({
       />
 
       {/* Grupo de encuadre: centra articulación + brazo + vectores en el cuadro. */}
-      <group position={[-0.16, 0.04, 0]}>
+      <group position={[-0.14, -0.12, 0]}>
       <group scale={S} position={[0, 0, 0]}>
         <GlenohumeralJointGLB
           armAngle={armAngle}
@@ -395,25 +472,27 @@ function SceneContent({
       {!showPolygon && (
         <>
           <Line points={dclRing} color="#7a8a99" lineWidth={1.2} dashed dashScale={26} dashSize={0.05} gapSize={0.04} transparent opacity={0.68} />
-          <Html position={[0.48, 0.42, 0]} center zIndexRange={[70, 0]}>
-            <span style={{ color: '#5d6b76', fontSize: '0.52rem', fontFamily: 'Karla, sans-serif', fontWeight: 700, whiteSpace: 'nowrap', pointerEvents: 'none', background: 'rgba(251,248,240,0.7)', padding: '1px 4px', borderRadius: 3 }}>
-              DCL · húmero aislado
-            </span>
-          </Html>
+          {showLabels && (
+            <Html position={[0.48, 0.42, 0]} center zIndexRange={[70, 0]}>
+              <span style={{ color: '#5d6b76', fontSize: '0.52rem', fontFamily: 'Karla, sans-serif', fontWeight: 700, whiteSpace: 'nowrap', pointerEvents: 'none', background: 'rgba(251,248,240,0.7)', padding: '1px 4px', borderRadius: 3 }}>
+                DCL · húmero aislado
+              </span>
+            </Html>
+          )}
         </>
       )}
 
       {showPolygon ? (
         <>
           {/* ── Polígono de fuerzas: punta con cola; si ΣF = 0 el triángulo cierra ── */}
-          <ForceVector3D origin={polyP} vector={F1p} color="#0d9488" symbol="F₁" />
-          <ForceVector3D origin={polyF2Tail} vector={F2p} color="#d97706" symbol="F₂" />
+          <ForceVector3D origin={polyP} vector={F1p} color="#0d9488" label={lF1} sub={sF1} />
+          <ForceVector3D origin={polyF2Tail} vector={F2p} color="#d97706" label={lF2} sub={sF2} />
           {autoEquilibrium ? (
-            <ForceVector3D origin={polyRTail} vector={Rp} color="#dc2626" symbol="R" />
+            <ForceVector3D origin={polyRTail} vector={Rp} color={cR} label={lR} sub={sR} emphasis="strong" />
           ) : (
             fNet > 1 && (
               <>
-                <ForceVector3D origin={polyRTail} vector={Fnetp} color="#8b5cf6" symbol="ΣF ≠ 0" isDashed />
+                <ForceVector3D origin={polyRTail} vector={Fnetp} color={cR} label={lR} sub={sR} emphasis="strong" isDashed />
                 <Line points={[polyRTail, polyP]} color="#8b5cf6" lineWidth={1.4} dashed dashScale={22} dashSize={0.05} gapSize={0.04} />
               </>
             )
@@ -426,22 +505,24 @@ function SceneContent({
           <Line points={gravLine} color="#b8860b" lineWidth={1} dashed dashScale={30} dashSize={0.04} gapSize={0.03} transparent opacity={0.45} />
 
           {/* F₁ · deltoides → desde la tuberosidad deltoidea */}
-          <ForceVector3D origin={deltInsW} vector={F1vec} color="#0d9488" symbol="F₁" showComponents={showComponents} />
+          <ForceVector3D origin={deltInsW} vector={F1vec} color="#0d9488" label={lF1} sub={sF1} showComponents={showComponents} dim={dimF1} />
 
           {/* F₂ · peso del brazo + carga → desde el centro de masa */}
-          <ForceVector3D origin={armComW} vector={F2vec} color="#d97706" symbol="F₂" showComponents={showComponents} />
+          <ForceVector3D origin={armComW} vector={F2vec} color="#d97706" label={lF2} sub={sF2} showComponents={showComponents} dim={dimF2} />
 
           {/* R · reacción glenoidea → desde el centro de la cabeza humeral */}
           {autoEquilibrium && rMag > 1 && (
-            <ForceVector3D origin={headW} vector={Rvec} color="#dc2626" symbol="R" />
+            <ForceVector3D origin={headW} vector={Rvec} color={cR} label={lR} sub={sR} emphasis="strong" dim={dimR} />
           )}
 
           {/* ΣF ≠ 0 · el segmento acelera / se subluxa */}
           {!autoEquilibrium && fNet > 1 && (
-            <ForceVector3D origin={headW} vector={Fnetvec} color="#8b5cf6" symbol="ΣF ≠ 0" isDashed />
+            <ForceVector3D origin={headW} vector={Fnetvec} color={cR} label={lR} sub={sR} emphasis="strong" isDashed dim={dimR} />
           )}
         </>
       )}
+      {/* Sin letreros no hay nada que proyectar: el bucle por frame ni se monta. */}
+      <CalloutSource />
       </group>
     </>
   );
@@ -458,30 +539,24 @@ export default function NewtonCanvas({
   theta2,
   armAbductionDeg,
   autoEquilibrium,
+  showLabels,
+  showPolygon,
+  showComponents,
+  showAnatomy,
+  focusForce,
 }: NewtonCanvasProps) {
   const orbitRef = useRef<OrbitControlsImpl | null>(null);
-  const [showComponents, setShowComponents] = useState(false);
-  const [showPolygon, setShowPolygon] = useState(false);
+  const callouts = useCalloutStore();
 
-  // Estática del DCL glenohumeral para el panel de lecturas (fuera del 3D).
-  const rad1 = (theta1 * Math.PI) / 180;
-  const rad2 = (theta2 * Math.PI) / 180;
-  const sumFx = f1 * Math.cos(rad1) + f2 * Math.cos(rad2);
-  const sumFy = f1 * Math.sin(rad1) + f2 * Math.sin(rad2);
-  const rMag = Math.hypot(sumFx, sumFy);
-  const dclRows: DclRow[] = [
-    { symbol: 'F₁', color: '#0d9488', value: `${f1.toFixed(0)} N`, hint: `${theta1}° · deltoides` },
-    { symbol: 'F₂', color: '#d97706', value: `${f2.toFixed(0)} N`, hint: `${theta2}° · peso + carga` },
-    autoEquilibrium
-      ? { symbol: 'R', color: '#dc2626', value: `${rMag.toFixed(0)} N`, hint: 'reacción glenoidea', strong: true }
-      : { symbol: 'ΣF', color: '#8b5cf6', value: `${rMag.toFixed(1)} N`, hint: 'el húmero acelera (m·a)', strong: true },
-  ];
-  const [showAnatomy, setShowAnatomy] = useState(true);
+  const railNote = autoEquilibrium
+    ? 'Tres fuerzas concurrentes en equilibrio: R cierra el polígono (ΣF = 0).'
+    : 'ΣF ≠ 0: el polígono no cierra y el segmento se acelera / subluxa.';
 
   return (
+    <CalloutProvider store={callouts} visible={showLabels}>
     <div className="cap2-webgl-canvas" style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
       <Canvas
-        camera={{ position: [0.02, 0.06, 2.62], fov: 40 }}
+        camera={{ position: [0.02, -0.02, 1.85], fov: 42 }}
         style={{
           width: '100%',
           height: '100%',
@@ -493,9 +568,9 @@ export default function NewtonCanvas({
         }}
       >
         <Cap2ZoomHandler
-          initialPosition={[0.02, 0.06, 2.62]}
+          initialPosition={[0.02, -0.02, 1.85]}
           target={[0, 0, 0]}
-          minDistance={1.4}
+          minDistance={1.1}
           maxDistance={6}
         />
         <Suspense fallback={null}>
@@ -509,146 +584,60 @@ export default function NewtonCanvas({
             showComponents={showComponents}
             showPolygon={showPolygon}
             showAnatomy={showAnatomy}
+            focusForce={focusForce}
             orbitRef={orbitRef}
           />
         </Suspense>
       </Canvas>
-      <div
-        aria-live="polite"
-        style={{
-          position: 'absolute',
-          left: '12px',
-          top: '12px',
-          zIndex: 10,
-          padding: '5px 9px',
-          border: '1px solid rgba(13, 110, 100, 0.35)',
-          borderRadius: '6px',
-          background: 'rgba(255, 255, 255, 0.88)',
-          color: '#0a5a52',
-          fontSize: '0.66rem',
-          fontFamily: 'Karla, sans-serif',
-          fontWeight: 700,
-          boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
-        }}
-      >
-        Húmero · abducción {armAbductionDeg}°
-      </div>
-      <div
-        role="note"
-        style={{
-          position: 'absolute',
-          right: '12px',
-          bottom: '12px',
-          zIndex: 10,
-          padding: '4px 8px',
-          borderRadius: '5px',
-          background: 'rgba(255, 255, 255, 0.82)',
-          color: '#55606d',
-          fontSize: '0.56rem',
-          fontFamily: 'Karla, sans-serif',
-          pointerEvents: 'none',
-        }}
-      >
-        Arrastra · rueda: zoom · doble clic: enfoca
-      </div>
-      <SceneControlPad controlsRef={orbitRef} />
-
-      {/* Lecturas del DCL ancladas a la esquina (fuera del 3D) */}
-      <div
-        style={{
-          position: 'absolute',
-          left: '12px',
-          bottom: '12px',
-          zIndex: 10,
-          transform: 'scale(0.82)',
-          transformOrigin: 'bottom left',
-          pointerEvents: 'none',
-        }}
-      >
-        <DclReadout
-          title="DCL glenohumeral"
-          tone={autoEquilibrium ? '#0d6e64' : '#8b5cf6'}
-          rows={dclRows}
-          note={
-            autoEquilibrium
-              ? 'Tres fuerzas concurrentes en equilibrio: R cierra el polígono (ΣF = 0).'
-              : 'ΣF ≠ 0: el polígono no cierra y el segmento se acelera / subluxa.'
-          }
-        />
-      </div>
-
-      {/* Controles flotantes en la esquina superior derecha */}
-      <div
-        style={{
-          position: 'absolute',
-          top: '12px',
-          right: '12px',
-          display: 'flex',
-          gap: '6px',
-          zIndex: 10,
-        }}
-      >
-        <button
-          type="button"
-          aria-pressed={showPolygon}
-          title="Mostrar u ocultar el polígono de fuerzas; útil para comprobar ΣF = 0"
-          onClick={() => setShowPolygon((p) => !p)}
+      {showLabels && (
+        <div
+          aria-live="polite"
           style={{
-            background: showPolygon ? 'rgba(13, 148, 136, 0.9)' : 'rgba(255, 255, 255, 0.88)',
-            color: showPolygon ? '#ffffff' : '#22303c',
-            border: '1px solid rgba(13, 148, 136, 0.35)',
-            borderRadius: '6px',
+            position: 'absolute',
+            left: '12px',
+            // Debajo del pad «⚙ Controles 3D», que ocupa la esquina hasta y≈39.
+            top: '52px',
+            zIndex: 10,
             padding: '5px 9px',
-            fontSize: '0.66rem',
-            fontFamily: 'Karla, sans-serif',
-            cursor: 'pointer',
-            boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
-            transition: 'all 0.15s ease',
-          }}
-        >
-          {showPolygon ? '✓ Polígono' : '△ Polígono'}
-        </button>
-        <button
-          type="button"
-          aria-pressed={showComponents}
-          title="Mostrar u ocultar las componentes ortogonales Fx y Fy"
-          onClick={() => setShowComponents((c) => !c)}
-          style={{
-            background: showComponents ? 'rgba(13, 110, 100, 0.9)' : 'rgba(255, 255, 255, 0.88)',
-            color: showComponents ? '#ffffff' : '#22303c',
             border: '1px solid rgba(13, 110, 100, 0.35)',
             borderRadius: '6px',
-            padding: '5px 9px',
+            background: 'rgba(255, 255, 255, 0.88)',
+            color: '#0a5a52',
             fontSize: '0.66rem',
             fontFamily: 'Karla, sans-serif',
-            cursor: 'pointer',
+            fontWeight: 700,
             boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
-            transition: 'all 0.15s ease',
           }}
         >
-          {showComponents ? '✓ Componentes' : '+ Componentes'}
-        </button>
-        <button
-          type="button"
-          aria-pressed={showAnatomy}
-          title="Mostrar u ocultar huesos, cartílago y deltoides"
-          onClick={() => setShowAnatomy((a) => !a)}
+          Húmero · abducción {armAbductionDeg}°
+        </div>
+      )}
+      {showLabels && (
+        <div
+          role="note"
           style={{
-            background: showAnatomy ? 'rgba(176, 35, 24, 0.9)' : 'rgba(255, 255, 255, 0.88)',
-            color: showAnatomy ? '#ffffff' : '#22303c',
-            border: '1px solid rgba(176, 35, 24, 0.35)',
-            borderRadius: '6px',
-            padding: '5px 9px',
-            fontSize: '0.66rem',
+            position: 'absolute',
+            right: '12px',
+            bottom: '12px',
+            zIndex: 10,
+            padding: '4px 8px',
+            borderRadius: '5px',
+            background: 'rgba(255, 255, 255, 0.82)',
+            color: '#55606d',
+            fontSize: '0.56rem',
             fontFamily: 'Karla, sans-serif',
-            cursor: 'pointer',
-            boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
-            transition: 'all 0.15s ease',
+            pointerEvents: 'none',
           }}
         >
-          {showAnatomy ? '✓ Anatomía' : '+ Anatomía'}
-        </button>
-      </div>
+          Arrastra · rueda: zoom · doble clic: enfoca
+        </div>
+      )}
+      <SceneControlPad controlsRef={orbitRef} />
+
+      {/* Lecturas del DCL → riel lateral con línea guía a cada flecha */}
+      {showLabels && <CalloutRail store={callouts} side="left" note={railNote} />}
+
     </div>
+    </CalloutProvider>
   );
 }

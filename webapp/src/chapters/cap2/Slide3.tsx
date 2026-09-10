@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import LeverCanvas from './LeverCanvas';
 import LeverAnatomyCanvas from './LeverAnatomyCanvas';
+import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import BicepsCanvas from './BicepsCanvas';
 import HudPanel from './HudPanel';
 import type { Engine } from './useEngine';
@@ -50,6 +51,9 @@ export default function Slide3({
   [key: string]: any;
 }) {
   const [leverClass, setLeverClass] = useState<1 | 2 | 3>(3);
+  // Los letreros del visor los enciende el texto de abajo, no un botón
+  // sobre el lienzo: el mando cuelga del párrafo que los explica.
+  const [showLabels, setShowLabels] = useState<boolean>(false);
   const [loadKg, setLoadKg] = useState<number>(10);
   const [viewMode, setViewMode] = useState<'2d' | '3d'>('2d');
 
@@ -94,6 +98,16 @@ export default function Slide3({
               <p style={{ fontSize: '.64rem', color: 'var(--ink-3)' }}>
                 {'Donde $b_p$ es el brazo de potencia muscular y $b_r$ es el brazo de resistencia externa.'}
               </p>
+            
+              <div style={{ marginTop: '.4rem' }}>
+                <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
+                  <b>🏷️ Rotular fuerzas y brazos</b>
+                </TheoryToggle>
+              </div>
+              <TheoryCue>
+                En la vista <b>3D · Anatomía</b>, etiqueta sobre el modelo la potencia, la resistencia
+                y los brazos <b>b<sub>p</sub></b> y <b>b<sub>r</sub></b> que entran en la fórmula.
+              </TheoryCue>
             </div>
           </div>
           <div className="card">
@@ -208,9 +222,11 @@ export default function Slide3({
                 onSelectClass={handleSelect}
               />
             ) : leverClass === 3 ? (
-              <BicepsCanvas handLoadKg={loadKg} insertCm={4} elbowAngleDeg={90} cameraTarget={[0, 0.24, 0]} />
+              // La 3ª clase se ilustra con el codo real, no con el esquema de palanca:
+              // también tiene que obedecer al mando de letreros del texto.
+              <BicepsCanvas showLabels={showLabels} handLoadKg={loadKg} insertCm={4} elbowAngleDeg={90} cameraTarget={[0, 0.24, 0]} />
             ) : (
-              <LeverAnatomyCanvas leverClass={leverClass} />
+              <LeverAnatomyCanvas showLabels={showLabels} leverClass={leverClass} />
             )}
           </div>
           <div className="prof-controls">

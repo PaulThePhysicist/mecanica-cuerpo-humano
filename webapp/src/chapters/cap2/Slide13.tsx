@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import BodySegmentsCanvas from './BodySegmentsCanvas';
+import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
 import type { Engine } from './useEngine';
 
@@ -46,6 +47,9 @@ export default function Slide13({
   [key: string]: any;
 }) {
   const [posture, setPosture] = useState<'standing' | 'arms_up' | 'bent_forward' | 'squat'>('standing');
+  // Los letreros del visor los enciende el texto de abajo, no un botón
+  // sobre el lienzo: el mando cuelga del párrafo que los explica.
+  const [showLabels, setShowLabels] = useState<boolean>(false);
   const [bodyHeightCm, setBodyHeightCm] = useState<number>(175);
   const [bodyMassKg, setBodyMassKg] = useState<number>(70);
 
@@ -85,6 +89,13 @@ export default function Slide13({
               <p style={{ fontSize: '.64rem', color: 'var(--ink-3)' }}>
                 {'Donde $M = \\sum m_i$ es la masa corporal total y los coeficientes $m_i$ provienen de los estándares antropométricos cadavéricos de Dempster (7 segmentos principales).'}
               </p>
+            
+              <div style={{ marginTop: '.4rem' }}>
+                <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
+                  <b>🏷️ Rotular el CG y la base de apoyo</b>
+                </TheoryToggle>
+              </div>
+              <TheoryCue>Marca el centro de gravedad, la base de sustentación (<b>BoS</b>) y el margen de estabilidad que queda entre ambos.</TheoryCue>
             </div>
           </div>
           <div className="card">
@@ -139,7 +150,7 @@ export default function Slide13({
             </div>
           </HudPanel>
 
-          <BodySegmentsCanvas
+          <BodySegmentsCanvas showLabels={showLabels}
             posture={posture}
             bodyHeightCm={bodyHeightCm}
             bodyMassKg={bodyMassKg}

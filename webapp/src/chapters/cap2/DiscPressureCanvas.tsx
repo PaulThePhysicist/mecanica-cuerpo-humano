@@ -6,11 +6,21 @@ import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
 import { STUDIO_BG_DEEP } from '../cap1/three/materials';
 import { StudioLights } from '../cap1/three/StudioLights';
-import { DclTag, DclReadout } from './DclReadout';
+import { DclTag } from './DclReadout';
+import {
+  Callout,
+  CalloutProvider,
+  CalloutRail,
+  CalloutSource,
+  useCalloutStore,
+} from '../cap1/three/Callouts';
 
 interface DiscPressureCanvasProps {
   posture: 'upright' | 'seated' | 'knees' | 'bent_back'; // 4 posturas ergonómicas
   loadKg: number;                                        // Carga levantada (0 a 30 kg)
+  /** Lo enciende la columna de teoría del slide, no un botón sobre el lienzo:
+   *  el mando cuelga del párrafo que explica estas magnitudes. */
+  showLabels?: boolean;
 }
 
 interface PostureInfo {
@@ -72,13 +82,18 @@ function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [0, -1, 0] as [number, number, number],
   color = '#0d6e64',
-  symbol = 'F',
+  label,
+  sub,
+  emphasis,
   isDashed = false,
 }: {
   origin?: [number, number, number];
   vector: [number, number, number];
   color: string;
-  symbol: string;
+  /** Letrero para el riel lateral (símbolo = valor). */
+  label: string;
+  sub?: string;
+  emphasis?: 'strong' | 'muted';
   isDashed?: boolean;
 }) {
   const v = useMemo(() => new THREE.Vector3(...vector), [vector]);
@@ -130,10 +145,13 @@ function ForceVector3D({
         />
       </mesh>
 
-      <DclTag
+      {/* Letrero → riel lateral (símbolo = valor), con línea guía a la punta. */}
+      <Callout
         position={[tipPos.x + dir.x * 0.12, tipPos.y + dir.y * 0.12, tipPos.z + dir.z * 0.12]}
+        label={label}
+        sub={sub}
         color={color}
-        symbol={symbol}
+        emphasis={emphasis}
       />
     </group>
   );
@@ -383,6 +401,10 @@ function SpinalFunctionalUnit3D({
   const shearForceN = curPosture.shearMultiplier * 420 * (1 + loadFactor * 0.4);
   const shearVecLen = Math.min(0.65, 0.15 + (shearForceN / 1200) * 0.45);
 
+  // Letreros del riel lateral (la presión P vive en el manómetro de la esquina).
+  const lFn = `Fn = ${compForceN.toFixed(0)} N`;
+  const lFt = `Ft = ${shearForceN.toFixed(0)} N`;
+
   // Coordenadas de alineación con respecto al disco L5-S1 (centro del disco en [0, 0.15, 0])
   // En human_body.glb, lumbar5 está alrededor de Y: 0.058 - 0.088, sacrum alrededor de Y: -0.016 - 0.072
   const SPINE_SCALE = 20.0;
@@ -484,7 +506,7 @@ function SpinalFunctionalUnit3D({
 
         {/* Vector de Esfuerzo de Cizallamiento Tangencial */}
         {curPosture.shearMultiplier > 0.25 && (
-          <ForceVector3D origin={[0, 0, 0.86]} vector={[0, 0, shearVecLen]} color="#d97706" symbol="Ft" isDashed />
+          <ForceVector3D origin={[0, 0, 0.86]} vector={[0, 0, shearVecLen]} color="#d97706" label={lFt} sub="cizallamiento" emphasis="muted" isDashed />
         )}
       </group>
 
@@ -530,10 +552,12 @@ function SpinalFunctionalUnit3D({
           origin={[0, 0.75 + compVecLen, 0]}
           vector={[0, -compVecLen, 0]}
           color={isCritical ? '#b02318' : (totalPressureMPa > 1.2 ? '#d97706' : '#0d6e64')}
-          symbol="Fn"
+          label={lFn}
+          sub="compresión axial"
+          emphasis="strong"
         />
 
-        {/* Badge Vértebra L5 */}
+        {/* Badge Vértebra L5 (referencia anclada, se queda sobre el modelo) */}
         <DclTag position={[0, 0.50, 0.95]} color="#5d6b76" symbol="L5" />
       </group>
 
@@ -573,6 +597,9 @@ function SpinalFunctionalUnit3D({
         )}
       </group>
 
+      {/* Proyecta cada <Callout> de la escena a píxeles para el riel lateral. */}
+      <CalloutSource />
+
       {/* Sombra de contacto suave en el suelo de estudio */}
       <ContactShadows position={[0, -1.35, 0]} opacity={0.62} scale={3.8} blur={1.9} far={3.0} color="#241d12" />
     </group>
@@ -581,11 +608,13 @@ function SpinalFunctionalUnit3D({
 
 // ── 4. Componente Principal Exportado DiscPressureCanvas ──
 export default function DiscPressureCanvas({
+  showLabels = false,
   posture = 'bent_back',
   loadKg = 15,
 }: DiscPressureCanvasProps) {
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
   const d = discStats(posture, loadKg);
+  const callouts = useCalloutStore();
 
   const handleResetCamera = () => {
     if (controlsRef.current) {
@@ -594,6 +623,7 @@ export default function DiscPressureCanvas({
   };
 
   return (
+    <CalloutProvider store={callouts} visible={showLabels}>
     <div className="cap2-webgl-canvas" style={{ width: '100%', height: '100%', position: 'relative', overflow: 'hidden' }}>
       {/* Botón flotante para reset de cámara */}
       <button
@@ -622,7 +652,7 @@ export default function DiscPressureCanvas({
 
       {/* Canvas 3D de React Three Fiber */}
       <Canvas
-        camera={{ position: [3.05, 1.5, 3.75], fov: 45 }}
+        camera={{ position: [2.55, 1.25, 3.15], fov: 45 }}
         dpr={[1, 2]}
         gl={{ antialias: true, alpha: true }}
         style={{ background: STUDIO_BG_DEEP }}
@@ -649,33 +679,16 @@ export default function DiscPressureCanvas({
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
 
-      {/* Lecturas del DCL ancladas a la esquina (fuera del 3D) */}
-      <div
-        style={{
-          position: 'absolute',
-          left: '10px',
-          bottom: '10px',
-          zIndex: 9,
-          transform: 'scale(0.82)',
-          transformOrigin: 'bottom left',
-          pointerEvents: 'none',
-        }}
-      >
-        <DclReadout
-          title="Disco L5-S1 · DCL"
-          tone={d.isCritical ? '#b02318' : '#cbd5e1'}
-          rows={[
-            { symbol: 'Fn', color: d.isCritical ? '#b02318' : '#0d6e64', value: `${d.compForceN.toFixed(0)} N`, hint: 'compresión axial', strong: true },
-            { symbol: 'Ft', color: '#d97706', value: `${d.shearForceN.toFixed(0)} N`, hint: 'cizallamiento', muted: true },
-            { symbol: 'P', color: d.isCritical ? '#b02318' : '#0d6e64', value: `${d.totalPressureMPa.toFixed(2)} MPa`, hint: `${d.totalPressureBar.toFixed(0)} bar` },
-          ]}
-          note={
-            d.isCritical
-              ? 'Presión intradiscal crítica (> 2,5 MPa): riesgo de extrusión del núcleo pulposo.'
-              : 'Presión sobre un área discal ≈ 18 cm²; la postura multiplica la carga axial.'
-          }
-        />
-      </div>
+      {/* Lecturas del DCL → riel lateral con línea guía a cada flecha */}
+      <CalloutRail
+        store={callouts}
+        side="left"
+        note={
+          d.isCritical
+            ? 'Presión intradiscal crítica (> 2,5 MPa): riesgo de extrusión del núcleo pulposo.'
+            : 'Presión sobre un área discal ≈ 18 cm²; la postura multiplica la carga axial.'
+        }
+      />
 
       {/* Manómetro anclado a la esquina (fuera del 3D) */}
       <div
@@ -697,6 +710,7 @@ export default function DiscPressureCanvas({
         />
       </div>
     </div>
+    </CalloutProvider>
   );
 }
 

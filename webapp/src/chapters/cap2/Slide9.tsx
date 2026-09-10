@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import SpineCanvas from './SpineCanvas';
+import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
 import { AnimateButton } from './AnimateButton';
 import { useHarmonicClock } from '../cap1/three/useHarmonicClock';
@@ -14,6 +15,9 @@ export default function Slide9({
   [key: string]: any;
 }) {
   const [trunkAngleDeg, setTrunkAngleDeg] = useState<number>(60);
+  // Los letreros del visor los enciende el texto de abajo, no un botón
+  // sobre el lienzo: el mando cuelga del párrafo que los explica.
+  const [showLabels, setShowLabels] = useState<boolean>(false);
   const [handLoadKg, setHandLoadKg] = useState<number>(15);
   const [bodyMassKg, setBodyMassKg] = useState<number>(70);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
@@ -72,6 +76,13 @@ export default function Slide9({
               <p style={{ fontSize: '.64rem' }}>
                 {'Donde $d_1 \\approx 38\\text{ cm}$ y $d_2 \\approx 50\\text{ cm}$.'}
               </p>
+            
+              <div style={{ marginTop: '.4rem' }}>
+                <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
+                  <b>🏷️ Rotular F_m, W₁ y W₂</b>
+                </TheoryToggle>
+              </div>
+              <TheoryCue>Etiqueta la fuerza del erector espinal frente a los dos pesos que debe equilibrar: tronco y carga en las manos.</TheoryCue>
             </div>
           </div>
           <div className="card">
@@ -135,7 +146,7 @@ export default function Slide9({
             </div>
           </HudPanel>
 
-          <SpineCanvas
+          <SpineCanvas showLabels={showLabels}
             trunkAngleDeg={trunkAngleDeg}
             handLoadKg={handLoadKg}
             bodyMassKg={bodyMassKg}

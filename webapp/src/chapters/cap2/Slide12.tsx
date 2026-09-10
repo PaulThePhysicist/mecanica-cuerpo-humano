@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import JointTractionCanvas from './JointTractionCanvas';
+import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
 import type { Engine } from './useEngine';
 
@@ -56,6 +57,9 @@ export default function Slide12({
   [key: string]: any;
 }) {
   const [tractionKg, setTractionKg] = useState<number>(6);
+  // Los letreros del visor los enciende el texto de abajo, no un botón
+  // sobre el lienzo: el mando cuelga del párrafo que los explica.
+  const [showLabels, setShowLabels] = useState<boolean>(false);
   const [angleDeg, setAngleDeg] = useState<number>(25);
   const [activePresetId, setActivePresetId] = useState<string>('clinical');
 
@@ -107,6 +111,13 @@ export default function Slide12({
               <p style={{ fontSize: '.64rem', color: 'var(--ink-3)' }}>
                 {'Un ángulo $\\beta \\approx 20^\\circ\\text{--}25^\\circ$ maximiza la separación de los agujeros de conjunción neurales ($\\Delta h \\approx 1\\text{--}2\\text{ mm}$) sin sobrecargar los ligamentos longitudinales.'}
               </p>
+            
+              <div style={{ marginTop: '.4rem' }}>
+                <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
+                  <b>🏷️ Rotular T y sus componentes</b>
+                </TheoryToggle>
+              </div>
+              <TheoryCue>Descompone la tracción sobre el modelo y etiqueta <b>F<sub>ax</sub></b> y <b>F<sub>tr</sub></b> junto a la fuerza aplicada.</TheoryCue>
             </div>
           </div>
           <div className="card">
@@ -159,7 +170,7 @@ export default function Slide12({
             </div>
           </HudPanel>
 
-          <JointTractionCanvas
+          <JointTractionCanvas showLabels={showLabels}
             tractionKg={tractionKg}
             angleDeg={angleDeg}
             tractionType="cervical"

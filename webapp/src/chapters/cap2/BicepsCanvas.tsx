@@ -7,7 +7,13 @@ import Cap2ZoomHandler from './Cap2ZoomHandler';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
 import { STUDIO_BG_DEEP } from '../cap1/three/materials';
 import { StudioLights } from '../cap1/three/StudioLights';
-import { DclTag, DclReadout, type DclRow } from './DclReadout';
+import {
+  Callout,
+  CalloutProvider,
+  CalloutRail,
+  CalloutSource,
+  useCalloutStore,
+} from '../cap1/three/Callouts';
 
 /** Estática del codo en flexión (fuente única: escena + panel de lecturas). */
 function elbowSolve(handLoadKg: number, insertCm: number, elbowAngleDeg: number) {
@@ -27,6 +33,9 @@ interface BicepsCanvasProps {
   insertCm: number;      // Distancia de inserción del tendón d (3 a 6 cm)
   elbowAngleDeg: number; // Ángulo de flexión del codo (45 a 135 grados)
   cameraTarget?: [number, number, number];
+  /** Lo enciende la columna de teoría del slide, no un botón sobre el lienzo:
+   *  el mando cuelga del párrafo que explica estas magnitudes. */
+  showLabels?: boolean;
 }
 
 // ── Paleta de Materiales Anatómicos PBR de Grado Médico ──
@@ -51,19 +60,21 @@ function BicepsLoading() {
   );
 }
 
-// ── Vector 3D con Tubo, Cono y Badge HTML Calibrado ──
+// ── Vector 3D con Tubo, Cono y letrero en el riel lateral ──
 function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [1, 0, 0] as [number, number, number],
   color = '#0d6e64',
-  symbol = 'F',
-  labelOffset = [0, 0, 0] as [number, number, number],
+  label,
+  sub,
+  emphasis,
 }: {
   origin?: [number, number, number];
   vector: [number, number, number];
   color: string;
-  symbol: string;
-  labelOffset?: [number, number, number];
+  label: string;
+  sub?: string;
+  emphasis?: 'strong' | 'muted';
 }) {
   const v = useMemo(() => new THREE.Vector3(...vector), [vector]);
   const len = v.length();
@@ -114,10 +125,12 @@ function ForceVector3D({
         />
       </mesh>
 
-      <DclTag
-        position={[tipPos.x + dir.x * 0.04 + labelOffset[0], tipPos.y + dir.y * 0.04 + labelOffset[1], tipPos.z + dir.z * 0.04 + labelOffset[2]]}
+      <Callout
+        position={[tipPos.x + dir.x * 0.04, tipPos.y + dir.y * 0.04, tipPos.z + dir.z * 0.04]}
+        label={label}
+        sub={sub}
         color={color}
-        symbol={symbol}
+        emphasis={emphasis}
       />
     </group>
   );
@@ -137,7 +150,12 @@ function RealArmBicepsScene({
   const { nodes: muscleNodes } = useGLTF('/assets/cap1/human_muscles_arm.glb') as any;
 
   // Física del codo (fuente única)
-  const { wHandN, fMuscN, rJointN } = elbowSolve(handLoadKg, insertCm, elbowAngleDeg);
+  const { wHandN, fMuscN, fMuscKgf, rJointN } = elbowSolve(handLoadKg, insertCm, elbowAngleDeg);
+  const lFm = `F_m = ${fMuscN.toFixed(0)} N`;
+  const sFm = `${fMuscKgf.toFixed(1)} kgf`;
+  const lW = `W = ${wHandN.toFixed(0)} N`;
+  const sW = `${handLoadKg} kg`;
+  const lRj = `R_j = ${rJointN.toFixed(0)} N`;
 
   // Ángulo de rotación del antebrazo en Three.js
   const angleRad = ((180 - elbowAngleDeg) * Math.PI) / 180;
@@ -241,13 +259,7 @@ function RealArmBicepsScene({
       </mesh>
 
       {/* Vector Reacción Articular R_j en la Tróclea */}
-      <ForceVector3D
-        origin={[0, 0, 0]}
-        vector={vRj}
-        color="#dc2626"
-        symbol="R_j"
-        labelOffset={[-0.12, -0.03, 0]}
-      />
+      <ForceVector3D origin={[0, 0, 0]} vector={vRj} color="#dc2626" label={lRj} sub="troclear" emphasis="strong" />
 
       {/* ── Segmento Móvil: Antebrazo y Mano Rotatorio ── */}
       <group rotation={[angleRad, 0, 0]}>
@@ -267,10 +279,10 @@ function RealArmBicepsScene({
         </group>
 
         {/* Vector de Fuerza Muscular Fm en la tuberosidad bicipital */}
-        <ForceVector3D origin={[0, 0, 0]} vector={vFm} color="#0d9488" symbol="F_m" labelOffset={[-0.08, 0.035, 0]} />
+        <ForceVector3D origin={[0, 0, 0]} vector={vFm} color="#0d9488" label={lFm} sub={sFm} />
 
         {/* Vector de Carga W en la mano */}
-        <ForceVector3D origin={[0, 0, 0]} vector={vWh} color="#d97706" symbol="W" labelOffset={[0.13, -0.025, 0]} />
+        <ForceVector3D origin={[0, 0, 0]} vector={vWh} color="#d97706" label={lW} sub={sW} />
       </group>
     </group>
   );
@@ -280,21 +292,17 @@ useGLTF.preload('/assets/cap1/human_body.glb');
 useGLTF.preload('/assets/cap1/human_muscles_arm.glb');
 
 export default function BicepsCanvas({
+  showLabels = false,
   handLoadKg = 5,
   insertCm = 4.0,
   elbowAngleDeg = 90,
   cameraTarget = [0, 0, 0],
 }: BicepsCanvasProps) {
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
-
-  const { wHandN, fMuscN, fMuscKgf, rJointN } = elbowSolve(handLoadKg, insertCm, elbowAngleDeg);
-  const rows: DclRow[] = [
-    { symbol: 'F_m', color: '#0d9488', value: `${fMuscN.toFixed(0)} N`, hint: `${fMuscKgf.toFixed(1)} kgf` },
-    { symbol: 'W', color: '#d97706', value: `${wHandN.toFixed(0)} N`, hint: `${handLoadKg} kg` },
-    { symbol: 'R_j', color: '#dc2626', value: `${rJointN.toFixed(0)} N`, hint: 'troclear', strong: true },
-  ];
+  const callouts = useCalloutStore();
 
   return (
+    <CalloutProvider store={callouts} visible={showLabels}>
     <div className="cap2-webgl-canvas" style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
       <Canvas
         camera={{ position: [1.45, 0.3, 2.15], fov: 42 }}
@@ -337,28 +345,17 @@ export default function BicepsCanvas({
           target={cameraTarget}
         />
         <Cap2ZoomHandler initialPosition={[1.45, 0.3, 2.15]} target={cameraTarget} minDistance={0.8} maxDistance={5} />
+        <CalloutSource />
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
 
-      {/* Lecturas del DCL ancladas a la esquina (fuera del 3D) */}
-      <div
-        style={{
-          position: 'absolute',
-          left: '10px',
-          bottom: '10px',
-          zIndex: 10,
-          transform: 'scale(0.82)',
-          transformOrigin: 'bottom left',
-          pointerEvents: 'none',
-        }}
-      >
-        <DclReadout
-          title="Flexión de codo · DCL"
-          tone="#0d9488"
-          rows={rows}
-          note="Palanca de 3ª clase: el bíceps sacrifica fuerza (d ≈ 4 cm) por velocidad y rango de la mano (D ≈ 35 cm)."
-        />
-      </div>
+      {/* Lecturas del DCL → riel lateral con línea guía a cada flecha */}
+      <CalloutRail
+        store={callouts}
+        side="left"
+        note="Palanca de 3ª clase: el bíceps sacrifica fuerza (d ≈ 4 cm) por velocidad y rango de la mano (D ≈ 35 cm)."
+      />
     </div>
+    </CalloutProvider>
   );
 }

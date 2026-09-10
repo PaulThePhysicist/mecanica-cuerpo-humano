@@ -1,7 +1,14 @@
 import React, { Suspense, useMemo, useRef, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, ContactShadows, useGLTF } from '@react-three/drei';
-import { DclTag, DclReadout } from './DclReadout';
+import { DclTag } from './DclReadout';
+import {
+  Callout,
+  CalloutProvider,
+  CalloutRail,
+  CalloutSource,
+  useCalloutStore,
+} from '../cap1/three/Callouts';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
@@ -11,6 +18,9 @@ import { StudioLights } from '../cap1/three/StudioLights';
 interface JawCanvasProps {
   biteMode: 'incisor' | 'molar'; // Mordida incisiva (anterior) vs molar (posterior)
   muscleForceN: number;          // Fuerza del masetero/temporal en N (100 a 800 N, default 450 N)
+  /** Lo enciende la columna de teoría del slide, no un botón sobre el lienzo:
+   *  el mando cuelga del párrafo que explica estas magnitudes. */
+  showLabels?: boolean;
 }
 
 interface FractureParticle3D {
@@ -29,13 +39,18 @@ function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [0, 1, 0] as [number, number, number],
   color = '#0d6e64',
-  symbol = 'F',
+  label,
+  sub,
+  emphasis,
   isDashed = false,
 }: {
   origin?: [number, number, number];
   vector: [number, number, number];
   color: string;
-  symbol: string;
+  /** Letrero para el riel lateral (símbolo = valor). */
+  label: string;
+  sub?: string;
+  emphasis?: 'strong' | 'muted';
   isDashed?: boolean;
 }) {
   const v = useMemo(() => new THREE.Vector3(...vector), [vector]);
@@ -87,10 +102,13 @@ function ForceVector3D({
         />
       </mesh>
 
-      <DclTag
+      {/* Letrero → riel lateral (símbolo = valor), con línea guía a la punta. */}
+      <Callout
         position={[tipPos.x + dir.x * 0.10, tipPos.y + dir.y * 0.10, tipPos.z + dir.z * 0.10]}
+        label={label}
+        sub={sub}
         color={color}
-        symbol={symbol}
+        emphasis={emphasis}
       />
     </group>
   );
@@ -318,6 +336,11 @@ function Jaw3DScene({
   // Reacción condilar ATM (Σ Fy = 0):
   const rAtmN = Math.abs(muscleForceN - fBiteN);
   const rAtmKgf = rAtmN / 9.81;
+
+  // Letreros del riel lateral (mismos valores que llenaban el DclReadout de esquina).
+  const lFm = `Fm = ${muscleForceN.toFixed(0)} N`;
+  const lFmord = `F_mord = ${fBiteN.toFixed(0)} N`;
+  const lRatm = `R_ATM = ${rAtmN.toFixed(0)} N`;
 
   // Escala anatómica general
   const SKULL_SCALE = 16.0;
@@ -599,9 +622,11 @@ function Jaw3DScene({
       </group>
 
       {/* ── 5. VECTORES BIOMECÁNICOS DCL (Fm, F_mord, R_ATM) ── */}
-      <ForceVector3D origin={gonionRightPos} vector={vFm} color="#b91c1c" symbol="Fm" />
-      <ForceVector3D origin={[foodPos[0], foodPos[1] + 0.05, foodPos[2]]} vector={vBite} color="#0d6e64" symbol="F_mord" />
-      <ForceVector3D origin={[0.38, 0.02, 0.05]} vector={vRAtm} color="#43505c" symbol="R_ATM" />
+      <ForceVector3D origin={gonionRightPos} vector={vFm} color="#b91c1c" label={lFm} sub="masetero" />
+      <ForceVector3D origin={[foodPos[0], foodPos[1] + 0.05, foodPos[2]]} vector={vBite} color="#0d6e64" label={lFmord} sub={`${fBiteKgf.toFixed(0)} kgf`} emphasis="strong" />
+      <ForceVector3D origin={[0.38, 0.02, 0.05]} vector={vRAtm} color="#43505c" label={lRatm} sub="reacción del cóndilo" />
+
+      <CalloutSource />
 
       {/* Sombra de contacto en el suelo */}
       <ContactShadows position={[0, -1.35, 0]} opacity={0.62} scale={4.0} blur={1.9} far={3.0} color="#241d12" />
@@ -611,11 +636,13 @@ function Jaw3DScene({
 
 // ── 5. Componente Principal Exportado JawCanvas ──
 export default function JawCanvas({
+  showLabels = false,
   biteMode = 'incisor',
   muscleForceN = 450,
 }: JawCanvasProps) {
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
   const j = jawStats(biteMode, muscleForceN);
+  const callouts = useCalloutStore();
 
   const handleResetCamera = () => {
     if (controlsRef.current) {
@@ -624,6 +651,7 @@ export default function JawCanvas({
   };
 
   return (
+    <CalloutProvider store={callouts} visible={showLabels}>
     <div className="cap2-webgl-canvas" style={{ width: '100%', height: '100%', position: 'relative', overflow: 'hidden' }}>
       {/* Botón flotante para reset de cámara */}
       <button
@@ -652,7 +680,7 @@ export default function JawCanvas({
 
       {/* Canvas 3D de React Three Fiber */}
       <Canvas
-        camera={{ position: [2.5, 0.8, 2.8], fov: 46 }}
+        camera={{ position: [2.05, 0.62, 2.32], fov: 46 }}
         dpr={[1, 2]}
         gl={{ antialias: true, alpha: true }}
         style={{ background: STUDIO_BG_DEEP }}
@@ -679,33 +707,16 @@ export default function JawCanvas({
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
 
-      {/* Lecturas del DCL ancladas a la esquina (fuera del 3D) */}
-      <div
-        style={{
-          position: 'absolute',
-          left: '10px',
-          bottom: '10px',
-          zIndex: 9,
-          transform: 'scale(0.82)',
-          transformOrigin: 'bottom left',
-          pointerEvents: 'none',
-        }}
-      >
-        <DclReadout
-          title="Mandíbula · ATM · DCL"
-          tone="#0d6e64"
-          rows={[
-            { symbol: 'Fm', color: '#b91c1c', value: `${muscleForceN.toFixed(0)} N`, hint: 'masetero' },
-            { symbol: 'F_mord', color: '#0d6e64', value: `${j.fBiteN.toFixed(0)} N`, hint: `${j.fBiteKgf.toFixed(0)} kgf`, strong: true },
-            { symbol: 'R_ATM', color: '#43505c', value: `${j.rAtmN.toFixed(0)} N`, hint: 'cóndilo' },
-          ]}
-          note={
-            biteMode === 'incisor'
-              ? 'Incisivos (d ≈ 7,5 cm): brazo de resistencia largo ⟹ mordida débil.'
-              : 'Molares (d ≈ 3,5 cm): muy cerca del fulcro (ATM) ⟹ mordida potente.'
-          }
-        />
-      </div>
+      {/* Lecturas del DCL → riel lateral con línea guía a cada flecha */}
+      <CalloutRail
+        store={callouts}
+        side="left"
+        note={
+          biteMode === 'incisor'
+            ? 'Incisivos (d ≈ 7,5 cm): brazo de resistencia largo ⟹ mordida débil.'
+            : 'Molares (d ≈ 3,5 cm): muy cerca del fulcro (ATM) ⟹ mordida potente.'
+        }
+      />
 
       {/* Dinamómetro anclado a la esquina (fuera del 3D) */}
       <div
@@ -728,6 +739,7 @@ export default function JawCanvas({
         />
       </div>
     </div>
+    </CalloutProvider>
   );
 }
 

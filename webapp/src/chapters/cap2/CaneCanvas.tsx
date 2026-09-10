@@ -6,12 +6,21 @@ import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
 import { STUDIO_BG_DEEP } from '../cap1/three/materials';
 import { StudioLights } from '../cap1/three/StudioLights';
-import { DclTag, DclReadout } from './DclReadout';
+import {
+  Callout,
+  CalloutProvider,
+  CalloutRail,
+  CalloutSource,
+  useCalloutStore,
+} from '../cap1/three/Callouts';
 
 interface CaneCanvasProps {
   caneHand: 'contra' | 'ipsi' | 'none'; // Mano contralateral, ipsilateral o sin bastón
   caneForceKg: number;                   // Fuerza de apoyo en el bastón (0 a 25 kgf)
   bodyMassKg: number;                    // Masa corporal en kg (70 kg default)
+  /** Lo enciende la columna de teoría del slide, no un botón sobre el lienzo:
+   *  el mando cuelga del párrafo que explica estas magnitudes. */
+  showLabels?: boolean;
 }
 
 // ── Colores y Paleta Anatómica de Grado Médico ──
@@ -33,13 +42,18 @@ function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [1, 0, 0] as [number, number, number],
   color = '#0d6e64',
-  symbol = 'F',
+  label,
+  sub,
+  emphasis,
   isDashed = false,
 }: {
   origin?: [number, number, number];
   vector: [number, number, number];
   color: string;
-  symbol: string;
+  /** Letrero para el riel lateral (símbolo = valor). */
+  label: string;
+  sub?: string;
+  emphasis?: 'strong' | 'muted';
   isDashed?: boolean;
 }) {
   const v = useMemo(() => new THREE.Vector3(...vector), [vector]);
@@ -91,11 +105,13 @@ function ForceVector3D({
         />
       </mesh>
 
-      {/* Etiqueta mínima: sólo el símbolo; las cifras van en la tarjeta de esquina. */}
-      <DclTag
+      {/* Letrero → riel lateral (símbolo = valor), con línea guía a la punta. */}
+      <Callout
         position={[tipPos.x + dir.x * 0.07, tipPos.y + dir.y * 0.07, tipPos.z + dir.z * 0.07]}
+        label={label}
+        sub={sub}
         color={color}
-        symbol={symbol}
+        emphasis={emphasis}
       />
     </group>
   );
@@ -200,7 +216,8 @@ function CaneModel3D({
           origin={[0, caneHeight + 0.02, 0]}
           vector={[0, fCaneN * 0.00030 * 2.2, 0]}
           color={CANE_TEAL}
-          symbol={caneHand === 'contra' ? 'Fc' : 'Fc ⚠'}
+          label={`Fc = ${fCaneN.toFixed(0)} N`}
+          sub={caneHand === 'contra' ? `${caneForceKg} kgf · apoyo` : `${caneForceKg} kgf · ipsilateral ⚠`}
         />
       )}
     </group>
@@ -445,6 +462,11 @@ function CaneScene3D({
     0,
   ];
 
+  // Letreros del riel lateral (mismos valores que llenaban el DclReadout de esquina).
+  const lWb = `Wb = ${wbN.toFixed(0)} N`;
+  const lFa = `Fa = ${fAbductorN.toFixed(0)} N`;
+  const lR = `R = ${rJointN.toFixed(0)} N`;
+
   const MODEL_SCALE = 6.2;
 
   // Posición 3D del bastón calibrada anatómicamente
@@ -513,7 +535,7 @@ function CaneScene3D({
           <meshStandardMaterial color={AMBER_ACCENT} emissive={AMBER_ACCENT} emissiveIntensity={0.5} />
         </mesh>
 
-        <ForceVector3D origin={wbOrigin3D} vector={wbVec3D} color={AMBER_ACCENT} symbol="Wb" />
+        <ForceVector3D origin={wbOrigin3D} vector={wbVec3D} color={AMBER_ACCENT} label={lWb} sub="5/6 W · peso suprayacente" />
       </group>
 
       {/* ── 3. BASTÓN 3D TERAPÉUTICO ERGONÓMICO ── */}
@@ -529,11 +551,24 @@ function CaneScene3D({
       {/* ── 4. VECTORES DE FUERZA Y REACCIÓN ── */}
       {/* Vector Fa */}
       {fAbductorN > 15 && (
-        <ForceVector3D origin={[-0.30, 0.06, 0]} vector={faVec3D} color={RED_ACCENT} symbol="Fa" />
+        <ForceVector3D
+          origin={[-0.30, 0.06, 0]}
+          vector={faVec3D}
+          color={RED_ACCENT}
+          label={lFa}
+          sub={caneHand === 'contra' && caneForceKg > 5 ? 'glúteo medio · aliviado' : 'glúteo medio'}
+        />
       )}
 
       {/* Vector R (Cabeza Femoral) */}
-      <ForceVector3D origin={[0, 0, 0]} vector={rVec3D} color={TEAL_ACCENT} symbol="R" />
+      <ForceVector3D
+        origin={[0, 0, 0]}
+        vector={rVec3D}
+        color={TEAL_ACCENT}
+        label={lR}
+        sub={caneHand === 'contra' ? 'cabeza femoral · descarga' : 'cabeza femoral'}
+        emphasis="strong"
+      />
 
       {/* Línea de proyección de momento del bastón */}
       {caneHand === 'contra' && fCaneN > 5 && (
@@ -559,12 +594,21 @@ function CaneScene3D({
 
 // ── 5. Componente Principal CaneCanvas con Escena 3D ──
 export default function CaneCanvas({
+  showLabels = false,
   caneHand = 'contra',
   caneForceKg = 10,
   bodyMassKg = 70,
 }: CaneCanvasProps) {
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
   const stats = caneStats(caneHand, caneForceKg, bodyMassKg);
+  const callouts = useCalloutStore();
+
+  const railNote =
+    caneHand === 'contra'
+      ? 'Bastón contralateral: su torque ayuda a los abductores y baja la reacción R de la cadera.'
+      : caneHand === 'ipsi'
+        ? 'Mano ipsilateral: el bastón casi no tiene brazo de palanca y no descarga la cadera.'
+        : 'Sin bastón: los abductores cargan todo el momento del peso.';
 
   const handleResetCamera = () => {
     if (controlsRef.current) {
@@ -573,6 +617,7 @@ export default function CaneCanvas({
   };
 
   return (
+    <CalloutProvider store={callouts} visible={showLabels}>
     <div className="cap2-webgl-canvas" style={{ width: '100%', height: '100%', position: 'relative' }}>
       {/* Botón flotante para reset de cámara */}
       <button
@@ -600,7 +645,7 @@ export default function CaneCanvas({
 
       {/* Canvas 3D de React Three Fiber */}
       <Canvas
-        camera={{ position: [0, 0.1, 4.0], fov: 42 }}
+        camera={{ position: [0, 0.05, 3.7], fov: 42 }}
         dpr={[1, 2]}
         gl={{ antialias: true, alpha: true }}
         style={{ background: STUDIO_BG_DEEP }}
@@ -625,40 +670,14 @@ export default function CaneCanvas({
           maxPolarAngle={Math.PI / 2 + 0.15}
           dampingFactor={0.08}
         />
+
+        {/* Proyecta cada <Callout> de la escena a píxeles para el riel lateral. */}
+        <CalloutSource />
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
 
-      {/* Lecturas del DCL ancladas a la esquina (fuera del 3D, sin tapar la anatomía) */}
-      <div
-        style={{
-          position: 'absolute',
-          left: '10px',
-          bottom: '10px',
-          zIndex: 9,
-          transform: 'scale(0.72)',
-          transformOrigin: 'bottom left',
-          pointerEvents: 'none',
-        }}
-      >
-        <DclReadout
-          title="DCL · bastón"
-          tone={caneHand === 'contra' ? '#0d6e64' : (caneHand === 'ipsi' ? '#d97706' : '#cbd5e1')}
-          rows={[
-            ...(caneHand !== 'none'
-              ? [{ symbol: 'Fc', color: '#0d8577', value: `${stats.fCaneN.toFixed(0)} N`, hint: `${caneForceKg} kgf` }]
-              : []),
-            { symbol: 'Wb', color: '#d97706', value: `${stats.wbN.toFixed(0)} N`, hint: '5/6 W' },
-            { symbol: 'Fa', color: '#b02318', value: `${stats.fAbductorN.toFixed(0)} N`, hint: 'glúteo medio' },
-            {
-              symbol: 'R',
-              color: '#0d6e64',
-              value: `${stats.rJointN.toFixed(0)} N`,
-              hint: caneHand === 'contra' ? `−${stats.reliefPct.toFixed(0)}%` : '100%',
-              strong: true,
-            },
-          ]}
-        />
-      </div>
+      {/* Lecturas del DCL → riel lateral con línea guía a cada flecha */}
+      <CalloutRail store={callouts} side="left" note={railNote} />
 
       {/* Comparador de alivio articular anclado a la esquina (fuera del 3D) */}
       <div
@@ -681,6 +700,7 @@ export default function CaneCanvas({
         />
       </div>
     </div>
+    </CalloutProvider>
   );
 }
 

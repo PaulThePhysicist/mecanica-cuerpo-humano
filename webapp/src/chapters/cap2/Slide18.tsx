@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import BiomechSummaryCanvas from './BiomechSummaryCanvas';
+import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
 import type { Engine } from './useEngine';
 
@@ -66,6 +67,9 @@ export default function Slide18({
   [key: string]: any;
 }) {
   const [selectedNode, setSelectedNode] = useState<'neck' | 'jaw' | 'elbow' | 'spine' | 'hip' | 'ankle' | 'foot'>('elbow');
+  // Los letreros del visor los enciende el texto de abajo, no un botón
+  // sobre el lienzo: el mando cuelga del párrafo que los explica.
+  const [showLabels, setShowLabels] = useState<boolean>(false);
 
   const curNode = NODE_BUTTONS.find((b) => b.id === selectedNode) || NODE_BUTTONS[2];
 
@@ -144,6 +148,13 @@ export default function Slide18({
                   </button>
                 ))}
               </div>
+            
+              <div style={{ marginTop: '.4rem' }}>
+                <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
+                  <b>🏷️ Rotular la articulación elegida</b>
+                </TheoryToggle>
+              </div>
+              <TheoryCue>Pone sobre el nodo seleccionado las fuerzas y el factor multiplicador que resume su mecánica.</TheoryCue>
             </div>
           </div>
           <div className="apuntes">
@@ -184,7 +195,7 @@ export default function Slide18({
             </div>
           </HudPanel>
 
-          <BiomechSummaryCanvas
+          <BiomechSummaryCanvas showLabels={showLabels}
             selectedNode={selectedNode}
             onSelectNode={handleSelectNode}
           />

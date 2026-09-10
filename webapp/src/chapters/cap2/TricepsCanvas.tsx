@@ -1,12 +1,18 @@
 import React, { Suspense, useRef, useMemo, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, ContactShadows, Html, useGLTF } from '@react-three/drei';
+import { OrbitControls, ContactShadows, useGLTF } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
 import { STUDIO_BG_DEEP } from '../cap1/three/materials';
 import { StudioLights } from '../cap1/three/StudioLights';
-import { DclTag, DclReadout, type DclRow } from './DclReadout';
+import {
+  Callout,
+  CalloutProvider,
+  CalloutRail,
+  CalloutSource,
+  useCalloutStore,
+} from '../cap1/three/Callouts';
 
 /** Estática de la extensión de codo (palanca de 1ª clase). Fuente única. */
 function tricepsSolve(pushLoadKg: number, insertCm: number) {
@@ -23,6 +29,9 @@ function tricepsSolve(pushLoadKg: number, insertCm: number) {
 interface TricepsCanvasProps {
   pushLoadKg?: number; // Fuerza de empuje en mano en kg (1 a 25 kg, default: 6)
   insertCm?: number;   // Brazo del olécranon d (2.0 a 4.0 cm, default: 2.5 cm)
+  /** Lo enciende la columna de teoría del slide, no un botón sobre el lienzo:
+   *  el mando cuelga del párrafo que explica estas magnitudes. */
+  showLabels?: boolean;
 }
 
 // ── Paleta de Materiales Anatómicos PBR de Grado Médico ──
@@ -34,17 +43,21 @@ const TENDON_NACRE = new THREE.Color('#f5f0e6');
 // Centro anatómico de rotación troclear del codo
 const P_ELBOW = new THREE.Vector3(-0.128, 0.142, -0.016);
 
-// ── Vector 3D de Fuerza de Alta Fidelidad con Badges Frosted Glass ──
+// ── Vector 3D de Fuerza; su letrero va al riel lateral ──
 function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [1, 0, 0] as [number, number, number],
   color = '#0d6e64',
-  symbol = 'F',
+  label,
+  sub,
+  emphasis,
 }: {
   origin?: [number, number, number];
   vector: [number, number, number];
   color: string;
-  symbol: string;
+  label: string;
+  sub?: string;
+  emphasis?: 'strong' | 'muted';
 }) {
   const v = useMemo(() => new THREE.Vector3(...vector), [vector]);
   const len = v.length();
@@ -93,10 +106,12 @@ function ForceVector3D({
         />
       </mesh>
 
-      <DclTag
+      <Callout
         position={[tipPos.x + dir.x * 0.038, tipPos.y + dir.y * 0.038, tipPos.z + dir.z * 0.038]}
+        label={label}
+        sub={sub}
         color={color}
-        symbol={symbol}
+        emphasis={emphasis}
       />
     </group>
   );
@@ -129,24 +144,7 @@ function LeverArmCaliper3D({
       <mesh geometry={geom}>
         <meshBasicMaterial color={color} transparent opacity={0.65} />
       </mesh>
-      <Html position={[midPos.x, midPos.y + 0.025, midPos.z]} center zIndexRange={[90, 0]}>
-        <div
-          style={{
-            background: 'rgba(255, 255, 255, 0.88)',
-            border: `1px dashed ${color}`,
-            borderRadius: '3px',
-            padding: '1px 4px',
-            fontSize: '0.48rem',
-            fontFamily: 'JetBrains Mono, monospace',
-            color: color,
-            fontWeight: 700,
-            whiteSpace: 'nowrap',
-            pointerEvents: 'none',
-          }}
-        >
-          {label}
-        </div>
-      </Html>
+      <Callout position={[midPos.x, midPos.y, midPos.z]} label={label} color={color} emphasis="muted" />
     </group>
   );
 }
@@ -165,6 +163,11 @@ function RealArmTricepsScene({
   // ── Física del Tríceps (Palanca de 1ª Clase) — fuente única ──
   const { wPushN, mechanicalRatio, fTricepsN } = tricepsSolve(pushLoadKg, insertCm);
   const rJointN = fTricepsN + wPushN;
+  const lFt = `F_t = ${fTricepsN.toFixed(0)} N`;
+  const sFt = `${mechanicalRatio.toFixed(1)}× W`;
+  const lW = `W = ${wPushN.toFixed(0)} N`;
+  const sW = `${pushLoadKg} kg`;
+  const lRj = `R_j = ${rJointN.toFixed(0)} N`;
 
   // Abultamiento muscular y activación EMG proporcional a Ft
   const tricepsBulge = Math.min(1.45, 0.96 + (fTricepsN / 450) * 0.38);
@@ -294,7 +297,7 @@ function RealArmTricepsScene({
       </mesh>
 
       {/* Vector Reacción Articular ADITIVA R_j en la Tróclea */}
-      <ForceVector3D origin={[0, 0, 0]} vector={vRj} color="#7c3aed" symbol="R_j" />
+      <ForceVector3D origin={[0, 0, 0]} vector={vRj} color="#7c3aed" label={lRj} sub="troclear (aditiva)" emphasis="strong" />
 
       {/* ── Segmento Móvil: Antebrazo con Olécranon Posterior ── */}
       <group rotation={[angleRad, 0, 0]}>
@@ -331,10 +334,10 @@ function RealArmTricepsScene({
         />
 
         {/* Vector de Tracción del Tríceps Ft en el Pico del Olécranon */}
-        <ForceVector3D origin={olecranonOffset} vector={vFt} color="#dc2626" symbol="F_t" />
+        <ForceVector3D origin={olecranonOffset} vector={vFt} color="#dc2626" label={lFt} sub={sFt} />
 
         {/* Vector de Fuerza de Empuje W en la Palma de la Mano */}
-        <ForceVector3D origin={[-0.040, -0.350, 0.045]} vector={vWpush} color="#d97706" symbol="W" />
+        <ForceVector3D origin={[-0.040, -0.350, 0.045]} vector={vWpush} color="#d97706" label={lW} sub={sW} />
       </group>
     </group>
   );
@@ -344,19 +347,16 @@ useGLTF.preload('/assets/cap1/human_body.glb');
 useGLTF.preload('/assets/cap1/human_muscles_arm.glb');
 
 export default function TricepsCanvas({
+  showLabels = false,
   pushLoadKg = 6,
   insertCm = 2.5,
 }: TricepsCanvasProps) {
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
+  const callouts = useCalloutStore();
   const [cameraView, setCameraView] = useState<'default' | 'lateral' | 'posterior' | 'anterior'>('default');
   const [showTelemetry, setShowTelemetry] = useState(false);
 
   const { wPushN, mechanicalRatio, fTricepsN, fTricepsKgf, rJointN, rJointKgf } = tricepsSolve(pushLoadKg, insertCm);
-  const dclRows: DclRow[] = [
-    { symbol: 'F_t', color: '#dc2626', value: `${fTricepsN.toFixed(0)} N`, hint: `${mechanicalRatio.toFixed(1)}× W` },
-    { symbol: 'W', color: '#d97706', value: `${wPushN.toFixed(0)} N`, hint: `${pushLoadKg} kg` },
-    { symbol: 'R_j', color: '#7c3aed', value: `${rJointN.toFixed(0)} N`, hint: 'troclear (aditiva)', strong: true },
-  ];
 
   const setView = (view: 'default' | 'lateral' | 'posterior' | 'anterior') => {
     setCameraView(view);
@@ -382,6 +382,7 @@ export default function TricepsCanvas({
   const stressLevel = rJointN < 1000 ? 'Normal / Fisiológico' : rJointN < 2000 ? 'Elevado' : 'Sobrecarga Articular Aguda';
 
   return (
+    <CalloutProvider store={callouts} visible={showLabels}>
     <div className="cap2-webgl-canvas" style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
       <Canvas
         camera={{ position: [1.45, 0.3, 2.15], fov: 42 }}
@@ -422,29 +423,17 @@ export default function TricepsCanvas({
           maxDistance={5.0}
           target={[0, 0, 0]}
         />
+        <CalloutSource />
       </Canvas>
 
       <SceneControlPad controlsRef={controlsRef} />
 
-      {/* Lecturas del DCL ancladas a la esquina (fuera del 3D) */}
-      <div
-        style={{
-          position: 'absolute',
-          left: '10px',
-          bottom: '10px',
-          zIndex: 11,
-          transform: 'scale(0.8)',
-          transformOrigin: 'bottom left',
-          pointerEvents: 'none',
-        }}
-      >
-        <DclReadout
-          title="Extensión de codo · DCL"
-          tone="#7c3aed"
-          rows={dclRows}
-          note={`Palanca de 1ª clase: brazos ${insertCm.toFixed(1)} cm vs 35 cm → el tríceps tira ${mechanicalRatio.toFixed(1)}× la carga; la reacción troclear es aditiva.`}
-        />
-      </div>
+      {/* Lecturas del DCL → riel lateral con línea guía a cada flecha */}
+      <CalloutRail
+        store={callouts}
+        side="left"
+        note={`Palanca de 1ª clase: brazos ${insertCm.toFixed(1)} cm vs 35 cm → el tríceps tira ${mechanicalRatio.toFixed(1)}× la carga; la reacción troclear es aditiva.`}
+      />
 
       {/* Selector de Vistas de Cámara en Esquina Superior Izquierda */}
       <div
@@ -605,59 +594,7 @@ export default function TricepsCanvas({
         </div>
       </div>
       )}
-
-      {/* Telemetría Inferior Izquierda Discreta */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: '10px',
-          left: '10px',
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: '6px',
-          pointerEvents: 'none',
-          zIndex: 10,
-        }}
-      >
-        <div
-          style={{
-            background: 'rgba(255, 253, 248, 0.94)',
-            backdropFilter: 'blur(6px)',
-            border: '1px solid rgba(220, 38, 38, 0.4)',
-            borderRadius: '5px',
-            padding: '3px 7px',
-            fontSize: '0.58rem',
-            fontFamily: 'JetBrains Mono, monospace',
-            color: '#dc2626',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px',
-            boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
-          }}
-        >
-          <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#dc2626' }} />
-          Tríceps (Ft): <b>{fTricepsN.toFixed(0)} N ({(fTricepsN / 9.81).toFixed(1)} kgf)</b>
-        </div>
-        <div
-          style={{
-            background: 'rgba(255, 253, 248, 0.94)',
-            backdropFilter: 'blur(6px)',
-            border: '1px solid rgba(124, 58, 237, 0.4)',
-            borderRadius: '5px',
-            padding: '3px 7px',
-            fontSize: '0.58rem',
-            fontFamily: 'JetBrains Mono, monospace',
-            color: '#7c3aed',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px',
-            boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
-          }}
-        >
-          <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#7c3aed' }} />
-          Compresión Aditiva (Rj = Ft + W): <b>{rJointN.toFixed(0)} N ({(rJointN / 9.81).toFixed(1)} kgf)</b>
-        </div>
-      </div>
     </div>
+    </CalloutProvider>
   );
 }

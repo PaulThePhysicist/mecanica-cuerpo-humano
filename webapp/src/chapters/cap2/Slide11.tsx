@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import JawCanvas from './JawCanvas';
+import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
 import type { Engine } from './useEngine';
 
@@ -56,6 +57,9 @@ export default function Slide11({
   [key: string]: any;
 }) {
   const [biteMode, setBiteMode] = useState<'incisor' | 'molar'>('incisor');
+  // Los letreros del visor los enciende el texto de abajo, no un botón
+  // sobre el lienzo: el mando cuelga del párrafo que los explica.
+  const [showLabels, setShowLabels] = useState<boolean>(false);
   const [muscleForceN, setMuscleForceN] = useState<number>(450);
   const [activePresetId, setActivePresetId] = useState<string>('incisor_std');
 
@@ -119,6 +123,13 @@ export default function Slide11({
                   <b>Molares:</b> {'$d = 3{,}5\\text{ cm} \\implies F_{\\text{bite}} = \\frac{5{,}0}{3{,}5} F_m = \\mathbf{1{,}43\\, F_m}$ (Palanca multiplicadora: gran ventaja trituradora).'}
                 </span>
               </div>
+            
+              <div style={{ marginTop: '.4rem' }}>
+                <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
+                  <b>🏷️ Rotular la ATM y las fuerzas</b>
+                </TheoryToggle>
+              </div>
+              <TheoryCue>Señala el fulcro de la articulación temporomandibular y las fuerzas de la palanca masticatoria.</TheoryCue>
             </div>
           </div>
           <div className="card">
@@ -179,7 +190,7 @@ export default function Slide11({
             </div>
           </HudPanel>
 
-          <JawCanvas
+          <JawCanvas showLabels={showLabels}
             biteMode={biteMode}
             muscleForceN={muscleForceN}
           />

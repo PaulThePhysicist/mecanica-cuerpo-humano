@@ -1,7 +1,14 @@
 import React, { Suspense, useMemo, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, ContactShadows, useGLTF } from '@react-three/drei';
-import { DclTag, DclReadout } from './DclReadout';
+import { DclTag } from './DclReadout';
+import {
+  Callout,
+  CalloutProvider,
+  CalloutRail,
+  CalloutSource,
+  useCalloutStore,
+} from '../cap1/three/Callouts';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
@@ -12,6 +19,9 @@ interface JointTractionCanvasProps {
   tractionKg: number;    // Masa de tracción en kg (1 a 15 kg)
   angleDeg: number;      // Ángulo del cable respecto al eje axial (10 a 60 grados, default 25°)
   tractionType?: 'cervical' | 'lumbar';
+  /** Lo enciende la columna de teoría del slide, no un botón sobre el lienzo:
+   *  el mando cuelga del párrafo que explica estas magnitudes. */
+  showLabels?: boolean;
 }
 
 // ── Paleta Anatómica y Materiales de Grado Médico ──
@@ -31,13 +41,18 @@ function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [1, 0, 0] as [number, number, number],
   color = TEAL_ACCENT,
-  symbol = 'F',
+  label,
+  sub,
+  emphasis,
   isDashed = false,
 }: {
   origin?: [number, number, number];
   vector: [number, number, number];
   color: string;
-  symbol: string;
+  /** Letrero para el riel lateral (símbolo = valor). */
+  label: string;
+  sub?: string;
+  emphasis?: 'strong' | 'muted';
   isDashed?: boolean;
 }) {
   const v = useMemo(() => new THREE.Vector3(...vector), [vector]);
@@ -89,10 +104,13 @@ function ForceVector3D({
         />
       </mesh>
 
-      <DclTag
+      {/* Letrero → riel lateral (símbolo = valor), con línea guía a la punta. */}
+      <Callout
         position={[tipPos.x + dir.x * 0.05, tipPos.y + dir.y * 0.05, tipPos.z + dir.z * 0.05]}
+        label={label}
+        sub={sub}
         color={color}
-        symbol={symbol}
+        emphasis={emphasis}
       />
     </group>
   );
@@ -213,6 +231,11 @@ function CervicalSpineRig3D({
   const { nodes } = useGLTF('/assets/cap1/human_body.glb') as any;
 
   const { tN, angleRad, fAxialN, fTransN, deltaH_mm, isTherapeutic } = tractionStats(tractionKg, angleDeg);
+
+  // Letreros del riel lateral (mismos valores que llenaban el DclReadout de esquina).
+  const lT = `T = ${tN.toFixed(0)} N`;
+  const lFax = `F_ax = ${fAxialN.toFixed(0)} N`;
+  const lFtr = `F_tr = ${fTransN.toFixed(0)} N`;
 
   // LERP suave y vibración de cable
   const cableVibeRef = useRef<number>(0);
@@ -688,13 +711,13 @@ function CervicalSpineRig3D({
         return (
           <group position={attachPoint}>
             {/* 1. Vector Resultante T (Tensión total en cable) */}
-            <ForceVector3D origin={[0, 0, 0]} vector={[tVecX, tVecY, tVecZ]} color={TEAL_ACCENT} symbol="T" />
+            <ForceVector3D origin={[0, 0, 0]} vector={[tVecX, tVecY, tVecZ]} color={TEAL_ACCENT} label={lT} sub={`${tractionKg} kg · β ${angleDeg}°`} />
 
             {/* 2. Vector F_axial (Descompresión raquídea longitudinal) */}
-            <ForceVector3D origin={[0, 0, 0]} vector={[0, axVecY, 0]} color={EMERALD_DECOMP} symbol="F_ax" />
+            <ForceVector3D origin={[0, 0, 0]} vector={[0, axVecY, 0]} color={EMERALD_DECOMP} label={lFax} sub={`Δh +${deltaH_mm.toFixed(2)} mm`} emphasis="strong" />
 
             {/* 3. Vector F_trans (Momento flexor anterior) */}
-            <ForceVector3D origin={[0, axVecY, 0]} vector={[0, 0, trVecZ]} color={AMBER_ACCENT} symbol="F_tr" />
+            <ForceVector3D origin={[0, axVecY, 0]} vector={[0, 0, trVecZ]} color={AMBER_ACCENT} label={lFtr} sub="flexión cefálica" emphasis="muted" />
 
             {/* Líneas de proyección ortogonal punteadas */}
             <mesh position={[0, axVecY / 2, trVecZ]}>
@@ -721,20 +744,25 @@ function CervicalSpineRig3D({
         );
       })()}
 
+      {/* Proyecta cada <Callout> de la escena a píxeles para el riel lateral. */}
+      <CalloutSource />
     </group>
   );
 }
 
 // ── 4. Escena Principal 3D con React Three Fiber ──
 export default function JointTractionCanvas({
+  showLabels = false,
   tractionKg = 6,
   angleDeg = 25,
   tractionType = 'cervical',
 }: JointTractionCanvasProps) {
   const controlsRef = useRef<OrbitControlsImpl>(null);
   const stats = tractionStats(tractionKg, angleDeg);
+  const callouts = useCalloutStore();
 
   return (
+    <CalloutProvider store={callouts} visible={showLabels}>
     <div
       className="cap2-webgl-canvas"
       style={{
@@ -777,33 +805,16 @@ export default function JointTractionCanvas({
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
 
-      {/* Lecturas del DCL ancladas a la esquina (fuera del 3D) */}
-      <div
-        style={{
-          position: 'absolute',
-          left: '10px',
-          bottom: '10px',
-          zIndex: 9,
-          transform: 'scale(0.82)',
-          transformOrigin: 'bottom left',
-          pointerEvents: 'none',
-        }}
-      >
-        <DclReadout
-          title="Tracción cervical · DCL"
-          tone={stats.isTherapeutic ? '#0d6e64' : '#d97706'}
-          rows={[
-            { symbol: 'T', color: '#0d6e64', value: `${stats.tN.toFixed(0)} N`, hint: `${tractionKg} kg · β ${angleDeg}°` },
-            { symbol: 'F_ax', color: '#2e8b57', value: `${stats.fAxialN.toFixed(0)} N`, hint: `Δh +${stats.deltaH_mm.toFixed(2)} mm`, strong: true },
-            { symbol: 'F_tr', color: '#d97706', value: `${stats.fTransN.toFixed(0)} N`, hint: 'flexión cefálica', muted: true },
-          ]}
-          note={
-            stats.isTherapeutic
-              ? 'Rango terapéutico (5–8 kg): descompresión axial sin flexión cefálica excesiva.'
-              : 'Un ángulo β alto desvía tracción a F_trans (flexión) en vez de a la descompresión axial.'
-          }
-        />
-      </div>
+      {/* Lecturas del DCL → riel lateral con línea guía a cada flecha */}
+      <CalloutRail
+        store={callouts}
+        side="left"
+        note={
+          stats.isTherapeutic
+            ? 'Rango terapéutico (5–8 kg): descompresión axial sin flexión cefálica excesiva.'
+            : 'Un ángulo β alto desvía tracción a F_trans (flexión) en vez de a la descompresión axial.'
+        }
+      />
 
       {/* Dosímetro anclado a la esquina (fuera del 3D → nunca se recorta ni tapa la anatomía) */}
       <div
@@ -827,5 +838,6 @@ export default function JointTractionCanvas({
         />
       </div>
     </div>
+    </CalloutProvider>
   );
 }

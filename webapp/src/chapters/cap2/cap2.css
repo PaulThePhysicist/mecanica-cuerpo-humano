@@ -255,9 +255,18 @@ body{
 .sim-area > canvas{
   width:100%;height:auto;min-height:0;flex:1 1 auto;
 }
+/* La barra de controles FLOTA sobre el lienzo, como en cap1: en flujo se comía
+   una franja al pie de .sim-area (54 px medidos en A1) que el canvas no llegaba
+   a ocupar. Sacándola del flujo, el <Canvas> se estira a toda la altura y los
+   mandos quedan superpuestos abajo. Mismas cotas que cap1: .6rem a los lados y
+   al pie; fondo translúcido para que se lea sobre el 3D. */
 .sim-area > .prof-controls{
-  position:relative;z-index:15;flex:0 0 auto;width:auto;margin:.45rem .6rem .6rem;
+  position:absolute;left:.6rem;right:.6rem;bottom:.6rem;z-index:15;width:auto;margin:0;
+  background:rgba(251,248,240,.94);backdrop-filter:blur(5px);
+  box-shadow:0 5px 16px rgba(35,44,54,.12);
 }
+/* Colapsada es un botón de 30×30: no debe estirarse de lado a lado. */
+.sim-area > .prof-controls.is-collapsed{right:auto}
 .sim-area canvas.sim{width:100%;height:100%;display:block}
 .cap2-canvas-zoom{
   position:absolute;top:12px;right:12px;z-index:25;display:flex;flex-direction:column;gap:2px;

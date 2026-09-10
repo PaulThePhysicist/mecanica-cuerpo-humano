@@ -1,5 +1,6 @@
 import React, { Suspense, useState } from 'react';
 import AnkleCanvas from './AnkleCanvas';
+import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
 import { AnimateButton } from './AnimateButton';
 import { useHarmonicClock } from '../cap1/three/useHarmonicClock';
@@ -16,6 +17,9 @@ export default function SlideAnkle({
   [key: string]: any;
 }) {
   const [betaDeg, setBetaDeg] = useState<number>(60);
+  // Los letreros del visor los enciende el texto de abajo, no un botón
+  // sobre el lienzo: el mando cuelga del párrafo que los explica.
+  const [showLabels, setShowLabels] = useState<boolean>(false);
   const [bodyMassKg, setBodyMassKg] = useState<number>(90);
   const [showComponents, setShowComponents] = useState<boolean>(false);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
@@ -68,6 +72,13 @@ export default function SlideAnkle({
               <p style={{ fontSize: '.62rem', color: 'var(--ink-3)' }}>
                 {'Con $\\theta \\approx 45^\\circ$ y $\\beta \\approx 60^\\circ$: $M \\approx 1{,}93\\,W_b$ y $R \\approx 2{,}73\\,W_b$ — ambas muy por encima del peso corporal.'}
               </p>
+            
+              <div style={{ marginTop: '.4rem' }}>
+                <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
+                  <b>🏷️ Rotular M, N y R</b>
+                </TheoryToggle>
+              </div>
+              <TheoryCue>Señala el fulcro metatarsiano y pone cifras a la tracción del Aquiles, la normal del suelo y la carga sobre el astrágalo.</TheoryCue>
             </div>
           </div>
           <div className="card">
@@ -118,7 +129,7 @@ export default function SlideAnkle({
 
           <Suspense fallback={<div className="loading-overlay">Cargando visualización 3D...</div>}>
             {isActive && (
-              <AnkleCanvas
+              <AnkleCanvas showLabels={showLabels}
                 betaDeg={betaDeg}
                 bodyWeightN={Wb}
                 showComponents={showComponents}

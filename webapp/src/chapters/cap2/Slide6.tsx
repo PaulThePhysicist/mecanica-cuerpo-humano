@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import TricepsCanvas from './TricepsCanvas';
+import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
 import type { Engine } from './useEngine';
 
@@ -12,6 +13,9 @@ export default function Slide6({
   [key: string]: any;
 }) {
   const [pushLoadKg, setPushLoadKg] = useState<number>(6);
+  // Los letreros del visor los enciende el texto de abajo, no un botón
+  // sobre el lienzo: el mando cuelga del párrafo que los explica.
+  const [showLabels, setShowLabels] = useState<boolean>(false);
   const [insertCm, setInsertCm] = useState<number>(2.5);
 
   const g = 9.81;
@@ -62,6 +66,13 @@ export default function Slide6({
               <p style={{ fontSize: '.64rem' }}>
                 {'Con $d \\approx 2{,}5\\text{ cm}$ y $D \\approx 35\\text{ cm}$, la relación de palanca es de $35 / 2{,}5 = \\mathbf{14\\times}$.'}
               </p>
+            
+              <div style={{ marginTop: '.4rem' }}>
+                <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
+                  <b>🏷️ Rotular F_t, W y R_j</b>
+                </TheoryToggle>
+              </div>
+              <TheoryCue>Etiqueta las tres fuerzas de la palanca: tracción del tríceps sobre el olécranon, carga de empuje y compresión articular resultante.</TheoryCue>
             </div>
           </div>
           <div className="card">
@@ -120,7 +131,7 @@ export default function Slide6({
             </div>
           </HudPanel>
 
-          <TricepsCanvas
+          <TricepsCanvas showLabels={showLabels}
             pushLoadKg={pushLoadKg}
             insertCm={insertCm}
           />

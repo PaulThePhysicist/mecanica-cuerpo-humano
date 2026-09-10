@@ -6,11 +6,20 @@ import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
 import { STUDIO_BG_DEEP } from '../cap1/three/materials';
 import { StudioLights } from '../cap1/three/StudioLights';
-import { DclTag, DclReadout, type DclRow } from './DclReadout';
+import {
+  Callout,
+  CalloutProvider,
+  CalloutRail,
+  CalloutSource,
+  useCalloutStore,
+} from '../cap1/three/Callouts';
 
 interface MultiMuscleCanvasProps {
   handLoadKg?: number;       // Carga en mano (1 a 20 kg, default: 7)
   activeMuscleCount?: 1 | 3; // 1 (solo bíceps aislado) o 3 (bíceps + braquial + braquiorradial sinergia)
+  /** Lo enciende la columna de teoría del slide, no un botón sobre el lienzo:
+   *  el mando cuelga del párrafo que explica estas magnitudes. */
+  showLabels?: boolean;
 }
 
 // ── Paleta de Materiales Anatómicos PBR de Grado Médico ──
@@ -22,19 +31,21 @@ const TENDON_NACRE = new THREE.Color('#f5f0e6');
 // Centro anatómico de rotación troclear del codo
 const P_ELBOW = new THREE.Vector3(-0.128, 0.142, -0.016);
 
-// ── Vector 3D de Fuerza de Alta Fidelidad con Badges Frosted Glass ──
+// ── Vector 3D de Fuerza; su letrero va al riel lateral ──
 function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [1, 0, 0] as [number, number, number],
   color = '#0d6e64',
-  symbol = 'F',
-  screenOffset = [0, 0] as [number, number],
+  label,
+  sub,
+  emphasis,
 }: {
   origin?: [number, number, number];
   vector: [number, number, number];
   color: string;
-  symbol: string;
-  screenOffset?: [number, number];
+  label: string;
+  sub?: string;
+  emphasis?: 'strong' | 'muted';
 }) {
   const v = useMemo(() => new THREE.Vector3(...vector), [vector]);
   const len = v.length();
@@ -87,11 +98,12 @@ function ForceVector3D({
         />
       </mesh>
 
-      <DclTag
+      <Callout
         position={[tipPos.x + dir.x * 0.038, tipPos.y + dir.y * 0.038, tipPos.z + dir.z * 0.038]}
+        label={label}
+        sub={sub}
         color={color}
-        symbol={symbol}
-        screenOffset={[screenOffset[0] * 0.4, screenOffset[1] * 0.4]}
+        emphasis={emphasis}
       />
     </group>
   );
@@ -309,6 +321,13 @@ function MultiMuscleScene({
   const wLen = Math.min(0.095, Math.max(0.030, wHandN * 0.00035));
   const rjLen = Math.min(0.105, Math.max(0.030, rJointN * 0.00014));
 
+  const isolated = activeMuscleCount === 1;
+  const lBraq = `Braq = ${fBrachialisN.toFixed(0)} N`;
+  const lBic = `Bíc${isolated ? ' ⚠' : ''} = ${fBicepsN.toFixed(0)} N`;
+  const lBrad = `Brad = ${fBrachioradialisN.toFixed(0)} N`;
+  const lW = `W = ${wHandN.toFixed(0)} N`;
+  const lRj = `R_j = ${rJointN.toFixed(0)} N`;
+
   return (
     <group position={[-0.05, 0.05, 0]} scale={ARM_SCALE}>
       {/* ── Segmento Fijo: Húmero, Escápula y Clavícula ── */}
@@ -367,7 +386,7 @@ function MultiMuscleScene({
       </mesh>
 
       {/* Vector Reacción Articular R_j en la Tróclea */}
-      <ForceVector3D origin={[0, 0, 0]} vector={[0, -rjLen, 0]} color="#0d9488" symbol="R_j" screenOffset={[-52, 70]} />
+      <ForceVector3D origin={[0, 0, 0]} vector={[0, -rjLen, 0]} color="#0d9488" label={lRj} sub="compresión" emphasis="strong" />
 
       {/* ── Segmento Móvil: Antebrazo a 90° de Flexión ── */}
       <group rotation={[angleRad, 0, 0]}>
@@ -408,8 +427,8 @@ function MultiMuscleScene({
             origin={[-0.018, -0.025, 0.010]}
             vector={[brachLen * 0.08, brachLen * 0.98, -brachLen * 0.12]}
             color="#2e8b57"
-            symbol="Braq"
-            screenOffset={[-58, 40]}
+            label={lBraq}
+            sub="45% τ"
           />
         )}
 
@@ -418,8 +437,8 @@ function MultiMuscleScene({
           origin={[0.030, -0.040, 0.020]}
           vector={[bicLen * 0.14, bicLen * 0.97, -bicLen * 0.18]}
           color="#dc2626"
-          symbol={activeMuscleCount === 3 ? 'Bíc' : 'Bíc ⚠'}
-          screenOffset={[0, 56]}
+          label={lBic}
+          sub={activeMuscleCount === 3 ? '40% τ' : '100% aislado'}
         />
 
         {/* Vector 3: Braquiorradial (Amber) */}
@@ -428,8 +447,8 @@ function MultiMuscleScene({
             origin={[-0.022, -0.250, 0.018]}
             vector={[-bradLen * 0.12, bradLen * 0.98, bradLen * 0.08]}
             color="#d97706"
-            symbol="Brad"
-            screenOffset={[58, 40]}
+            label={lBrad}
+            sub="15% · shunt"
           />
         )}
 
@@ -438,8 +457,8 @@ function MultiMuscleScene({
           origin={[-0.040, -0.350, 0.045]}
           vector={[0, -wLen, 0]}
           color="#232c36"
-          symbol="W"
-          screenOffset={[52, 66]}
+          label={lW}
+          sub={`${handLoadKg} kg`}
         />
       </group>
     </group>
@@ -450,10 +469,12 @@ useGLTF.preload('/assets/cap1/human_body.glb');
 useGLTF.preload('/assets/cap1/human_muscles_arm.glb');
 
 export default function MultiMuscleCanvas({
+  showLabels = false,
   handLoadKg = 7,
   activeMuscleCount = 3,
 }: MultiMuscleCanvasProps) {
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
+  const callouts = useCalloutStore();
   const [cameraView, setCameraView] = useState<'default' | 'lateral' | 'anterior' | 'top'>('default');
   const [showTelemetry, setShowTelemetry] = useState(false);
 
@@ -481,17 +502,10 @@ export default function MultiMuscleCanvas({
     fBradN * Math.sin((15 * Math.PI) / 180);
   const rJointN = Math.max(0, verticalMuscleForce - (wHandN + wForearmN));
 
-  const dclRows: DclRow[] = [
-    ...(activeMuscleCount === 3
-      ? [{ symbol: 'Braq', color: '#2e8b57', value: `${fBrachN.toFixed(0)} N`, hint: '45% τ' }]
-      : []),
-    { symbol: 'Bíc', color: '#dc2626', value: `${fBicN.toFixed(0)} N`, hint: activeMuscleCount === 3 ? '40% τ' : '100% aislado' },
-    ...(activeMuscleCount === 3
-      ? [{ symbol: 'Brad', color: '#d97706', value: `${fBradN.toFixed(0)} N`, hint: '15% · shunt' }]
-      : []),
-    { symbol: 'W', color: '#232c36', value: `${wHandN.toFixed(0)} N`, hint: `${handLoadKg} kg` },
-    { symbol: 'R_j', color: '#0d9488', value: `${rJointN.toFixed(0)} N`, hint: 'compresión', strong: true },
-  ];
+  const railNote =
+    activeMuscleCount === 3
+      ? 'Tres flexores reparten el torque: menos tensión por músculo y menos compresión articular.'
+      : 'Bíceps aislado: asume el 100 % del torque → tensión y compresión máximas.';
 
   const setView = (view: 'default' | 'lateral' | 'anterior' | 'top') => {
     setCameraView(view);
@@ -513,6 +527,7 @@ export default function MultiMuscleCanvas({
   };
 
   return (
+    <CalloutProvider store={callouts} visible={showLabels}>
     <div className="cap2-webgl-canvas" style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
       <Canvas
         camera={{ position: [1.45, 0.3, 2.15], fov: 42 }}
@@ -553,32 +568,12 @@ export default function MultiMuscleCanvas({
           maxDistance={5.0}
           target={[0, 0, 0]}
         />
+        <CalloutSource />
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
 
-      {/* Lecturas del DCL ancladas a la esquina (fuera del 3D) */}
-      <div
-        style={{
-          position: 'absolute',
-          left: '10px',
-          bottom: '10px',
-          zIndex: 12,
-          transform: 'scale(0.8)',
-          transformOrigin: 'bottom left',
-          pointerEvents: 'none',
-        }}
-      >
-        <DclReadout
-          title="Sinergia flexora · DCL"
-          tone="#0d9488"
-          rows={dclRows}
-          note={
-            activeMuscleCount === 3
-              ? 'Tres flexores reparten el torque: menos tensión por músculo y menos compresión articular.'
-              : 'Bíceps aislado: asume el 100 % del torque → tensión y compresión máximas.'
-          }
-        />
-      </div>
+      {/* Lecturas del DCL → riel lateral con línea guía a cada flecha */}
+      <CalloutRail store={callouts} side="left" note={railNote} />
 
       {/* Selector de Vistas de Cámara en Esquina Superior Izquierda */}
       <div
@@ -809,5 +804,6 @@ export default function MultiMuscleCanvas({
         </div>
       </div>
     </div>
+    </CalloutProvider>
   );
 }

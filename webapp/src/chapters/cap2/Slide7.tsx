@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import HipCanvas from './HipCanvas';
+import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
 import type { Engine } from './useEngine';
 
@@ -12,6 +13,9 @@ export default function Slide7({
   [key: string]: any;
 }) {
   const [bodyMassKg, setBodyMassKg] = useState<number>(70);
+  // Los letreros del visor los enciende el texto de abajo, no un botón
+  // sobre el lienzo: el mando cuelga del párrafo que los explica.
+  const [showLabels, setShowLabels] = useState<boolean>(false);
   const [trendelenburg, setTrendelenburg] = useState<boolean>(false);
   const [showBreakdown, setShowBreakdown] = useState<boolean>(false);
 
@@ -61,6 +65,13 @@ export default function Slide7({
               <div className="eq-block" style={{ fontSize: '.72rem' }}>
                 {'\\[ F_a = W_b \\left(\\frac{0{,}18}{0{,}07\\, \\sin 70^\\circ}\\right) \\approx 2{,}74\\, W_b \\approx 2{,}28\\, W \\]'}
               </div>
+            
+              <div style={{ marginTop: '.4rem' }}>
+                <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
+                  <b>🏷️ Rotular W_b, F_a y R</b>
+                </TheoryToggle>
+              </div>
+              <TheoryCue>Pone cifras sobre las tres fuerzas del apoyo monopodal: peso suprayacente, tracción del glúteo medio y reacción en la cabeza femoral.</TheoryCue>
             </div>
           </div>
           <div className="card">
@@ -124,7 +135,7 @@ export default function Slide7({
             </div>
           </HudPanel>
 
-          <HipCanvas
+          <HipCanvas showLabels={showLabels}
             bodyMassKg={bodyMassKg}
             trendelenburg={trendelenburg}
             showBreakdown={showBreakdown}

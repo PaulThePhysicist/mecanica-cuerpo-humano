@@ -1,5 +1,6 @@
 import React, { Suspense, useState } from 'react';
 import KneeCanvas from './KneeCanvas';
+import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
 import { AnimateButton } from './AnimateButton';
 import { useHarmonicClock } from '../cap1/three/useHarmonicClock';
@@ -21,6 +22,9 @@ export default function SlideKnee({
   [key: string]: any;
 }) {
   const [betaDeg, setBetaDeg] = useState<number>(45);
+  // Los letreros del visor los enciende el texto de abajo, no un botón
+  // sobre el lienzo: el mando cuelga del párrafo que los explica.
+  const [showLabels, setShowLabels] = useState<boolean>(false);
   const [ankleLoadN, setAnkleLoadN] = useState<number>(150);
   const [patella, setPatella] = useState<boolean>(true);
   const [showComponents, setShowComponents] = useState<boolean>(false);
@@ -73,6 +77,13 @@ export default function SlideKnee({
               <p style={{ fontSize: '.62rem', color: 'var(--ink-3)' }}>
                 {'Con $a \\approx 4{,}8\\text{ cm}$, $b \\approx 22\\text{ cm}$, $c \\approx 20\\text{ cm}$, $\\theta \\approx 18^\\circ$. Las fuerzas resultan enormes: $M$ y $R$ superan varias veces la carga real.'}
               </p>
+            
+              <div style={{ marginTop: '.4rem' }}>
+                <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
+                  <b>🏷️ Rotular M, W₁ y R</b>
+                </TheoryToggle>
+              </div>
+              <TheoryCue>Etiqueta la tracción del cuádriceps por el tendón rotuliano, la carga del tobillo y la reacción femorotibial.</TheoryCue>
             </div>
           </div>
           <div className="card">
@@ -128,7 +139,7 @@ export default function SlideKnee({
 
           <Suspense fallback={<div className="loading-overlay">Cargando visualización 3D...</div>}>
             {isActive && (
-              <KneeCanvas
+              <KneeCanvas showLabels={showLabels}
                 betaDeg={betaDeg}
                 ankleLoadN={ankleLoadN}
                 patella={patella}
