@@ -1,11 +1,14 @@
 import React, { useMemo } from 'react';
-import { useFrame } from '@react-three/fiber';
 import { Center, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { FULL_BODY_FLOOR_Y, FULL_BODY_SCALE, FULL_BODY_SHADOW_Y } from './bodySceneGeometry';
 import { AnatomyStage } from './three/AnatomyStage';
 import { useAnatomyScene } from './three/useAnatomyNodes';
 import { Axes } from './AnatomyCanvas';
+import { ROM_MOTIONS, romAngleAt } from './romTable';
+import type { MobilityRange } from './romTable';
+
+export type { MobilityRange } from './romTable';
 
 function ModelLoader() {
   return (
@@ -50,17 +53,6 @@ function ModelLoader() {
 const BONE_BASE = new THREE.Color('#e8dcc4'); // marfil cálido
 const HIGHLIGHT = new THREE.Color('#067a6b'); // teal regional
 
-export interface MobilityRange {
-  joint: string;
-  label: string;
-  primary: number;
-  secondary?: number;
-  primaryLabel: string;
-  secondaryLabel?: string;
-  plane: 'sagittal' | 'coronal' | 'axial';
-  position: [number, number, number];
-}
-
 const MOBILITY_MODEL_SCALE = FULL_BODY_SCALE;
 const SHOULDER_PIVOT = new THREE.Vector3(-0.095, 0.311, -0.015);
 const ELBOW_PIVOT = new THREE.Vector3(-0.124, 0.145, -0.019);
@@ -70,6 +62,13 @@ const HIP_PIVOT = new THREE.Vector3(-0.039, 0.002, -0.003);
 const KNEE_PIVOT = new THREE.Vector3(-0.040, -0.250, -0.019);
 const ANKLE_PIVOT = new THREE.Vector3(-0.039, -0.460, -0.020);
 
+/* Membresía de cada cadena cinemática (lado derecho del esqueleto, X < 0 en el
+   GLB). Ojo: `calcaneus_L` NO es una errata. En human_body.glb los dos calcáneos
+   vienen con la etiqueta cambiada — el nodo `calcaneus_L` está en X = -0.043 (pie
+   derecho) y `calcaneus_R` en X = +0.054 (pie izquierdo). Las listas de abajo van
+   por posición real, no por sufijo, así que el talón que viaja con la pierna
+   derecha es `calcaneus_L`. Los metacarpianos siguen el mismo criterio: los
+   pares 1,2,4,6,8 son los de la mano derecha. */
 function isShoulderMotionPart(name: string) {
   return [
     'humerus_R', 'radius_R', 'ulna_R', 'scaphoid_R', 'lunate_R',
@@ -128,15 +127,22 @@ function isAnkleMotionPart(name: string) {
   ].includes(name);
 }
 
-function MobilityRangeOverlay({ range }: { range?: MobilityRange | null }) {
-  const sweepRef = React.useRef<THREE.Group>(null);
-  useFrame(({ clock }) => {
-    if (sweepRef.current && (range?.joint === 'hombro-flex' || range?.joint === 'hombro-abd' || range?.joint === 'hombro-rot' || range?.joint === 'antebrazo' || range?.joint === 'muneca' || range?.joint === 'cadera' || range?.joint === 'rodilla' || range?.joint === 'tobillo')) {
-      sweepRef.current.rotation.z = Math.sin(clock.getElapsedTime() * 0.72) * 0.22;
-    }
-  });
+/**
+ * Abanico ROM: dibuja el recorrido de Tabla 1.10 como sector en el plano
+ * anatómico del movimiento, más una aguja que marca el ángulo actual.
+ *
+ * El rayo neutro (posición anatómica) apunta a -Y local; el sector primario
+ * barre en sentido horario y el secundario en antihorario, así que el conjunto
+ * se lee como un goniómetro: los dos topes de la tabla y dónde está el hueso
+ * ahora mismo. La aguja y el esqueleto salen del mismo `progress`, de modo que
+ * no pueden desincronizarse.
+ */
+const NEUTRAL_RAY = -Math.PI / 2;
+
+function MobilityRangeOverlay({ range, progress }: { range?: MobilityRange | null; progress: number }) {
   if (!range) return null;
 
+  const motion = ROM_MOTIONS[range.joint];
   const planeRotation: [number, number, number] =
     range.plane === 'sagittal' ? [0, Math.PI / 2, 0] :
     // Convención anatómica de esta app: Y = mundo X, Z = mundo Y.
@@ -153,25 +159,47 @@ function MobilityRangeOverlay({ range }: { range?: MobilityRange | null }) {
     range.position[1] * MOBILITY_MODEL_SCALE,
     range.position[2] * MOBILITY_MODEL_SCALE,
   ];
-  const radius = range.joint.startsWith('hombro') ? 0.72 : range.joint === 'cadera' ? 0.62 : 0.48;
+  const radius = motion?.radius ?? 0.6;
+
+  // Excursión > 0 = hacia el movimiento primario, que se dibuja en horario.
+  const excursion = THREE.MathUtils.degToRad((romAngleAt(range.joint, progress) ?? 0) * (motion?.primarySign ?? 1));
+  const needleAngle = NEUTRAL_RAY - excursion;
 
   return (
     <group position={anchor}>
       <mesh>
-        <sphereGeometry args={[0.055, 20, 20]} />
+        <sphereGeometry args={[0.075, 20, 20]} />
         <meshStandardMaterial color="#0d786d" emissive="#0d786d" emissiveIntensity={0.7} />
       </mesh>
-      <group ref={sweepRef} rotation={planeRotation}>
-        <mesh rotation={[0, 0, Math.PI - primaryArc / 2]}>
-          <torusGeometry args={[radius, 0.025, 12, 64, primaryArc]} />
-          <meshBasicMaterial color="#087f72" transparent opacity={0.95} depthTest={false} depthWrite={false} />
+      <group rotation={planeRotation}>
+        {/* Sector primario: del neutro hacia el tope del movimiento principal. */}
+        <mesh rotation={[0, 0, NEUTRAL_RAY - primaryArc]}>
+          <torusGeometry args={[radius, 0.022, 10, 96, primaryArc]} />
+          <meshBasicMaterial color="#087f72" transparent opacity={0.85} depthTest={false} depthWrite={false} />
         </mesh>
+        {/* Sector secundario: del neutro hacia el tope contrario. */}
         {secondaryArc > 0 && (
-          <mesh rotation={[0, 0, -secondaryArc / 2]}>
-            <torusGeometry args={[radius * 0.9, 0.021, 12, 56, secondaryArc]} />
-            <meshBasicMaterial color="#c04a3d" transparent opacity={0.9} depthTest={false} depthWrite={false} />
+          <mesh rotation={[0, 0, NEUTRAL_RAY]}>
+            <torusGeometry args={[radius, 0.022, 10, 80, secondaryArc]} />
+            <meshBasicMaterial color="#c04a3d" transparent opacity={0.8} depthTest={false} depthWrite={false} />
           </mesh>
         )}
+        {/* Rayo neutro: la referencia contra la que se miden ambos topes. */}
+        <mesh position={[0, -radius / 2, 0]}>
+          <boxGeometry args={[0.012, radius, 0.012]} />
+          <meshBasicMaterial color="#8d8271" transparent opacity={0.55} depthTest={false} depthWrite={false} />
+        </mesh>
+        {/* Aguja: ángulo actual, mismo `progress` que mueve el hueso. */}
+        <group rotation={[0, 0, needleAngle + Math.PI / 2]}>
+          <mesh position={[0, -radius / 2, 0]}>
+            <boxGeometry args={[0.03, radius, 0.03]} />
+            <meshBasicMaterial color="#b8860b" depthTest={false} depthWrite={false} />
+          </mesh>
+          <mesh position={[0, -radius, 0]}>
+            <sphereGeometry args={[0.055, 16, 16]} />
+            <meshBasicMaterial color="#b8860b" depthTest={false} depthWrite={false} />
+          </mesh>
+        </group>
       </group>
     </group>
   );
@@ -200,11 +228,22 @@ const REGION_BONES: Record<string, string[]> = {
   'region-tarsus': ['talus_L','talus_R','calcaneus_L','calcaneus_R','navicular_L','navicular_R','cuneiform_med_L','cuneiform_med_R','cuneiform_int_L','cuneiform_int_R','cuneiform_lat_L','cuneiform_lat_R','cuboid_L','cuboid_R','metatarsal1_L','metatarsal1_R','metatarsal2_L','metatarsal2_R','metatarsal3_L','metatarsal3_R','metatarsal4_L','metatarsal4_R','metatarsal5_L','metatarsal5_R'],
 };
 
-function AnatomyModel({ mode, selected, jointMotion }: { mode: string; selected: string | null; jointMotion: 'flexion' | 'abduction' | 'rotation' | 'elbow-flexion' | 'forearm-rotation' | 'wrist-flexion' | 'hip-flexion' | 'knee-flexion' | 'ankle-flexion' | null }) {
+function AnatomyModel({ mode, selected, joint, progress }: { mode: string; selected: string | null; joint: string | null; progress: number }) {
   const scene = useAnatomyScene('body');
-  const clonedScene = useMemo(() => {
-    const s = scene.clone(true);
-    s.traverse((child) => {
+
+  // Clon + rig en UN SOLO useMemo, y por tanto sobre el mismo clon.
+  //
+  // Antes iban en dos memos: el segundo mutaba `clonedScene` (crea los pivotes y
+  // les reparenta los huesos con .attach). Eso es un efecto secundario dentro de
+  // un useMemo, y en StrictMode React lo invoca dos veces: la segunda pasada
+  // robaba los 131 huesos hacia un SEGUNDO juego de pivotes, mientras el valor
+  // que React conservaba apuntaba al primero — que quedaba vacío. Resultado: la
+  // escena tenía 14 pivotes, el esqueleto colgaba de los que nadie animaba y
+  // ningún ROM se movía. Clonando y armando en el mismo memo, cada invocación
+  // produce un clon íntegro e independiente y da igual cuál conserve React.
+  const { clonedScene, motionGroups } = useMemo(() => {
+    const rig = scene.clone(true);
+    rig.traverse((child) => {
       if ((child as THREE.Mesh).isMesh) {
         const mesh = child as THREE.Mesh;
         // material uniforme para poder teñir por región sin lidiar con vertex colors
@@ -218,22 +257,19 @@ function AnatomyModel({ mode, selected, jointMotion }: { mode: string; selected:
         mesh.userData.boneName = mesh.name;
       }
     });
-    return s;
-  }, [scene]);
 
-  const motionGroups = useMemo(() => {
     const shoulder = new THREE.Group();
     shoulder.name = 'shoulder-motion-pivot';
-    clonedScene.updateMatrixWorld(true);
+    rig.updateMatrixWorld(true);
     const parts: THREE.Mesh[] = [];
     const lowerParts: THREE.Mesh[] = [];
-    clonedScene.traverse((child) => {
+    rig.traverse((child) => {
       if ((child as THREE.Mesh).isMesh) {
         if (isShoulderMotionPart(child.name)) parts.push(child as THREE.Mesh);
         if (isHipMotionPart(child.name)) lowerParts.push(child as THREE.Mesh);
       }
     });
-    clonedScene.add(shoulder);
+    rig.add(shoulder);
     shoulder.position.copy(SHOULDER_PIVOT);
     parts.forEach((mesh) => shoulder.attach(mesh));
 
@@ -269,7 +305,7 @@ function AnatomyModel({ mode, selected, jointMotion }: { mode: string; selected:
 
     const hip = new THREE.Group();
     hip.name = 'hip-flexion-pivot';
-    clonedScene.add(hip);
+    rig.add(hip);
     hip.position.copy(HIP_PIVOT);
     lowerParts.forEach((mesh) => hip.attach(mesh));
 
@@ -286,76 +322,47 @@ function AnatomyModel({ mode, selected, jointMotion }: { mode: string; selected:
     lowerParts.filter((mesh) => isAnkleMotionPart(mesh.name)).forEach((mesh) => ankle.attach(mesh));
 
     return {
-      shoulder,
-      elbow,
-      forearm,
-      wrist,
-      hip,
-      knee,
-      ankle,
-      forearmBaseQuaternion: forearm.quaternion.clone(),
-      wristBaseQuaternion: wrist.quaternion.clone(),
+      clonedScene: rig,
+      motionGroups: {
+        shoulder,
+        elbow,
+        forearm,
+        wrist,
+        hip,
+        knee,
+        ankle,
+        forearmBaseQuaternion: forearm.quaternion.clone(),
+        wristBaseQuaternion: wrist.quaternion.clone(),
+      },
     };
-  }, [clonedScene]);
+  }, [scene]);
 
-  const resetMotionGroups = React.useCallback(() => {
-    motionGroups.shoulder.rotation.set(0, 0, 0);
-    motionGroups.elbow.rotation.set(0, 0, 0);
-    motionGroups.forearm.quaternion.copy(motionGroups.forearmBaseQuaternion);
-    motionGroups.wrist.quaternion.copy(motionGroups.wristBaseQuaternion);
-    motionGroups.hip.rotation.set(0, 0, 0);
-    motionGroups.knee.rotation.set(0, 0, 0);
-    motionGroups.ankle.rotation.set(0, 0, 0);
-  }, [motionGroups]);
-
-  // Al deseleccionar la articulación, devolver el esqueleto a la pose neutra
-  // una sola vez (antes lo hacía el useFrame en cada frame).
+  // Pose = función pura de (articulación, progress). La fase la lleva el slide
+  // con useHarmonicClock, igual que B3, así que el ROM se puede pausar y barrer
+  // con el deslizador en vez de oscilar solo.
   React.useEffect(() => {
-    if (jointMotion === null) resetMotionGroups();
-  }, [jointMotion, resetMotionGroups]);
+    const g = motionGroups;
+    g.shoulder.rotation.set(0, 0, 0);
+    g.elbow.rotation.set(0, 0, 0);
+    g.forearm.quaternion.copy(g.forearmBaseQuaternion);
+    g.wrist.quaternion.copy(g.wristBaseQuaternion);
+    g.hip.rotation.set(0, 0, 0);
+    g.knee.rotation.set(0, 0, 0);
+    g.ankle.rotation.set(0, 0, 0);
 
-  useFrame(({ clock }) => {
-    // Sin articulación seleccionada no hay nada que animar: evitamos resetear
-    // 7 grupos + 2 quaternions cada frame.
-    if (jointMotion === null) return;
-    const phase = (Math.sin(clock.getElapsedTime() * 0.72 - Math.PI / 2) + 1) / 2;
-    motionGroups.shoulder.rotation.set(0, 0, 0);
-    motionGroups.elbow.rotation.set(0, 0, 0);
-    motionGroups.forearm.quaternion.copy(motionGroups.forearmBaseQuaternion);
-    motionGroups.wrist.quaternion.copy(motionGroups.wristBaseQuaternion);
-    motionGroups.hip.rotation.set(0, 0, 0);
-    motionGroups.knee.rotation.set(0, 0, 0);
-    motionGroups.ankle.rotation.set(0, 0, 0);
-    if (jointMotion === 'flexion') {
-      // Primer ROM validado: flexión/extensión reflejada para coincidir con
-      // la orientación cromática corregida.
-      motionGroups.shoulder.rotation.x = THREE.MathUtils.degToRad(61 - phase * 249);
-    } else if (jointMotion === 'abduction') {
-      // Segundo ROM: abducción/aducción en el plano coronal.
-      motionGroups.shoulder.rotation.z = THREE.MathUtils.degToRad(48 - phase * 182);
-    } else if (jointMotion === 'rotation') {
-      // Tercer ROM: rotación medial/lateral sobre el eje longitudinal del brazo.
-      motionGroups.shoulder.rotation.y = THREE.MathUtils.degToRad(34 - phase * 131);
-    } else if (jointMotion === 'elbow-flexion') {
-      // Cuarto ROM: el antebrazo flexiona en el codo sin mover el húmero.
-      motionGroups.elbow.rotation.x = THREE.MathUtils.degToRad(-phase * 142);
-    } else if (jointMotion === 'forearm-rotation') {
-      // Quinto ROM: radio y mano giran sobre el eje longitudinal del antebrazo.
-      motionGroups.forearm.rotateY(THREE.MathUtils.degToRad(77 - phase * 190));
-    } else if (jointMotion === 'wrist-flexion') {
-      // Sexto ROM: carpo y mano flexionan/extienden, dejando el radio estable.
-      motionGroups.wrist.rotateX(THREE.MathUtils.degToRad(99 - phase * 189));
-    } else if (jointMotion === 'hip-flexion') {
-      // Séptimo ROM: toda la extremidad inferior gira desde el acetábulo.
-      motionGroups.hip.rotation.x = THREE.MathUtils.degToRad(-phase * 113);
-    } else if (jointMotion === 'knee-flexion') {
-      // Octavo ROM: tibia, peroné y pie flexionan posteriormente desde la rodilla.
-      motionGroups.knee.rotation.x = THREE.MathUtils.degToRad(phase * 125);
-    } else if (jointMotion === 'ankle-flexion') {
-      // Noveno ROM: tarso y metatarsianos giran desde el eje talocrural.
-      motionGroups.ankle.rotation.x = THREE.MathUtils.degToRad(38 - phase * 73);
+    const motion = joint ? ROM_MOTIONS[joint] : undefined;
+    if (!motion) return;
+    const rad = THREE.MathUtils.degToRad(motion.from + (motion.to - motion.from) * progress);
+    const pivot = g[motion.pivot];
+    if (motion.relative) {
+      // Pivotes con orientación heredada: giro sobre su cuaternión base.
+      if (motion.axis === 'x') pivot.rotateX(rad);
+      else if (motion.axis === 'y') pivot.rotateY(rad);
+      else pivot.rotateZ(rad);
+    } else {
+      pivot.rotation[motion.axis] = rad;
     }
-  });
+  }, [motionGroups, joint, progress]);
 
   React.useEffect(() => {
     const active = (mode === 'regions' && selected && REGION_BONES[selected]) ? new Set(REGION_BONES[selected]) : null;
@@ -412,6 +419,7 @@ export default function BodyScene({
   resetSignal = 0,
   zoomSignal = null,
   mobility = null,
+  progress = 0,
 }: {
   id: string;
   mode: 'planes' | 'regions';
@@ -419,6 +427,8 @@ export default function BodyScene({
   resetSignal?: number;
   zoomSignal?: { type: 'in' | 'out'; time: number } | null;
   mobility?: MobilityRange | null;
+  /** Fase 0..1 del recorrido articular; 0 = tope secundario, 1 = tope primario. */
+  progress?: number;
 }) {
   return (
     <AnatomyStage
@@ -436,12 +446,8 @@ export default function BodyScene({
       loader={<ModelLoader />}
     >
       <Center position={[0, 0, 0]}>
-        <AnatomyModel
-          mode={mode}
-          selected={selected}
-          jointMotion={mobility?.joint === 'hombro-flex' ? 'flexion' : mobility?.joint === 'hombro-abd' ? 'abduction' : mobility?.joint === 'hombro-rot' ? 'rotation' : mobility?.joint === 'codo' ? 'elbow-flexion' : mobility?.joint === 'antebrazo' ? 'forearm-rotation' : mobility?.joint === 'muneca' ? 'wrist-flexion' : mobility?.joint === 'cadera' ? 'hip-flexion' : mobility?.joint === 'rodilla' ? 'knee-flexion' : mobility?.joint === 'tobillo' ? 'ankle-flexion' : null}
-        />
-        <MobilityRangeOverlay range={mobility} />
+        <AnatomyModel mode={mode} selected={selected} joint={mobility?.joint ?? null} progress={progress} />
+        <MobilityRangeOverlay range={mobility} progress={progress} />
         {mode === 'regions' && <Axes hoveredTerm={null} showLabels showGrid={false} />}
         {mode === 'planes' && <Planes selected={selected} />}
       </Center>

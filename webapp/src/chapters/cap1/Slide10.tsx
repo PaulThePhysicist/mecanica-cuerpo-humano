@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import MobilityCanvas from './MobilityCanvas';
 import BodyScene from './BodyScene';
-import type { MobilityRange } from './BodyScene';
+import { romReadout } from './romTable';
+import type { MobilityRange } from './romTable';
+import { useHarmonicClock } from './three/useHarmonicClock';
 // @ts-ignore - katex auto-render no incluye tipos
 import renderMathInElement from 'katex/contrib/auto-render';
 
@@ -109,8 +111,20 @@ export default function Slide10({ slideCount }: { slideCount?: string }) {
   const [selectedJoint, setSelectedJoint] = useState<string>('hombro-flex');
   const [show3D, setShow3D] = useState(true);
   const [sceneReset, setSceneReset] = useState(0);
+  // Fase 0..1 del recorrido: 0 = tope secundario (p. ej. extensión), 1 = tope
+  // primario (flexión). El esqueleto y la aguja del goniómetro salen de aquí.
+  const [progress, setProgress] = useState<number>(0);
+  const [isAnimating, setIsAnimating] = useState<boolean>(true);
+  const [animSpeed, setAnimSpeed] = useState<number>(1.0);
 
   const currentDetail = JOINTS_DATA[selectedJoint] || JOINTS_DATA['hombro-flex'];
+  const currentRange = MOBILITY_3D_DATA[selectedJoint];
+  const readout = currentRange ? romReadout(currentRange, progress) : null;
+
+  // Barrido pendular entre los dos topes de Tabla 1.10 (reloj compartido).
+  useHarmonicClock({ playing: isAnimating && show3D, speed: animSpeed }, (t) => {
+    setProgress((Math.sin(t * 1.1 - Math.PI / 2) + 1) / 2);
+  });
 
   useEffect(() => {
     const info = document.getElementById('info-text-c3');
@@ -133,11 +147,14 @@ export default function Slide10({ slideCount }: { slideCount?: string }) {
 
   const handleSelectJoint = (jKey: string) => {
     setSelectedJoint(jKey);
+    setProgress(0); // arranca en la posición neutra / tope secundario
   };
 
   const handleReset = () => {
     setSelectedJoint('hombro-flex');
     setSceneReset((value) => value + 1);
+    setProgress(0);
+    setIsAnimating(false);
   };
 
   return (
@@ -215,7 +232,7 @@ export default function Slide10({ slideCount }: { slideCount?: string }) {
         </div>
         <div className="sim-area c3-mobility-area" style={{ position: 'relative' }}>
           {show3D ? (
-            <BodyScene id="sim-mobility-3d" mode="regions" selected={null} resetSignal={sceneReset} mobility={MOBILITY_3D_DATA[selectedJoint]} />
+            <BodyScene id="sim-mobility-3d" mode="regions" selected={null} resetSignal={sceneReset} mobility={currentRange} progress={progress} />
           ) : (
             <MobilityCanvas selectedJoint={selectedJoint} />
           )}
@@ -223,7 +240,85 @@ export default function Slide10({ slideCount }: { slideCount?: string }) {
             <span className="badge">C3 · Rangos</span>
             <span>{currentDetail.name}: <b style={{ color: '#b02318' }}>{currentDetail.rom}</b></span>
 
+            {/* Lectura en vivo: qué movimiento se está ejecutando y cuántos grados
+                lleva recorridos. Es el puente entre la Tabla 1.10 y el esqueleto. */}
+            {show3D && readout && (
+              <span
+                style={{
+                  fontFamily: 'JetBrains Mono, monospace',
+                  fontSize: '0.62rem',
+                  background: 'var(--teal-tint)',
+                  border: '1px solid var(--teal)',
+                  color: 'var(--teal-deep)',
+                  borderRadius: '4px',
+                  padding: '1px 6px',
+                  fontWeight: 700,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {readout.label} {readout.deg.toFixed(0)}°
+              </span>
+            )}
+
+            {show3D && (
+              <label style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.62rem' }}>
+                <span>Fase</span>:
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={Math.round(progress * 100)}
+                  onChange={(e) => {
+                    setIsAnimating(false);
+                    setProgress(parseFloat(e.target.value) / 100);
+                  }}
+                  style={{ width: '70px' }}
+                />
+              </label>
+            )}
+
             <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+              {show3D && (
+                <>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '2px', background: 'var(--paper-2)', border: '1px solid var(--line)', borderRadius: '4px', padding: '1px 3px' }}>
+                    {[0.5, 1.0, 1.5].map((spd) => (
+                      <button
+                        key={spd}
+                        type="button"
+                        onClick={() => setAnimSpeed(spd)}
+                        style={{
+                          border: 'none',
+                          background: animSpeed === spd ? 'var(--teal)' : 'transparent',
+                          color: animSpeed === spd ? '#ffffff' : 'var(--ink-3)',
+                          borderRadius: '2px',
+                          padding: '1px 4px',
+                          fontSize: '0.55rem',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                        }}
+                      >
+                        {spd}x
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setIsAnimating((a) => !a)}
+                    style={{
+                      background: isAnimating ? 'var(--teal-tint)' : 'var(--paper-2)',
+                      border: `1px solid ${isAnimating ? 'var(--teal)' : 'var(--line)'}`,
+                      color: isAnimating ? 'var(--teal-deep)' : 'var(--ink)',
+                      borderRadius: '4px',
+                      padding: '2px 8px',
+                      fontSize: '0.64rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    {isAnimating ? '⏸ Pausar' : '▶ Animar'}
+                  </button>
+                </>
+              )}
               <button
                 type="button"
                 onClick={() => setShow3D((value) => !value)}

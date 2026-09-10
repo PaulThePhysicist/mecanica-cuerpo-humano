@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { FULL_BODY_FLOOR_Y, FULL_BODY_SCALE, FULL_BODY_SHADOW_Y } from './bodySceneGeometry';
 import { AnatomyStage } from './three/AnatomyStage';
 import { useAnatomyScene } from './three/useAnatomyNodes';
+import { Callout, CalloutProvider, CalloutRail, CalloutSource, useCalloutStore } from './three/Callouts';
 
 const highlightUniforms = {
   highlightCenters: { value: [new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()] },
@@ -180,7 +181,8 @@ function DoubleArrow({
         {mat}
       </mesh>
 
-      {/* Etiquetas */}
+      {/* Etiquetas de eje: SIEMPRE sobre la flecha (no van al riel lateral —
+          ese es solo para los letreros de término, que sí tapaban el modelo). */}
       {showLabels && (
         <>
           <Html position={[pPos.x, pPos.y, pPos.z]} center zIndexRange={[100, 0]}>
@@ -277,19 +279,8 @@ function SpanArrow({ color, label, showLabels = true }: { color: string; label: 
         <coneGeometry args={[0.035, 0.09, 16]} />
         {mat}
       </mesh>
-      {/* etiqueta única */}
-      {showLabels && (
-        <Html center position={[-0.40, Y, Z]} zIndexRange={[100, 0]}>
-          <div style={{
-            background: 'rgba(255,253,248,0.97)', color: '#22303c',
-            border: `1px solid ${color}`, padding: '4px 9px', borderRadius: '5px',
-            fontSize: '0.65rem', fontFamily: 'var(--sans)', fontWeight: 'bold',
-            whiteSpace: 'nowrap', pointerEvents: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-          }}>
-            {label}
-          </div>
-        </Html>
-      )}
+      {/* etiqueta única → riel lateral, anclada al vástago del calibre */}
+      {showLabels && <Callout position={[0, Y, Z]} label={label} color={color} />}
     </group>
   );
 }
@@ -358,19 +349,8 @@ function RadialArmSpan({ color, label, showLabels = true }: { color: string; lab
         </mesh>
       </group>
 
-      {/* Etiqueta explicativa flotante en el lateral libre */}
-      {showLabels && (
-        <Html center position={[midOff.x - 0.22, midOff.y, midOff.z]} zIndexRange={[100, 0]}>
-          <div style={{
-            background: 'rgba(255,253,248,0.97)', color: '#22303c',
-            border: `1px solid ${color}`, padding: '4px 9px', borderRadius: '5px',
-            fontSize: '0.65rem', fontFamily: 'var(--sans)', fontWeight: 'bold',
-            whiteSpace: 'nowrap', pointerEvents: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-          }}>
-            {label}
-          </div>
-        </Html>
-      )}
+      {/* Etiqueta explicativa → riel lateral, anclada al centro del calibre */}
+      {showLabels && <Callout position={[midOff.x, midOff.y, midOff.z]} label={label} color={color} />}
     </group>
   );
 }
@@ -440,21 +420,9 @@ function DepthSpanArrow({ color, label, showLabels = true }: { color: string; la
         </mesh>
       </group>
 
-      {/* Etiqueta explicativa única del calibre */}
+      {/* Etiqueta explicativa → riel lateral, anclada al centro del calibre */}
       {showLabels && (
-        <Html center position={[midOff.x + 0.28, midOff.y, midOff.z]} zIndexRange={[100, 0]}>
-          <div style={{
-            background: 'rgba(255,253,248,0.98)', color: '#22303c',
-            border: `1px solid ${color}`, padding: '4px 8px', borderRadius: '5px',
-            fontSize: '0.62rem', fontFamily: 'var(--sans)', fontWeight: 'bold',
-            whiteSpace: 'nowrap', pointerEvents: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-          }}>
-            <div>{label}</div>
-            <div style={{ marginTop: '2px', color: color, fontSize: '0.58rem', fontWeight: 700 }}>
-              ρ aumenta → interior
-            </div>
-          </div>
-        </Html>
+        <Callout position={[midOff.x, midOff.y, midOff.z]} label={label} sub="ρ aumenta → interior" color={color} />
       )}
     </group>
   );
@@ -602,23 +570,7 @@ function Markers({ hoveredTerm, showLabels = true }: { hoveredTerm: string | nul
               <meshStandardMaterial color={m.color} emissive={m.color} emissiveIntensity={0.35} transparent opacity={0.95} depthTest={false} />
             </mesh>
             {showLabels && m.label && (
-              <Html center position={m.labelOff ? [m.labelOff[0], m.labelOff[1], m.labelOff[2]] : [0, m.r + 0.05, 0]} zIndexRange={[100, 0]}>
-                <div style={{
-                  background: 'rgba(255,253,248,0.97)',
-                  color: '#22303c',
-                  border: `1px solid ${m.color}`,
-                  padding: '4px 9px',
-                  borderRadius: '5px',
-                  fontSize: '0.65rem',
-                  fontFamily: 'var(--sans)',
-                  fontWeight: 'bold',
-                  whiteSpace: 'nowrap',
-                  pointerEvents: 'none',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-                }}>
-                  {m.label}
-                </div>
-              </Html>
+              <Callout position={[0, 0, 0]} label={m.label} color={m.color} />
             )}
           </group>
         ))}
@@ -708,29 +660,36 @@ export default function AnatomyCanvas({
   resetSignal?: number;
   zoomSignal?: { type: 'in' | 'out'; time: number } | null;
 }) {
+  // Riel de letreros: los <Callout> de la escena registran su texto aquí y el
+  // <CalloutRail> los apila a la derecha del lienzo, conectados por líneas guía.
+  const callouts = useCalloutStore();
   // El esternón del GLB está hacia +Z; la vista inicial mira desde +Z (cara anterior).
   return (
-    <AnatomyStage
-      camera={{ position: [3.6, 1.8, 12.5], fov: 45 }}
-      target={[0, 0, 0]}
-      minDistance={3.5}
-      maxDistance={32}
-      minPolarAngle={Math.PI / 6}
-      maxPolarAngle={Math.PI / 1.8}
-      autoRotate={autoRotate}
-      autoRotateSpeed={1.5}
-      grid={false}
-      shadowY={FULL_BODY_SHADOW_Y}
-      shadowScale={8}
-      shadowOpacity={0.45}
-      resetSignal={resetSignal}
-      zoomSignal={zoomSignal}
-    >
-      <Center position={[0, 0, 0]}>
-        <AnatomyModel hoveredTerm={hoveredTerm || null} />
-        <Axes hoveredTerm={hoveredTerm || null} showLabels={showLabels} />
-        <Markers hoveredTerm={hoveredTerm || null} showLabels={showLabels} />
-      </Center>
-    </AnatomyStage>
+    <CalloutProvider store={callouts}>
+      <AnatomyStage
+        camera={{ position: [3.6, 1.8, 12.5], fov: 45 }}
+        target={[0, 0, 0]}
+        minDistance={3.5}
+        maxDistance={32}
+        minPolarAngle={Math.PI / 6}
+        maxPolarAngle={Math.PI / 1.8}
+        autoRotate={autoRotate}
+        autoRotateSpeed={1.5}
+        grid={false}
+        shadowY={FULL_BODY_SHADOW_Y}
+        shadowScale={8}
+        shadowOpacity={0.45}
+        resetSignal={resetSignal}
+        zoomSignal={zoomSignal}
+        overlay={showLabels ? <CalloutRail store={callouts} side="right" /> : undefined}
+      >
+        <Center position={[0, 0, 0]}>
+          <AnatomyModel hoveredTerm={hoveredTerm || null} />
+          <Axes hoveredTerm={hoveredTerm || null} showLabels={showLabels} />
+          <Markers hoveredTerm={hoveredTerm || null} showLabels={showLabels} />
+        </Center>
+        {showLabels && <CalloutSource />}
+      </AnatomyStage>
+    </CalloutProvider>
   );
 }

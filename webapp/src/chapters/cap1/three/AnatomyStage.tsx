@@ -1,11 +1,13 @@
-import React, { Suspense, useEffect, useRef, useState } from 'react';
+import React, { Suspense, useEffect, useId, useRef, useState } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
-import { ContactShadows, Html } from '@react-three/drei';
+import { ContactShadows, Html, PerspectiveCamera } from '@react-three/drei';
 import * as THREE from 'three';
 import { AccessibleOrbitControls, SceneControlPad } from '../AccessibleOrbitControls';
 import { STUDIO_BG } from './materials';
 import { StudioLights } from './StudioLights';
 import { FitCamera } from './FitCamera';
+import { sharedGLEnabled } from './sharedGL';
+import { useSharedStage } from './SharedStage';
 
 // ── Boundary + detección de WebGL (impl. de referencia: BodyScene.tsx) ──
 class ThreeErrorBoundary extends React.Component<
@@ -128,6 +130,99 @@ function ZoomHandler({ zoomSignal }: { zoomSignal: ZoomSignal }) {
   return null;
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Modo «GL compartido»: en vez de un <Canvas> (contexto WebGL) por stage, todos
+// los stages de cap1 comparten un único <Canvas> persistente (ver
+// three/SharedStage.tsx). Cada stage visible REGISTRA su escena; el host la
+// renderiza en ese Canvas y mueve el lienzo a su contenedor. Evita el
+// `THREE.WebGLRenderer: Context Lost.` al acumularse contextos con la ventana de
+// diapositivas ±1. Detrás del flag `sharedGLEnabled()`; apagado → <Canvas>
+// clásico por stage (más abajo).
+// ─────────────────────────────────────────────────────────────────────────────
+
+interface SharedGLStageProps {
+  id?: string;
+  className?: string;
+  overlay?: React.ReactNode;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  controlsRef: React.MutableRefObject<any>;
+  cameraPos: [number, number, number];
+  cameraFov: number;
+  minDistance: number;
+  maxDistance: number;
+  minPolarAngle: number;
+  maxPolarAngle: number;
+  autoRotate: boolean;
+  autoRotateSpeed: number;
+  target: [number, number, number];
+  onPointerMissed?: () => void;
+  children: React.ReactNode;
+}
+
+function SharedGLStage({
+  id,
+  className,
+  overlay,
+  controlsRef,
+  cameraPos,
+  cameraFov,
+  minDistance,
+  maxDistance,
+  minPolarAngle,
+  maxPolarAngle,
+  autoRotate,
+  autoRotateSpeed,
+  target,
+  onPointerMissed,
+  children,
+}: SharedGLStageProps) {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const stageId = useId();
+  const { register, unregister } = useSharedStage();
+
+  // Sub-árbol r3f de la escena: mismo contenido y orden que el camino clásico,
+  // pero se lo entregamos al <Canvas> compartido en vez de montar uno propio.
+  const sceneNode = (
+    <>
+      <PerspectiveCamera makeDefault position={cameraPos} fov={cameraFov} near={0.1} far={1000} />
+      {children}
+      <AccessibleOrbitControls
+        controlsRef={controlsRef}
+        minDistance={minDistance}
+        maxDistance={maxDistance}
+        minPolarAngle={minPolarAngle}
+        maxPolarAngle={maxPolarAngle}
+        autoRotate={autoRotate}
+        autoRotateSpeed={autoRotateSpeed}
+        target={target}
+      />
+    </>
+  );
+
+  // Re-registra la escena en cada render de este stage (que ocurre al cambiar sus
+  // props: resetSignal, zoomSignal, mode, ángulos…). `register` repinta el host
+  // de forma aislada — NO re-renderiza este componente, así que el efecto no se
+  // realimenta. El provider sólo se re-renderiza al navegar de slide.
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (el) register(stageId, { el, node: sceneNode, onPointerMissed });
+  });
+  useEffect(() => () => unregister(stageId), [stageId, unregister]);
+
+  return (
+    <div
+      ref={wrapRef}
+      id={id}
+      className={`three-container${className ? ` ${className}` : ''}`}
+      style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}
+    >
+      {/* El <Canvas> compartido se inserta como primer hijo por SharedStageHost. */}
+      <SceneControlPad controlsRef={controlsRef} />
+      {overlay}
+    </div>
+  );
+}
+
 export interface AnatomyStageProps {
   camera: { position: [number, number, number]; fov?: number };
   target?: [number, number, number];
@@ -208,6 +303,53 @@ export function AnatomyStage({
 
   if (!webgl) return <div id={id}>{WebGLFallback}</div>;
 
+  // Rig 3D común a los dos caminos (Canvas propio / View compartido). Mismo árbol
+  // y mismo orden que antes; solo se ha izado a una variable para no duplicarlo.
+  const sceneChildren = (
+    <>
+      <CameraRig position={camera.position} target={target} resetSignal={resetSignal} fit={fit} />
+      <ZoomHandler zoomSignal={zoomSignal} />
+
+      {/* Rig de estudio compartido (ambiente bajo + principal + contra). */}
+      <StudioLights keyIntensity={1.55} />
+
+      {grid && <gridHelper args={gridArgs} position={[0, gridY, 0]} />}
+
+      <Suspense fallback={loader ?? <DefaultLoader />}>
+        <group name="fit-root">{children}</group>
+        {shadow && (
+          <ContactShadows position={[0, shadowY, 0]} opacity={shadowOpacity} scale={shadowScale} blur={2.4} far={5} color="#232c36" />
+        )}
+        {fit && <FitCamera padding={fitPadding} lookTarget={target} refit={refit ?? resetSignal} />}
+      </Suspense>
+    </>
+  );
+
+  // Camino «GL compartido»: <View> sobre el <Canvas> anfitrión de Capitulo1.
+  if (sharedGLEnabled()) {
+    return (
+      <SharedGLStage
+        id={id}
+        className={className}
+        overlay={overlay}
+        controlsRef={controlsRef}
+        cameraPos={camera.position}
+        cameraFov={camera.fov ?? 42}
+        minDistance={minDistance}
+        maxDistance={maxDistance}
+        minPolarAngle={minPolarAngle}
+        maxPolarAngle={maxPolarAngle}
+        autoRotate={autoRotate}
+        autoRotateSpeed={autoRotateSpeed}
+        target={target}
+        onPointerMissed={onPointerMissed}
+      >
+        {sceneChildren}
+      </SharedGLStage>
+    );
+  }
+
+  // Camino clásico: un <Canvas> (contexto WebGL) por stage.
   return (
     <div id={id} className={`three-container${className ? ` ${className}` : ''}`} style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
       <ThreeErrorBoundary fallback={WebGLFallback}>
@@ -218,21 +360,7 @@ export function AnatomyStage({
           style={{ width: '100%', height: '100%', display: 'block', background: STUDIO_BG }}
           onPointerMissed={onPointerMissed}
         >
-          <CameraRig position={camera.position} target={target} resetSignal={resetSignal} fit={fit} />
-          <ZoomHandler zoomSignal={zoomSignal} />
-
-          {/* Rig de estudio compartido (ambiente bajo + principal + contra). */}
-          <StudioLights keyIntensity={1.55} />
-
-          {grid && <gridHelper args={gridArgs} position={[0, gridY, 0]} />}
-
-          <Suspense fallback={loader ?? <DefaultLoader />}>
-            <group name="fit-root">{children}</group>
-            {shadow && (
-              <ContactShadows position={[0, shadowY, 0]} opacity={shadowOpacity} scale={shadowScale} blur={2.4} far={5} color="#232c36" />
-            )}
-            {fit && <FitCamera padding={fitPadding} lookTarget={target} refit={refit ?? resetSignal} />}
-          </Suspense>
+          {sceneChildren}
 
           <AccessibleOrbitControls
             controlsRef={controlsRef}

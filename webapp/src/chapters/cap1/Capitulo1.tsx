@@ -1,5 +1,7 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useEngine, EngineContext } from './useEngine';
+import { sharedGLEnabled } from './three/sharedGL';
+import { SharedStageProvider } from './three/SharedStage';
 import './legacy.css';
 import { MODULES, TOTAL, redrawSlide } from './sims';
 import * as SIM from './sims';
@@ -113,6 +115,10 @@ function renderKatex(root: HTMLElement = document.body) {
 export default function Capitulo1({ onBack }: { onBack?: () => void }) {
   const engine = useEngine();
   const { activeSlide, go, next, prev, goModule } = engine;
+  // Modo «GL compartido»: un solo <Canvas> persistente para todo el capítulo
+  // (ver three/SharedStage.tsx); cada AnatomyStage registra su escena en vez de
+  // crear su propio contexto WebGL.
+  const sharedGL = sharedGLEnabled();
   const [hl, setHl] = useState<string | null>(null);
   const [termSel, setTermSel] = useState<string | null>(null);
   const [planeSel, setPlaneSel] = useState<string | null>(null);
@@ -127,6 +133,7 @@ export default function Capitulo1({ onBack }: { onBack?: () => void }) {
   useEffect(() => {
     seen.current.add(activeSlide);
   }, [activeSlide]);
+
 
   // El capítulo usa rem en tarjetas, controles y navegación. Ajustamos la
   // raíz mientras está montado para aumentar la legibilidad de toda la
@@ -491,7 +498,7 @@ export default function Capitulo1({ onBack }: { onBack?: () => void }) {
 
   const moduleName = (MODULES.find((m) => m.slides.includes(activeSlide)) || MODULES[0]).name;
 
-  return (
+  const presentation = (
     <EngineContext.Provider value={engine}>
       <div className="cap1-presentation">
       <nav className="module-bar" id="moduleBar">
@@ -571,4 +578,7 @@ export default function Capitulo1({ onBack }: { onBack?: () => void }) {
       </div>
     </EngineContext.Provider>
   );
+
+  // Con «GL compartido» todo el capítulo comparte un único contexto WebGL.
+  return sharedGL ? <SharedStageProvider>{presentation}</SharedStageProvider> : presentation;
 }
