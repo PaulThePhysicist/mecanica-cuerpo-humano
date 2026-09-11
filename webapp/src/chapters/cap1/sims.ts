@@ -3784,7 +3784,7 @@ function vitalsPanel(ctx, x, y, w, H, mass, area, bmr, bmi, hr, rr, t) {
     ['Masa', mass + ' kg', PAL.ink2],
     ['Peso', weightN + ' N', PAL.ink2],
     ['Área', area.toFixed(2).replace('.', ',') + ' m²', PAL.teal],
-    ['TMB', Math.round(bmr) + ' kcal', PAL.blood],
+    ['TMB', Math.round(bmr) + ' kcal/h', PAL.blood],
     ['IMC', bmi.toFixed(1).replace('.', ','), bmiColor(bmi)],
     ['Sangre', '5,2 L', PAL.blood],
     ['Pulmón', '6,0 L', '#2b7d97'],
