@@ -7,8 +7,8 @@ interface Slide2Props {
 }
 
 const PLANE_DESCRIPTIONS: Record<string, string> = {
-  'plane-sagittal': '<b>Plano sagital (x = cte):</b> Divide el cuerpo en mitades derecha e izquierda. Plano principal para flexión y extensión. El plano midsagital (x = 0) pasa por el centro.',
-  'plane-coronal': '<b>Plano coronal o frontal (y = cte):</b> Divide en porciones anterior y posterior (ventral y dorsal). Plano principal para abducción y aducción.',
+  'plane-sagittal': '<b>Plano sagital (y = cte):</b> Divide el cuerpo en mitades derecha e izquierda. Plano principal para flexión y extensión. El plano midsagital (y = 0) pasa por el centro.',
+  'plane-coronal': '<b>Plano coronal o frontal (x = cte):</b> Divide en porciones anterior y posterior (ventral y dorsal). Plano principal para abducción y aducción.',
   'plane-transverse': '<b>Plano transverso u horizontal (z = cte):</b> Divide en mitades superior e inferior (cefálica y podálica). Plano principal para rotaciones axiales.',
 };
 
@@ -82,9 +82,9 @@ export default function Slide2({ planeSel: parentPlaneSel, slideCount }: Slide2P
                   style={{ display: 'flex', alignItems: 'center', gap: '.45rem', padding: '.4rem .55rem', cursor: 'pointer' }}
                 >
                   <span style={{ fontWeight: 700, fontSize: '.7rem', color: 'var(--sagittal)' }}>Sagital</span>
-                  <span className="tag">x = cte</span>
+                  <span className="tag">y = cte</span>
                   <span style={{ fontSize: '.62rem', color: 'var(--ink-3)' }}>derecha / izquierda</span>
-                  <span className="tag" style={{ fontSize: '.52rem' }}>midsagital: x = 0</span>
+                  <span className="tag" style={{ fontSize: '.52rem' }}>midsagital: y = 0</span>
                   {offsetSlider('plane-sagittal', 'sagital')}
                 </div>
                 <div
@@ -94,7 +94,7 @@ export default function Slide2({ planeSel: parentPlaneSel, slideCount }: Slide2P
                   style={{ display: 'flex', alignItems: 'center', gap: '.45rem', padding: '.4rem .55rem', cursor: 'pointer' }}
                 >
                   <span style={{ fontWeight: 700, fontSize: '.7rem', color: 'var(--coronal)' }}>Coronal</span>
-                  <span className="tag">y = cte</span>
+                  <span className="tag">x = cte</span>
                   <span style={{ fontSize: '.62rem', color: 'var(--ink-3)' }}>anterior / posterior</span>
                   <span style={{ fontSize: '.58rem', color: 'var(--ink-3)' }}>(frontal)</span>
                   {offsetSlider('plane-coronal', 'coronal')}
