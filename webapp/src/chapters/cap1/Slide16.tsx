@@ -47,7 +47,7 @@ export default function Slide16({ go, goModule, slideCount }: Slide16Props) {
               <span className="icon">📈</span> Relaciones de escala
             </div>
             <div className="card-body" style={{ fontSize: '.68rem' }}>
-              Alometría f = a·m^α, huesos w ∝ L^{'{'}3/2{'}'}, índices S y BMI, Du Bois (A), y la Ley de Stevens P = K(S−S₀)^n.
+              {'Alometría $f = a \\cdot m^\\alpha$, huesos $w \\propto L^{3/2}$, índices S y BMI, Du Bois (A), y la Ley de Stevens $P = K\\,(S - S_0)^n$.'}
             </div>
           </div>
         </div>
