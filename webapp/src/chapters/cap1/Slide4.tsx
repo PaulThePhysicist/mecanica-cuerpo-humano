@@ -183,7 +183,7 @@ export default function Slide4({ setGLMode: parentSetGLMode, slideCount }: Slide
                 Un <strong>grado de libertad (GL)</strong> es una coordenada independiente para describir el movimiento de un cuerpo en el espacio.
               </p>
               <div className="eq-block">
-                {'\\['} 6\,\mathrm{'{'}GL{'}'} = \underbrace{'{'}3\ \text{'{'}traslacionales{'}'}{'}'}_{'{'}x,\,y,\,z{'}'}\ +\ \underbrace{'{'}3\ \text{'{'}rotacionales{'}'}{'}'}_{'{\\theta_x,\,\\theta_y,\,\\theta_z}'} {'\\]'}
+                {'\\['} 6\,\mathrm{'{'}GL{'}'} = \underbrace{'{'}3\ \text{'{'}traslacionales{'}'}{'}'}_{'{'}x,\,y,\,z{'}'}\ +\ \underbrace{'{'}3\ \text{'{'}rotacionales{'}'}{'}'}_{'{'}\theta_x,\,\theta_y,\,\theta_z{'}'} {'\\]'}
               </div>
               <p style={{ fontSize: '.68rem' }}>
                 El cuerpo humano es un <strong>mecanismo articulado</strong>: cada articulación aporta un número fijo de GL a la cadena cinemática.

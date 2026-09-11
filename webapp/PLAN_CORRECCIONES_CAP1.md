@@ -404,7 +404,7 @@ Estado: `PENDIENTE` · `EN CURSO` · `CERRADO`.
 | `C1-02` | 1 | Una sola fuente de verdad para el Hombre Estándar | CERRADO | `fix(cap1): C1-02 unificar constantes del hombre estándar` |
 | `C1-03` | 1 | Añadir la unidad de tiempo a la TMB | CERRADO | `fix(cap1): C1-03 añadir la unidad de tiempo a la TMB` |
 | `C1-04` | 1 | Renderizar el LaTeX pendiente del Resumen | CERRADO | `fix(cap1): C1-04 renderizar el LaTeX pendiente del Resumen` |
-| `C1-05` | 1 | Corregir la coma doble de los grados de libertad | PENDIENTE | |
+| `C1-05` | 1 | Corregir la coma doble de los grados de libertad | CERRADO | `fix(cap1): C1-05 corregir la coma doble de los grados de libertad` |
 | `C1-06` | 1 | Unificar el separador decimal (coma) | PENDIENTE | |
 | `V2-01` | 2 | Encuadrar la cámara en el objetivo | PENDIENTE | |
 | `V2-02` | 2 | Hacer legible el rango de movilidad de C3 | PENDIENTE | |
