@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import BMICalculatorCanvas from './BMICalculatorCanvas';
 import HudPanel from './HudPanel';
+import { STANDARD_MAN } from './standardMan';
 
 export default function Slide14({ slideCount }: { slideCount?: string }) {
-  const [mass, setMass] = useState<number>(70);
-  const [heightCm, setHeightCm] = useState<number>(172);
+  const [mass, setMass] = useState<number>(STANDARD_MAN.massKg);
+  const [heightCm, setHeightCm] = useState<number>(STANDARD_MAN.heightM * 100);
   const [gender, setGender] = useState<'H' | 'M'>('H');
 
   const heightM = heightCm / 100;
@@ -33,8 +34,8 @@ export default function Slide14({ slideCount }: { slideCount?: string }) {
   }
 
   const handleReset = () => {
-    setMass(70);
-    setHeightCm(172);
+    setMass(STANDARD_MAN.massKg);
+    setHeightCm(STANDARD_MAN.heightM * 100);
     setGender('H');
   };
 
@@ -86,7 +87,7 @@ export default function Slide14({ slideCount }: { slideCount?: string }) {
           <div className="apuntes">
             <div className="a-hdr"><span>✍️</span> Apunte de cátedra</div>
             <div className="a-text" id="info-text-d3">
-              Con <b>{mass} kg</b> y <b>{heightCm} cm</b>: Tu IMC es de <b style={{ color: catColor }}>{bmi.toFixed(1).replace('.', ',')} ({cat})</b>, tu área Du Bois es de <b>{bsa.toFixed(2).replace('.', ',')} m²</b> y tu grasa corporal estimada ({gender === 'H' ? 'Varón' : 'Mujer'}) es de <b>{currentFat.toFixed(1).replace('.', ',')}%</b>.
+              Con <b>{mass} kg</b> y <b>{heightCm} cm</b>: Tu IMC es de <b style={{ color: catColor }}>{bmi.toFixed(1).replace('.', ',')} ({cat})</b>, tu área Du Bois es de <b>{bsa.toFixed(2).replace('.', ',')} m²</b> y tu grasa corporal estimada por IMC ({gender === 'H' ? 'Varón' : 'Mujer'}) es de <b>{currentFat.toFixed(1).replace('.', ',')}%</b>.
             </div>
           </div>
         </div>
@@ -120,7 +121,7 @@ export default function Slide14({ slideCount }: { slideCount?: string }) {
                 <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>{rho.toFixed(3).replace('.', ',')} kg/L</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--ink-2)' }}>Grasa Estimada ({gender === 'H' ? 'Varón' : 'Mujer'}):</span>
+                <span style={{ color: 'var(--ink-2)' }}>Grasa Estimada por IMC ({gender === 'H' ? 'Varón' : 'Mujer'}):</span>
                 <b style={{ color: '#b86a1e', fontFamily: 'JetBrains Mono, monospace' }}>{currentFat.toFixed(1).replace('.', ',')}%</b>
               </div>
             </div>
@@ -211,7 +212,7 @@ export default function Slide14({ slideCount }: { slideCount?: string }) {
                 marginLeft: 'auto',
               }}
             >
-              Restablecer (70 kg · 172 cm)
+              Restablecer ({STANDARD_MAN.massKg} kg · {STANDARD_MAN.heightM * 100} cm)
             </button>
           </div>
         </div>

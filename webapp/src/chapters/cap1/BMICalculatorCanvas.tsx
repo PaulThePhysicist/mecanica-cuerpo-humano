@@ -317,7 +317,7 @@ export default function BMICalculatorCanvas({
       ctx.fillStyle = '#17212b';
       ctx.font = `${scaled(8)}px Karla, system-ui, sans-serif`;
       ctx.textAlign = 'left';
-      ctx.fillText(`Composición: Magra ${(100 - fatPct).toFixed(1)}%  ·  Grasa ${fatPct.toFixed(1)}% (${gender === 'H' ? 'Varón' : 'Mujer'})`, barX, barY + barH + 12);
+      ctx.fillText(`Composición (IMC): Magra ${(100 - fatPct).toFixed(1)}%  ·  Grasa ${fatPct.toFixed(1)}% (${gender === 'H' ? 'Varón' : 'Mujer'})`, barX, barY + barH + 12);
       ctx.restore();
 
       ctx.restore();

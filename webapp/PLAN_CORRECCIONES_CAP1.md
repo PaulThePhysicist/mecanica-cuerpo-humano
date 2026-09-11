@@ -401,7 +401,7 @@ Estado: `PENDIENTE` · `EN CURSO` · `CERRADO`.
 | ID | Fase | Título | Estado | Commit |
 | :--- | :--- | :--- | :--- | :--- |
 | `C1-01` | 1 | Unificar la convención de planos anatómicos | CERRADO | `fix(cap1): C1-01 unificar convención de planos anatómicos` |
-| `C1-02` | 1 | Una sola fuente de verdad para el Hombre Estándar | PENDIENTE | |
+| `C1-02` | 1 | Una sola fuente de verdad para el Hombre Estándar | CERRADO | `fix(cap1): C1-02 unificar constantes del hombre estándar` |
 | `C1-03` | 1 | Añadir la unidad de tiempo a la TMB | PENDIENTE | |
 | `C1-04` | 1 | Renderizar el LaTeX pendiente del Resumen | PENDIENTE | |
 | `C1-05` | 1 | Corregir la coma doble de los grados de libertad | PENDIENTE | |

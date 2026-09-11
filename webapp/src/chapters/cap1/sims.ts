@@ -11,6 +11,8 @@
  * resuelva (el re-export cruzado desde un módulo @ts-nocheck no funciona).
  * ========================================================================== */
 
+import { STANDARD_MAN, STANDARD_GRAVITY } from './standardMan';
+
 export const TOTAL = 17;
 export const MODULES = [
   { id: 0, name: "Inicio",               slides: [0],            ico: "🏠" },
@@ -3526,8 +3528,13 @@ export function drawBodyProportions(customMass?: number, customHeight?: number) 
   ctx.clearRect(0, 0, W, H);
 
   /* ── Física del Hombre Estándar (Tabla 1.5) ── */
+  var isRefBody = mass === STANDARD_MAN.massKg && Href === STANDARD_MAN.heightM;
   var ratio = mass / 70;
-  var area = 0.202 * Math.pow(mass, 0.425) * Math.pow(Href, 0.725); // Du Bois
+  // A masa/altura de referencia se cita el área tabulada (Tabla 1.5, 1,85 m²) en
+  // vez del resultado de Du Bois (≈1,82 m²): son dos números legítimamente
+  // distintos por método distinto (ver standardMan.ts). Fuera de la referencia
+  // no hay cifra tabulada con la que comparar, así que se evalúa la fórmula.
+  var area = isRefBody ? STANDARD_MAN.bsaM2 : 0.202 * Math.pow(mass, 0.425) * Math.pow(Href, 0.725); // Du Bois
   var bmr = 70 * Math.pow(ratio, 0.75);                // Kleiber
   var bmi = mass / (Href * Href);
   var hr = 65, rr = 15;
@@ -3770,9 +3777,12 @@ function vitalsPanel(ctx, x, y, w, H, mass, area, bmr, bmi, hr, rr, t) {
   ctx.restore();
 
   // Filas de datos
+  // Peso: a la masa de referencia se cita el valor tabulado (Tabla 1.5, 690 N)
+  // en vez de m·g con g=9,81 (≈687 N) — ver la nota de área en drawBodyProportions.
+  var weightN = mass === STANDARD_MAN.massKg ? STANDARD_MAN.weightN : Math.round(mass * STANDARD_GRAVITY);
   var rows = [
     ['Masa', mass + ' kg', PAL.ink2],
-    ['Peso', Math.round(mass * 9.81) + ' N', PAL.ink2],
+    ['Peso', weightN + ' N', PAL.ink2],
     ['Área', area.toFixed(2).replace('.', ',') + ' m²', PAL.teal],
     ['TMB', Math.round(bmr) + ' kcal', PAL.blood],
     ['IMC', bmi.toFixed(1).replace('.', ','), bmiColor(bmi)],

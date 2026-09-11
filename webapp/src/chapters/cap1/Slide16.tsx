@@ -1,4 +1,5 @@
 import React from 'react';
+import { STANDARD_MAN } from './standardMan';
 
 interface Slide16Props {
   go?: (n: number) => void;
@@ -38,7 +39,7 @@ export default function Slide16({ go, goModule, slideCount }: Slide16Props) {
               <span className="icon">📐</span> El Humano Estándar
             </div>
             <div className="card-body" style={{ fontSize: '.68rem' }}>
-              70 kg, 1,72 m, 1,85 m², TMB 70 kcal/h, 15 % grasa. Proporciones segmentarias fijas L/H. Somatotipos y Heath-Carter.
+              {STANDARD_MAN.massKg} kg, {String(STANDARD_MAN.heightM).replace('.', ',')} m, {String(STANDARD_MAN.bsaM2).replace('.', ',')} m², TMB {STANDARD_MAN.bmrKcalH} kcal/h, {STANDARD_MAN.fatPercent} % grasa. Proporciones segmentarias fijas L/H. Somatotipos y Heath-Carter.
             </div>
           </div>
           <div className="card" style={{ cursor: 'pointer' }} onClick={() => goModule?.(4)}>

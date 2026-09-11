@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import StandardHumanCanvas from './StandardHumanCanvas';
+import { STANDARD_MAN } from './standardMan';
 
 interface ParamDetail {
   id: string;
@@ -8,48 +9,50 @@ interface ParamDetail {
   desc: string;
 }
 
+const SM_HEIGHT = String(STANDARD_MAN.heightM).replace('.', ',');
+
 const PARAMS_DATA: Record<string, ParamDetail> = {
   mass: {
     id: 'mass',
     name: 'Estatura y Masa',
-    refValue: '1,72 m · 70 kg (690 N)',
-    desc: '<b>Hombre Estándar de Referencia:</b> Definido a los 30 años, 1,72 m de estatura y 70 kg de masa corporal (peso $W = mg \\approx 690\\text{ N}$).',
+    refValue: `${SM_HEIGHT} m · ${STANDARD_MAN.massKg} kg (${STANDARD_MAN.weightN} N)`,
+    desc: `<b>Hombre Estándar de Referencia:</b> Definido a los ${STANDARD_MAN.ageYears} años, ${SM_HEIGHT} m de estatura y ${STANDARD_MAN.massKg} kg de masa corporal (peso $W = mg \\approx ${STANDARD_MAN.weightN}\\text{ N}$).`,
   },
   area: {
     id: 'area',
     name: 'Área de Superficie (Du Bois)',
-    refValue: '1,85 m²',
+    refValue: `${String(STANDARD_MAN.bsaM2).replace('.', ',')} m²`,
     desc: '<b>Área de Superficie (Fórmula de Du Bois):</b> $A = 0{,}202 \\cdot m^{0{,}425} \\cdot H^{0{,}725}$. Clave para la disipación térmica y dosificación farmacológica.',
   },
   bmr: {
     id: 'bmr',
     name: 'Tasa Metabólica Basal (Kleiber)',
-    refValue: '70 kcal/h (1680 kcal/día)',
-    desc: '<b>Tasa Metabólica Basal (TMB · Ley de Kleiber):</b> $\\text{TMB} = 70 \\cdot (m / 70)^{0{,}75}\\text{ kcal/h}$. Escala alométrica con exponente $3/4$.',
+    refValue: `${STANDARD_MAN.bmrKcalH} kcal/h (${STANDARD_MAN.bmrKcalDay} kcal/día)`,
+    desc: `<b>Tasa Metabólica Basal (TMB · Ley de Kleiber):</b> $\\text{TMB} = ${STANDARD_MAN.bmrKcalH} \\cdot (m / ${STANDARD_MAN.massKg})^{0{,}75}\\text{ kcal/h}$. Escala alométrica con exponente $3/4$.`,
   },
   cardio: {
     id: 'cardio',
     name: 'Sistema Cardiovascular',
-    refValue: '65 lpm · 5,2 L volemia · 120/80 mmHg',
-    desc: '<b>Constantes Cardiovasculares:</b> Frecuencia cardíaca en reposo de 65 lpm, volumen sanguíneo de 5,2 L (aprox. 7,5% de la masa) y presión de 120/80 mmHg.',
+    refValue: `${STANDARD_MAN.restingHR} lpm · ${String(STANDARD_MAN.bloodVolumeL).replace('.', ',')} L volemia · 120/80 mmHg`,
+    desc: `<b>Constantes Cardiovasculares:</b> Frecuencia cardíaca en reposo de ${STANDARD_MAN.restingHR} lpm, volumen sanguíneo de ${String(STANDARD_MAN.bloodVolumeL).replace('.', ',')} L (aprox. 7,5% de la masa) y presión de 120/80 mmHg.`,
   },
   pulmonary: {
     id: 'pulmonary',
     name: 'Sistema Respiratorio',
-    refValue: '15 rpm · 6,0 L CPT',
-    desc: '<b>Capacidad Pulmonar Total (CPT):</b> 6,0 L con un volumen corriente en reposo de ~500 ml a una frecuencia de 15 respiraciones por minuto.',
+    refValue: `${STANDARD_MAN.restingRR} rpm · ${String(STANDARD_MAN.lungCapacityTotalL).replace('.', ',')} L CPT`,
+    desc: `<b>Capacidad Pulmonar Total (CPT):</b> ${String(STANDARD_MAN.lungCapacityTotalL).replace('.', ',')} L con un volumen corriente en reposo de ~500 ml a una frecuencia de ${STANDARD_MAN.restingRR} respiraciones por minuto.`,
   },
   composition: {
     id: 'composition',
     name: 'Composición Corporal',
-    refValue: '15 % grasa · 51 L fluidos',
-    desc: '<b>Distribución de Tejidos y Fluidos:</b> 15% tejido adiposo, 51 L de agua corporal total (53% intracelular, 47% extracelular).',
+    refValue: `${STANDARD_MAN.fatPercent} % grasa · ${STANDARD_MAN.bodyFluidsL} L fluidos`,
+    desc: `<b>Distribución de Tejidos y Fluidos:</b> ${STANDARD_MAN.fatPercent}% tejido adiposo, ${STANDARD_MAN.bodyFluidsL} L de agua corporal total (${STANDARD_MAN.bodyFluidsIntracellularPercent}% intracelular, ${100 - STANDARD_MAN.bodyFluidsIntracellularPercent}% extracelular).`,
   },
 };
 
 export default function Slide8({ slideCount }: { slideCount?: string }) {
-  const [mass, setMass] = useState<number>(70);
-  const [height, setHeight] = useState<number>(172);
+  const [mass, setMass] = useState<number>(STANDARD_MAN.massKg);
+  const [height, setHeight] = useState<number>(STANDARD_MAN.heightM * 100);
   const [selectedParam, setSelectedParam] = useState<string>('mass');
 
   const currentDetail = PARAMS_DATA[selectedParam] || PARAMS_DATA.mass;
@@ -64,8 +67,8 @@ export default function Slide8({ slideCount }: { slideCount?: string }) {
   };
 
   const handleReset = () => {
-    setMass(70);
-    setHeight(172);
+    setMass(STANDARD_MAN.massKg);
+    setHeight(STANDARD_MAN.heightM * 100);
     setSelectedParam('mass');
     const info = document.getElementById('info-text-c1');
     if (info) {
@@ -76,7 +79,8 @@ export default function Slide8({ slideCount }: { slideCount?: string }) {
   // Cálculos reactivos
   const hM = height / 100;
   const bmi = mass / (hM * hM);
-  const bsa = 0.202 * Math.pow(mass, 0.425) * Math.pow(hM, 0.725);
+  const isReferenceBody = mass === STANDARD_MAN.massKg && hM === STANDARD_MAN.heightM;
+  const bsa = isReferenceBody ? STANDARD_MAN.bsaM2 : 0.202 * Math.pow(mass, 0.425) * Math.pow(hM, 0.725);
   const bmr = 70 * Math.pow(mass / 70, 0.75);
 
   return (
@@ -84,7 +88,7 @@ export default function Slide8({ slideCount }: { slideCount?: string }) {
       <div className="module-header">
         <span className="mnum">C1</span>
         <span className="mtitle">El Hombre Estándar</span>
-        <span className="msub">El cuerpo de referencia de 70 kg · Tabla 1.5</span>
+        <span className="msub">El cuerpo de referencia de {STANDARD_MAN.massKg} kg · Tabla 1.5</span>
         <span className="mslide-count">{slideCount ?? '1 / 4'}</span>
       </div>
       <div className="content-grid">
@@ -101,37 +105,37 @@ export default function Slide8({ slideCount }: { slideCount?: string }) {
                     onClick={() => handleSelectParam('mass')}
                     style={{ cursor: 'pointer', background: selectedParam === 'mass' ? 'var(--teal-tint)' : 'transparent' }}
                   >
-                    <td><b>Altura · masa</b></td><td>1,72 m · 70 kg (690 N)</td>
+                    <td><b>Altura · masa</b></td><td>{SM_HEIGHT} m · {STANDARD_MAN.massKg} kg ({STANDARD_MAN.weightN} N)</td>
                   </tr>
                   <tr
                     onClick={() => handleSelectParam('area')}
                     style={{ cursor: 'pointer', background: selectedParam === 'area' ? 'var(--teal-tint)' : 'transparent' }}
                   >
-                    <td><b>Área de superficie</b></td><td>1,85 m² (Du Bois)</td>
+                    <td><b>Área de superficie</b></td><td>{String(STANDARD_MAN.bsaM2).replace('.', ',')} m² (Du Bois)</td>
                   </tr>
                   <tr
                     onClick={() => handleSelectParam('bmr')}
                     style={{ cursor: 'pointer', background: selectedParam === 'bmr' ? 'var(--teal-tint)' : 'transparent' }}
                   >
-                    <td><b>Tasa metabólica basal</b></td><td>70 kcal/h (1680 kcal/día)</td>
+                    <td><b>Tasa metabólica basal</b></td><td>{STANDARD_MAN.bmrKcalH} kcal/h ({STANDARD_MAN.bmrKcalDay} kcal/día)</td>
                   </tr>
                   <tr
                     onClick={() => handleSelectParam('cardio')}
                     style={{ cursor: 'pointer', background: selectedParam === 'cardio' ? 'var(--teal-tint)' : 'transparent' }}
                   >
-                    <td><b>Frecuencia cardíaca</b></td><td>65 latidos/min · 5,2 L</td>
+                    <td><b>Frecuencia cardíaca</b></td><td>{STANDARD_MAN.restingHR} latidos/min · {String(STANDARD_MAN.bloodVolumeL).replace('.', ',')} L</td>
                   </tr>
                   <tr
                     onClick={() => handleSelectParam('pulmonary')}
                     style={{ cursor: 'pointer', background: selectedParam === 'pulmonary' ? 'var(--teal-tint)' : 'transparent' }}
                   >
-                    <td><b>Capacidad pulmonar</b></td><td>6,0 L total · 15 rpm</td>
+                    <td><b>Capacidad pulmonar</b></td><td>{String(STANDARD_MAN.lungCapacityTotalL).replace('.', ',')} L total · {STANDARD_MAN.restingRR} rpm</td>
                   </tr>
                   <tr
                     onClick={() => handleSelectParam('composition')}
                     style={{ cursor: 'pointer', background: selectedParam === 'composition' ? 'var(--teal-tint)' : 'transparent' }}
                   >
-                    <td><b>Composición y fluidos</b></td><td>15 % grasa · 51 L fluidos</td>
+                    <td><b>Composición y fluidos</b></td><td>{STANDARD_MAN.fatPercent} % grasa · {STANDARD_MAN.bodyFluidsL} L fluidos</td>
                   </tr>
                 </tbody>
               </table>
@@ -215,7 +219,7 @@ export default function Slide8({ slideCount }: { slideCount?: string }) {
                   color: 'var(--ink)',
                 }}
               >
-                Restablecer (70 kg)
+                Restablecer ({STANDARD_MAN.massKg} kg)
               </button>
             </div>
           </div>
