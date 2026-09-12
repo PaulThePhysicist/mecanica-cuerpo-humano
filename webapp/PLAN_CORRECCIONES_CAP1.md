@@ -406,7 +406,7 @@ Estado: `PENDIENTE` · `EN CURSO` · `CERRADO`.
 | `C1-04` | 1 | Renderizar el LaTeX pendiente del Resumen | CERRADO | `fix(cap1): C1-04 renderizar el LaTeX pendiente del Resumen` |
 | `C1-05` | 1 | Corregir la coma doble de los grados de libertad | CERRADO | `fix(cap1): C1-05 corregir la coma doble de los grados de libertad` |
 | `C1-06` | 1 | Unificar el separador decimal (coma) | CERRADO | `fix(cap1): C1-06 unificar el separador decimal (coma)` |
-| `V2-01` | 2 | Encuadrar la cámara en el objetivo | PENDIENTE | |
+| `V2-01` | 2 | Encuadrar la cámara en el objetivo | CERRADO | `fix(cap1): V2-01 encuadrar la cámara en el objetivo, no en el miembro` |
 | `V2-02` | 2 | Hacer legible el rango de movilidad de C3 | PENDIENTE | |
 | `V2-03` | 2 | Eliminar las colisiones de rótulos | PENDIENTE | |
 | `V2-04` | 2 | Terminar las dos gráficas | PENDIENTE | |

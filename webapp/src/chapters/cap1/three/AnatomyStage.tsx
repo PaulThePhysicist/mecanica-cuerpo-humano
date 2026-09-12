@@ -247,6 +247,10 @@ export interface AnatomyStageProps {
   /** Auto-encuadre a los límites del contenido (grupo `fit-root`). */
   fit?: boolean;
   fitPadding?: number;
+  /** Encuadra un grupo nombrado más pequeño que `fit-root` (p.ej. la
+   *  articulación activa) en vez de todo el contenido de la escena. Ese grupo
+   *  debe existir dentro de `children`. */
+  targetName?: string;
   /** Cuando cambia, se re-encuadra (además de reset). */
   refit?: unknown;
   loader?: React.ReactNode;
@@ -255,6 +259,11 @@ export interface AnatomyStageProps {
   id?: string;
   /** HTML superpuesto (telemetría, badges) — hermano del `<Canvas>`, no dentro de él. */
   overlay?: React.ReactNode;
+  /** Contenido de referencia (planos translúcidos, conos de recorrido, huesos de
+   *  contexto) que debe verse pero NO debe contar para el encuadre — por eso
+   *  vive fuera de `fit-root`. Sin esto, una lámina de referencia más grande
+   *  que el objetivo lo empequeñecía (V2-01, B3: el plano dominaba la caja). */
+  contextChildren?: React.ReactNode;
   children: React.ReactNode;
 }
 
@@ -284,18 +293,25 @@ export function AnatomyStage({
   zoomSignal = null,
   fit = false,
   fitPadding = 1.35,
+  targetName,
   refit,
   loader,
   onPointerMissed,
   className,
   id,
   overlay,
+  contextChildren,
   children,
 }: AnatomyStageProps) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const controlsRef = useRef<any>(null);
   const [webgl, setWebgl] = useState(true);
   useEffect(() => setWebgl(checkWebGLSupport()), []);
+  // En modo «GL compartido» varias escenas viven en el mismo THREE.Scene; un
+  // nombre fijo "fit-root" haría que scene.getObjectByName devolviera el de
+  // OTRA diapositiva ya montada (el primero que encuentre en el árbol), no el
+  // de esta. Cada instancia necesita su propio nombre.
+  const fitRootName = `fit-root-${useId()}`;
 
   useEffect(() => {
     controlsRef.current?.reset?.();
@@ -316,11 +332,25 @@ export function AnatomyStage({
       {grid && <gridHelper args={gridArgs} position={[0, gridY, 0]} />}
 
       <Suspense fallback={loader ?? <DefaultLoader />}>
-        <group name="fit-root">{children}</group>
+        <group name={fitRootName}>{children}</group>
+        {contextChildren}
         {shadow && (
           <ContactShadows position={[0, shadowY, 0]} opacity={shadowOpacity} scale={shadowScale} blur={2.4} far={5} color="#232c36" />
         )}
-        {fit && <FitCamera padding={fitPadding} lookTarget={target} refit={refit ?? resetSignal} />}
+        {/* resetSignal siempre entra en la clave: si un slide ya usa `refit` para
+            reencuadrar al cambiar de selección, «Restablecer» debe reencuadrar
+            también, no solo cuando cambia esa selección. */}
+        {/* Con un `targetName` propio (p.ej. la articulación activa en vez de
+            fit-root), mirar al centro de ESE grupo, no al `target` fijo de la
+            escena entera — si no, el objetivo queda descentrado en el visor. */}
+        {fit && (
+          <FitCamera
+            targetName={targetName ?? fitRootName}
+            padding={fitPadding}
+            lookTarget={targetName ? undefined : target}
+            refit={`${String(refit)}:${resetSignal}`}
+          />
+        )}
       </Suspense>
     </>
   );

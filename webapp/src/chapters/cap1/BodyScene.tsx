@@ -160,13 +160,29 @@ function MobilityRangeOverlay({ range, progress }: { range?: MobilityRange | nul
     range.position[2] * MOBILITY_MODEL_SCALE,
   ];
   const radius = motion?.radius ?? 0.6;
+  // El radio del arco es una elección de LEGIBILIDAD del goniómetro (hombro y
+  // cadera lo dibujan grande —1.55 y 2.2— para que el barrido no se apelotone),
+  // no el tamaño real de la articulación. Usarlo tal cual para encuadrar la
+  // cámara (V2-01) hacía que hombro/cadera pidieran una esfera de encuadre de
+  // hasta 4-5 unidades de diámetro — a esa distancia el resto del esqueleto
+  // seguía cabiendo casi entero en el cuadro, igual que sin encuadrar. Al
+  // tope articular (no al arco) es al que hay que acercar la cámara.
+  const focusRadius = Math.min(radius, 0.85);
 
   // Excursión > 0 = hacia el movimiento primario, que se dibuja en horario.
   const excursion = THREE.MathUtils.degToRad((romAngleAt(range.joint, progress) ?? 0) * (motion?.primarySign ?? 1));
   const needleAngle = NEUTRAL_RAY - excursion;
 
   return (
-    <group position={anchor}>
+    <group name="mobility-focus" position={anchor}>
+      {/* Caja invisible del tamaño del hueso adyacente: el encuadre (V2-01/V2-02)
+          usa este grupo como objetivo en vez del esqueleto completo, pero la
+          esfera+arcos por sí solos son más pequeños que el hueso real —
+          sin este margen, el fit-root queda ajustado al overlay y recorta
+          el hueso que sobresale de él. */}
+      <mesh visible={false}>
+        <sphereGeometry args={[focusRadius * 1.3, 8, 8]} />
+      </mesh>
       <mesh>
         <sphereGeometry args={[0.075, 20, 20]} />
         <meshStandardMaterial color="#0d786d" emissive="#0d786d" emissiveIntensity={0.7} />
@@ -430,12 +446,16 @@ export default function BodyScene({
   /** Fase 0..1 del recorrido articular; 0 = tope secundario, 1 = tope primario. */
   progress?: number;
 }) {
+  // minDistance=3.5 está calibrado para ver el cuerpo entero (A2/A3): con la
+  // articulación activa (C3) OrbitControls no dejaría acercar la cámara lo
+  // suficiente para encuadrarla y el fit quedaba clamped al cuerpo completo.
+  const focusingJoint = mode === 'regions' && !!mobility;
   return (
     <AnatomyStage
       id={id}
       camera={{ position: [3.6, 1.8, 12.5], fov: 45 }}
       target={[0, 0.1, 0]}
-      minDistance={3.5}
+      minDistance={focusingJoint ? 0.6 : 3.5}
       maxDistance={32}
       gridY={FULL_BODY_FLOOR_Y}
       shadowY={FULL_BODY_SHADOW_Y}
@@ -444,8 +464,20 @@ export default function BodyScene({
       resetSignal={resetSignal}
       zoomSignal={zoomSignal}
       loader={<ModelLoader />}
+      // Solo en modo «regions» con un rango de movilidad activo (C3) se encuadra
+      // la articulación en vez del esqueleto completo (A2 planos / A3 regiones
+      // siguen con la vista de cuerpo entero: no es lo que pide V2-01 para ellas).
+      fit={focusingJoint}
+      fitPadding={1.7}
+      targetName="mobility-focus"
+      refit={mobility?.joint}
     >
-      <Center position={[0, 0, 0]}>
+      {/* <Center> recentra sobre la caja de TODO lo que contiene en cada
+          recálculo — con la articulación activa (C3) eso pelea contra el
+          encuadre propio de FitCamera, que apunta a un grupo mucho más
+          pequeño (mobility-focus). Desactivarlo ahí: FitCamera ya se encarga
+          de encuadrar. */}
+      <Center position={[0, 0, 0]} disable={focusingJoint}>
         <AnatomyModel mode={mode} selected={selected} joint={mobility?.joint ?? null} progress={progress} />
         <MobilityRangeOverlay range={mobility} progress={progress} />
         {mode === 'regions' && <Axes hoveredTerm={null} showLabels showGrid={false} />}

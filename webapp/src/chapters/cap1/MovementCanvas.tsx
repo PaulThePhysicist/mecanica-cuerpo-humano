@@ -128,11 +128,19 @@ function CircumductionConeVisual({
 function PlaneVisualizer({
   movement,
   shoulderPos,
+  armSpan,
 }: {
   movement: MovementType;
   shoulderPos: THREE.Vector3;
+  /** Distancia hombro-codo real (tras escalar el grupo): unidad para que el
+   *  plano acompañe al brazo en vez de una lámina de tamaño de escena que lo
+   *  empequeñece (V2-01: dominaba el fit-root de toda la escena). */
+  armSpan: number;
 }) {
-  const planeGeom = useMemo(() => new THREE.PlaneGeometry(1.2, 1.5), []);
+  const planeGeom = useMemo(
+    () => new THREE.PlaneGeometry(armSpan * 1.8, armSpan * 2.5),
+    [armSpan],
+  );
 
   if (movement === 'flexion' || movement === 'extension') {
     return (
@@ -172,19 +180,16 @@ function UpperLimbAnatomy({
   movement,
   progress,
   showMuscles = true,
-  showPlanes = true,
 }: {
   movement: MovementType;
   progress: number;
   showMuscles?: boolean;
-  showPlanes?: boolean;
 }) {
   const boneNodes = useAnatomyNodes('body');
   const muscleNodes = useAnatomyNodes('muscles_arm');
 
   // Materiales PBR compartidos
   const boneMat = materials.bone;
-  const contextMat = materials.boneGhost;
   const activeMuscleMat = materials.muscleActive;
   const inactiveMuscleMat = materials.muscleIdle;
   const neutralMuscleMat = materials.muscleNeutral;
@@ -297,10 +302,6 @@ function UpperLimbAnatomy({
     <group position={[0, 0.75, 0]} scale={MODEL_SCALE}>
       {/* ── Contexto Esquelético Fijo: Escápula y Clavícula ── */}
       <group position={[-P_SHOULDER.x, -P_SHOULDER.y, -P_SHOULDER.z]}>
-        {boneNodes?.sternum && <mesh geometry={boneNodes.sternum.geometry} material={contextMat} />}
-        {boneNodes?.rib_1 && <mesh geometry={boneNodes.rib_1.geometry} material={contextMat} />}
-        {boneNodes?.rib_2 && <mesh geometry={boneNodes.rib_2.geometry} material={contextMat} />}
-        {boneNodes?.rib_3 && <mesh geometry={boneNodes.rib_3.geometry} material={contextMat} />}
         {boneNodes?.clavicle_R && <mesh geometry={boneNodes.clavicle_R.geometry} material={boneMat} />}
         {boneNodes?.scapula_R && <mesh geometry={boneNodes.scapula_R.geometry} material={boneMat} />}
 
@@ -337,19 +338,6 @@ function UpperLimbAnatomy({
         <sphereGeometry args={[0.024, 16, 16]} />
         <meshStandardMaterial color={CARTILAGE_COLOR} roughness={0.25} transparent opacity={0.8} />
       </mesh>
-
-      {/* ── Visualizador de Planos Anatómicos ── */}
-      {showPlanes && <PlaneVisualizer movement={movement} shoulderPos={new THREE.Vector3(0, 0, 0)} />}
-
-      {/* ── Cono de Circunducción ── */}
-      {movement === 'circumduction' && (
-        <CircumductionConeVisual
-          apex={new THREE.Vector3(0, 0, 0)}
-          baseCenter={new THREE.Vector3(0.06, -0.55, 0.0)}
-          baseRadius={0.32}
-          phase={circumPhase}
-        />
-      )}
 
       {/* ── Complejo del Húmero Articulado con Músculos Reales ── */}
       {/* X: flexión/extensión · Y: rotación axial · Z: abducción/aducción */}
@@ -483,6 +471,49 @@ function UpperLimbAnatomy({
   );
 }
 
+// ── Contenido de referencia: costillas/esternón «fantasma» + plano/cono ──
+// Vive fuera de fit-root (ver AnatomyStage `contextChildren`): son apoyos
+// visuales, no el objetivo. Antes de separarlos dominaban la caja de encuadre
+// y dejaban el brazo diminuto (V2-01).
+function UpperLimbContext({
+  movement,
+  progress,
+  showPlanes,
+}: {
+  movement: MovementType;
+  progress: number;
+  showPlanes: boolean;
+}) {
+  const boneNodes = useAnatomyNodes('body');
+  const contextMat = materials.boneGhost;
+  const dElbow = useMemo(() => new THREE.Vector3().subVectors(P_ELBOW, P_SHOULDER), []);
+  const MODEL_SCALE = 4.8;
+
+  return (
+    <group position={[0, 0.75, 0]} scale={MODEL_SCALE}>
+      <group position={[-P_SHOULDER.x, -P_SHOULDER.y, -P_SHOULDER.z]}>
+        {boneNodes?.sternum && <mesh geometry={boneNodes.sternum.geometry} material={contextMat} />}
+        {boneNodes?.rib_1 && <mesh geometry={boneNodes.rib_1.geometry} material={contextMat} />}
+        {boneNodes?.rib_2 && <mesh geometry={boneNodes.rib_2.geometry} material={contextMat} />}
+        {boneNodes?.rib_3 && <mesh geometry={boneNodes.rib_3.geometry} material={contextMat} />}
+      </group>
+
+      {showPlanes && (
+        <PlaneVisualizer movement={movement} shoulderPos={new THREE.Vector3(0, 0, 0)} armSpan={dElbow.length()} />
+      )}
+
+      {movement === 'circumduction' && (
+        <CircumductionConeVisual
+          apex={new THREE.Vector3(0, 0, 0)}
+          baseCenter={new THREE.Vector3(0.06, -0.55, 0.0)}
+          baseRadius={0.32}
+          phase={progress}
+        />
+      )}
+    </group>
+  );
+}
+
 export default function MovementCanvas({
   movement,
   progress,
@@ -491,8 +522,6 @@ export default function MovementCanvas({
   resetSignal = 0,
   zoomSignal = null,
 }: MovementCanvasProps) {
-  // Sin auto-encuadre: el plano anatómico (showPlanes) domina el bounding box y
-  // empequeñecería el brazo. Cámara fija más cerrada que la versión anterior.
   return (
     <AnatomyStage
       camera={{ position: [2.8, 0.5, 4.9], fov: 42 }}
@@ -507,13 +536,12 @@ export default function MovementCanvas({
       shadowOpacity={0.42}
       resetSignal={resetSignal}
       zoomSignal={zoomSignal}
+      fit
+      fitPadding={1.15}
+      refit={movement}
+      contextChildren={<UpperLimbContext movement={movement} progress={progress} showPlanes={showPlanes} />}
     >
-      <UpperLimbAnatomy
-        movement={movement}
-        progress={progress}
-        showMuscles={showMuscles}
-        showPlanes={showPlanes}
-      />
+      <UpperLimbAnatomy movement={movement} progress={progress} showMuscles={showMuscles} />
     </AnatomyStage>
   );
 }
