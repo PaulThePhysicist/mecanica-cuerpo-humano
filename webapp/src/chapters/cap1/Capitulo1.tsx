@@ -5,6 +5,7 @@ import { SharedStageProvider } from './three/SharedStage';
 import './legacy.css';
 import { MODULES, TOTAL, redrawSlide } from './sims';
 import * as SIM from './sims';
+import { fmt } from './format';
 // @ts-ignore - katex auto-render no incluye tipos
 import renderMathInElement from 'katex/contrib/auto-render';
 
@@ -330,7 +331,7 @@ export default function Capitulo1({ onBack }: { onBack?: () => void }) {
       const v = parseFloat((stevensSel as HTMLSelectElement).value);
       if (stevensN) (stevensN as HTMLInputElement).value = String(v);
       const lb = $('stevensNLabel');
-      if (lb) lb.textContent = v.toFixed(2).replace('.', ',');
+      if (lb) lb.textContent = fmt(v, 2);
       drawStevens();
     });
 
@@ -485,7 +486,7 @@ export default function Capitulo1({ onBack }: { onBack?: () => void }) {
         const sl = $('stevensN');
         if (sl) (sl as HTMLInputElement).value = v;
         const lb = $('stevensNLabel');
-        if (lb) lb.textContent = (+v).toFixed(2).replace('.', ',');
+        if (lb) lb.textContent = fmt(+v, 2);
         drawStevens();
       });
     });

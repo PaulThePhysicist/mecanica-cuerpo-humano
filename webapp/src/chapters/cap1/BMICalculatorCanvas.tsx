@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { CFX, CFXBody } from './sims';
+import { fmt } from './format';
 
 interface BMICalculatorCanvasProps {
   mass: number;     // en kg (40 a 160)
@@ -142,7 +143,7 @@ export default function BMICalculatorCanvas({
           figCenterX - 55 * bmiFactor,
           figTopY,
           floorY,
-          `${(cur.height * 100).toFixed(0)} cm`,
+          `${fmt(cur.height * 100, 0)} cm`,
           '#43505c',
           { side: 'left', W }
         );
@@ -152,7 +153,7 @@ export default function BMICalculatorCanvas({
       ctx.fillStyle = '#232c36';
       ctx.font = `bold ${scaled(11)}px JetBrains Mono, monospace`;
       ctx.textAlign = 'center';
-      ctx.fillText(`${cur.mass.toFixed(1)} kg`, figCenterX, floorY + 16);
+      ctx.fillText(`${fmt(cur.mass, 1)} kg`, figCenterX, floorY + 16);
 
       // ─── 3. Cuadro de Instrumentos Biofísicos (Derecha) ───
       const panelX = W * 0.54;
@@ -208,7 +209,7 @@ export default function BMICalculatorCanvas({
       ctx.fillStyle = catColor;
       ctx.font = `bold ${scaled(15)}px JetBrains Mono, monospace`;
       ctx.textAlign = 'center';
-      ctx.fillText(bmi.toFixed(1), gaugeCenterX, gaugeCenterY + 20);
+      ctx.fillText(fmt(bmi, 1), gaugeCenterX, gaugeCenterY + 20);
 
       ctx.font = `bold ${scaled(9)}px Karla, system-ui, sans-serif`;
       ctx.fillText(`IMC · ${cat.toUpperCase()}`, gaugeCenterX, gaugeCenterY + 33);
@@ -240,7 +241,7 @@ export default function BMICalculatorCanvas({
       ctx.fillStyle = '#0d6e64';
       ctx.font = `bold ${scaled(11)}px JetBrains Mono, monospace`;
       ctx.textAlign = 'center';
-      ctx.fillText(`${A.toFixed(2)} m²`, discCenterX, discCenterY + 4);
+      ctx.fillText(`${fmt(A, 2)} m²`, discCenterX, discCenterY + 4);
 
       ctx.font = `${scaled(8)}px Karla, system-ui, sans-serif`;
       ctx.fillStyle = '#17212b';
@@ -279,7 +280,7 @@ export default function BMICalculatorCanvas({
       ctx.fillStyle = '#232c36';
       ctx.font = `bold ${scaled(9)}px JetBrains Mono, monospace`;
       ctx.textAlign = 'center';
-      ctx.fillText(`ρ = ${rho.toFixed(3)} kg/L`, tubeX + tubeW / 2, tubeY + tubeH + 14);
+      ctx.fillText(`ρ = ${fmt(rho, 3)} kg/L`, tubeX + tubeW / 2, tubeY + tubeH + 14);
 
       ctx.font = `${scaled(7.5)}px Karla, system-ui, sans-serif`;
       ctx.fillStyle = rho < 1.0 ? '#2e8b57' : '#b02318';
@@ -311,13 +312,13 @@ export default function BMICalculatorCanvas({
       ctx.fillStyle = '#ffffff';
       ctx.font = `bold ${scaled(8)}px Karla, system-ui, sans-serif`;
       ctx.textAlign = 'center';
-      if (leanW > 40) ctx.fillText(`Magra: ${leanKg.toFixed(1)} kg`, barX + leanW / 2, barY + 11);
-      if (fatW > 35) ctx.fillText(`Grasa: ${fatKg.toFixed(1)} kg`, barX + leanW + fatW / 2, barY + 11);
+      if (leanW > 40) ctx.fillText(`Magra: ${fmt(leanKg, 1)} kg`, barX + leanW / 2, barY + 11);
+      if (fatW > 35) ctx.fillText(`Grasa: ${fmt(fatKg, 1)} kg`, barX + leanW + fatW / 2, barY + 11);
 
       ctx.fillStyle = '#17212b';
       ctx.font = `${scaled(8)}px Karla, system-ui, sans-serif`;
       ctx.textAlign = 'left';
-      ctx.fillText(`Composición (IMC): Magra ${(100 - fatPct).toFixed(1)}%  ·  Grasa ${fatPct.toFixed(1)}% (${gender === 'H' ? 'Varón' : 'Mujer'})`, barX, barY + barH + 12);
+      ctx.fillText(`Composición (IMC): Magra ${fmt(100 - fatPct, 1)}%  ·  Grasa ${fmt(fatPct, 1)}% (${gender === 'H' ? 'Varón' : 'Mujer'})`, barX, barY + barH + 12);
       ctx.restore();
 
       ctx.restore();

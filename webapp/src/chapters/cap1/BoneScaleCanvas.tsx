@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import { fmt } from './format';
 
 interface BoneScaleCanvasProps {
   selectedAnimal?: string | null;
@@ -220,7 +221,7 @@ export default function BoneScaleCanvas({
         ctx.fillStyle = isFractured ? '#b02318' : '#0d6e64';
         ctx.font = (compact ? 'bold 12px' : 'bold 12.5px') + ' JetBrains Mono, monospace';
         ctx.textAlign = 'center';
-        ctx.fillText(spec.massKg >= 1000 ? `${(spec.massKg / 1000).toFixed(0)} ton` : `${spec.massKg} kg`, cx, arrowY - 3);
+        ctx.fillText(spec.massKg >= 1000 ? `${fmt(spec.massKg / 1000, 0)} ton` : `${Number.isInteger(spec.massKg) ? spec.massKg : fmt(spec.massKg, 2)} kg`, cx, arrowY - 3);
         ctx.restore();
 
         // ─── Tarjeta Inferior de la Especie ───
@@ -236,7 +237,7 @@ export default function BoneScaleCanvas({
 
         ctx.font = `${scaled(10)}px Karla, system-ui, sans-serif`;
         ctx.fillStyle = '#17212b';
-        ctx.fillText(`Relación w/L ≈ ${spec.wlRatio.toFixed(1).replace('.', ',')}`, cx, floorY + 47);
+        ctx.fillText(`Relación w/L ≈ ${fmt(spec.wlRatio, 1)}`, cx, floorY + 47);
         ctx.restore();
       });
 

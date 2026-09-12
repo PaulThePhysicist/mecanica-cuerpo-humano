@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
+import { fmt } from './format';
 
 interface AllometryCanvasProps {
   selectedParam: string; // 'BMR', 'area', 'HR', 'brain', 'life', 'muscle'
@@ -296,7 +297,7 @@ export default function AllometryCanvas({
         if (isHover || isHuman) {
           ctx.font = `bold ${scaled(10.5)}px JetBrains Mono, monospace`;
           ctx.fillStyle = activeCurve.color;
-          const valStr = v >= 1000 ? v.toFixed(0) : (v < 0.1 ? v.toFixed(3) : v.toFixed(1));
+          const valStr = v >= 1000 ? fmt(v, 0) : (v < 0.1 ? fmt(v, 3) : fmt(v, 1));
           ctx.fillText(`${valStr} ${activeCurve.unit}`, ax, ay + (offsetY < 0 ? offsetY - 11 : 16));
         }
         ctx.restore();
@@ -321,7 +322,10 @@ export default function AllometryCanvas({
 
       // Chip numérico en vivo sobre el punto activo
       ctx.save();
-      const chipText = `${activeCurve.id}: ${curV.toFixed(2)} ${activeCurve.unit} · ${activeMass >= 1000 ? (activeMass / 1000).toFixed(1) + ' t' : activeMass + ' kg'}`;
+      const massLabel = activeMass >= 1000
+        ? fmt(activeMass / 1000, 1) + ' t'
+        : (Number.isInteger(activeMass) ? activeMass : fmt(activeMass, activeMass < 0.1 ? 3 : 1)) + ' kg';
+      const chipText = `${activeCurve.id}: ${fmt(curV, 2)} ${activeCurve.unit} · ${massLabel}`;
       ctx.font = `bold ${scaled(11)}px JetBrains Mono, monospace`;
       const tw = ctx.measureText(chipText).width;
       // Zona inferior central, libre de las etiquetas de animales y del osciloscopio.
@@ -426,7 +430,7 @@ export default function AllometryCanvas({
       // Keep the responsive header inside the canvas; long parameter descriptions
       // otherwise spill over the right edge on compact slide layouts.
       const headerMaxWidth = Math.max(80, W - pad.left - pad.right);
-      const exponent = toSuperscript(activeCurve.alpha.toFixed(2));
+      const exponent = toSuperscript(fmt(activeCurve.alpha, 2));
       ctx.fillStyle = '#f1eadc';
       ctx.fillRect(pad.left - 2, 10, headerMaxWidth + 4, 34);
       ctx.fillStyle = '#232c36';

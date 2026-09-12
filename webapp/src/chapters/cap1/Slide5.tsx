@@ -236,7 +236,7 @@ export default function Slide5({ toggleJointsAnimation, slideCount }: Slide5Prop
                 <span className="pill active"><b>Sinoviales</b> · diartrosis: libres</span>
               </div>
               <p style={{ fontSize: '.64rem', marginTop: '.2rem' }}>
-                Las <strong>sinoviales</strong>, provistas de cápsula, <strong>cartílago hialino</strong> ({'$\\mu \\approx 0.001$'}) y <strong>líquido sinovial</strong>, se clasifican por la <strong>forma geométrica de sus superficies óseas</strong>.
+                Las <strong>sinoviales</strong>, provistas de cápsula, <strong>cartílago hialino</strong> ({'$\\mu \\approx 0{,}001$'}) y <strong>líquido sinovial</strong>, se clasifican por la <strong>forma geométrica de sus superficies óseas</strong>.
               </p>
             </div>
           </div>

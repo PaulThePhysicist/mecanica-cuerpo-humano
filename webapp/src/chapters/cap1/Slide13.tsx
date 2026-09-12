@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import BoneScaleCanvas from './BoneScaleCanvas';
 import HudPanel from './HudPanel';
+import { fmt } from './format';
 // @ts-ignore - katex auto-render no incluye tipos
 import renderMathInElement from 'katex/contrib/auto-render';
 
@@ -130,7 +131,7 @@ export default function Slide13({ slideCount }: { slideCount?: string }) {
                 {'\\[ w \\propto L^{3/2} \\qquad\\Rightarrow\\qquad \\frac{w}{L_{\\text{hueso}}} \\propto m_b^{1/6} \\]'}
               </div>
               <p style={{ fontSize: '.64rem', color: 'var(--ink-3)' }}>
-                De la rata al elefante $m_b$ crece $10^4$ veces, por lo que $w/L$ debe crecer $10^{4/6} = 10^{2/3} \\approx 4$ veces: las formas <strong>no</strong> son geométricamente similares.
+                De la rata al elefante $m_b$ crece $10^4$ veces, por lo que $w/L$ debe crecer {'$10^{4/6} = 10^{2/3} \\approx 4$'} veces: las formas <strong>no</strong> son geométricamente similares.
               </p>
             </div>
           </div>
@@ -174,7 +175,7 @@ export default function Slide13({ slideCount }: { slideCount?: string }) {
                     >
                       <b style={{ color: isSel ? a.color : 'var(--ink)' }}>{a.name}</b>
                       <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '.62rem', color: a.color, fontWeight: 'bold' }}>
-                        w/L ≈ {a.wl.toFixed(1).replace('.', ',')}
+                        w/L ≈ {fmt(a.wl, 1)}
                       </span>
                     </div>
                   );
@@ -218,7 +219,7 @@ export default function Slide13({ slideCount }: { slideCount?: string }) {
                   >
                     <span style={{ fontSize: '0.62rem', fontWeight: 600, color: 'var(--ink)' }}>{a.name.split('(')[0].trim()}</span>
                     <span style={{ fontSize: '0.58rem', fontFamily: 'JetBrains Mono, monospace', color: a.color, fontWeight: 'bold' }}>
-                      w/L = {a.wl.toFixed(1).replace('.', ',')}
+                      w/L = {fmt(a.wl, 1)}
                     </span>
                   </div>
                 );
@@ -237,7 +238,7 @@ export default function Slide13({ slideCount }: { slideCount?: string }) {
           />
           <div className="prof-controls">
             <span className="badge">D2 · Escalado</span>
-            <span>Especie: <b style={{ color: currentDetail.color }}>{currentDetail.name.split('(')[0].trim()}</b> (w/L ≈ {currentDetail.wl.toFixed(1).replace('.', ',')})</span>
+            <span>Especie: <b style={{ color: currentDetail.color }}>{currentDetail.name.split('(')[0].trim()}</b> (w/L ≈ {fmt(currentDetail.wl, 1)})</span>
 
             <label style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.62rem', cursor: 'pointer', background: isAllometric ? 'var(--teal-tint)' : 'rgba(176,35,24,0.1)', padding: '2px 8px', borderRadius: '4px', border: `1px solid ${isAllometric ? 'var(--teal)' : '#b02318'}` }}>
               <input
@@ -246,7 +247,7 @@ export default function Slide13({ slideCount }: { slideCount?: string }) {
                 checked={isAllometric}
                 onChange={(e) => setIsAllometric(e.target.checked)}
               />
-              <b>{isAllometric ? 'Alométrico Real (w ∝ L^1.5)' : '⚠️ Modo Isométrico (Fractura)'}</b>
+              <b>{isAllometric ? 'Alométrico Real (w ∝ L^1,5)' : '⚠️ Modo Isométrico (Fractura)'}</b>
             </label>
 
             <button

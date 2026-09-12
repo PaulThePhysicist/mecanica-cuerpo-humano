@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import BMICalculatorCanvas from './BMICalculatorCanvas';
 import HudPanel from './HudPanel';
 import { STANDARD_MAN } from './standardMan';
+import { fmt } from './format';
 
 export default function Slide14({ slideCount }: { slideCount?: string }) {
   const [mass, setMass] = useState<number>(STANDARD_MAN.massKg);
@@ -87,7 +88,7 @@ export default function Slide14({ slideCount }: { slideCount?: string }) {
           <div className="apuntes">
             <div className="a-hdr"><span>✍️</span> Apunte de cátedra</div>
             <div className="a-text" id="info-text-d3">
-              Con <b>{mass} kg</b> y <b>{heightCm} cm</b>: Tu IMC es de <b style={{ color: catColor }}>{bmi.toFixed(1).replace('.', ',')} ({cat})</b>, tu área Du Bois es de <b>{bsa.toFixed(2).replace('.', ',')} m²</b> y tu grasa corporal estimada por IMC ({gender === 'H' ? 'Varón' : 'Mujer'}) es de <b>{currentFat.toFixed(1).replace('.', ',')}%</b>.
+              Con <b>{mass} kg</b> y <b>{heightCm} cm</b>: Tu IMC es de <b style={{ color: catColor }}>{fmt(bmi, 1)} ({cat})</b>, tu área Du Bois es de <b>{fmt(bsa, 2)} m²</b> y tu grasa corporal estimada por IMC ({gender === 'H' ? 'Varón' : 'Mujer'}) es de <b>{fmt(currentFat, 1)}%</b>.
             </div>
           </div>
         </div>
@@ -95,14 +96,14 @@ export default function Slide14({ slideCount }: { slideCount?: string }) {
           {/* Panel HUD Colapsable en la esquina superior derecha */}
           <HudPanel
             title="ÍNDICES BIOFÍSICOS"
-            badge={`IMC ${bmi.toFixed(1)} · ${cat.toUpperCase()}`}
+            badge={`IMC ${fmt(bmi, 1)} · ${cat.toUpperCase()}`}
             icon="📐"
             footer="💡 Ajusta masa y estatura para ver el cuadro de instrumentos biofísicos"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.62rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Índice Quételet (IMC):</span>
-                <b style={{ color: catColor, fontFamily: 'JetBrains Mono, monospace' }}>{bmi.toFixed(1).replace('.', ',')} kg/m²</b>
+                <b style={{ color: catColor, fontFamily: 'JetBrains Mono, monospace' }}>{fmt(bmi, 1)} kg/m²</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Categoría OMS:</span>
@@ -110,19 +111,19 @@ export default function Slide14({ slideCount }: { slideCount?: string }) {
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Área Du Bois:</span>
-                <b style={{ color: 'var(--teal-deep)', fontFamily: 'JetBrains Mono, monospace' }}>{bsa.toFixed(2).replace('.', ',')} m²</b>
+                <b style={{ color: 'var(--teal-deep)', fontFamily: 'JetBrains Mono, monospace' }}>{fmt(bsa, 2)} m²</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Índice Ponderal S:</span>
-                <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>{S.toFixed(2).replace('.', ',')}</b>
+                <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>{fmt(S, 2)}</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Densidad Media ρ:</span>
-                <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>{rho.toFixed(3).replace('.', ',')} kg/L</b>
+                <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>{fmt(rho, 3)} kg/L</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Grasa Estimada por IMC ({gender === 'H' ? 'Varón' : 'Mujer'}):</span>
-                <b style={{ color: '#b86a1e', fontFamily: 'JetBrains Mono, monospace' }}>{currentFat.toFixed(1).replace('.', ',')}%</b>
+                <b style={{ color: '#b86a1e', fontFamily: 'JetBrains Mono, monospace' }}>{fmt(currentFat, 1)}%</b>
               </div>
             </div>
           </HudPanel>
@@ -134,7 +135,7 @@ export default function Slide14({ slideCount }: { slideCount?: string }) {
           />
           <div className="prof-controls">
             <span className="badge">D3 · Índices</span>
-            <span style={{ color: catColor, fontWeight: 'bold' }}>IMC: {bmi.toFixed(1).replace('.', ',')} ({cat})</span>
+            <span style={{ color: catColor, fontWeight: 'bold' }}>IMC: {fmt(bmi, 1)} ({cat})</span>
 
             {/* Controles dobles */}
             <div style={{ display: 'flex', gap: '0.65rem', alignItems: 'center', fontSize: '0.62rem' }}>

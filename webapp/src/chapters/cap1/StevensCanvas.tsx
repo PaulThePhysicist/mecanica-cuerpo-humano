@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
+import { fmt } from './format';
 
 interface StevensCanvasProps {
   n: number;
@@ -242,7 +243,7 @@ export default function StevensCanvas({
       ctx.font = `bold ${scaled(10.5)}px Karla, system-ui, sans-serif`;
       ctx.textAlign = 'center';
       ctx.fillText('Estímulo S', refX, refY + 14);
-      ctx.fillText(`Estímulo 2S (×${ratioPerceived.toFixed(2)})`, dblX, dblY - 8);
+      ctx.fillText(`Estímulo 2S (×${fmt(ratioPerceived, 2)})`, dblX, dblY - 8);
       ctx.restore();
 
       // ─── 5. Laboratorio Sensorial Interactivo (Widget Derecho) ───
@@ -351,7 +352,7 @@ export default function StevensCanvas({
 
       ctx.fillStyle = nColor;
       ctx.font = `bold ${scaled(13)}px JetBrains Mono, monospace`;
-      ctx.fillText(`2${toSuperscript(n.toFixed(2))} = ${Math.pow(2, n).toFixed(2)}×`, widgetX + widgetW / 2, factorY + 16);
+      ctx.fillText(`2${toSuperscript(fmt(n, 2))} = ${fmt(Math.pow(2, n), 2)}×`, widgetX + widgetW / 2, factorY + 16);
 
       ctx.fillStyle = '#43505c';
       ctx.font = `${scaled(9.5)}px Karla, system-ui, sans-serif`;
@@ -363,7 +364,7 @@ export default function StevensCanvas({
       ctx.fillStyle = 'var(--ink, #232c36)';
       ctx.font = `bold ${scaled(14)}px Karla, system-ui, sans-serif`;
       ctx.textAlign = 'left';
-      ctx.fillText(`STEVENS:  P = K · (S − S₀)${toSuperscript(n.toFixed(2))}`, pad.left, 22);
+      ctx.fillText(`STEVENS:  P = K · (S − S₀)${toSuperscript(fmt(n, 2))}`, pad.left, 22);
 
       ctx.fillStyle = '#43505c';
       ctx.font = `${scaled(10)}px Karla, system-ui, sans-serif`;

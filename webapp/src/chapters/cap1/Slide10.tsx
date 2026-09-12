@@ -4,6 +4,7 @@ import BodyScene from './BodyScene';
 import { romReadout } from './romTable';
 import type { MobilityRange } from './romTable';
 import { useHarmonicClock } from './three/useHarmonicClock';
+import { fmt } from './format';
 // @ts-ignore - katex auto-render no incluye tipos
 import renderMathInElement from 'katex/contrib/auto-render';
 
@@ -256,7 +257,7 @@ export default function Slide10({ slideCount }: { slideCount?: string }) {
                   whiteSpace: 'nowrap',
                 }}
               >
-                {readout.label} {readout.deg.toFixed(0)}°
+                {readout.label} {fmt(readout.deg, 0)}°
               </span>
             )}
 
@@ -297,7 +298,7 @@ export default function Slide10({ slideCount }: { slideCount?: string }) {
                           cursor: 'pointer',
                         }}
                       >
-                        {spd}x
+                        {String(spd).replace('.', ',')}x
                       </button>
                     ))}
                   </div>

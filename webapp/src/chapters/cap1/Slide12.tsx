@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import AllometryCanvas from './AllometryCanvas';
+import { fmt } from './format';
 // @ts-ignore - katex auto-render no incluye tipos
 import renderMathInElement from 'katex/contrib/auto-render';
 
@@ -84,7 +85,7 @@ export default function Slide12({ slideCount }: { slideCount?: string }) {
 
   const currentDetail = ALLO_INFO[selectedParam] || ALLO_INFO.BMR;
   const currentDescription = selectedAnimal
-    ? `Seleccionado: <b>${selectedAnimal.name} (${selectedAnimal.mass >= 1000 ? (selectedAnimal.mass / 1000).toFixed(1) + ' t' : selectedAnimal.mass + ' kg'})</b>. Explora cómo cambia el valor de <b>${currentDetail.name}</b> a lo largo del espectro de mamíferos.`
+    ? `Seleccionado: <b>${selectedAnimal.name} (${selectedAnimal.mass >= 1000 ? fmt(selectedAnimal.mass / 1000, 1) + ' t' : (Number.isInteger(selectedAnimal.mass) ? selectedAnimal.mass : fmt(selectedAnimal.mass, selectedAnimal.mass < 0.1 ? 3 : 1)) + ' kg'})</b>. Explora cómo cambia el valor de <b>${currentDetail.name}</b> a lo largo del espectro de mamíferos.`
     : currentDetail.desc;
 
   useEffect(() => {
@@ -179,7 +180,7 @@ export default function Slide12({ slideCount }: { slideCount?: string }) {
                           fontSize: '.65rem',
                         }}
                       >
-                        α = {item.alpha.toFixed(2).replace('.', ',')}
+                        α = {fmt(item.alpha, 2)}
                       </span>
                     </div>
                   );
@@ -205,7 +206,7 @@ export default function Slide12({ slideCount }: { slideCount?: string }) {
           />
           <div className="prof-controls">
             <span className="badge">D1 · Log-log</span>
-            <span>{currentDetail.name}: <b style={{ color: 'var(--teal-deep)' }}>α = {currentDetail.alpha.toFixed(2).replace('.', ',')}</b></span>
+            <span>{currentDetail.name}: <b style={{ color: 'var(--teal-deep)' }}>α = {fmt(currentDetail.alpha, 2)}</b></span>
 
             <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', marginLeft: 'auto' }}>
               <button

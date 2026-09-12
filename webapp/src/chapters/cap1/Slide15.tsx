@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import StevensCanvas from './StevensCanvas';
 import HudPanel from './HudPanel';
+import { fmt } from './format';
 // @ts-ignore - katex auto-render no incluye tipos
 import renderMathInElement from 'katex/contrib/auto-render';
 
@@ -146,7 +147,7 @@ export default function Slide15({ slideCount }: { slideCount?: string }) {
                   <tr><th>Modalidad Sensorial</th><th>Exponente n</th><th>Duplicar (2×S)</th></tr>
                   {Object.values(STEVENS_SENSATIONS).map((s) => {
                     const isSel = selectedSensation === s.id;
-                    const mult = Math.pow(2, s.n).toFixed(2);
+                    const mult = fmt(Math.pow(2, s.n), 2);
                     return (
                       <tr
                         key={s.id}
@@ -159,7 +160,7 @@ export default function Slide15({ slideCount }: { slideCount?: string }) {
                       >
                         <td><b>{s.name}</b></td>
                         <td style={{ fontFamily: 'JetBrains Mono, monospace', color: s.n > 1 ? '#b02318' : '#0d6e64' }}>
-                          n = {s.n.toFixed(2).replace('.', ',')}
+                          n = {fmt(s.n, 2)}
                         </td>
                         <td style={{ fontFamily: 'JetBrains Mono, monospace', color: s.n > 1 ? '#b02318' : 'var(--teal-deep)' }}>
                           ×{mult}
@@ -185,7 +186,7 @@ export default function Slide15({ slideCount }: { slideCount?: string }) {
           {/* Panel HUD Colapsable en la esquina superior derecha */}
           <HudPanel
             title="LEY DE STEVENS"
-            badge={`n = ${n.toFixed(2)} · ${nType.toUpperCase()}`}
+            badge={`n = ${fmt(n, 2)} · ${nType.toUpperCase()}`}
             icon="🧠"
             footer="💡 P = K · (S - S₀)^n · Compara sublineal vs superlineal"
           >
@@ -210,14 +211,14 @@ export default function Slide15({ slideCount }: { slideCount?: string }) {
                   >
                     <span style={{ fontSize: '0.62rem', fontWeight: 600, color: 'var(--ink)' }}>{s.name.split('(')[0].trim()}</span>
                     <span style={{ fontSize: '0.58rem', fontFamily: 'JetBrains Mono, monospace', color: s.n > 1 ? '#b02318' : '#0d6e64', fontWeight: 'bold' }}>
-                      n = {s.n.toFixed(2).replace('.', ',')}
+                      n = {fmt(s.n, 2)}
                     </span>
                   </div>
                 );
               })}
 
               <div style={{ marginTop: '4px', borderTop: '1px dashed var(--line)', paddingTop: '4px', fontSize: '0.54rem', color: 'var(--ink-3)' }}>
-                ⚡ <b>Duplicación:</b> 2^n = {Math.pow(2, n).toFixed(2)}×
+                ⚡ <b>Duplicación:</b> 2^n = {fmt(Math.pow(2, n), 2)}×
               </div>
             </div>
           </HudPanel>
@@ -229,7 +230,7 @@ export default function Slide15({ slideCount }: { slideCount?: string }) {
           />
           <div className="prof-controls">
             <span className="badge">D4 · Stevens</span>
-            <span>Sensación: <b style={{ color: nColor }}>{currentDetail.name.split('(')[0].trim()}</b> (n = {n.toFixed(2).replace('.', ',')})</span>
+            <span>Sensación: <b style={{ color: nColor }}>{currentDetail.name.split('(')[0].trim()}</b> (n = {fmt(n, 2)})</span>
 
             <div style={{ display: 'flex', gap: '0.65rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
@@ -243,7 +244,7 @@ export default function Slide15({ slideCount }: { slideCount?: string }) {
                   onChange={(e) => handleSliderChange(parseFloat(e.target.value))}
                   style={{ width: '75px' }}
                 />
-                <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '32px' }}>{n.toFixed(2)}</b>
+                <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '32px' }}>{fmt(n, 2)}</b>
               </label>
 
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', cursor: 'pointer' }}>

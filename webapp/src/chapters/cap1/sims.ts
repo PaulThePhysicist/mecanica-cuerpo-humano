@@ -12,6 +12,7 @@
  * ========================================================================== */
 
 import { STANDARD_MAN, STANDARD_GRAVITY } from './standardMan';
+import { fmt } from './format';
 
 export const TOTAL = 17;
 export const MODULES = [
@@ -1989,7 +1990,7 @@ export function drawAllometry(customKey?: string) {
   const key = customKey || (document.getElementById('alloSelect') as HTMLSelectElement)?.value || 'BMR';
   const data = ALLO_DATA[key] || ALLO_DATA['BMR'];
   if (alloKey !== key) { alloKey = key; alloStart = performance.now(); }
-  (window as any).__stage('sim-allometry', 'ESCALA', 'α = ' + data.alpha.toFixed(2).replace('.', ','), 'teal', 'chart');
+  (window as any).__stage('sim-allometry', 'ESCALA', 'α = ' + fmt(data.alpha, 2), 'teal', 'chart');
   const pad = { top: 42, bottom: 42, left: 56, right: 26 };
   const plotW = W - pad.left - pad.right, plotH = H - pad.top - pad.bottom;
   const logMin = Math.log10(0.01), logMax = Math.log10(100000);
@@ -2059,11 +2060,11 @@ export function drawAllometry(customKey?: string) {
     ctx.fillStyle = '#22303c'; ctx.beginPath(); ctx.arc(hx, hy, 5.5, 0, Math.PI * 2); ctx.fill();
     ctx.strokeStyle = '#22303c'; ctx.lineWidth = 2; ctx.stroke();
     ctx.fillStyle = '#5a6875'; ctx.font = '9px JetBrains Mono, monospace'; ctx.textAlign = 'center';
-    ctx.fillText(data.a.toFixed(3) + '·70^' + data.alpha.toFixed(2) + ' = ' + hv.toFixed(2) + ' ' + data.unit, hx, hy + 20);
+    ctx.fillText(fmt(data.a, 3) + '·70^' + fmt(data.alpha, 2) + ' = ' + fmt(hv, 2) + ' ' + data.unit, hx, hy + 20);
 
     // Título + eje Y
     ctx.fillStyle = data.color; ctx.font = 'bold 13px Karla, system-ui, sans-serif'; ctx.textAlign = 'center';
-    ctx.fillText(data.label + '  (α = ' + data.alpha + ')', W / 2, 19);
+    ctx.fillText(data.label + '  (α = ' + fmt(data.alpha, 2) + ')', W / 2, 19);
     ctx.save(); ctx.translate(13, pad.top + plotH / 2); ctx.rotate(-Math.PI / 2);
     ctx.fillStyle = '#7a858d'; ctx.font = '9px Karla, system-ui, sans-serif'; ctx.textAlign = 'center';
     ctx.fillText(data.label + ' (' + data.unit + ')', 0, 0); ctx.restore();
@@ -2085,8 +2086,8 @@ export function drawStevens(customN?: number) {
 
   const n = customN != null ? customN : (parseFloat((document.getElementById('stevensN') as HTMLInputElement)?.value) || 0.54);
   const lbl = document.getElementById('stevensNLabel');
-  if (lbl) lbl.textContent = n.toFixed(2).replace('.', ',');
-  (window as any).__stage('sim-stevens', 'PERCEPCIÓN', 'n = ' + n.toFixed(2).replace('.', ',') + ' · S₀ normalizado', 'violet', 'chart');
+  if (lbl) lbl.textContent = fmt(n, 2);
+  (window as any).__stage('sim-stevens', 'PERCEPCIÓN', 'n = ' + fmt(n, 2) + ' · S₀ normalizado', 'violet', 'chart');
 
   const pad = { top: 35, bottom: 35, left: 45, right: 20 };
   const plotW = W - pad.left - pad.right, plotH = H - pad.top - pad.bottom;
@@ -2149,7 +2150,7 @@ export function drawStevens(customN?: number) {
   const label = n < 1 ? 'Sublineal (n<1)' : (n > 1 ? 'Superlineal (n>1)' : 'Lineal (n=1)');
   ctx.fillText(label, W / 2, 20);
   ctx.fillStyle = '#5a6875'; ctx.font = '9px Karla, system-ui, sans-serif'; ctx.textAlign = 'left';
-  ctx.fillText('P = K · (S − S₀)^' + n.toFixed(2) + ' · K=1', pad.left + 8, 32);
+  ctx.fillText('P = K · (S − S₀)^' + fmt(n, 2) + ' · K=1', pad.left + 8, 32);
   ctx.fillStyle = '#7a858d'; ctx.font = '9px Karla, system-ui, sans-serif';
   ctx.textAlign = 'center';
 }
@@ -2512,7 +2513,7 @@ export function drawBoneScale(highlight?: string | null, customAllo?: boolean) {
     ctx.fillStyle = '#43505c'; ctx.font = '9px JetBrains Mono, monospace';
     ctx.fillText('L = ' + b.L, x, bottomY + 14);
     ctx.fillStyle = '#6b7885';
-    ctx.fillText('w/L ≈ ' + b.wl.toFixed(1).replace('.', ','), x, bottomY + 26);
+    ctx.fillText('w/L ≈ ' + fmt(b.wl, 1), x, bottomY + 26);
 
     ctx.strokeStyle = b.color; ctx.lineWidth = 1.5;
     ctx.beginPath(); ctx.moveTo(x - wSolid - 2, topY + boneL * 0.25); ctx.lineTo(x + wSolid + 2, topY + boneL * 0.25); ctx.stroke();
@@ -2586,7 +2587,7 @@ export function calcBMI(customMass?: number, customHeight?: number) {
   const __f = (window as any).fitCanvas(canvas);
   const ctx = __f.ctx;
   const W = __f.W, H = __f.H;
-  (window as any).__stage('sim-bmi','ÍNDICES',cat+' · IMC '+bmi.toFixed(1).replace('.',','),'amber','calculator');
+  (window as any).__stage('sim-bmi','ÍNDICES',cat+' · IMC '+fmt(bmi, 1),'amber','calculator');
 
   const prev = bmiLast || targ;
   const t0 = performance.now();
@@ -2612,7 +2613,7 @@ export function calcBMI(customMass?: number, customHeight?: number) {
       window.CFX.figure(ctx, fx, fTop, fH, p, { tint: tint, modeling: true });
     }
     if (window.CFX && window.CFX.dimV) {
-      window.CFX.dimV(ctx, fx - figW*0.42, fTop + 4, fTop + fH, h.toFixed(2).replace('.',',')+' m', '#6b7885', { side:'left', W: W });
+      window.CFX.dimV(ctx, fx - figW*0.42, fTop + 4, fTop + fH, fmt(h, 2)+' m', '#6b7885', { side:'left', W: W });
     }
     ctx.fillStyle = '#43505c'; ctx.font = 'bold 10px JetBrains Mono, monospace'; ctx.textAlign='center';
     ctx.fillText(m+' kg', fx, fTop + fH + 16);
@@ -2641,13 +2642,13 @@ export function calcBMI(customMass?: number, customHeight?: number) {
     ctx.fillStyle='rgba(13,110,100,.30)'; ctx.beginPath(); ctx.arc(cxD,cyD,rMax*Math.sqrt(areaFrac),0,Math.PI*2); ctx.fill();
     ctx.strokeStyle='#0d6e64'; ctx.lineWidth=1.4; ctx.beginPath(); ctx.arc(cxD,cyD,rMax*Math.sqrt(areaFrac),0,Math.PI*2); ctx.stroke();
     ctx.fillStyle='#0d6e64'; ctx.font='bold 12px JetBrains Mono, monospace'; ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText(A.toFixed(2).replace('.',',')+' m²', cxD, cyD);
+    ctx.fillText(fmt(A, 2)+' m²', cxD, cyD);
     ctx.fillStyle='#6b7885'; ctx.font='7px Karla, system-ui, sans-serif'; ctx.textBaseline='alphabetic';
     ctx.fillText('Área · Du Bois', cxD, cyD + rMax + 10);
     ctx.restore();
 
     ctx.fillStyle='#b86a1e'; ctx.font='9px JetBrains Mono, monospace'; ctx.textAlign='left';
-    ctx.fillText('Grasa H/M: '+fatH.toFixed(1).replace('.',',')+' / '+fatM.toFixed(1).replace('.',',')+' %', px, H*0.9);
+    ctx.fillText('Grasa H/M: '+fmt(fatH, 1)+' / '+fmt(fatM, 1)+' %', px, H*0.9);
 
     if (t<1) bmiAnim = requestAnimationFrame(frame); else { bmiAnim=null; bmiLast=targ; }
   })(performance.now());
@@ -3562,7 +3563,7 @@ export function drawBodyProportions(customMass?: number, customHeight?: number) 
 
   /* ── Acotación de estatura ── */
   var dimX = cx - g.sh * 1.05 - 34;
-  CFX.dimV(ctx, dimX, top, floorY, Href.toFixed(2).replace('.', ',') + ' m', PAL.tealDeep, { side: 'left', W: W, size: 9.5 });
+  CFX.dimV(ctx, dimX, top, floorY, fmt(Href, 2) + ' m', PAL.tealDeep, { side: 'left', W: W, size: 9.5 });
   // marcas de referencia
   ctx.save();
   ctx.strokeStyle = 'rgba(13,110,100,0.28)'; ctx.lineWidth = 1; ctx.setLineDash([3, 4]);
@@ -3579,7 +3580,7 @@ export function drawBodyProportions(customMass?: number, customHeight?: number) 
 
   /* ── HUD y pie ── */
   window.__stage('sim-body', 'REFERENCIA',
-    mass + ' kg · ' + area.toFixed(2).replace('.', ',') + ' m²', 'teal', 'anatomy');
+    mass + ' kg · ' + fmt(area, 2) + ' m²', 'teal', 'anatomy');
   CFX.footnote(ctx, W, H, 'Du Bois: A = 0,202 · m⁰,⁴²⁵ · H⁰,⁷²⁵   ·   Kleiber: TMB ∝ m⁰,⁷⁵');
 }
 
@@ -3783,9 +3784,9 @@ function vitalsPanel(ctx, x, y, w, H, mass, area, bmr, bmi, hr, rr, t) {
   var rows = [
     ['Masa', mass + ' kg', PAL.ink2],
     ['Peso', weightN + ' N', PAL.ink2],
-    ['Área', area.toFixed(2).replace('.', ',') + ' m²', PAL.teal],
+    ['Área', fmt(area, 2) + ' m²', PAL.teal],
     ['TMB', Math.round(bmr) + ' kcal/h', PAL.blood],
-    ['IMC', bmi.toFixed(1).replace('.', ','), bmiColor(bmi)],
+    ['IMC', fmt(bmi, 1), bmiColor(bmi)],
     ['Sangre', '5,2 L', PAL.blood],
     ['Pulmón', '6,0 L', '#2b7d97'],
     ['Fluidos', '51 L · 53 %', PAL.violet]
@@ -3909,7 +3910,7 @@ export function drawProportions(highlight?: string | null, customHeight?: number
   segs.forEach(function (s) {
     var part = C2_PARTS.filter(function (q) { return q.key === s.key; })[0];
     var on = hl === s.key;
-    var cmv = (part.frac * height).toFixed(1).replace('.', ',');
+    var cmv = fmt(part.frac * height, 1);
       CFX.dimV(ctx, s.x, yy(s.y0), yy(s.y1),
         cmv + ' cm',
       part.color, { side: s.key === 'pie' ? 'right' : 'left', W: W, alpha: on ? 1 : 0.82, size: on ? 13 : 12 });
@@ -3924,7 +3925,7 @@ export function drawProportions(highlight?: string | null, customHeight?: number
   var shY = yy(L.neck + bodyH * 0.020);
   var shDimY = shY + bodyH * 0.055;   // por DEBAJO de la línea de hombros: nunca invade la cabeza
   CFX.dimH(ctx, cx - g.sh, cx + g.sh, shDimY,
-    (0.259 * height).toFixed(1).replace('.', ',') + ' cm · 0,259·H',
+    fmt(0.259 * height, 1) + ' cm · 0,259·H',
     '#a35c00', { above: false, W: W, alpha: shOn ? 1 : 0.88, size: shOn ? 11.5 : 10.5 });
   // líneas de proyección desde los hombros hasta la cota
   ctx.save();
@@ -3947,7 +3948,7 @@ export function drawProportions(highlight?: string | null, customHeight?: number
       var part = C2_PARTS.filter(function (q) { return q.key === a[0]; })[0];
       var on = hl === a[0];
       CFX.dimV(ctx, ax, a[1], a[2],
-        (part.frac * height).toFixed(1).replace('.', ',') + ' cm',
+        fmt(part.frac * height, 1) + ' cm',
         part.color, { W: W, alpha: on ? 1 : 0.84, size: on ? 13 : 12 });
     });
   }
@@ -3999,7 +4000,7 @@ function stackedBar(ctx, x, y, w, h, height, hl) {
     ctx.fillStyle = on ? p.color : PAL.ink3;
     ctx.font = (on ? 'bold ' : '') + '12px JetBrains Mono, monospace';
     ctx.textAlign = 'left';
-    ctx.fillText((p.frac * height).toFixed(1).replace('.', ',') + ' cm', x + w + 6, cum + hh / 2 + 3);
+    ctx.fillText(fmt(p.frac * height, 1) + ' cm', x + w + 6, cum + hh / 2 + 3);
     cum += hh;
   });
   ctx.restore();
@@ -4398,7 +4399,7 @@ export function drawSomatotype(type) {
       ctx.beginPath(); ctx.moveTo(cx - g.hp, hpY); ctx.lineTo(cx + g.hp, hpY); ctx.stroke();
       ctx.setLineDash([]);
       ctx.restore();
-      CFX.chip(ctx, cx, top - 8, 'hombro/cadera ' + (g.sh / g.hp).toFixed(2).replace('.', ','),
+      CFX.chip(ctx, cx, top - 8, 'hombro/cadera ' + fmt(g.sh / g.hp, 2),
         { color: T.color, size: 11, mono: true, align: 'center', W: W });
     }
 
@@ -4506,7 +4507,7 @@ function componentsPanel(ctx, x, y, w, h, sel) {
     CFX.bar(ctx, bx, ry - 4, bw, 8, c[1] / 7, c[2], { glow: c[1] >= 5 });
     ctx.textAlign = 'right';
     ctx.fillStyle = c[2]; ctx.font = 'bold 9px JetBrains Mono, monospace';
-    ctx.fillText(c[1].toFixed(1).replace('.', ','), x + w - 10, ry + 3);
+    ctx.fillText(fmt(c[1], 1), x + w - 10, ry + 3);
   });
 
   ctx.textAlign = 'left';

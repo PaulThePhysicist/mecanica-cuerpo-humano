@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import StandardHumanCanvas from './StandardHumanCanvas';
 import { STANDARD_MAN } from './standardMan';
+import { fmt } from './format';
 
 interface ParamDetail {
   id: string;
@@ -9,7 +10,7 @@ interface ParamDetail {
   desc: string;
 }
 
-const SM_HEIGHT = String(STANDARD_MAN.heightM).replace('.', ',');
+const SM_HEIGHT = fmt(STANDARD_MAN.heightM, 2);
 
 const PARAMS_DATA: Record<string, ParamDetail> = {
   mass: {
@@ -21,7 +22,7 @@ const PARAMS_DATA: Record<string, ParamDetail> = {
   area: {
     id: 'area',
     name: 'Área de Superficie (Du Bois)',
-    refValue: `${String(STANDARD_MAN.bsaM2).replace('.', ',')} m²`,
+    refValue: `${fmt(STANDARD_MAN.bsaM2, 2)} m²`,
     desc: '<b>Área de Superficie (Fórmula de Du Bois):</b> $A = 0{,}202 \\cdot m^{0{,}425} \\cdot H^{0{,}725}$. Clave para la disipación térmica y dosificación farmacológica.',
   },
   bmr: {
@@ -33,14 +34,14 @@ const PARAMS_DATA: Record<string, ParamDetail> = {
   cardio: {
     id: 'cardio',
     name: 'Sistema Cardiovascular',
-    refValue: `${STANDARD_MAN.restingHR} lpm · ${String(STANDARD_MAN.bloodVolumeL).replace('.', ',')} L volemia · 120/80 mmHg`,
-    desc: `<b>Constantes Cardiovasculares:</b> Frecuencia cardíaca en reposo de ${STANDARD_MAN.restingHR} lpm, volumen sanguíneo de ${String(STANDARD_MAN.bloodVolumeL).replace('.', ',')} L (aprox. 7,5% de la masa) y presión de 120/80 mmHg.`,
+    refValue: `${STANDARD_MAN.restingHR} lpm · ${fmt(STANDARD_MAN.bloodVolumeL, 1)} L volemia · 120/80 mmHg`,
+    desc: `<b>Constantes Cardiovasculares:</b> Frecuencia cardíaca en reposo de ${STANDARD_MAN.restingHR} lpm, volumen sanguíneo de ${fmt(STANDARD_MAN.bloodVolumeL, 1)} L (aprox. 7,5% de la masa) y presión de 120/80 mmHg.`,
   },
   pulmonary: {
     id: 'pulmonary',
     name: 'Sistema Respiratorio',
-    refValue: `${STANDARD_MAN.restingRR} rpm · ${String(STANDARD_MAN.lungCapacityTotalL).replace('.', ',')} L CPT`,
-    desc: `<b>Capacidad Pulmonar Total (CPT):</b> ${String(STANDARD_MAN.lungCapacityTotalL).replace('.', ',')} L con un volumen corriente en reposo de ~500 ml a una frecuencia de ${STANDARD_MAN.restingRR} respiraciones por minuto.`,
+    refValue: `${STANDARD_MAN.restingRR} rpm · ${fmt(STANDARD_MAN.lungCapacityTotalL, 1)} L CPT`,
+    desc: `<b>Capacidad Pulmonar Total (CPT):</b> ${fmt(STANDARD_MAN.lungCapacityTotalL, 1)} L con un volumen corriente en reposo de ~500 ml a una frecuencia de ${STANDARD_MAN.restingRR} respiraciones por minuto.`,
   },
   composition: {
     id: 'composition',
@@ -111,7 +112,7 @@ export default function Slide8({ slideCount }: { slideCount?: string }) {
                     onClick={() => handleSelectParam('area')}
                     style={{ cursor: 'pointer', background: selectedParam === 'area' ? 'var(--teal-tint)' : 'transparent' }}
                   >
-                    <td><b>Área de superficie</b></td><td>{String(STANDARD_MAN.bsaM2).replace('.', ',')} m² (Du Bois)</td>
+                    <td><b>Área de superficie</b></td><td>{fmt(STANDARD_MAN.bsaM2, 2)} m² (Du Bois)</td>
                   </tr>
                   <tr
                     onClick={() => handleSelectParam('bmr')}
@@ -123,13 +124,13 @@ export default function Slide8({ slideCount }: { slideCount?: string }) {
                     onClick={() => handleSelectParam('cardio')}
                     style={{ cursor: 'pointer', background: selectedParam === 'cardio' ? 'var(--teal-tint)' : 'transparent' }}
                   >
-                    <td><b>Frecuencia cardíaca</b></td><td>{STANDARD_MAN.restingHR} latidos/min · {String(STANDARD_MAN.bloodVolumeL).replace('.', ',')} L</td>
+                    <td><b>Frecuencia cardíaca</b></td><td>{STANDARD_MAN.restingHR} latidos/min · {fmt(STANDARD_MAN.bloodVolumeL, 1)} L</td>
                   </tr>
                   <tr
                     onClick={() => handleSelectParam('pulmonary')}
                     style={{ cursor: 'pointer', background: selectedParam === 'pulmonary' ? 'var(--teal-tint)' : 'transparent' }}
                   >
-                    <td><b>Capacidad pulmonar</b></td><td>{String(STANDARD_MAN.lungCapacityTotalL).replace('.', ',')} L total · {STANDARD_MAN.restingRR} rpm</td>
+                    <td><b>Capacidad pulmonar</b></td><td>{fmt(STANDARD_MAN.lungCapacityTotalL, 1)} L total · {STANDARD_MAN.restingRR} rpm</td>
                   </tr>
                   <tr
                     onClick={() => handleSelectParam('composition')}
@@ -203,7 +204,7 @@ export default function Slide8({ slideCount }: { slideCount?: string }) {
 
             <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.65rem', alignItems: 'center' }}>
               <span style={{ fontSize: '0.60rem', color: 'var(--ink-2)' }}>
-                IMC: <b>{bmi.toFixed(1).replace('.', ',')}</b> · Área: <b>{bsa.toFixed(2).replace('.', ',')} m²</b>
+                IMC: <b>{fmt(bmi, 1)}</b> · Área: <b>{fmt(bsa, 2)} m²</b>
               </span>
 
               <button

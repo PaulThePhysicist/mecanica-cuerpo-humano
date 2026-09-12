@@ -1024,6 +1024,22 @@ Anota aquí lo que encuentres durante la ejecución y **no** corrijas en el tick
   (`peso $W = mg \approx 690\text{ N}$`) se pinta sin procesar por KaTeX al seleccionar el parámetro
   «Estatura y Masa» — se ve el `$...$` literal. Mismo síntoma que `C1-04`, pero en C1 en vez de en el
   Resumen; `C1-04` tal como está redactado solo cubre Slide16. *(Detectado al verificar `C1-02`.)*
+- **Notación de teclado fuera del alcance de `C1-06`:** `Slide13.tsx` línea ~117 (`msub` de D2:
+  «¿Por qué el elefante no tiene patas de ratón gigante? (w ∝ L^3/2)») y el badge del `HudPanel`
+  («ALOMÉTRICO (w ∝ L^3/2)» / «Alométrico Real (w ∝ L^1,5)») muestran `^` crudo en vez de KaTeX. Es
+  la regla global de «cero notación de teclado», no un separador decimal; `C1-06` solo corrigió el
+  punto de `L^1.5` porque ya estaba tocando esa línea, sin convertir el resto a KaTeX (fuera de sus
+  Pasos). *(Detectado al barrer las 17 diapositivas para `C1-06`.)*
+- **Dos bugs reales de JSX/JS encontrados durante el barrido de `C1-06` (no los cubría el grep de
+  `toFixed()` del ticket, pero sí su criterio de aceptación):**
+  1. `Slide13.tsx` línea 134: `$10^{4/6} = 10^{2/3} \approx 4$` estaba como texto JSX sin comillas, así
+     que `{4/6}` y `{2/3}` se evaluaban como expresiones JS reales (0,6666666666666666) en vez de
+     quedar como texto literal para KaTeX. Corregido envolviendo la cláusula en un string.
+  2. `AllometryCanvas.tsx` (chip del punto activo) y `Slide12.tsx` (descripción del animal
+     seleccionado) interpolaban la masa del animal sin formatear (`${activeMass} kg`); con el ratón
+     (0,025 kg) o el conejo (2,5 kg) seleccionados se veía el punto crudo de JS. Corregido con el
+     mismo criterio entero-vs-decimal que ya usaba `BoneScaleCanvas.tsx`.
+  *(Detectado al verificar `C1-06` en el navegador, no por grep.)*
 
 ---
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ProportionsCanvas from './ProportionsCanvas';
 import ChapterImageLightbox from './ChapterImageLightbox';
+import { fmt } from './format';
 // @ts-ignore - katex auto-render no incluye tipos
 import renderMathInElement from 'katex/contrib/auto-render';
 
@@ -153,7 +154,7 @@ export default function Slide9({ slideCount }: { slideCount?: string }) {
                   <tr><th>Segmento</th><th>L / H</th><th>L calculada</th></tr>
                   {Object.values(SEGMENTS_DATA).map((s) => {
                     const isSel = selectedSegment === s.id;
-                    const lenCm = (s.frac * height).toFixed(1).replace('.', ',');
+                    const lenCm = fmt(s.frac * height, 1);
                     return (
                       <tr
                         key={s.id}
@@ -170,7 +171,7 @@ export default function Slide9({ slideCount }: { slideCount?: string }) {
                           <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', background: s.color, marginRight: '6px' }} />
                           <b>{s.name}</b>
                         </td>
-                        <td>{s.frac.toFixed(3).replace('.', ',')}</td>
+                        <td>{fmt(s.frac, 3)}</td>
                         <td style={{ fontFamily: 'JetBrains Mono, monospace', color: isSel ? 'var(--teal-deep)' : 'var(--ink-2)' }}>
                           {lenCm} cm
                         </td>
@@ -242,7 +243,7 @@ export default function Slide9({ slideCount }: { slideCount?: string }) {
             <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.65rem', alignItems: 'center' }}>
               {selectedSegment && (
                 <span style={{ fontSize: '0.60rem', color: 'var(--teal-deep)', fontWeight: 'bold' }}>
-                  {SEGMENTS_DATA[selectedSegment]?.name}: {((SEGMENTS_DATA[selectedSegment]?.frac || 0) * height).toFixed(1).replace('.', ',')} cm
+                  {SEGMENTS_DATA[selectedSegment]?.name}: {fmt((SEGMENTS_DATA[selectedSegment]?.frac || 0) * height, 1)} cm
                 </span>
               )}
               <button

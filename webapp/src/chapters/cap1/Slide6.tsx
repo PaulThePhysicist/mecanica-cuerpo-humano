@@ -662,7 +662,7 @@ export default function Slide6({ toggleMovementAnimation, slideCount }: Slide6Pr
                       cursor: 'pointer',
                     }}
                   >
-                    {spd}x
+                    {String(spd).replace('.', ',')}x
                   </button>
                 ))}
               </div>
