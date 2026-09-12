@@ -53,6 +53,20 @@ function ModelLoader() {
 const BONE_BASE = new THREE.Color('#e8dcc4'); // marfil cálido
 const HIGHLIGHT = new THREE.Color('#067a6b'); // teal regional
 
+// Fantasma de los dos topes del ROM activo (V2-02): mismo hueso, teñido de
+// azul pizarra — un marfil translúcido se perdía contra el propio hueso y el
+// fondo del estudio, ambos marfil (probado en pantalla). El tinte lo separa
+// de un vistazo sin competir con el teal/rojo del arco ni con el resaltado
+// regional (teal saturado con emisión).
+const ROM_GHOST_MATERIAL = new THREE.MeshStandardMaterial({
+  color: new THREE.Color('#5b7a94'),
+  roughness: 0.7,
+  metalness: 0,
+  transparent: true,
+  opacity: 0.4,
+  depthWrite: false,
+});
+
 const MOBILITY_MODEL_SCALE = FULL_BODY_SCALE;
 const SHOULDER_PIVOT = new THREE.Vector3(-0.095, 0.311, -0.015);
 const ELBOW_PIVOT = new THREE.Vector3(-0.124, 0.145, -0.019);
@@ -173,6 +187,25 @@ function MobilityRangeOverlay({ range, progress }: { range?: MobilityRange | nul
   const excursion = THREE.MathUtils.degToRad((romAngleAt(range.joint, progress) ?? 0) * (motion?.primarySign ?? 1));
   const needleAngle = NEUTRAL_RAY - excursion;
 
+  // Rótulo en grados a medio arco (V2-02): el mismo radio que dibuja el arco,
+  // un poco más afuera para no pisar la línea ni la aguja.
+  const primaryMid = NEUTRAL_RAY - primaryArc / 2;
+  const primaryLabelPos: [number, number, number] = [Math.cos(primaryMid) * radius * 1.2, Math.sin(primaryMid) * radius * 1.2, 0];
+  const secondaryMid = NEUTRAL_RAY + secondaryArc / 2;
+  const secondaryLabelPos: [number, number, number] = [Math.cos(secondaryMid) * radius * 1.2, Math.sin(secondaryMid) * radius * 1.2, 0];
+  const degreeLabelStyle = (bg: string): React.CSSProperties => ({
+    fontFamily: 'var(--mono)',
+    fontSize: '0.74rem',
+    fontWeight: 700,
+    color: '#fff',
+    background: bg,
+    padding: '0.06rem 0.42rem',
+    borderRadius: '999px',
+    whiteSpace: 'nowrap',
+    pointerEvents: 'none',
+    boxShadow: '0 1px 4px rgba(0,0,0,0.35)',
+  });
+
   return (
     <group name="mobility-focus" position={anchor}>
       {/* Caja invisible del tamaño del hueso adyacente: el encuadre (V2-01/V2-02)
@@ -190,15 +223,23 @@ function MobilityRangeOverlay({ range, progress }: { range?: MobilityRange | nul
       <group rotation={planeRotation}>
         {/* Sector primario: del neutro hacia el tope del movimiento principal. */}
         <mesh rotation={[0, 0, NEUTRAL_RAY - primaryArc]}>
-          <torusGeometry args={[radius, 0.022, 10, 96, primaryArc]} />
+          <torusGeometry args={[radius, 0.05, 10, 96, primaryArc]} />
           <meshBasicMaterial color="#087f72" transparent opacity={0.85} depthTest={false} depthWrite={false} />
         </mesh>
+        <Html position={primaryLabelPos} center style={degreeLabelStyle('#087f72')}>
+          {Math.round(range.primary)}°
+        </Html>
         {/* Sector secundario: del neutro hacia el tope contrario. */}
         {secondaryArc > 0 && (
-          <mesh rotation={[0, 0, NEUTRAL_RAY]}>
-            <torusGeometry args={[radius, 0.022, 10, 80, secondaryArc]} />
-            <meshBasicMaterial color="#c04a3d" transparent opacity={0.8} depthTest={false} depthWrite={false} />
-          </mesh>
+          <>
+            <mesh rotation={[0, 0, NEUTRAL_RAY]}>
+              <torusGeometry args={[radius, 0.05, 10, 80, secondaryArc]} />
+              <meshBasicMaterial color="#c04a3d" transparent opacity={0.8} depthTest={false} depthWrite={false} />
+            </mesh>
+            <Html position={secondaryLabelPos} center style={degreeLabelStyle('#c04a3d')}>
+              {Math.round(range.secondary ?? 0)}°
+            </Html>
+          </>
         )}
         {/* Rayo neutro: la referencia contra la que se miden ambos topes. */}
         <mesh position={[0, -radius / 2, 0]}>
@@ -380,11 +421,61 @@ function AnatomyModel({ mode, selected, joint, progress }: { mode: string; selec
     }
   }, [motionGroups, joint, progress]);
 
+  // Fantasmas de los dos topes del ROM activo (V2-02): dos copias translúcidas
+  // del mismo sub-árbol de huesos que ya mueve el efecto anterior, clonadas del
+  // pivote y congeladas en `from`/`to` en vez de en `progress`. Como el pivote
+  // activo es el único que se sale del reposo (el efecto de arriba resetea a
+  // todos los demás), colgar el fantasma del MISMO padre que el pivote en vivo
+  // le da gratis la cadena de transformación correcta sin reconstruir el rig.
+  React.useEffect(() => {
+    const motion = joint ? ROM_MOTIONS[joint] : undefined;
+    if (!motion) return undefined;
+    const pivot = motionGroups[motion.pivot];
+    const parent = pivot.parent;
+    if (!parent) return undefined;
+    const baseQuaternion =
+      motion.pivot === 'forearm' ? motionGroups.forearmBaseQuaternion :
+      motion.pivot === 'wrist' ? motionGroups.wristBaseQuaternion :
+      undefined;
+
+    const buildGhost = (deg: number) => {
+      const ghost = pivot.clone(true);
+      ghost.traverse((child) => {
+        if ((child as THREE.Mesh).isMesh) {
+          const mesh = child as THREE.Mesh;
+          mesh.material = ROM_GHOST_MATERIAL;
+          // El efecto de resaltado regional de abajo recorre `clonedScene` (que
+          // ahora incluye este fantasma, colgado del mismo padre que el pivote
+          // en vivo) y repinta CUALQUIER malla con su `userData.baseColor` —
+          // sin esta marca le devolvía el material compartido al marfil del
+          // hueso real, y el fantasma se perdía contra el propio esqueleto.
+          mesh.userData.romGhost = true;
+        }
+      });
+      const rad = THREE.MathUtils.degToRad(deg);
+      if (motion.relative && baseQuaternion) {
+        ghost.quaternion.copy(baseQuaternion);
+        if (motion.axis === 'x') ghost.rotateX(rad);
+        else if (motion.axis === 'y') ghost.rotateY(rad);
+        else ghost.rotateZ(rad);
+      } else {
+        ghost.rotation.set(0, 0, 0);
+        ghost.rotation[motion.axis] = rad;
+      }
+      parent.add(ghost);
+      return ghost;
+    };
+
+    const ghosts = [buildGhost(motion.from), buildGhost(motion.to)];
+    return () => ghosts.forEach((g) => g.parent?.remove(g));
+  }, [motionGroups, joint]);
+
   React.useEffect(() => {
     const active = (mode === 'regions' && selected && REGION_BONES[selected]) ? new Set(REGION_BONES[selected]) : null;
     clonedScene.traverse((child) => {
       if ((child as THREE.Mesh).isMesh) {
         const mesh = child as THREE.Mesh;
+        if (mesh.userData.romGhost) return;
         const mat = mesh.material as THREE.MeshStandardMaterial;
         if (active && active.has(mesh.userData.boneName)) {
           mat.color.copy(HIGHLIGHT);
