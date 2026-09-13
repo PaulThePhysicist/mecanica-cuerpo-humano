@@ -146,7 +146,10 @@ export default function AllometryCanvas({
       ctx.fillRect(0, 0, W, H);
 
       // ─── 2. Dimensiones del Gráfico Log-Log ───
-      const pad = { top: 48, bottom: 85, left: 62, right: 30 };
+      // top=58 (antes 48): la ballena azul (el punto más extremo en casi
+      // todas las curvas) queda a 14px por encima de su punto — con solo
+      // 48px de margen su rótulo tocaba el borde superior (V2-04).
+      const pad = { top: 58, bottom: 85, left: 62, right: 30 };
       const plotW = W - pad.left - pad.right;
       const plotH = H - pad.top - pad.bottom;
 
@@ -159,12 +162,13 @@ export default function AllometryCanvas({
       const massFromX = (x: number) =>
         Math.pow(10, logMinM + ((x - pad.left) / plotW) * (logMaxM - logMinM));
 
-      // Rango de escala Y basado en la función actual
+      // Rango de escala Y basado en la función actual. Margen superior de
+      // media década (antes ×3 ≈ 0,08 dec — insuficiente para el rótulo).
       const calcYVal = (m: number) => activeCurve.a * Math.pow(m, activeCurve.alpha);
       const minVal = Math.min(calcYVal(0.01), calcYVal(150000));
       const maxVal = Math.max(calcYVal(0.01), calcYVal(150000));
       const logMinY = Math.log10(Math.max(1e-5, minVal * 0.3));
-      const logMaxY = Math.log10(maxVal * 3);
+      const logMaxY = Math.log10(maxVal) + 0.5;
 
       const yFromVal = (v: number) =>
         pad.top + plotH - ((Math.log10(Math.max(1e-5, v)) - logMinY) / (logMaxY - logMinY)) * plotH;
@@ -226,7 +230,7 @@ export default function AllometryCanvas({
       ctx.restore();
 
       ctx.fillStyle = '#17212b';
-      ctx.font = `italic ${scaled(10)}px Karla, system-ui, sans-serif`;
+      ctx.font = `${scaled(10)}px Karla, system-ui, sans-serif`;
       ctx.textAlign = 'left';
       ctx.fillText('--- Isometría geométrica pura (α = 1,00)', pad.left + 10, pad.top + 18);
 
@@ -293,12 +297,14 @@ export default function AllometryCanvas({
         const offsetY = a.mass < 1 ? -12 : (a.mass > 1000 ? -14 : -12);
         ctx.fillText(`${a.emoji} ${a.name}`, ax, ay + offsetY);
 
-        // Valor calculado para el animal
+        // Valor calculado para el animal. -11px no bastaba de separación con
+        // el nombre (bold 12px): a esa distancia las cajas de línea llegaban
+        // a tocarse — «99,2 W» se leía pegado a «Humano» (V2-04).
         if (isHover || isHuman) {
           ctx.font = `bold ${scaled(10.5)}px JetBrains Mono, monospace`;
           ctx.fillStyle = activeCurve.color;
           const valStr = v >= 1000 ? fmt(v, 0) : (v < 0.1 ? fmt(v, 3) : fmt(v, 1));
-          ctx.fillText(`${valStr} ${activeCurve.unit}`, ax, ay + (offsetY < 0 ? offsetY - 11 : 16));
+          ctx.fillText(`${valStr} ${activeCurve.unit}`, ax, ay + (offsetY < 0 ? offsetY - 15 : 16));
         }
         ctx.restore();
       });
@@ -362,6 +368,12 @@ export default function AllometryCanvas({
       }[activeCurve.id] || { left: 'Menor', right: 'Mayor', leftColor: '#00ffaa', rightColor: '#d480ff' };
 
       ctx.save();
+      // Rótulo propio: sin él, la caja se leía «flotando» sin explicar qué
+      // comparan sus dos ondas (V2-04).
+      ctx.fillStyle = '#43505c';
+      ctx.font = `${scaled(8)}px Karla, system-ui, sans-serif`;
+      ctx.textAlign = 'left';
+      ctx.fillText('Comparativa animada', oscX, oscY - 4);
       ctx.fillStyle = 'rgba(24, 32, 40, 0.92)';
       ctx.fillRect(oscX, oscY, oscW, oscH);
       ctx.strokeStyle = 'rgba(13, 110, 100, 0.6)';
@@ -438,10 +450,15 @@ export default function AllometryCanvas({
       ctx.fillStyle = '#17212b';
       drawFittedText(ctx, `${activeCurve.name} [${activeCurve.unit}] · ${activeCurve.desc}`, pad.left, 38, headerMaxWidth, scaled(10.5), scaled(7), 'Karla, system-ui, sans-serif');
 
+      // Título del eje X, junto al plot pero arriba: el panel flotante
+      // «D1 · Log-log …» (fuera de este archivo — HudPanel/.prof-controls,
+      // arreglo completo en V2-05) cubre casi TODO el margen inferior, así
+      // que abajo (pad.bottom) nunca queda realmente libre. Arriba sí lo está,
+      // confirmado en pantalla (V2-04).
       ctx.fillStyle = '#17212b';
-      ctx.font = `${scaled(10)}px Karla, system-ui, sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.fillText('Masa Corporal mᵦ (kg, escala logarítmica de 10 g a 150 toneladas) →', W / 2, H - 10);
+      ctx.font = `${scaled(9)}px Karla, system-ui, sans-serif`;
+      ctx.textAlign = 'left';
+      ctx.fillText('Eje X: masa corporal mᵦ (kg, escala logarítmica de 10 g a 150 t) →', pad.left, pad.top - 8);
 
       ctx.restore();
       rafRef.current = requestAnimationFrame(render);

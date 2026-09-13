@@ -1046,6 +1046,13 @@ Anota aquí lo que encuentres durante la ejecución y **no** corrijas en el tick
   patrón que el `PLANES` muerto de `BodyScene.tsx` anotado en `C1-01`. *(Detectado al diagnosticar
   `V2-03`: el ticket señalaba `AxisDoubleArrow` de `PlanesCanvas.tsx` como el sitio a arreglar, pero
   ese componente no renderiza nada.)*
+- **Código muerto en `sims.ts`: `drawAllometry`/`drawStevens`.** Buscan
+  `document.getElementById('sim-allometry'|'sim-stevens')`, pero ningún canvas del árbol actual usa
+  esos ids — D1 y D4 son componentes React autocontenidos (`AllometryCanvas.tsx`, `StevensCanvas.tsx`)
+  con su propio `<canvas>` sin id. `Capitulo1.tsx` las sigue invocando (`bindOnce`, `case 12`/`case 15`)
+  sin efecto visible. Mismo patrón que `calcBMI` (anotado en `C1-02`). *(Detectado al diagnosticar
+  `V2-04`: el ticket señalaba estas funciones y `sims.ts` como el sitio a arreglar; los cambios reales
+  se hicieron en los componentes React.)*
 
 ---
 

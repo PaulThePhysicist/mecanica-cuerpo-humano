@@ -37,6 +37,25 @@ function toSuperscript(value: string) {
   return [...value].map((char) => SUPERSCRIPT[char] ?? char).join('');
 }
 
+/** Encoge la fuente hasta que el texto quepa en `maxWidth`; si ni al tamaño
+ *  mínimo cabe, trunca con «…». Evita que un nombre largo (p.ej. «Sonoridad
+ *  (1 kHz)») se salga de la tarjeta del widget en lienzos angostos (V2-04). */
+function fitText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number, baseSize: number, minSize: number, weight: string) {
+  let size = baseSize;
+  const setFont = () => { ctx.font = `${weight}${size}px Karla, system-ui, sans-serif`; };
+  setFont();
+  while (size > minSize && ctx.measureText(text).width > maxWidth) {
+    size -= 0.5;
+    setFont();
+  }
+  if (ctx.measureText(text).width > maxWidth) {
+    let fitted = text;
+    while (fitted.length > 1 && ctx.measureText(`${fitted}…`).width > maxWidth) fitted = fitted.slice(0, -1);
+    text = `${fitted}…`;
+  }
+  return text;
+}
+
 export default function StevensCanvas({
   n,
   selectedSensation = 'sonoridad',
@@ -111,7 +130,7 @@ export default function StevensCanvas({
       const xFromS = (sVal: number) => pad.left + (sVal / sMax) * plotW;
       const yFromP = (pVal: number) => pad.top + plotH - (Math.max(0, pVal) / pMax) * plotH;
 
-      // Rejilla de fondo
+      // Rejilla de fondo + marcas del eje X (múltiplos de S₀)
       ctx.strokeStyle = 'rgba(67, 80, 92, 0.08)';
       ctx.lineWidth = 1;
       for (let sStep = 1; sStep <= 4; sStep++) {
@@ -127,10 +146,40 @@ export default function StevensCanvas({
         ctx.fillText(`${sStep}S₀`, sx, pad.top + plotH + 14);
       }
 
+      // Marcas del eje Y (percepción P, fracciones de su máximo con el
+      // exponente activo — P no tiene unidad física propia en la ley de
+      // Stevens, es una magnitud relativa).
+      for (let pStep = 0; pStep <= 4; pStep++) {
+        const pVal = (pStep / 4) * pMax;
+        const py = yFromP(pVal);
+        ctx.beginPath();
+        ctx.moveTo(pad.left, py);
+        ctx.lineTo(pad.left + plotW, py);
+        ctx.stroke();
+
+        ctx.fillStyle = '#43505c';
+        ctx.font = `${scaled(10)}px JetBrains Mono, monospace`;
+        ctx.textAlign = 'right';
+        ctx.fillText(fmt(pVal, pMax < 3 ? 2 : 1), pad.left - 7, py + 3);
+      }
+
       // Marco del gráfico
       ctx.strokeStyle = 'rgba(35, 44, 54, 0.35)';
       ctx.lineWidth = 1.2;
       ctx.strokeRect(pad.left, pad.top, plotW, plotH);
+
+      // Títulos de eje (con unidad relativa: P es adimensional en esta ley)
+      ctx.fillStyle = '#43505c';
+      ctx.font = `${scaled(10)}px Karla, system-ui, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.fillText('Estímulo S (múltiplos de S₀)', pad.left + plotW / 2, pad.top + plotH + 30);
+
+      ctx.save();
+      ctx.translate(14, pad.top + plotH / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.textAlign = 'center';
+      ctx.fillText('Percepción P (u. relativas)', 0, 0);
+      ctx.restore();
 
       // Umbral sensorial S0
       const s0x = xFromS(s0);
@@ -160,12 +209,49 @@ export default function StevensCanvas({
       ctx.stroke();
       ctx.restore();
 
+      // Para n ≤ 1 (la mayoría de las sensaciones de la tabla) pMax se fija en
+      // (sMax−S₀), el mismo valor final de esta recta — su extremo cae justo
+      // en pad.top y el rótulo se salía al margen, chocando con el subtítulo
+      // de la cabecera. Un suelo en pad.top+12 lo mantiene siempre dentro.
       ctx.fillStyle = '#43505c';
-      ctx.font = `italic ${scaled(10)}px Karla, system-ui, sans-serif`;
+      ctx.font = `${scaled(10)}px Karla, system-ui, sans-serif`;
       ctx.textAlign = 'right';
-      ctx.fillText('Lineal (n = 1,0)', pad.left + plotW - 8, yFromP(sMax - s0) - 6);
+      ctx.fillText('Lineal (n = 1,0)', pad.left + plotW - 14, Math.max(pad.top + 12, yFromP(sMax - s0) - 6));
+
+      // Leyenda de series: misma franja vacía a la izquierda del umbral S₀
+      // (ninguna curva tiene valor ahí, P=0 hasta S₀) y mismo orden que la
+      // tabla de la izquierda (Object.values conserva el orden de SENSATIONS).
+      if (showAllCurves) {
+        ctx.save();
+        ctx.font = `${scaled(8.5)}px Karla, system-ui, sans-serif`;
+        ctx.textAlign = 'left';
+        let legendY = pad.top + 24;
+        Object.values(SENSATIONS).forEach((sens) => {
+          const isActive = sens.id === selectedSensation;
+          ctx.globalAlpha = isActive ? 1 : 0.55;
+          ctx.strokeStyle = sens.color;
+          ctx.lineWidth = isActive ? 2.4 : 1.6;
+          ctx.beginPath();
+          ctx.moveTo(pad.left + 4, legendY - 3);
+          ctx.lineTo(pad.left + 16, legendY - 3);
+          ctx.stroke();
+          ctx.fillStyle = isActive ? sens.color : '#43505c';
+          ctx.font = `${isActive ? 'bold ' : ''}${scaled(8.5)}px Karla, system-ui, sans-serif`;
+          ctx.fillText(sens.name, pad.left + 20, legendY);
+          legendY += 12;
+        });
+        ctx.restore();
+      }
 
       // ─── 3. Dibujo de Todas las Curvas Sensoriales o de la Activa ───
+      // Recortadas al rectángulo del gráfico: con n alto (p.ej. descarga,
+      // 3,50) una curva de fondo puede superar el pMax normalizado sobre el
+      // exponente activo y salirse por arriba — sin recorte se derramaba
+      // sobre la cabecera (V2-04).
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(pad.left, pad.top, plotW, plotH);
+      ctx.clip();
       if (showAllCurves) {
         Object.values(SENSATIONS).forEach((sens) => {
           if (sens.id === selectedSensation) return; // Se dibuja después resaltada
@@ -206,6 +292,7 @@ export default function StevensCanvas({
       }
       ctx.stroke();
       ctx.restore();
+      ctx.restore(); // cierra el recorte al rectángulo del gráfico
 
       // ─── 4. Puntos de Duplicación del Estímulo (S y 2S) ───
       const sRef = 1.5;
@@ -262,11 +349,11 @@ export default function StevensCanvas({
       ctx.lineWidth = 1;
       ctx.strokeRect(widgetX, widgetY, widgetW, widgetH);
 
-      // Cabecera del widget
+      // Cabecera del widget: encoge en vez de salirse de la tarjeta.
       ctx.fillStyle = nColor;
-      ctx.font = `bold ${scaled(12)}px Karla, system-ui, sans-serif`;
       ctx.textAlign = 'center';
-      ctx.fillText(`${activeSens.emoji} ${activeSens.name}`, widgetX + widgetW / 2, widgetY + 16);
+      const headerLabel = fitText(ctx, `${activeSens.emoji} ${activeSens.name}`, widgetW - 10, scaled(12), scaled(8), 'bold ');
+      ctx.fillText(headerLabel, widgetX + widgetW / 2, widgetY + 16);
 
       ctx.fillStyle = '#43505c';
       ctx.font = `${scaled(9.5)}px Karla, system-ui, sans-serif`;
