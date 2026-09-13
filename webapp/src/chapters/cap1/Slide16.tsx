@@ -18,7 +18,7 @@ export default function Slide16({ go, goModule, slideCount }: Slide16Props) {
         <span className="mslide-count">{slideCount ?? '·'}</span>
       </div>
       <div className="content-grid single-col">
-        <div className="theory" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '.4rem', overflow: 'visible' }}>
+        <div className="theory" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', alignContent: 'center', gap: '.4rem', overflow: 'visible' }}>
           <div className="card" style={{ cursor: 'pointer' }} onClick={() => goModule?.(1)}>
             <div className="card-hdr">
               <span className="icon">🧭</span> Terminología anatómica
@@ -53,7 +53,6 @@ export default function Slide16({ go, goModule, slideCount }: Slide16Props) {
           </div>
         </div>
         <div className="prof-controls" style={{ justifyContent: 'center' }}>
-          <span className="badge">✅</span>
           <span>¿Puedes explicar los 4 pilares? Haz clic en cada tarjeta para repasar</span>
           <button onClick={() => go?.(0)}>← Volver al inicio</button>
         </div>

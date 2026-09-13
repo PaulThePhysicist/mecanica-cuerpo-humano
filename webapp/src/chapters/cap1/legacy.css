@@ -602,6 +602,17 @@
      visor toma un alto real; si la teoría es larga, la diapositiva scrollea. */
   .content-grid{grid-template-rows:auto minmax(56vh,1fr)!important}
   .sim-area{min-height:56vh}
+  /* E3-04: el Resumen (`.content-grid.single-col`) no tiene `.sim-area` — su
+     segunda fila es directamente `.prof-controls`, que heredaba igual el
+     minmax(56vh,1fr) pensado para el lienzo 3D y quedaba con ~700px vacíos
+     bajo una barra de una línea. Con las dos filas en `auto` el hueco no
+     desaparece: `.content-grid` sigue creciendo por su `flex:1` del `.slide`
+     y, sin más `fr`, el paso "Maximize Tracks" de grid reparte ese sobrante
+     entre las dos filas `auto` igual que antes. `align-content:start` evita
+     ese reparto — cada fila toma su alto real y el sobrante queda como un
+     solo hueco al final, no repartido entre teoría y pie. Única diapositiva
+     con esta forma (ver grep), así que se acota sin tocar el resto. */
+  .content-grid.single-col{grid-template-rows:auto auto!important;align-content:start}
   /* E3-03: ese "si la teoría es larga, la diapositiva scrollea" no ocurría en
      la práctica. `.content-grid` hereda `min-height:0` de la regla base
      (pensada para el layout de escritorio, donde SÍ debe quedar fija al alto
