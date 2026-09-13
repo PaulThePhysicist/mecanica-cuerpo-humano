@@ -46,26 +46,38 @@
    Un stylesheet de capítulo no debe redefinirlos. */
 
 /* ─── BRAND STRIP + MODULE TABS ─── */
+/* E3-05: a 1280px (root en ~19.9px, el clamp(16px,1.32vw,21px) del capítulo
+   no encoge tan rápido como el ancho de ventana) las 5 pestañas + la marca no
+   cabían en una línea. Sin white-space:nowrap ni flex-shrink:0, el texto de
+   la más larga ("Humano Estándar") envolvía a dos líneas: esa pestaña se
+   volvía más alta que las demás y, como `.module-bar` alinea por abajo
+   (align-items:flex-end), las otras cuatro quedaban con su borde superior
+   varios píxeles más abajo — de ahí "se ve el borde inferior pero no el
+   superior". Fijar nowrap+flex-shrink:0 corrige la altura pero por sí solo
+   desborda la barra a la derecha (la última pestaña queda fuera de la
+   ventana); los paddings de abajo están recortados justo lo necesario para
+   que las 5 quepan en una sola línea a 1280×720 con margen, sin afectar
+   visiblemente a 1440×900. */
 .module-bar{
   position:fixed;top:0;left:0;right:0;z-index:30;
   background:linear-gradient(180deg,rgba(245,240,228,.97) 68%,rgba(245,240,228,0));
-  padding:0 1.6rem;display:flex;gap:.4rem;align-items:flex-end;
+  padding:0 .7rem;display:flex;gap:.3rem;align-items:flex-end;
   pointer-events:none;
 }
 .module-bar>*{pointer-events:auto}
 .brand-mark{
   display:flex;flex-direction:column;justify-content:flex-end;
-  padding:0 1.2rem .55rem 0;margin-right:auto;flex-shrink:0;
+  padding:0 .6rem .55rem 0;margin-right:auto;flex-shrink:0;
 }
 .brand-mark .treatise{font-family:var(--serif);font-weight:600;font-size:.74rem;letter-spacing:.01em;color:var(--ink)}
 .brand-mark .book{font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
 .module-tab{
   background:var(--paper-2);border:1px solid var(--line);border-bottom:none;
-  color:var(--ink-3);padding:.42rem 1.05rem .5rem;border-radius:9px 9px 0 0;
-  font-size:.64rem;font-weight:600;cursor:pointer;
+  color:var(--ink-3);padding:.42rem .62rem .5rem;border-radius:9px 9px 0 0;
+  font-size:.64rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;
   transition:color var(--fade),background-color var(--fade),border-color var(--fade),box-shadow var(--slide);
   letter-spacing:.02em;
-  display:flex;align-items:center;gap:.42rem;margin-bottom:1px;
+  display:flex;align-items:center;gap:.2rem;margin-bottom:1px;
 }
 .module-tab:active{transform:scale(.97)}
 .module-tab.active{

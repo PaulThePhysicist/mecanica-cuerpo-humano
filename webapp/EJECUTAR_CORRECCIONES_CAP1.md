@@ -1082,6 +1082,15 @@ Anota aquí lo que encuentres durante la ejecución y **no** corrijas en el tick
   (`Slide10.tsx:194`) y D4 (`Slide15.tsx:162,165`), en vez de `var(--mono)`. Viola la regla global de
   tipografía («`--mono` solo vía token»); no se tocó porque cae dentro de `S4-04` (acotar el uso de la
   monoespaciada), no de `E3-02`. *(Detectado al diagnosticar `E3-02`.)*
+- **El sospechoso de `E3-05` (el `+3px` de `root.style.fontSize` en el `useLayoutEffect` de
+  `Capitulo1.tsx:142-149`) no era la causa.** Con ese hack activo, a 1440×900 las 5 pestañas
+  entraban de sobra en una línea; el problema aparecía solo a 1280×720, donde la pestaña "Humano
+  Estándar" (la de texto más largo) envolvía a dos líneas por falta de `white-space:nowrap` +
+  `flex-shrink:0` en `.module-tab` — `.module-bar` no tenía ningún mecanismo para evitarlo ni para
+  hacer overflow horizontal en ese rango (solo el breakpoint móvil <821px tiene
+  `overflow-x:auto`). Al alinear por abajo (`align-items:flex-end`), esa pestaña más alta empujaba
+  el borde superior de las otras cuatro varios píxeles hacia abajo, leyéndose como "no se ve el
+  borde superior". *(Detectado al diagnosticar `E3-05`.)*
 
 ---
 
