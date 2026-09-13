@@ -416,7 +416,7 @@ Estado: `PENDIENTE` · `EN CURSO` · `CERRADO`.
 | `E3-03` | 3 | Reequilibrar tabla / lienzo en móvil | CERRADO | `fix(cap1): E3-03 dejar que la diapositiva móvil scrollee en vez de recortar la teoría` |
 | `E3-04` | 3 | Reconstruir la diapositiva de Resumen | CERRADO | `fix(cap1): E3-04 ajustar las tarjetas del Resumen a su contenido` |
 | `E3-05` | 3 | Corregir el recorte de las pestañas de módulo | CERRADO | `fix(cap1): E3-05 evitar que las pestañas de módulo envuelvan a dos líneas` |
-| `E3-06` | 3 | Replantear el riel de navegación lateral | PENDIENTE | |
+| `E3-06` | 3 | Replantear el riel de navegación lateral | CERRADO | `fix(cap1): E3-06 agrupar el riel de navegación por módulo` |
 | `S4-01` | 4 | Retirar los emoji | PENDIENTE | |
 | `S4-02` | 4 | Devolver los lienzos a la paleta de `:root` | PENDIENTE | |
 | `S4-03` | 4 | Coser los tres lenguajes visuales del cuerpo | PENDIENTE | |

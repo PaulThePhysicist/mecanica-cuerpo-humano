@@ -497,13 +497,25 @@
   transition:background-color var(--fade),color var(--fade),border-color var(--fade),transform var(--press);
 }
 .nav-btn:active{transform:scale(.9)}
-.nav-dots{display:flex;gap:.3rem;padding:0 .4rem}
+/* E3-06: antes 17 puntos sueltos en fila/columna, sin relación visible con
+   los módulos de la barra superior. `.nav-dots` ahora solo separa GRUPOS
+   (uno por módulo, mismo mapa `MODULES` de sims.ts que ya usa el resto del
+   capítulo); `.nav-dot-group` separa los puntos DENTRO de un módulo con un
+   hueco más chico — el ojo lee el hueco grande como "cambio de módulo" sin
+   necesitar ninguna etiqueta de texto. */
+.nav-dots{display:flex;gap:.6rem;padding:0 .4rem}
+.nav-dot-group{display:flex;gap:.22rem}
 .nav-dot{
   width:7px;height:7px;border-radius:50%;background:var(--line);
   cursor:pointer;transform-origin:center;
-  transition:background-color var(--fade),transform var(--slide);border:none;
+  transition:background-color var(--fade),transform var(--slide),box-shadow var(--slide);border:none;
 }
-.nav-dot.active{background:var(--teal);transform:scaleX(2.85)}
+.nav-dot.active{background:var(--teal);transform:scaleX(3.1);box-shadow:0 0 0 3px var(--teal-tint)}
+/* Antes las flechas flanqueaban los puntos (una a cada punta del riel:
+   arriba y abajo en el layout vertical de escritorio), leyéndose como dos
+   controles sueltos en vez de un solo par «anterior/siguiente». Ahora
+   viven juntas en `.nav-arrows`. */
+.nav-arrows{display:flex;gap:.4rem}
 .slide-counter{font-size:.58rem;font-family:var(--mono);color:var(--ink-3);letter-spacing:.06em}
 .nav-module-label{font-size:.58rem;color:var(--teal-deep);background:var(--card);border:1px solid var(--line);padding:.14rem .55rem;border-radius:6px;font-weight:600}
 
@@ -515,13 +527,18 @@
   .nav-bar{
     top:50%;right:auto;bottom:auto;left:0;width:2.15rem;
     transform:translateY(-50%);padding:.45rem .2rem;
-    flex-direction:column;gap:.3rem;
+    flex-direction:column;gap:.55rem;
     background:linear-gradient(90deg,rgba(245,240,228,.98),rgba(245,240,228,0));
   }
   .nav-btn{width:28px;height:28px;font-size:.72rem}
-  .nav-dots{flex-direction:column;gap:.22rem;padding:.25rem 0}
+  .nav-dots{flex-direction:column;gap:.5rem;padding:.25rem 0}
+  .nav-dot-group{flex-direction:column;gap:.2rem}
   .nav-dot{width:6px;height:6px}
-  .nav-dot.active{transform:scaleY(2.4)}
+  .nav-dot.active{transform:scaleY(2.6)}
+  /* Dos botones de 28px uno al lado del otro no caben en un riel de
+     2.15rem (~40px) de ancho — se apilan, pero siguen siendo un par
+     contiguo, no uno en cada punta del riel. */
+  .nav-arrows{flex-direction:column;gap:.3rem}
   .slide-counter,.nav-module-label{display:none}
 }
 
@@ -641,7 +658,17 @@
   .brand-mark{display:none}
   .module-tab{font-size:.56rem;padding:.3rem .6rem .35rem;white-space:nowrap}
   .module-tab .mod-badge{display:none}
-  .nav-bar{padding:.3rem .7rem .5rem}
+  /* overflow-x:auto de red por si una fuente/plataforma distinta mide unos
+     px de más: en vez de recortar en silencio, el riel scrollea. */
+  .nav-bar{padding:.3rem .3rem .5rem;gap:.3rem;overflow-x:auto}
+  .nav-btn{width:28px;height:28px;font-size:.68rem;flex-shrink:0}
+  .nav-dots{gap:.3rem}
+  .nav-dot-group{gap:.14rem}
+  .nav-arrows{gap:.25rem;flex-shrink:0}
+  /* "C · Humano Estándar" es el nombre de módulo más largo de los 6 — sin
+     tope, en ese módulo el riel se sale del ancho aunque en los demás quepa
+     de sobra. max-width + elipsis lo garantiza para cualquier módulo. */
+  .nav-module-label{padding:.14rem .35rem;font-size:.54rem;white-space:nowrap;flex-shrink:1;min-width:0;max-width:74px;overflow:hidden;text-overflow:ellipsis}
   .theory .card .card-hdr{font-size:.66rem}
   .module-header .msub{display:none}
   .stage-hud{right:.45rem;top:.45rem;font-size:.48rem}

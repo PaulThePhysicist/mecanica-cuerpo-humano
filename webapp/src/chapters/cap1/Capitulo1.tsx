@@ -559,20 +559,26 @@ export default function Capitulo1({ onBack }: { onBack?: () => void }) {
       })}
 
       <nav className="nav-bar">
-        <button className="nav-btn" onClick={prev} aria-label="Anterior">←</button>
         <div className="nav-dots" id="navDots">
-          {Array.from({ length: TOTAL }).map((_, i) => (
-            <button
-              key={i}
-              type="button"
-              className={`nav-dot ${activeSlide === i ? 'active' : ''}`}
-              title={`Diapositiva ${i + 1}`}
-              aria-label={`Ir a diapositiva ${i + 1}`}
-              onClick={() => go(i)}
-            />
+          {MODULES.map((mod) => (
+            <div className="nav-dot-group" key={mod.id} role="group" aria-label={mod.name}>
+              {mod.slides.map((i) => (
+                <button
+                  key={i}
+                  type="button"
+                  className={`nav-dot ${activeSlide === i ? 'active' : ''}`}
+                  title={`${mod.name} · diapositiva ${i + 1}`}
+                  aria-label={`Ir a diapositiva ${i + 1} (${mod.name})`}
+                  onClick={() => go(i)}
+                />
+              ))}
+            </div>
           ))}
         </div>
-        <button className="nav-btn" onClick={next} aria-label="Siguiente">→</button>
+        <div className="nav-arrows">
+          <button className="nav-btn" onClick={prev} aria-label="Anterior">←</button>
+          <button className="nav-btn" onClick={next} aria-label="Siguiente">→</button>
+        </div>
         <span className="slide-counter" id="slideCounter">{activeSlide + 1} / {TOTAL}</span>
         <span className="nav-module-label" id="navModuleLabel">{moduleName}</span>
       </nav>
