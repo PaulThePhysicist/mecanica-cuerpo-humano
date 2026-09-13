@@ -413,7 +413,7 @@ Estado: `PENDIENTE` · `EN CURSO` · `CERRADO`.
 | `V2-05` | 2 | Que el panel de controles reserve espacio | CERRADO | `fix(cap1): V2-05 que el panel de controles reserve espacio` |
 | `E3-01` | 3 | Resolver el desbordamiento de la columna izquierda | CERRADO | `fix(cap1): E3-01 señal de scroll en la columna de teoría` |
 | `E3-02` | 3 | Señal de «esto se pulsa» en las tablas | CERRADO | `fix(cap1): E3-02 señal de interactividad en las tablas de B2, C3, D1 y D4` |
-| `E3-03` | 3 | Reequilibrar tabla / lienzo en móvil | PENDIENTE | |
+| `E3-03` | 3 | Reequilibrar tabla / lienzo en móvil | CERRADO | `fix(cap1): E3-03 dejar que la diapositiva móvil scrollee en vez de recortar la teoría` |
 | `E3-04` | 3 | Reconstruir la diapositiva de Resumen | PENDIENTE | |
 | `E3-05` | 3 | Corregir el recorte de las pestañas de módulo | PENDIENTE | |
 | `E3-06` | 3 | Replantear el riel de navegación lateral | PENDIENTE | |

@@ -602,6 +602,17 @@
      visor toma un alto real; si la teoría es larga, la diapositiva scrollea. */
   .content-grid{grid-template-rows:auto minmax(56vh,1fr)!important}
   .sim-area{min-height:56vh}
+  /* E3-03: ese "si la teoría es larga, la diapositiva scrollea" no ocurría en
+     la práctica. `.content-grid` hereda `min-height:0` de la regla base
+     (pensada para el layout de escritorio, donde SÍ debe quedar fija al alto
+     del `.slide` y es `.theory` quien scrollea por dentro). En móvil eso
+     obligaba a la fila "auto" de la teoría a encogerse por debajo de su alto
+     natural para que el lienzo se quedara con su 56vh completo, y el recorte
+     de `.theory` (su propio overflow-y:auto) caía a media fila de tabla. Con
+     min-height:auto la rejilla puede crecer más allá del `flex:1` del
+     `.slide` y es la diapositiva entera la que scrollea, como decía el
+     comentario de arriba: la teoría se ve completa y sin cortes. */
+  .content-grid{min-height:auto!important}
   .slide-full h1{font-size:2rem}
   .module-bar{padding:.3rem .7rem 0;gap:.15rem;overflow-x:auto}
   .brand-mark{display:none}
