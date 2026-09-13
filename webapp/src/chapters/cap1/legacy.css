@@ -169,6 +169,26 @@
 .theory{
   overflow-y:auto;line-height:1.5;display:flex;flex-direction:column;gap:.6rem;
   padding-right:.2rem;
+  /* E3-01: en B1, C1, C2, C3, D1, D2, D3 y D4 el contenido no cabe entero y
+     antes se cortaba a media tarjeta sin ningún aviso. En vez de repartir
+     contenido entre diapositivas (decisión editorial, no se pidió aquí), la
+     columna ya scrollea (`overflow-y:auto` de arriba) — solo le faltaba la
+     señal de que hay más. Truco sin JS: dos degradados «tapa» que scrollean
+     CON el contenido (local) ocultan la sombra salvo en el extremo por el
+     que aún queda contenido; dos sombras fijas al marco del recuadro
+     (attachment por defecto) que esas tapas dejan asomar. Si el contenido
+     cabe entero, las dos tapas se solapan del todo y no se ve sombra alguna
+     — no hace falta un caso especial por diapositiva ni saber cuáles de las
+     17 desbordan a cada resolución. */
+  background:
+    linear-gradient(var(--paper) 30%, rgba(245,240,228,0)) local,
+    linear-gradient(rgba(245,240,228,0), var(--paper) 70%) local,
+    radial-gradient(farthest-side at 50% 0, rgba(35,44,54,.22), rgba(35,44,54,0)),
+    radial-gradient(farthest-side at 50% 100%, rgba(35,44,54,.22), rgba(35,44,54,0)) 0 100%;
+  background-repeat:no-repeat;
+  background-color:var(--paper);
+  background-size:100% 40px,100% 40px,100% 14px,100% 14px;
+  background-attachment:local,local,scroll,scroll;
 }
 .theory .card{
   background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
