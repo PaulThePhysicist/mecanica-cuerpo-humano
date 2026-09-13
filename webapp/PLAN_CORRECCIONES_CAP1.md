@@ -410,7 +410,7 @@ Estado: `PENDIENTE` · `EN CURSO` · `CERRADO`.
 | `V2-02` | 2 | Hacer legible el rango de movilidad de C3 | CERRADO | `fix(cap1): V2-02 hacer legible el rango de movilidad de C3` |
 | `V2-03` | 2 | Eliminar las colisiones de rótulos | CERRADO | `fix(cap1): V2-03 eliminar las colisiones de rótulos` |
 | `V2-04` | 2 | Terminar las dos gráficas | CERRADO | `fix(cap1): V2-04 terminar las dos gráficas (D1, D4)` |
-| `V2-05` | 2 | Que el panel de controles reserve espacio | PENDIENTE | |
+| `V2-05` | 2 | Que el panel de controles reserve espacio | CERRADO | `fix(cap1): V2-05 que el panel de controles reserve espacio` |
 | `E3-01` | 3 | Resolver el desbordamiento de la columna izquierda | PENDIENTE | |
 | `E3-02` | 3 | Señal de «esto se pulsa» en las tablas | PENDIENTE | |
 | `E3-03` | 3 | Reequilibrar tabla / lienzo en móvil | PENDIENTE | |

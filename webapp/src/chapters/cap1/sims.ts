@@ -2851,13 +2851,19 @@ var CFX = (function () {
     ctx.fillStyle = 'rgba(251,248,240,0.92)';
     var lineH = fs + 3;
     var bandH = lines.length * lineH + 8;
-    roundRect(ctx, W / 2 - tw / 2 - 10, H - bandH - 3, tw + 20, bandH, 5);
+    // Margen desde el borde inferior real del lienzo: antes de V2-05 el
+    // canvas se extendía por detrás del panel flotante, así que pegar el pie
+    // a H-3 quedaba oculto pero no recortado. Ahora `.sim-area` reserva la
+    // fila del panel aparte (ya no se solapan) y ese mismo H-3 cae justo en
+    // el borde con `.prof-controls` — un respiro de 10px lo separa.
+    var footBottom = 10;
+    roundRect(ctx, W / 2 - tw / 2 - 10, H - bandH - 3 - footBottom, tw + 20, bandH, 5);
     ctx.fill();
     ctx.strokeStyle = 'rgba(207,195,169,0.8)'; ctx.lineWidth = 0.8; ctx.stroke();
     ctx.fillStyle = PAL.ink;
     var superscriptDigits = '⁰¹²³⁴⁵⁶⁷⁸⁹';
     lines.forEach(function (line, i) {
-      var y = H - 8 - (lines.length - 1 - i) * lineH;
+      var y = H - 8 - footBottom - (lines.length - 1 - i) * lineH;
       /* La coma decimal de un exponente debe compartir su altura; al
          dibujarla como parte del texto normal queda pegada a la línea base. */
       if (line.indexOf(',') >= 0) {

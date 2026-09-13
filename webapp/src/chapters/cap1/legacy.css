@@ -247,11 +247,33 @@
 /* ─── PANEL DE SIMULACIÓN ─── */
 .sim-area{
   background:var(--paper-3);border:1px solid var(--line);border-radius:var(--radius);
-  position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;display:grid;grid-template-rows:1fr auto;
   min-height:200px;box-shadow:inset 0 2px 8px rgba(35,44,54,.06);
 }
-/* A1: el área 3D debe estirarse a la fila del grid (1fr) para no dejar
-   espacio vacío abajo; el <Canvas> de R3F llena el 100% de alto. */
+/* El lienzo (primer hijo: un <canvas> 2D o el contenedor del <Canvas> r3f,
+   ambos ya declaran width/height:100% sobre sí mismos) reserva SIEMPRE la
+   fila `1fr` de arriba; `.prof-controls` cae solo, en orden de DOM, a la fila
+   `auto` de abajo — ya no flota encima tapando lo que dibuja el lienzo justo
+   bajo su borde (V2-05: el pie de figura de C2, el rótulo «Kleiber» de C1, el
+   título de eje de D1...). `min-height:0` es necesario porque una fila de
+   grid, a diferencia de un bloque normal, por defecto no encoge por debajo
+   del contenido de sus hijos. Al colapsar el panel (`.is-collapsed`, más
+   abajo) su alto baja a 30px y el lienzo recupera el resto automáticamente,
+   sin ningún caso especial por diapositiva. */
+.sim-area > *:not(.prof-controls){min-height:0;min-width:0;}
+/* La regla compartida de src/index.css (TODOS los capítulos) saca el panel
+   del flujo normal con `position:absolute;bottom:.6rem` — por eso nada de lo
+   de arriba bastaba por sí solo: por más fila `auto` que reservara este
+   grid, un elemento `position:absolute` no la ocupa, y seguía flotando sobre
+   la fila `1fr` del lienzo con el layout de SIEMPRE, en cualquier capítulo.
+   Solo cap1 (el único que pidió V2-05) vuelve a ponerlo en flujo; el resto
+   de capítulos no se toca. */
+.cap1-presentation .sim-area > .prof-controls{
+  position:static;left:auto;right:auto;bottom:auto;max-width:none;
+}
+/* A1: además de la regla general de arriba, mantiene su propio flex:1 con
+   mayor especificidad (id) — sin efecto ya en un grid (no es flex item),
+   pero inofensivo; se deja tal cual para no tocar de más. */
 #sim-anatomy-a1{height:100%;flex:1;}
 
 /* ─── NAVEGACIÓN GLOBAL CAPÍTULO 1 ───
@@ -373,7 +395,12 @@
   flex:0 0 30px;border:0;background:transparent;align-items:center;justify-content:center;
 }
 .prof-controls-toggle{
-  margin-left:auto;background:var(--paper-2);border:1px solid var(--line);color:var(--ink-2);
+  /* Se añade por JS como último hijo (Capitulo1.tsx). Sin `margin-left:auto`
+     queda pegado al último control real en vez de saltar al extremo derecho
+     del panel — varias diapositivas ya empujan su propio grupo de botones
+     con `margin-left:auto` (p. ej. «Restablecer»), y sumar un segundo
+     auto-margin dejaba el × colgado solo, lejos de lo que gobierna (V2-05). */
+  background:var(--paper-2);border:1px solid var(--line);color:var(--ink-2);
   border-radius:5px;min-width:22px;height:22px;padding:0 5px;cursor:pointer;
   font-size:.78rem;font-weight:700;line-height:1;transition:border-color var(--fade),color var(--fade),background-color var(--fade)
 }

@@ -1053,6 +1053,17 @@ Anota aquí lo que encuentres durante la ejecución y **no** corrijas en el tick
   sin efecto visible. Mismo patrón que `calcBMI` (anotado en `C1-02`). *(Detectado al diagnosticar
   `V2-04`: el ticket señalaba estas funciones y `sims.ts` como el sitio a arreglar; los cambios reales
   se hicieron en los componentes React.)*
+- **La causa real de `V2-05` no vivía en `HudPanel.tsx` ni en `legacy.css`, sino en una regla GLOBAL
+  de `src/index.css` (fuera de `webapp/src/chapters/cap1/`, compartida por los 13 capítulos):
+  `.sim-area > .prof-controls{position:absolute;bottom:.6rem;...}`. Es lo que sacaba el panel del
+  flujo normal y lo hacía flotar sobre el lienzo pasara lo que pasara con el `display`/`grid` de
+  `.sim-area` — ningún cambio dentro de cap1 podía arreglarlo sin tocar esa regla. Se sobrescribió con
+  `.cap1-presentation .sim-area > .prof-controls{position:static;...}` en `legacy.css` (mayor
+  especificidad, y ese archivo solo carga con el bundle de cap1), así que los otros 12 capítulos —
+  que usan el mismo patrón `.sim-area`/`.prof-controls` en ~250 archivos — no se tocan y conservan el
+  comportamiento de siempre. *(Detectado al diagnosticar `V2-05`, tras dos intentos de arreglo
+  puramente dentro de cap1 que no cambiaban nada visible — el panel seguía flotando porque nunca
+  estuvo sujeto al `display` de `.sim-area`.)*
 
 ---
 
