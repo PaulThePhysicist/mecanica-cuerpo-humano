@@ -152,6 +152,9 @@ export default function Slide15({ slideCount }: { slideCount?: string }) {
                       <tr
                         key={s.id}
                         onClick={() => handleSelectPreset(s.id)}
+                        onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); handleSelectPreset(s.id); } }}
+                        tabIndex={0}
+                        aria-selected={isSel}
                         style={{
                           cursor: 'pointer',
                           background: isSel ? 'var(--teal-tint)' : 'transparent',
@@ -172,6 +175,9 @@ export default function Slide15({ slideCount }: { slideCount?: string }) {
               </table>
               <p style={{ fontSize: '.6rem', color: 'var(--ink-3)', marginTop: '.25rem' }}>
                 La visión y audición abarcan ~12 órdenes de magnitud de sensibilidad física.
+              </p>
+              <p style={{ fontSize: '.6rem', color: 'var(--ink-3)', marginTop: '.1rem' }}>
+                Pasa el cursor o haz clic sobre cada modalidad para comparar su curva en el gráfico.
               </p>
             </div>
           </div>

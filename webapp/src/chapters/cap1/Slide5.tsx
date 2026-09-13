@@ -256,6 +256,9 @@ export default function Slide5({ toggleJointsAnimation, slideCount }: Slide5Prop
                       <tr
                         key={jId}
                         onClick={() => handleSelectJoint(jId)}
+                        onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); handleSelectJoint(jId); } }}
+                        tabIndex={0}
+                        aria-selected={isSel}
                         style={{
                           cursor: 'pointer',
                           background: isSel ? 'var(--teal-tint)' : 'transparent',
@@ -270,6 +273,9 @@ export default function Slide5({ toggleJointsAnimation, slideCount }: Slide5Prop
                   })}
                 </tbody>
               </table>
+              <p style={{ fontSize: '.6rem', color: 'var(--ink-3)', marginTop: '.2rem' }}>
+                Pasa el cursor o haz clic sobre cada tipo para verlo animado en el modelo 3D.
+              </p>
             </div>
           </div>
 

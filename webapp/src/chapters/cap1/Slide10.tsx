@@ -182,6 +182,9 @@ export default function Slide10({ slideCount }: { slideCount?: string }) {
                       <tr
                         key={j.id}
                         onClick={() => handleSelectJoint(j.id)}
+                        onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); handleSelectJoint(j.id); } }}
+                        tabIndex={0}
+                        aria-selected={isSel}
                         style={{
                           cursor: 'pointer',
                           background: isSel ? 'var(--teal-tint)' : 'transparent',
@@ -201,6 +204,9 @@ export default function Slide10({ slideCount }: { slideCount?: string }) {
               </table>
               <p style={{ fontSize: '.6rem', color: 'var(--ink-3)', marginTop: '.2rem' }}>
                 Varones universitarios · media en grados (ver Fig. 1.16).
+              </p>
+              <p style={{ fontSize: '.6rem', color: 'var(--ink-3)', marginTop: '.1rem' }}>
+                Pasa el cursor o haz clic sobre cada fila para ver el rango en el esqueleto 3D.
               </p>
             </div>
           </div>

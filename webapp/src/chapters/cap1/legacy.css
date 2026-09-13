@@ -545,8 +545,14 @@
 .interactive-table td:last-child{font-family:var(--mono);color:var(--ink);font-size:.62rem}
 .interactive-table tr{cursor:pointer;transition:background-color var(--fade),color var(--fade)}
 .interactive-table tr.highlight td{background:var(--teal-tint);color:var(--teal-deep)}
-.interactive-table tr[aria-selected="true"] td{background:var(--teal-tint);color:var(--teal-deep);box-shadow:inset 3px 0 0 var(--teal)}
+.interactive-table tr[aria-selected="true"] td,.data-mini tr[aria-selected="true"] td{background:var(--teal-tint);color:var(--teal-deep);box-shadow:inset 3px 0 0 var(--teal)}
 .interactive-table .table-caption{font-size:.56rem;color:var(--ink-3);padding:.14rem .4rem;font-style:italic}
+/* E3-02: aviso de foco por teclado en filas y tarjetas pulsables (mismas que ya
+   responden a onClick); sin esto, tabular hasta una fila no mostraba ninguna
+   diferencia visible. */
+.interactive-table tr:focus-visible,.data-mini tr:focus-visible,.alo-row:focus-visible{
+  outline:2px solid var(--teal);outline-offset:-2px;
+}
 
 /* ─── FIGURAS DE LIBRO ─── */
 .figure-pair{display:flex;gap:.6rem;height:100%;align-items:stretch}

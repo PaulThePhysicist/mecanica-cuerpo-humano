@@ -1064,6 +1064,24 @@ Anota aquí lo que encuentres durante la ejecución y **no** corrijas en el tick
   comportamiento de siempre. *(Detectado al diagnosticar `V2-05`, tras dos intentos de arreglo
   puramente dentro de cap1 que no cambiaban nada visible — el panel seguía flotando porque nunca
   estuvo sujeto al `display` de `.sim-area`.)*
+- **Los selectores `[data-joint]`/`[data-mobility]`/`[data-prop]`/`[data-allometry]`/`[data-stevens]`/
+  `[data-somatotype]`/`[data-bone]` del `useEffect` de `Capitulo1.tsx:420-490` (y su eco en
+  `sims.ts:2174-2175`) son delegación de eventos **huérfana**: ningún elemento del árbol actual lleva
+  esos atributos `data-*` — las cuatro tablas reales de B2/C3/D1/D4 seleccionan con `useState` +
+  `onClick` de React directamente (`Slide5.tsx`, `Slide10.tsx`, `Slide12.tsx`, `Slide15.tsx`). El
+  `aria-pressed`/`aria-selected` que el ticket `E3-02` daba por «ya puesto» en `[data-allometry]` y
+  `[data-stevens]` tampoco existía: se añadió de cero en esta sesión. Mismo patrón de código muerto
+  que `PLANES` (`C1-01`), `calcBMI` (`C1-02`) y `drawAllometry`/`drawStevens` (`V2-04`). *(Detectado
+  al diagnosticar `E3-02`.)*
+- **`.data-mini tr{cursor:pointer}` en `legacy.css:454` es una regla ciega:** se aplica a *todas* las
+  tablas con esa clase, incluidas las que no son interactivas (p. ej. «Masa de los órganos» en C3,
+  `Slide10.tsx:212`), dando un cursor de mano falso sobre filas que no hacen nada al pulsarlas. No se
+  tocó — corregirlo exige poder distinguir tabla interactiva de tabla de consulta dentro de la misma
+  clase, y `E3-02` solo pedía reforzar las que sí interactúan. *(Detectado al diagnosticar `E3-02`.)*
+- **`fontFamily:'JetBrains Mono, monospace'` como literal inline** en las celdas de datos de C3
+  (`Slide10.tsx:194`) y D4 (`Slide15.tsx:162,165`), en vez de `var(--mono)`. Viola la regla global de
+  tipografía («`--mono` solo vía token»); no se tocó porque cae dentro de `S4-04` (acotar el uso de la
+  monoespaciada), no de `E3-02`. *(Detectado al diagnosticar `E3-02`.)*
 
 ---
 

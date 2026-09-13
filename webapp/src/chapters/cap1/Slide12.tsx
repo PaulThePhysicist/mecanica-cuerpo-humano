@@ -154,7 +154,12 @@ export default function Slide12({ slideCount }: { slideCount?: string }) {
                   return (
                     <div
                       key={item.id}
+                      className="alo-row"
                       onClick={() => handleSelect(item.id)}
+                      onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); handleSelect(item.id); } }}
+                      tabIndex={0}
+                      role="button"
+                      aria-pressed={isSel}
                       style={{
                         padding: '.35rem .5rem',
                         display: 'flex',
@@ -188,6 +193,9 @@ export default function Slide12({ slideCount }: { slideCount?: string }) {
               </div>
               <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '.3rem' }}>
                 Los exponentes rigen en 7 órdenes de magnitud para mamíferos y en relaciones antropométricas humanas.
+              </p>
+              <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '.1rem' }}>
+                Pasa el cursor o haz clic sobre cada parámetro para comparar su curva en el gráfico.
               </p>
             </div>
           </div>
