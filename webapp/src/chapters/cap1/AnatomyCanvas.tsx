@@ -1,10 +1,11 @@
 import React from 'react';
-import { Center, Html } from '@react-three/drei';
+import { Center } from '@react-three/drei';
 import * as THREE from 'three';
 import { FULL_BODY_FLOOR_Y, FULL_BODY_SCALE, FULL_BODY_SHADOW_Y } from './bodySceneGeometry';
 import { AnatomyStage } from './three/AnatomyStage';
 import { useAnatomyScene } from './three/useAnatomyNodes';
-import { Callout, CalloutProvider, CalloutRail, CalloutSource, useCalloutStore } from './three/Callouts';
+import { AnchoredLabelOverlay, Callout, CalloutProvider, CalloutRail, CalloutSource, useCalloutStore } from './three/Callouts';
+import type { CalloutStore } from './three/Callouts';
 
 const highlightUniforms = {
   highlightCenters: { value: [new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()] },
@@ -145,6 +146,10 @@ function DoubleArrow({
   // El eje anterior/posterior apunta casi hacia la cámara: sus etiquetas caían
   // sobre el torso. Con un offset hacia abajo quedan bajo la figura, legibles.
   labelOffset = [0, 0, 0],
+  // V2-03: prioridad de anti-colisión (`Callout`/`AnchoredLabelOverlay`) —
+  // el store se toma del `CalloutProvider` que `Axes` monta alrededor, no
+  // hace falta pasarlo aquí.
+  priority = 0,
 }: any) {
   const radius = 0.015;
   const headRadius = 0.08;
@@ -181,22 +186,28 @@ function DoubleArrow({
         {mat}
       </mesh>
 
-      {/* Etiquetas de eje: SIEMPRE sobre la flecha (no van al riel lateral —
-          ese es solo para los letreros de término, que sí tapaban el modelo). */}
+      {/* Etiquetas de eje: SIEMPRE junto a la flecha (no van al riel lateral —
+          ese es solo para los letreros de término, que sí tapaban el modelo).
+          Se registran en `labelStore` (V2-03, anti-colisión) si el llamador
+          lo da; si no, `Callout` cae sola al <Html> fijo de siempre. */}
       {showLabels && (
         <>
-          <Html position={[pPos.x, pPos.y, pPos.z]} center zIndexRange={[100, 0]}>
-            <div style={{ textAlign: 'center', pointerEvents: 'none', opacity: Math.max(opacity, 0.82) }}>
-              <div style={{ color: color, fontSize: '0.65rem', whiteSpace: 'nowrap', opacity: 0.85, marginBottom: '2px' }}>{subPos}</div>
-              <div style={{ color: color, fontWeight: 'bold', fontSize: '1.1rem', fontFamily: 'var(--sans)' }}>{labelPos}</div>
-            </div>
-          </Html>
-          <Html position={[pNeg.x, pNeg.y, pNeg.z]} center zIndexRange={[100, 0]}>
-            <div style={{ textAlign: 'center', pointerEvents: 'none', opacity: Math.max(opacity, 0.82) }}>
-              <div style={{ color: color, fontWeight: 'bold', fontSize: '1.1rem', fontFamily: 'var(--sans)', marginBottom: '2px' }}>{labelNeg}</div>
-              <div style={{ color: color, fontSize: '0.65rem', whiteSpace: 'nowrap', opacity: 0.85 }}>{subNeg}</div>
-            </div>
-          </Html>
+          <Callout
+            position={[pPos.x, pPos.y, pPos.z]}
+            label={labelPos}
+            sub={subPos}
+            color={color}
+            opacity={Math.max(opacity, 0.82)}
+            priority={priority}
+          />
+          <Callout
+            position={[pNeg.x, pNeg.y, pNeg.z]}
+            label={labelNeg}
+            sub={subNeg}
+            color={color}
+            opacity={Math.max(opacity, 0.82)}
+            priority={priority}
+          />
         </>
       )}
     </group>
@@ -579,7 +590,17 @@ function Markers({ hoveredTerm, showLabels = true }: { hoveredTerm: string | nul
   );
 }
 
-export function Axes({ hoveredTerm, showLabels = true, showGrid = true, scale = 1 }: { hoveredTerm: string | null; showLabels?: boolean; showGrid?: boolean; scale?: number }) {
+export function Axes({
+  hoveredTerm,
+  showLabels = true,
+  showGrid = true,
+  scale = 1,
+  // V2-03: cuando el llamador pasa un store, los 6 rótulos se registran en
+  // él (anti-colisión vía `AnchoredLabelOverlay`, que el llamador debe montar
+  // en el `overlay` de `AnatomyStage`) en vez de flotar fijos con <Html> — así
+  // no se amontonan entre sí al rotar la cámara ni entre ejes distintos.
+  labelStore,
+}: { hoveredTerm: string | null; showLabels?: boolean; showGrid?: boolean; scale?: number; labelStore?: CalloutStore }) {
   const colorZ = "#0d6e64"; // Superior/Inferior
   const colorX = "#9a5b00"; // Anterior/Posterior
   const colorY = "#a92a1e"; // Medial/Lateral
@@ -589,7 +610,7 @@ export function Axes({ hoveredTerm, showLabels = true, showGrid = true, scale = 
   const lengthY = 4.0;
 
   const isHovered = (terms: string[]) => terms.includes(hoveredTerm || '');
-  
+
   const opZ = isHovered(['axis-z']) ? 1 : hoveredTerm ? 0.1 : 0.3;
   const opX = isHovered(['axis-x']) ? 1 : hoveredTerm ? 0.1 : 0.3;
   const opY = isHovered(['axis-y', 'coord-right', 'coord-left', 'axis-medial']) ? 1 : hoveredTerm ? 0.1 : 0.3;
@@ -598,7 +619,7 @@ export function Axes({ hoveredTerm, showLabels = true, showGrid = true, scale = 
     ? { pos: '+y', subPos: '→ Medial', neg: '-y', subNeg: '← Lateral' }
     : { pos: '+y', subPos: '→ Izquierda', neg: '-y', subNeg: '← Derecha' };
 
-  return (
+  const content = (
     <group scale={scale}>
       {/* PISO / GRID */}
       {showGrid && <gridHelper args={[8, 16, "#c6bca6", "#ded6c5"]} position={[0, FULL_BODY_FLOOR_Y, 0]} />}
@@ -609,7 +630,8 @@ export function Axes({ hoveredTerm, showLabels = true, showGrid = true, scale = 
         <meshStandardMaterial color={colorZ} transparent opacity={hoveredTerm ? 0.2 : 0.6} depthTest={false} />
       </mesh>
 
-      {/* EJE Z — Superior/Inferior */}
+      {/* EJE Z — Superior/Inferior. Prioridad 0: es la referencia vertical
+          principal, la que menos debería ceder ante las demás. */}
       <DoubleArrow
         length={lengthZ}
         color={colorZ}
@@ -618,6 +640,7 @@ export function Axes({ hoveredTerm, showLabels = true, showGrid = true, scale = 
         labelNeg="-z" subNeg="↓ Inferior / Caudal"
         opacity={opZ}
         showLabels={showLabels}
+        priority={0}
       />
 
       {/* EJE Y — Derecha/Izquierda · Medial/Lateral */}
@@ -629,10 +652,13 @@ export function Axes({ hoveredTerm, showLabels = true, showGrid = true, scale = 
         labelNeg={yLabel.neg} subNeg={yLabel.subNeg}
         opacity={opY}
         showLabels={showLabels}
+        priority={1}
       />
 
       {/* EJE X — Anterior/Posterior. Apunta casi hacia la cámara, así que sus
-          etiquetas se bajan bajo la figura para no taparse con el torso. */}
+          etiquetas se bajan bajo la figura para no taparse con el torso; es
+          el par con más riesgo de solape (+x/-x caen casi en el mismo punto
+          de pantalla), de ahí la prioridad más baja. */}
       <DoubleArrow
         length={lengthX}
         color={colorX}
@@ -642,8 +668,17 @@ export function Axes({ hoveredTerm, showLabels = true, showGrid = true, scale = 
         opacity={opX}
         showLabels={showLabels}
         labelOffset={[0, -1.7, 0]}
+        priority={2}
       />
     </group>
+  );
+
+  if (!labelStore) return content;
+  return (
+    <CalloutProvider store={labelStore} visible={showLabels}>
+      {content}
+      <CalloutSource />
+    </CalloutProvider>
   );
 }
 
@@ -663,6 +698,9 @@ export default function AnatomyCanvas({
   // Riel de letreros: los <Callout> de la escena registran su texto aquí y el
   // <CalloutRail> los apila a la derecha del lienzo, conectados por líneas guía.
   const callouts = useCalloutStore();
+  // Rótulos de eje (V2-03): store aparte, no van al riel — se quedan junto a
+  // su flecha y solo se apartan entre sí si colisionan (`AnchoredLabelOverlay`).
+  const axisLabels = useCalloutStore();
   // El esternón del GLB está hacia +Z; la vista inicial mira desde +Z (cara anterior).
   return (
     <CalloutProvider store={callouts}>
@@ -681,11 +719,18 @@ export default function AnatomyCanvas({
         shadowOpacity={0.45}
         resetSignal={resetSignal}
         zoomSignal={zoomSignal}
-        overlay={showLabels ? <CalloutRail store={callouts} side="right" /> : undefined}
+        overlay={
+          showLabels ? (
+            <>
+              <CalloutRail store={callouts} side="right" />
+              <AnchoredLabelOverlay store={axisLabels} />
+            </>
+          ) : undefined
+        }
       >
         <Center position={[0, 0, 0]}>
           <AnatomyModel hoveredTerm={hoveredTerm || null} />
-          <Axes hoveredTerm={hoveredTerm || null} showLabels={showLabels} />
+          <Axes hoveredTerm={hoveredTerm || null} showLabels={showLabels} labelStore={axisLabels} />
           <Markers hoveredTerm={hoveredTerm || null} showLabels={showLabels} />
         </Center>
         {showLabels && <CalloutSource />}

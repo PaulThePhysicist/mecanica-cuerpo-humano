@@ -1040,6 +1040,12 @@ Anota aquí lo que encuentres durante la ejecución y **no** corrijas en el tick
      (0,025 kg) o el conejo (2,5 kg) seleccionados se veía el punto crudo de JS. Corregido con el
      mismo criterio entero-vs-decimal que ya usaba `BoneScaleCanvas.tsx`.
   *(Detectado al verificar `C1-06` en el navegador, no por grep.)*
+- **Código muerto en `PlanesCanvas.tsx` (A1/A2):** `AxisDirectionArrows`/`AxisDoubleArrow` (líneas
+  ~241-295) y `IntersectionAxes` (líneas ~223-238) están definidas pero nunca se invocan — el eje que
+  de verdad se pinta en A1/A2 es `<Axes>` de `AnatomyCanvas.tsx`, importado en la línea 8. Mismo
+  patrón que el `PLANES` muerto de `BodyScene.tsx` anotado en `C1-01`. *(Detectado al diagnosticar
+  `V2-03`: el ticket señalaba `AxisDoubleArrow` de `PlanesCanvas.tsx` como el sitio a arreglar, pero
+  ese componente no renderiza nada.)*
 
 ---
 

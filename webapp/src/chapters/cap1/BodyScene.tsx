@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { FULL_BODY_FLOOR_Y, FULL_BODY_SCALE, FULL_BODY_SHADOW_Y } from './bodySceneGeometry';
 import { AnatomyStage } from './three/AnatomyStage';
 import { useAnatomyScene } from './three/useAnatomyNodes';
+import { AnchoredLabelOverlay, useCalloutStore } from './three/Callouts';
 import { Axes } from './AnatomyCanvas';
 import { ROM_MOTIONS, romAngleAt } from './romTable';
 import type { MobilityRange } from './romTable';
@@ -541,6 +542,10 @@ export default function BodyScene({
   // articulación activa (C3) OrbitControls no dejaría acercar la cámara lo
   // suficiente para encuadrarla y el fit quedaba clamped al cuerpo completo.
   const focusingJoint = mode === 'regions' && !!mobility;
+  // Rótulos de eje (V2-03, solo A3/C3 vía `mode="regions"`): se quedan junto
+  // a su flecha, solo se apartan entre sí si colisionan — ver
+  // AnchoredLabelOverlay en three/Callouts.tsx.
+  const axisLabels = useCalloutStore();
   return (
     <AnatomyStage
       id={id}
@@ -562,6 +567,7 @@ export default function BodyScene({
       fitPadding={1.7}
       targetName="mobility-focus"
       refit={mobility?.joint}
+      overlay={mode === 'regions' ? <AnchoredLabelOverlay store={axisLabels} /> : undefined}
     >
       {/* <Center> recentra sobre la caja de TODO lo que contiene en cada
           recálculo — con la articulación activa (C3) eso pelea contra el
@@ -571,7 +577,7 @@ export default function BodyScene({
       <Center position={[0, 0, 0]} disable={focusingJoint}>
         <AnatomyModel mode={mode} selected={selected} joint={mobility?.joint ?? null} progress={progress} />
         <MobilityRangeOverlay range={mobility} progress={progress} />
-        {mode === 'regions' && <Axes hoveredTerm={null} showLabels showGrid={false} />}
+        {mode === 'regions' && <Axes hoveredTerm={null} showLabels showGrid={false} labelStore={axisLabels} />}
         {mode === 'planes' && <Planes selected={selected} />}
       </Center>
     </AnatomyStage>

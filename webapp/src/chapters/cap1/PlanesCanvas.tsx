@@ -5,6 +5,8 @@ import * as THREE from 'three';
 import { FULL_BODY_FLOOR_Y, FULL_BODY_SCALE, FULL_BODY_SHADOW_Y } from './bodySceneGeometry';
 import { AnatomyStage } from './three/AnatomyStage';
 import { useAnatomyScene } from './three/useAnatomyNodes';
+import { AnchoredLabelOverlay, useCalloutStore } from './three/Callouts';
+import type { CalloutStore } from './three/Callouts';
 import { Axes } from './AnatomyCanvas';
 
 const BONE_BASE = new THREE.Color('#e8dcc4');
@@ -301,6 +303,7 @@ function SectionPlanesGroup({
   movingPlanes = {},
   motionSpeed = 1,
   planeOffsets = {},
+  axisLabels,
 }: {
   planeSel?: string | null;
   showAll: boolean;
@@ -308,6 +311,7 @@ function SectionPlanesGroup({
   movingPlanes: Record<string, boolean>;
   motionSpeed: number;
   planeOffsets: Record<string, number>;
+  axisLabels: CalloutStore;
 }) {
   const motionTime = useRef(0);
   const [, forceFrame] = React.useState(0);
@@ -322,7 +326,7 @@ function SectionPlanesGroup({
     <group>
       {/* En A1 los ejes viven en el mismo nivel que el modelo; no deben
           heredar la escala aplicada al cuerpo y a las láminas de corte. */}
-      <Axes hoveredTerm={null} showLabels={showLabels} showGrid={false} />
+      <Axes hoveredTerm={null} showLabels={showLabels} showGrid={false} labelStore={axisLabels} />
       <group scale={FULL_BODY_SCALE}>
         {PLANES.map((plane) => {
           const isSelected = planeSel === plane.id;
@@ -368,6 +372,9 @@ export default function PlanesCanvas({
   resetSignal?: number;
   zoomSignal?: { type: 'in' | 'out'; time: number } | null;
 }) {
+  // Rótulos de eje (V2-03): se quedan junto a su flecha, solo se apartan
+  // entre sí si colisionan — ver AnchoredLabelOverlay en three/Callouts.tsx.
+  const axisLabels = useCalloutStore();
   return (
     <AnatomyStage
       camera={{ position: [3.6, 1.8, 12.5], fov: 45 }}
@@ -383,6 +390,7 @@ export default function PlanesCanvas({
       shadowOpacity={0.45}
       resetSignal={resetSignal}
       zoomSignal={zoomSignal}
+      overlay={showLabels ? <AnchoredLabelOverlay store={axisLabels} /> : undefined}
     >
       <Center position={[0, 0, 0]}>
         <AnatomyModel planeSel={planeSel} />
@@ -393,6 +401,7 @@ export default function PlanesCanvas({
           movingPlanes={movingPlanes}
           motionSpeed={motionSpeed}
           planeOffsets={planeOffsets}
+          axisLabels={axisLabels}
         />
       </Center>
     </AnatomyStage>

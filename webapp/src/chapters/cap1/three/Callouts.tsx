@@ -42,6 +42,13 @@ interface CalloutItem {
   color: string;
   dim: boolean;
   emphasis: Emphasis;
+  /** Menor = más prioritario. Solo lo usa `AnchoredLabelOverlay` (V2-03): al
+   *  resolver colisiones, el de menor número se coloca primero y cede menos
+   *  terreno; útil para que un rótulo de eje no ceda ante uno descriptivo. */
+  priority: number;
+  /** Opacidad continua (0-1), p. ej. el resaltado por hover de los ejes en
+   *  A1. Solo la usa `AnchoredLabelOverlay`; si falta, cae a `dim`. */
+  opacity?: number;
 }
 interface Projected {
   x: number;
@@ -131,6 +138,8 @@ export function Callout({
   color,
   dim = false,
   emphasis = 'normal',
+  priority = 0,
+  opacity,
 }: {
   position: [number, number, number];
   label: string;
@@ -140,6 +149,10 @@ export function Callout({
   dim?: boolean;
   /** `strong` = fuerza principal / reacción articular · `muted` = componente. */
   emphasis?: Emphasis;
+  /** Ver `CalloutItem.priority`; solo importa dentro de `AnchoredLabelOverlay`. */
+  priority?: number;
+  /** Ver `CalloutItem.opacity`; solo importa dentro de `AnchoredLabelOverlay`. */
+  opacity?: number;
 }) {
   const store = useContext(CalloutContext);
   const visible = useLabelsVisible();
@@ -147,9 +160,9 @@ export function Callout({
   const id = useId();
   useEffect(() => {
     if (!store || !visible) return;
-    store.register(id, { ref, label, sub, color, dim, emphasis });
+    store.register(id, { ref, label, sub, color, dim, emphasis, priority, opacity });
     return () => store.unregister(id);
-  }, [store, visible, id, label, sub, color, dim, emphasis]);
+  }, [store, visible, id, label, sub, color, dim, emphasis, priority, opacity]);
 
   if (!visible) return null;
 
@@ -485,6 +498,197 @@ function CalloutRailInner({
           {note}
         </div>
       )}
+    </div>
+  );
+}
+
+const ANCHOR_PAD = 6;
+const ANCHOR_MAX_ITER = 6;
+
+/**
+ * Variante de `CalloutRail` para rótulos que deben quedarse JUNTO a su punto
+ * 3D en vez de apilarse en el riel lateral — los de eje (`+z`, `Posterior /
+ * Dorsal`…), que por diseño siempre viven sobre su flecha (V2-03). Solo se
+ * apartan lo mínimo necesario para no solaparse con otro rótulo, empujando a
+ * lo largo del eje (x o y) que resuelva el solape con menos desplazamiento —
+ * el mismo criterio de separación de cajas 2D que un motor físico simple — y
+ * dejan una guía corta hacia su ancla cuando el empujón no es trivial. Si tras
+ * `ANCHOR_MAX_ITER` pasadas dos rótulos siguen solapados (rincón muy
+ * apretado), el de menor prioridad cede: `Callout.priority`, menor = se
+ * coloca antes y cede menos terreno.
+ *
+ * Reutiliza el mismo `CalloutStore` que el riel — hace falta un `<Callout>`
+ * por rótulo y un `<CalloutSource>` dentro del Canvas, igual que para
+ * `CalloutRail`; solo cambia este consumidor fuera del Canvas.
+ */
+export function AnchoredLabelOverlay({ store }: { store: CalloutStore }) {
+  return useLabelsVisible() ? <AnchoredLabelOverlayInner store={store} /> : null;
+}
+
+function AnchoredLabelOverlayInner({ store }: { store: CalloutStore }) {
+  const [items, setItems] = useState<
+    { id: string; label: string; sub: string; color: string; opacity: number; priority: number }[]
+  >([]);
+  const labelEls = useRef<Map<string, HTMLDivElement>>(new Map());
+  const lineEls = useRef<Map<string, SVGLineElement>>(new Map());
+  const dotEls = useRef<Map<string, SVGCircleElement>>(new Map());
+
+  useEffect(() => {
+    const sync = () =>
+      setItems(
+        [...store.items].map(([id, it]) => ({
+          id,
+          label: it.label,
+          sub: it.sub,
+          color: it.color,
+          opacity: it.opacity ?? (it.dim ? 0.42 : 1),
+          priority: it.priority,
+        })),
+      );
+    sync();
+    return store.subscribe(sync);
+  }, [store]);
+
+  // Layout por frame: separa las cajas que colisionan y redibuja las guías.
+  useEffect(() => {
+    let raf = 0;
+    const tick = () => {
+      raf = requestAnimationFrame(tick);
+      const { w, h } = store.size;
+
+      type Box = { id: string; ax: number; ay: number; w: number; h: number; cx: number; cy: number; priority: number };
+      const boxes: Box[] = [];
+      for (const it of items) {
+        const el = labelEls.current.get(it.id);
+        if (!el) continue;
+        const p = store.projected.get(it.id);
+        const line = lineEls.current.get(it.id);
+        const dot = dotEls.current.get(it.id);
+        const on = p && !p.hidden && p.x > -40 && p.x < w + 40 && p.y > -40 && p.y < h + 40;
+        if (!on) {
+          el.style.opacity = '0';
+          if (line) line.style.opacity = '0';
+          if (dot) dot.style.opacity = '0';
+          continue;
+        }
+        boxes.push({
+          id: it.id,
+          ax: p!.x,
+          ay: p!.y,
+          w: el.offsetWidth || 40,
+          h: el.offsetHeight || 18,
+          cx: p!.x,
+          cy: p!.y,
+          priority: it.priority,
+        });
+      }
+
+      // Menor prioridad numérica primero: se coloca antes y los siguientes
+      // (los descriptivos) se apartan alrededor suyo, no al revés.
+      boxes.sort((a, b) => a.priority - b.priority);
+
+      const placed: Box[] = [];
+      for (const b of boxes) {
+        for (let iter = 0; iter < ANCHOR_MAX_ITER; iter++) {
+          let moved = false;
+          for (const other of placed) {
+            const dx = b.cx - other.cx;
+            const dy = b.cy - other.cy;
+            const overlapX = (b.w + other.w) / 2 + ANCHOR_PAD - Math.abs(dx);
+            const overlapY = (b.h + other.h) / 2 + ANCHOR_PAD - Math.abs(dy);
+            if (overlapX > 0 && overlapY > 0) {
+              moved = true;
+              // Empuja por el eje que resuelve el solape con menos distancia.
+              if (overlapX < overlapY) b.cx += overlapX * (dx >= 0 ? 1 : -1);
+              else b.cy += overlapY * (dy >= 0 ? 1 : -1);
+            }
+          }
+          if (!moved) break;
+        }
+        placed.push(b);
+      }
+
+      for (const b of placed) {
+        const el = labelEls.current.get(b.id)!;
+        const it = items.find((x) => x.id === b.id)!;
+        el.style.opacity = String(it.opacity);
+        el.style.transform = `translate(${Math.round(b.cx)}px, ${Math.round(b.cy)}px) translate(-50%, -50%)`;
+
+        const displaced = Math.hypot(b.cx - b.ax, b.cy - b.ay) > 6;
+        const line = lineEls.current.get(b.id);
+        const dot = dotEls.current.get(b.id);
+        if (line) {
+          if (displaced) {
+            line.setAttribute('x1', b.ax.toFixed(1));
+            line.setAttribute('y1', b.ay.toFixed(1));
+            line.setAttribute('x2', b.cx.toFixed(1));
+            line.setAttribute('y2', b.cy.toFixed(1));
+            line.style.opacity = String(it.opacity * 0.6);
+          } else {
+            line.style.opacity = '0';
+          }
+        }
+        if (dot) {
+          dot.setAttribute('cx', b.ax.toFixed(1));
+          dot.setAttribute('cy', b.ay.toFixed(1));
+          dot.style.opacity = displaced ? String(it.opacity * 0.9) : '0';
+        }
+      }
+    };
+    tick();
+    return () => cancelAnimationFrame(raf);
+  }, [items, store]);
+
+  const setLabelRef = (id: string) => (el: HTMLDivElement | null) => {
+    if (el) labelEls.current.set(id, el);
+    else labelEls.current.delete(id);
+  };
+  const setLineRef = (id: string) => (el: SVGLineElement | null) => {
+    if (el) lineEls.current.set(id, el);
+    else lineEls.current.delete(id);
+  };
+  const setDotRef = (id: string) => (el: SVGCircleElement | null) => {
+    if (el) dotEls.current.set(id, el);
+    else dotEls.current.delete(id);
+  };
+
+  return (
+    <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden' }}>
+      <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', overflow: 'visible' }}>
+        {items.map((it) => (
+          <g key={it.id}>
+            <line
+              ref={setLineRef(it.id)}
+              stroke={it.color}
+              strokeWidth={1}
+              style={{ opacity: 0, transition: 'opacity .18s ease' }}
+            />
+            <circle ref={setDotRef(it.id)} r={2} fill={it.color} style={{ opacity: 0, transition: 'opacity .18s ease' }} />
+          </g>
+        ))}
+      </svg>
+      {items.map((it) => (
+        <div
+          key={it.id}
+          ref={setLabelRef(it.id)}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            textAlign: 'center',
+            whiteSpace: 'nowrap',
+            opacity: 0,
+            transition: 'opacity .18s ease',
+            willChange: 'transform',
+            pointerEvents: 'none',
+            color: it.color,
+            fontFamily: 'var(--sans, system-ui, sans-serif)',
+          }}
+        >
+          <div style={{ fontWeight: 700, fontSize: '0.85rem' }}>{it.label}</div>
+          {it.sub && <div style={{ fontSize: '0.56rem', opacity: 0.85, marginTop: 1 }}>{it.sub}</div>}
+        </div>
+      ))}
     </div>
   );
 }

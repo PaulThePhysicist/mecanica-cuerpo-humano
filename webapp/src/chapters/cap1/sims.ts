@@ -3414,7 +3414,18 @@ export var CFXBody: any = {};
     }
     ctx.globalAlpha = 1;
     if (label) {
-      CFX.chip(ctx, x + (opts.side === 'left' ? -8 : 8), (y1 + y2) / 2, label,
+      // V2-03: si el llamador escalona el rótulo (opts.labelY) para no
+      // solaparlo con el vecino, una guía corta lo conecta con su línea —
+      // si no, se pinta en el centro de siempre.
+      var labelY = opts.labelY != null ? opts.labelY : (y1 + y2) / 2;
+      if (Math.abs(labelY - (y1 + y2) / 2) > 2) {
+        ctx.save();
+        ctx.globalAlpha = (opts.alpha != null ? opts.alpha : 0.85) * 0.6;
+        ctx.strokeStyle = color; ctx.lineWidth = 1; ctx.setLineDash([2, 2]);
+        ctx.beginPath(); ctx.moveTo(x, (y1 + y2) / 2); ctx.lineTo(x + (opts.side === 'left' ? -14 : 14), labelY); ctx.stroke();
+        ctx.restore();
+      }
+      CFX.chip(ctx, x + (opts.side === 'left' ? -8 : 8), labelY, label,
         { color: color, size: opts.size || 9, mono: true, align: opts.side === 'left' ? 'right' : 'left', W: opts.W });
     }
     ctx.restore();
@@ -3897,36 +3908,49 @@ export function drawProportions(highlight?: string | null, customHeight?: number
   });
   ctx.restore();
 
-  /* Acotaciones verticales a la izquierda, escalonadas */
-  var dx1 = cx - g.sh * 1.10 - 16;
-  var dx2 = dx1 - 46;
+  /* Acotaciones verticales, alternadas a izquierda/derecha del cuerpo y
+     escalonadas dentro de cada lado (V2-03): antes las cinco compartían la
+     misma línea a la izquierda, y con segmentos cortos y contiguos (cuello,
+     pie) el rótulo de uno se comía el del vecino. */
+  var dxL = cx - g.sh * 1.10 - 16;
+  var dxR = cx + g.sh * 1.10 + 16;
+  var dxTotal = dxL - 46;
   var segs = [
-    { key: 'cabeza',      y0: 0,        y1: L.headB, x: dx1 },
-    { key: 'cuello',      y0: L.headB,  y1: L.neck,  x: dx1 },
-    { key: 'muslo',       y0: L.hip,    y1: L.knee,  x: dx1 },
-    { key: 'pantorrilla', y0: L.knee,   y1: L.ankle, x: dx1 },
-    { key: 'pie',         y0: L.ankle,  y1: L.sole,  x: dx1 }
+    { key: 'cabeza',      y0: 0,        y1: L.headB, side: 'left' },
+    { key: 'cuello',      y0: L.headB,  y1: L.neck,  side: 'right' },
+    { key: 'muslo',       y0: L.hip,    y1: L.knee,  side: 'left' },
+    { key: 'pantorrilla', y0: L.knee,   y1: L.ankle, side: 'right' },
+    { key: 'pie',         y0: L.ankle,  y1: L.sole,  side: 'left' }
   ];
+  var dimMinGap = 15;
+  var dimLastY = { left: -Infinity, right: -Infinity };
   segs.forEach(function (s) {
     var part = C2_PARTS.filter(function (q) { return q.key === s.key; })[0];
     var on = hl === s.key;
     var cmv = fmt(part.frac * height, 1);
-      CFX.dimV(ctx, s.x, yy(s.y0), yy(s.y1),
-        cmv + ' cm',
-      part.color, { side: s.key === 'pie' ? 'right' : 'left', W: W, alpha: on ? 1 : 0.82, size: on ? 13 : 12 });
+    var lineX = s.side === 'left' ? dxL : dxR;
+    var naturalY = (yy(s.y0) + yy(s.y1)) / 2;
+    var labelY = Math.max(naturalY, dimLastY[s.side] + dimMinGap);
+    dimLastY[s.side] = labelY;
+    CFX.dimV(ctx, lineX, yy(s.y0), yy(s.y1), cmv + ' cm', part.color,
+      { side: s.side, W: W, alpha: on ? 1 : 0.82, size: on ? 13 : 12, labelY: labelY });
   });
 
   /* Acotación total de la estatura */
-  CFX.dimV(ctx, dx2, top, floorY, 'H = ' + height + ' cm', PAL.tealDeep,
+  CFX.dimV(ctx, dxTotal, top, floorY, 'H = ' + height + ' cm', PAL.tealDeep,
     { side: 'left', W: W, size: 9.5 });
 
-  /* ── ANCHO DE HOMBROS: acotado EN los hombros (bug corregido) ── */
+  /* ── ANCHO DE HOMBROS: cota sobre la cabeza, no sobre el torso (V2-03) ──
+     Con la barra a solo un 5,5% de bodyH por debajo del hombro, el rótulo
+     caía dentro del propio torso. Convención de plano técnico: la cota vive
+     por ENCIMA de la cabeza, con líneas de proyección punteadas bajando
+     hasta los hombros reales — nunca se pinta sobre el cuerpo. */
   var shOn = hl === 'hombros';
   var shY = yy(L.neck + bodyH * 0.020);
-  var shDimY = shY + bodyH * 0.055;   // por DEBAJO de la línea de hombros: nunca invade la cabeza
+  var shDimY = top - bodyH * 0.045;
   CFX.dimH(ctx, cx - g.sh, cx + g.sh, shDimY,
     fmt(0.259 * height, 1) + ' cm · 0,259·H',
-    '#a35c00', { above: false, W: W, alpha: shOn ? 1 : 0.88, size: shOn ? 11.5 : 10.5 });
+    '#a35c00', { above: true, W: W, alpha: shOn ? 1 : 0.88, size: shOn ? 11.5 : 10.5 });
   // líneas de proyección desde los hombros hasta la cota
   ctx.save();
   ctx.strokeStyle = 'rgba(163,92,0,' + (shOn ? 0.75 : 0.4) + ')';
