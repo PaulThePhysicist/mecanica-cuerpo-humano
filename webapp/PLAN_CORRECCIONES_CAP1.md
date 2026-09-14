@@ -422,7 +422,7 @@ Estado: `PENDIENTE` · `EN CURSO` · `CERRADO`.
 | `S4-03` | 4 | Coser los tres lenguajes visuales del cuerpo | CERRADO | `fix(cap1): S4-03 coser los tres lenguajes visuales del cuerpo` |
 | `S4-04` | 4 | Acotar el uso de la monoespaciada | CERRADO | `fix(cap1): S4-04 acotar el uso de la monoespaciada` |
 | `S4-05` | 4 | Arreglar los dos iconos defectuosos de C3 | PENDIENTE | |
-| `S4-06` | 4 | Quitar los datos repetidos | PENDIENTE | |
+| `S4-06` | 4 | Quitar los datos repetidos | CERRADO | `fix(cap1): S4-06 quitar los datos repetidos de A3 y C2` |
 
 ---
 

@@ -106,19 +106,14 @@ export default function Slide3({ regionSel: parentRegionSel, slideCount }: Slide
           </div>
           <div className="card">
             <div className="card-hdr">
-              <span className="icon">📖</span> Términos regionales (Tablas 1.1–1.2)
+              <span className="icon">📖</span> Términos regionales adicionales
             </div>
             <div className="card-body">
               <table className="data-mini data-terms">
                 <tbody>
-                  <tr><th>Anteriores</th><th>Posteriores</th></tr>
-                  <tr><td><b>Brachial</b>: brazo (superior)</td><td><b>Acromial</b>: hombro</td></tr>
-                  <tr><td><b>Antebrachial</b>: antebrazo</td><td><b>Femoral</b>: muslo</td></tr>
-                  <tr><td><b>Carpal</b>: muñeca</td><td><b>Gluteal</b>: nalga</td></tr>
-                  <tr><td><b>Digital</b>: dedo</td><td><b>Occipital</b>: nuca</td></tr>
-                  <tr><td><b>Coxal</b>: cadera</td><td><b>Popliteal</b>: tras la rodilla</td></tr>
-                  <tr><td><b>Crural</b>: frente de la pierna</td><td><b>Sural</b>: pantorrilla</td></tr>
-                  <tr><td><b>Plantar</b>: planta del pie</td><td><b>Vertebral</b>: columna</td></tr>
+                  <tr><th>Sin chip 3D equivalente arriba</th></tr>
+                  <tr><td><b>Occipital</b>: nuca</td></tr>
+                  <tr><td><b>Sural</b>: pantorrilla</td></tr>
                 </tbody>
               </table>
             </div>

@@ -4034,6 +4034,16 @@ function stackedBar(ctx, x, y, w, h, height, hl) {
     ctx.fillText(fmt(p.frac * height, 1) + ' cm', x + w + 6, cum + hh / 2 + 3);
     cum += hh;
   });
+
+  /* «Σ segmentos» prometía una suma que nunca se mostraba: cada barra solo
+     repetía el valor de su fila en la tabla 1.6, ya visible ahí y en las
+     cotas del maniquí (S4-06). El total apilado es lo único que faltaba. */
+  ctx.strokeStyle = PAL.line; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(x, cum + 2); ctx.lineTo(x + w, cum + 2); ctx.stroke();
+  ctx.fillStyle = PAL.ink; ctx.font = 'bold 12px Karla, system-ui, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Σ = ' + fmt(total * height, 1) + ' cm', x + w / 2, cum + 16);
+
   ctx.restore();
 }
 
