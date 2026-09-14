@@ -1103,6 +1103,28 @@ Anota aquí lo que encuentres durante la ejecución y **no** corrijas en el tick
   `drawAllometry`/`drawStevens` de `sims.ts`) o corresponde a `S4-03` (coser
   los tres lenguajes visuales, que explícitamente vuelve a tocar `--bone` y
   los materiales de Three.js). *(Detectado al diagnosticar `S4-02`.)*
+- **El «Archivos» de `S4-03` no nombraba a `AllometryCanvas.tsx`/`StevensCanvas.tsx`/
+  `BoneScaleCanvas.tsx`** (solo `BMICalculatorCanvas.tsx` del módulo D), pero el
+  Síntoma describe explícitamente «Módulo D: diagramas esquemáticos» como la
+  tercera familia visual, y Pasos 1-2 hablan de «las tres familias». Sin esos
+  tres archivos no hay tercera familia que coser. Se tomaron como parte del
+  ticket (igual que `Slide9.tsx` en `S4-02`); confirmado que los tres pintaban
+  el mismo degradado cálido de 3 paradas (`#f8f3e8/#f1eadc/#eee4d2`) copiado
+  entre sí, sin usar `CFX.scene()`. *(Detectado al diagnosticar `S4-03`.)*
+- **`S4-03` no tocó el sombreado 4-paradas de hueso de `AB.bone()` en `sims.ts`
+  (`PAL.boneHi/boneMid/boneSh/boneDark`, usado por `drawMobility`/C3) ni la
+  familia `materials.bone/boneContext/boneGhost` de `three/materials.ts`.**
+  Pasos 4 solo nombra `PlanesCanvas` y `KinematicsCanvas` (colores planos,
+  únicos); los otros dos son gradientes deliberados de varias paradas —
+  colapsarlos a un solo token sería «rehacer la figura», no «unificar el
+  tono». *(Detectado al diagnosticar `S4-03`.)*
+- **No se aplicó `CFX.chip()` a los rótulos por especie de `AllometryCanvas.tsx`**
+  (cada punto del scatter lleva su propio nombre+valor en texto plano). A
+  diferencia de los dos rótulos de Stevens (que sí se convirtieron: marcan un
+  único par de puntos de referencia sobre curvas que los cruzan), Allometry
+  tiene 7-8 puntos simultáneos — encajonar cada uno habría espesado el
+  gráfico visiblemente, más rediseño que «acercar». Mismo criterio para los
+  rótulos de `BoneScaleCanvas.tsx`. *(Detectado al diagnosticar `S4-03`.)*
 - **`.data-mini tr{cursor:pointer}` en `legacy.css:454` es una regla ciega:** se aplica a *todas* las
   tablas con esa clase, incluidas las que no son interactivas (p. ej. «Masa de los órganos» en C3,
   `Slide10.tsx:212`), dando un cursor de mano falso sobre filas que no hacen nada al pulsarlas. No se

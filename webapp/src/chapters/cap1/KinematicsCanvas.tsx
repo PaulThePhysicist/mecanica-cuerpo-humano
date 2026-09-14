@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { AnatomyStage } from './three/AnatomyStage';
 import { useAnatomyNodes } from './three/useAnatomyNodes';
 import { materials } from './three/materials';
+import { BONE } from './colorTokens';
 
 export interface KinematicAngles {
   joint1: number;       // Hombro / Cadera - Flexión/Extensión (Pitch)
@@ -150,7 +151,7 @@ function JointIndicator({
       <mesh>
         <sphereGeometry args={[selected ? 0.014 : 0.009, 24, 24]} />
         <meshStandardMaterial
-          color={selected ? '#0d6e64' : '#d8cfb8'}
+          color={selected ? '#0d6e64' : BONE}
           emissive={selected ? '#0d6e64' : '#000000'}
           emissiveIntensity={selected ? 0.7 : 0}
           roughness={0.35}

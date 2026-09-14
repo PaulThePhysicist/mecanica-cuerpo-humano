@@ -14,6 +14,9 @@ export const PLANE_COLORS = {
 /** Espejo de --amber. */
 export const AMBER = '#9a5b00';
 
+/** Espejo de --bone. Tono de hueso compartido entre escenas Three.js (S4-03). */
+export const BONE = '#b6a67f';
+
 /**
  * Espejo de --series-1..7. Escala categórica para gráficas con varias curvas
  * sin relación jerárquica (hoy: las 7 sensaciones de Stevens en D4).

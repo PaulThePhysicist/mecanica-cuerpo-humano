@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { fmt } from './format';
 import { SERIES_COLORS } from './colorTokens';
+import { CFX } from './sims';
 
 interface StevensCanvasProps {
   n: number;
@@ -111,13 +112,8 @@ export default function StevensCanvas({
       ctx.scale(dpr, dpr);
       ctx.clearRect(0, 0, W, H);
 
-      // ─── 1. Fondo de estudio anatómico con viñeta cálida ───
-      const bgGrad = ctx.createRadialGradient(W * 0.45, H * 0.45, 20, W * 0.5, H * 0.5, Math.max(W, H) * 0.75);
-      bgGrad.addColorStop(0, '#f8f3e8');
-      bgGrad.addColorStop(0.55, '#f1eadc');
-      bgGrad.addColorStop(1, '#eee4d2');
-      ctx.fillStyle = bgGrad;
-      ctx.fillRect(0, 0, W, H);
+      // ─── 1. Fondo de estudio (compartido con las demás familias visuales) ───
+      CFX.scene(ctx, W, H, { spotX: W * 0.4 });
 
       // ─── 2. Dimensiones del Gráfico Psicofísico ───
       const pad = { top: 46, bottom: 42, left: 52, right: 180 };
@@ -327,11 +323,8 @@ export default function StevensCanvas({
       ctx.lineWidth = 1.5;
       ctx.stroke();
 
-      ctx.fillStyle = '#232c36';
-      ctx.font = `bold ${scaled(10.5)}px Karla, system-ui, sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.fillText('Estímulo S', refX, refY + 14);
-      ctx.fillText(`Estímulo 2S (×${fmt(ratioPerceived, 2)})`, dblX, dblY - 8);
+      CFX.chip(ctx, refX, refY + 14, 'Estímulo S', { color: CFX.PAL.ink2, size: scaled(10), align: 'center', W });
+      CFX.chip(ctx, dblX, dblY - 8, `Estímulo 2S (×${fmt(ratioPerceived, 2)})`, { color: CFX.PAL.ink2, size: scaled(10), align: 'center', W });
       ctx.restore();
 
       // ─── 5. Laboratorio Sensorial Interactivo (Widget Derecho) ───

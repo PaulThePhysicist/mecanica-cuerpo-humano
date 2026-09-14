@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { fmt } from './format';
+import { CFX } from './sims';
 
 interface AllometryCanvasProps {
   selectedParam: string; // 'BMR', 'area', 'HR', 'brain', 'life', 'muscle'
@@ -137,13 +138,8 @@ export default function AllometryCanvas({
       ctx.scale(dpr, dpr);
       ctx.clearRect(0, 0, W, H);
 
-      // ─── 1. Fondo de estudio anatómico con viñeta cálida ───
-      const bgGrad = ctx.createRadialGradient(W * 0.48, H * 0.45, 20, W * 0.5, H * 0.5, Math.max(W, H) * 0.75);
-      bgGrad.addColorStop(0, '#f8f3e8');
-      bgGrad.addColorStop(0.55, '#f1eadc');
-      bgGrad.addColorStop(1, '#eee4d2');
-      ctx.fillStyle = bgGrad;
-      ctx.fillRect(0, 0, W, H);
+      // ─── 1. Fondo de estudio (compartido con las demás familias visuales) ───
+      CFX.scene(ctx, W, H, { spotX: W * 0.48 });
 
       // ─── 2. Dimensiones del Gráfico Log-Log ───
       // top=58 (antes 48): la ballena azul (el punto más extremo en casi

@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { fmt } from './format';
+import { CFX } from './sims';
 
 interface BoneScaleCanvasProps {
   selectedAnimal?: string | null;
@@ -73,13 +74,8 @@ export default function BoneScaleCanvas({
       ctx.scale(dpr, dpr);
       ctx.clearRect(0, 0, W, H);
 
-      // ─── 1. Fondo de estudio anatómico con viñeta cálida ───
-      const bgGrad = ctx.createRadialGradient(W * 0.5, H * 0.45, 30, W * 0.5, H * 0.5, Math.max(W, H) * 0.75);
-      bgGrad.addColorStop(0, '#f8f3e8');
-      bgGrad.addColorStop(0.55, '#f1eadc');
-      bgGrad.addColorStop(1, '#eee4d2');
-      ctx.fillStyle = bgGrad;
-      ctx.fillRect(0, 0, W, H);
+      // ─── 1. Fondo de estudio (compartido con las demás familias visuales) ───
+      CFX.scene(ctx, W, H, { spotX: W * 0.5 });
 
       // Reservamos una franja inferior para las métricas y los controles del visor.
       // En la vista estrecha esto evita que las etiquetas queden bajo el panel HUD.

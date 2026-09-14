@@ -3,14 +3,14 @@ import { useFrame } from '@react-three/fiber';
 import { Center, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { FULL_BODY_FLOOR_Y, FULL_BODY_SCALE, FULL_BODY_SHADOW_Y } from './bodySceneGeometry';
-import { PLANE_COLORS } from './colorTokens';
+import { PLANE_COLORS, BONE } from './colorTokens';
 import { AnatomyStage } from './three/AnatomyStage';
 import { useAnatomyScene } from './three/useAnatomyNodes';
 import { AnchoredLabelOverlay, useCalloutStore } from './three/Callouts';
 import type { CalloutStore } from './three/Callouts';
 import { Axes } from './AnatomyCanvas';
 
-const BONE_BASE = new THREE.Color('#e8dcc4');
+const BONE_BASE = new THREE.Color(BONE);
 
 function AnatomyModel({ planeSel }: { planeSel?: string | null }) {
   const scene = useAnatomyScene('body');

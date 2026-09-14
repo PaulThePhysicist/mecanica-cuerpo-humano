@@ -419,7 +419,7 @@ Estado: `PENDIENTE` · `EN CURSO` · `CERRADO`.
 | `E3-06` | 3 | Replantear el riel de navegación lateral | CERRADO | `fix(cap1): E3-06 agrupar el riel de navegación por módulo` |
 | `S4-01` | 4 | Retirar los emoji | PENDIENTE | |
 | `S4-02` | 4 | Devolver los lienzos a la paleta de `:root` | CERRADO | `fix(cap1): S4-02 devolver los lienzos a la paleta de :root` |
-| `S4-03` | 4 | Coser los tres lenguajes visuales del cuerpo | PENDIENTE | |
+| `S4-03` | 4 | Coser los tres lenguajes visuales del cuerpo | CERRADO | `fix(cap1): S4-03 coser los tres lenguajes visuales del cuerpo` |
 | `S4-04` | 4 | Acotar el uso de la monoespaciada | PENDIENTE | |
 | `S4-05` | 4 | Arreglar los dos iconos defectuosos de C3 | PENDIENTE | |
 | `S4-06` | 4 | Quitar los datos repetidos | PENDIENTE | |

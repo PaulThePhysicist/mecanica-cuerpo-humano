@@ -101,17 +101,12 @@ export default function BMICalculatorCanvas({
       ctx.scale(dpr, dpr);
       ctx.clearRect(0, 0, W, H);
 
-      // ─── 1. Fondo de estudio anatómico con viñeta cálida ───
-      const bgGrad = ctx.createRadialGradient(W * 0.4, H * 0.45, 20, W * 0.5, H * 0.5, Math.max(W, H) * 0.75);
-      bgGrad.addColorStop(0, '#f8f3e8');
-      bgGrad.addColorStop(0.55, '#f1eadc');
-      bgGrad.addColorStop(1, '#eee4d2');
-      ctx.fillStyle = bgGrad;
-      ctx.fillRect(0, 0, W, H);
-
-      // ─── 2. Figura Anatómica Adaptativa (Izquierda) ───
+      // ─── 1. Fondo de estudio (compartido con las demás familias visuales) ───
       const floorY = H * 0.88;
       const figCenterX = W * 0.28;
+      CFX.scene(ctx, W, H, { floor: true, floorY, spotX: figCenterX });
+
+      // ─── 2. Figura Anatómica Adaptativa (Izquierda) ───
       const figH = H * 0.74 * (cur.height / 1.72);
       const figTopY = floorY - figH;
 
