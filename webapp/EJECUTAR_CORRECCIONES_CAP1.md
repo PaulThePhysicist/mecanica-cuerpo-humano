@@ -1125,17 +1125,26 @@ Anota aquí lo que encuentres durante la ejecución y **no** corrijas en el tick
   tiene 7-8 puntos simultáneos — encajonar cada uno habría espesado el
   gráfico visiblemente, más rediseño que «acercar». Mismo criterio para los
   rótulos de `BoneScaleCanvas.tsx`. *(Detectado al diagnosticar `S4-03`.)*
-- **Refinamiento post-hoc de `V2-05` (fuera del flujo de tickets, pedido
-  directamente por el usuario tras verlo en pantalla):** el botón `⚙` del
-  panel COLAPSADO seguía reservando su propia fila de 30 px en el grid de
-  `.sim-area` (`.prof-controls.is-collapsed`), dejando una tira vacía bajo
-  el lienzo en las 17 diapositivas. Se sacó del flujo con
-  `.cap1-presentation .sim-area > .prof-controls.is-collapsed{position:
-  absolute;right:.6rem;bottom:.6rem}` (misma especificidad que la regla que
-  fuerza `position:static` en todo `.prof-controls`, para poder ganarle) —
-  el botón ahora flota sobre el lienzo y la fila del grid baja a 0 px, sin
-  tocar el panel ABIERTO (ese sigue reservando espacio, que es lo que pedía
-  `V2-05` originalmente). Verificado en 3D (A1) y en canvas 2D (C2).
+- **`V2-05` revertido en dos pasos, fuera del flujo de tickets, a pedido
+  directo del usuario tras verlo en pantalla:**
+  1. Primero solo el botón `⚙` del panel COLAPSADO, que reservaba su propia
+     fila de 30 px en el grid de `.sim-area` (`.prof-controls.is-collapsed`)
+     dejando una tira vacía bajo el lienzo. Se sacó del flujo con
+     `.cap1-presentation .sim-area > .prof-controls.is-collapsed{position:
+     absolute;right:.6rem;bottom:.6rem}` (misma especificidad que la regla
+     que fuerza `position:static` en todo `.prof-controls`, para ganarle).
+  2. El usuario pidió lo mismo para el panel ABIERTO ("no importa si va en
+     contra de algún ticket, me gusta más así"): `.cap1-presentation
+     .sim-area > .prof-controls` pasa de `position:static` a
+     `position:absolute;left:.6rem;right:.6rem;bottom:.6rem` — el panel
+     vuelve a flotar sobre el lienzo en los dos estados, tal como estaba
+     ANTES de `V2-05` (y como sigue en el resto de capítulos, vía la regla
+     compartida de `src/index.css`). El lienzo ya no se recorta nunca, a
+     costa de que el panel abierto puede volver a tapar texto o ejes — el
+     problema original que `V2-05` resolvía. Documentado explícitamente en
+     `PLAN_CORRECCIONES_CAP1.md` bajo el propio ticket para que no se lea
+     como una regresión sin más. Verificado en 3D (A1) y en un chart 2D
+     (D1, el caso que más tenía que proteger V2-05: el título del eje x).
 - **`CFX.footnote()` en `sims.ts` (~línea 2831) pinta el pie de figura completo
   en `JetBrains Mono, monospace`** aunque su contenido es siempre una frase
   («Pasa el cursor: resalta cuerpo y barra»), no una cifra — viola la misma

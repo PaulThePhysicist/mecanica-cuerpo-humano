@@ -282,26 +282,25 @@
   position:relative;overflow:hidden;display:grid;grid-template-rows:1fr auto;
   min-height:200px;box-shadow:inset 0 2px 8px rgba(35,44,54,.06);
 }
-/* El lienzo (primer hijo: un <canvas> 2D o el contenedor del <Canvas> r3f,
-   ambos ya declaran width/height:100% sobre sí mismos) reserva SIEMPRE la
-   fila `1fr` de arriba; `.prof-controls` cae solo, en orden de DOM, a la fila
-   `auto` de abajo — ya no flota encima tapando lo que dibuja el lienzo justo
-   bajo su borde (V2-05: el pie de figura de C2, el rótulo «Kleiber» de C1, el
-   título de eje de D1...). `min-height:0` es necesario porque una fila de
-   grid, a diferencia de un bloque normal, por defecto no encoge por debajo
-   del contenido de sus hijos. Al colapsar el panel (`.is-collapsed`, más
-   abajo) su alto baja a 30px y el lienzo recupera el resto automáticamente,
-   sin ningún caso especial por diapositiva. */
+/* `min-height:0` es necesario porque una fila de grid, a diferencia de un
+   bloque normal, por defecto no encoge por debajo del contenido de sus
+   hijos — sin esto el lienzo no podría ceder altura aunque `.prof-controls`
+   esté fuera del flujo (ver nota de abajo). */
 .sim-area > *:not(.prof-controls){min-height:0;min-width:0;}
-/* La regla compartida de src/index.css (TODOS los capítulos) saca el panel
-   del flujo normal con `position:absolute;bottom:.6rem` — por eso nada de lo
-   de arriba bastaba por sí solo: por más fila `auto` que reservara este
-   grid, un elemento `position:absolute` no la ocupa, y seguía flotando sobre
-   la fila `1fr` del lienzo con el layout de SIEMPRE, en cualquier capítulo.
-   Solo cap1 (el único que pidió V2-05) vuelve a ponerlo en flujo; el resto
-   de capítulos no se toca. */
+/* V2-05 puso aquí `.prof-controls` EN FLUJO (fila `auto` del grid de arriba)
+   para que el panel abierto no tapara texto del lienzo (el pie de C2, el
+   rótulo «Kleiber» de C1, el título de eje de D1...). El usuario pidió
+   revertirlo explícitamente el 2026-09-13: prefiere que el panel — abierto
+   o colapsado — flote SIEMPRE sobre el lienzo, aunque eso vuelva a tapar
+   algo de lo anterior. Con `.prof-controls` otra vez fuera de flujo en los
+   dos estados, la fila `auto` del grid nunca la ocupa nadie y el lienzo
+   (`1fr`) recibe el 100% automáticamente — no hace falta tocar el grid en
+   sí, solo esta regla. (Antes de V2-05 el flotante salía de la regla
+   compartida de src/index.css, `position:absolute;bottom:.6rem`; aquí se
+   escribe explícito para no depender de un archivo ajeno a cap1.) */
 .cap1-presentation .sim-area > .prof-controls{
-  position:static;left:auto;right:auto;bottom:auto;max-width:none;
+  position:absolute;left:.6rem;right:.6rem;bottom:.6rem;top:auto;
+  max-width:calc(100% - 1.2rem);
 }
 /* A1: además de la regla general de arriba, mantiene su propio flex:1 con
    mayor especificidad (id) — sin efecto ya en un grid (no es flex item),
@@ -418,12 +417,11 @@
   max-width:30px;padding:0;gap:0;justify-content:center;overflow:hidden!important;
   flex:0 0 30px;box-sizing:border-box;
 }
-/* Colapsado, ya no reserva fila de grid en .sim-area (V2-05 solo saca del
-   flujo al panel ABIERTO): el botón flota sobre el lienzo, esquina inferior
-   derecha (la izquierda la ocupa .stage-legend en las escenas que lo usan).
-   Selector con la misma especificidad que la regla de arriba (línea ~303)
-   que fuerza `position:static` en TODO `.prof-controls` — sin igualarla,
-   esa regla ganaría y el botón no podría salir del flujo del grid. */
+/* Colapsado, el panel flota igual que abierto (regla de arriba) pero en su
+   propia esquina: un botón de 30px en la inferior derecha en vez de la
+   franja completa (la izquierda la ocupa .stage-legend en las escenas que
+   lo usan). Selector con la misma especificidad que la regla de arriba
+   (mismos cuatro selectores) para poder pisar su `left/right/bottom`. */
 .cap1-presentation .sim-area > .prof-controls.is-collapsed{
   position:absolute;right:.6rem;bottom:.6rem;left:auto;top:auto;
   box-shadow:0 4px 14px rgba(35,44,54,.14);

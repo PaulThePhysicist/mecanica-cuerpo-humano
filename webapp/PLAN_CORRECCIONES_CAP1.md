@@ -220,6 +220,14 @@ El orden no es negociable: primero lo que miente al lector, después lo que esto
   en ninguna de las 17 diapositivas. Con el panel cerrado, el lienzo aprovecha el espacio liberado.
 - **Verificación** — Barrido de las 17 diapositivas con panel abierto y con panel cerrado.
 
+> **Revertido a propósito el 2026-09-13.** El usuario pidió que el panel —
+> abierto o colapsado — vuelva a flotar sobre el lienzo en vez de reservarle
+> espacio, aceptando explícitamente que eso puede volver a tapar texto o ejes
+> (el problema original de este ticket). El criterio de aceptación de arriba
+> ya **no** se cumple por decisión consciente, no por regresión — ver
+> `legacy.css` (`.cap1-presentation .sim-area > .prof-controls`) y el commit
+> `fix(cap1): volver a flotar el panel de controles sobre el lienzo (revierte V2-05)`.
+
 ---
 
 # Fase 3 · Estructura de la diapositiva
@@ -410,7 +418,7 @@ Estado: `PENDIENTE` · `EN CURSO` · `CERRADO`.
 | `V2-02` | 2 | Hacer legible el rango de movilidad de C3 | CERRADO | `fix(cap1): V2-02 hacer legible el rango de movilidad de C3` |
 | `V2-03` | 2 | Eliminar las colisiones de rótulos | CERRADO | `fix(cap1): V2-03 eliminar las colisiones de rótulos` |
 | `V2-04` | 2 | Terminar las dos gráficas | CERRADO | `fix(cap1): V2-04 terminar las dos gráficas (D1, D4)` |
-| `V2-05` | 2 | Que el panel de controles reserve espacio | CERRADO | `fix(cap1): V2-05 que el panel de controles reserve espacio` |
+| `V2-05` | 2 | Que el panel de controles reserve espacio | CERRADO ⚠ revertido a propósito, ver nota bajo el ticket | `fix(cap1): V2-05 que el panel de controles reserve espacio` |
 | `E3-01` | 3 | Resolver el desbordamiento de la columna izquierda | CERRADO | `fix(cap1): E3-01 señal de scroll en la columna de teoría` |
 | `E3-02` | 3 | Señal de «esto se pulsa» en las tablas | CERRADO | `fix(cap1): E3-02 señal de interactividad en las tablas de B2, C3, D1 y D4` |
 | `E3-03` | 3 | Reequilibrar tabla / lienzo en móvil | CERRADO | `fix(cap1): E3-03 dejar que la diapositiva móvil scrollee en vez de recortar la teoría` |
