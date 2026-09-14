@@ -418,6 +418,16 @@
   max-width:30px;padding:0;gap:0;justify-content:center;overflow:hidden!important;
   flex:0 0 30px;box-sizing:border-box;
 }
+/* Colapsado, ya no reserva fila de grid en .sim-area (V2-05 solo saca del
+   flujo al panel ABIERTO): el botón flota sobre el lienzo, esquina inferior
+   derecha (la izquierda la ocupa .stage-legend en las escenas que lo usan).
+   Selector con la misma especificidad que la regla de arriba (línea ~303)
+   que fuerza `position:static` en TODO `.prof-controls` — sin igualarla,
+   esa regla ganaría y el botón no podría salir del flujo del grid. */
+.cap1-presentation .sim-area > .prof-controls.is-collapsed{
+  position:absolute;right:.6rem;bottom:.6rem;left:auto;top:auto;
+  box-shadow:0 4px 14px rgba(35,44,54,.14);
+}
 .prof-controls.is-collapsed > *:not(.prof-controls-toggle){
   display:none!important;visibility:hidden!important;width:0!important;height:0!important;
   max-width:0!important;max-height:0!important;overflow:hidden!important;

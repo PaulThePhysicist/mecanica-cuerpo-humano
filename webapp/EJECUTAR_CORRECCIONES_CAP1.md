@@ -1125,6 +1125,17 @@ Anota aquí lo que encuentres durante la ejecución y **no** corrijas en el tick
   tiene 7-8 puntos simultáneos — encajonar cada uno habría espesado el
   gráfico visiblemente, más rediseño que «acercar». Mismo criterio para los
   rótulos de `BoneScaleCanvas.tsx`. *(Detectado al diagnosticar `S4-03`.)*
+- **Refinamiento post-hoc de `V2-05` (fuera del flujo de tickets, pedido
+  directamente por el usuario tras verlo en pantalla):** el botón `⚙` del
+  panel COLAPSADO seguía reservando su propia fila de 30 px en el grid de
+  `.sim-area` (`.prof-controls.is-collapsed`), dejando una tira vacía bajo
+  el lienzo en las 17 diapositivas. Se sacó del flujo con
+  `.cap1-presentation .sim-area > .prof-controls.is-collapsed{position:
+  absolute;right:.6rem;bottom:.6rem}` (misma especificidad que la regla que
+  fuerza `position:static` en todo `.prof-controls`, para poder ganarle) —
+  el botón ahora flota sobre el lienzo y la fila del grid baja a 0 px, sin
+  tocar el panel ABIERTO (ese sigue reservando espacio, que es lo que pedía
+  `V2-05` originalmente). Verificado en 3D (A1) y en canvas 2D (C2).
 - **`CFX.footnote()` en `sims.ts` (~línea 2831) pinta el pie de figura completo
   en `JetBrains Mono, monospace`** aunque su contenido es siempre una frase
   («Pasa el cursor: resalta cuerpo y barra»), no una cifra — viola la misma
