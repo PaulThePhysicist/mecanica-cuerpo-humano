@@ -109,7 +109,7 @@ export default function Slide3({ regionSel: parentRegionSel, slideCount }: Slide
               <span className="icon">📖</span> Términos regionales (Tablas 1.1–1.2)
             </div>
             <div className="card-body">
-              <table className="data-mini">
+              <table className="data-mini data-terms">
                 <tbody>
                   <tr><th>Anteriores</th><th>Posteriores</th></tr>
                   <tr><td><b>Brachial</b>: brazo (superior)</td><td><b>Acromial</b>: hombro</td></tr>

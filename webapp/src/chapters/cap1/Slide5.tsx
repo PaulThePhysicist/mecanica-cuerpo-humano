@@ -246,7 +246,7 @@ export default function Slide5({ toggleJointsAnimation, slideCount }: Slide5Prop
               <span className="icon">📋</span> Los 6 tipos sinoviales (Modelos 3D reales)
             </div>
             <div className="card-body">
-              <table className="data-mini">
+              <table className="data-mini data-terms">
                 <tbody>
                   <tr><th>Tipo</th><th>GL</th><th>Articulación ósea</th></tr>
                   {(['hinge', 'pivot', 'condylar', 'saddle', 'plane', 'ball'] as JointType[]).map((jId) => {

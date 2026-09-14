@@ -194,7 +194,7 @@ export default function Slide10({ slideCount }: { slideCount?: string }) {
                         <td>
                           <b>{j.name}</b>
                         </td>
-                        <td style={{ fontFamily: 'JetBrains Mono, monospace', color: isSel ? '#b02318' : 'var(--teal-deep)' }}>
+                        <td style={{ fontFamily: 'var(--mono)', color: isSel ? '#b02318' : 'var(--teal-deep)' }}>
                           {j.rom}
                         </td>
                       </tr>

@@ -1125,6 +1125,24 @@ Anota aquí lo que encuentres durante la ejecución y **no** corrijas en el tick
   tiene 7-8 puntos simultáneos — encajonar cada uno habría espesado el
   gráfico visiblemente, más rediseño que «acercar». Mismo criterio para los
   rótulos de `BoneScaleCanvas.tsx`. *(Detectado al diagnosticar `S4-03`.)*
+- **`CFX.footnote()` en `sims.ts` (~línea 2831) pinta el pie de figura completo
+  en `JetBrains Mono, monospace`** aunque su contenido es siempre una frase
+  («Pasa el cursor: resalta cuerpo y barra»), no una cifra — viola la misma
+  regla que `S4-04` corrigió en las tablas de A3/B2, pero en una función
+  compartida por C1/C2/C3 (y potencialmente D vía `CFX`), no por una tabla.
+  No se tocó: el ticket nombra tablas y un encabezado, no esta función; es un
+  cambio de una línea con alto radio de efecto (toca el pie de las 17
+  diapositivas que lo usan) y merece su propio ticket/verificación visual
+  completa. *(Detectado al diagnosticar `S4-04`.)*
+- **Quedan más literales `'JetBrains Mono, monospace'` sin pasar por
+  `var(--mono)` fuera de los tres sitios que `E3-02` había señalado para este
+  ticket** (`Slide10.tsx`, `Slide15.tsx` — corregidos junto con `Slide14.tsx`,
+  que sí nombraba el ticket). El propio `sims.ts` tiene ~25 ocurrencias más,
+  la mayoría en las funciones 2D ya marcadas como código muerto
+  (`drawKinematics`-símil, `drawAllometry`, `drawStevens`) o en cifras
+  legítimas de `drawMobility`/`drawBodyProportions`/`stackedBar` que sí deben
+  ser mono. No se auditó una por una: excede el alcance de un ticket que
+  nombra archivos concretos. *(Detectado al diagnosticar `S4-04`.)*
 - **`.data-mini tr{cursor:pointer}` en `legacy.css:454` es una regla ciega:** se aplica a *todas* las
   tablas con esa clase, incluidas las que no son interactivas (p. ej. «Masa de los órganos» en C3,
   `Slide10.tsx:212`), dando un cursor de mano falso sobre filas que no hacen nada al pulsarlas. No se

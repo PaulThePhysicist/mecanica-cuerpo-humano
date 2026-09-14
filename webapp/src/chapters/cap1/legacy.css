@@ -464,6 +464,11 @@
 }
 .data-mini td{padding:.16rem .3rem;border-bottom:1px solid var(--line-soft);color:var(--ink-2)}
 .data-mini td:last-child{font-family:var(--mono);color:var(--ink);font-size:.62rem}
+/* S4-04: en las tablas de vocabulario (A3, B2) la última columna es prosa,
+   no una cifra — la regla de arriba está pensada para tablas de datos
+   (C3, D1, D4) y no puede distinguir el contenido, así que aquí se anula
+   explícitamente en vez de tocar la regla general. */
+.data-mini.data-terms td:last-child{font-family:var(--sans);color:var(--ink-2);font-size:.66rem}
 .data-mini tr{cursor:pointer}
 .data-mini .table-caption{font-size:.56rem;color:var(--ink-3);padding:.14rem .3rem;font-style:italic}
 .data-mini td b{color:var(--ink)}

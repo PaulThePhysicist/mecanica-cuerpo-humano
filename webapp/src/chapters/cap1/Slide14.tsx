@@ -52,7 +52,7 @@ export default function Slide14({ slideCount }: { slideCount?: string }) {
         <div className="theory">
           <div className="card active">
             <div className="card-hdr">
-              <span className="icon">📐</span> Índices de masa y estatura (W / H^p)
+              <span className="icon">📐</span> Índices de masa y estatura
             </div>
             <div className="card-body">
               <div className="eq-block">
@@ -103,7 +103,7 @@ export default function Slide14({ slideCount }: { slideCount?: string }) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.62rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Índice Quételet (IMC):</span>
-                <b style={{ color: catColor, fontFamily: 'JetBrains Mono, monospace' }}>{fmt(bmi, 1)} kg/m²</b>
+                <b style={{ color: catColor, fontFamily: 'var(--mono)' }}>{fmt(bmi, 1)} kg/m²</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Categoría OMS:</span>
@@ -111,19 +111,19 @@ export default function Slide14({ slideCount }: { slideCount?: string }) {
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Área Du Bois:</span>
-                <b style={{ color: 'var(--teal-deep)', fontFamily: 'JetBrains Mono, monospace' }}>{fmt(bsa, 2)} m²</b>
+                <b style={{ color: 'var(--teal-deep)', fontFamily: 'var(--mono)' }}>{fmt(bsa, 2)} m²</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Índice Ponderal S:</span>
-                <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>{fmt(S, 2)}</b>
+                <b style={{ fontFamily: 'var(--mono)' }}>{fmt(S, 2)}</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Densidad Media ρ:</span>
-                <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>{fmt(rho, 3)} kg/L</b>
+                <b style={{ fontFamily: 'var(--mono)' }}>{fmt(rho, 3)} kg/L</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Grasa Estimada por IMC ({gender === 'H' ? 'Varón' : 'Mujer'}):</span>
-                <b style={{ color: '#b86a1e', fontFamily: 'JetBrains Mono, monospace' }}>{fmt(currentFat, 1)}%</b>
+                <b style={{ color: '#b86a1e', fontFamily: 'var(--mono)' }}>{fmt(currentFat, 1)}%</b>
               </div>
             </div>
           </HudPanel>
@@ -149,7 +149,7 @@ export default function Slide14({ slideCount }: { slideCount?: string }) {
                   onChange={(e) => setMass(parseFloat(e.target.value))}
                   style={{ width: '65px' }}
                 />
-                <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '36px' }}>{mass} kg</b>
+                <b style={{ fontFamily: 'var(--mono)', minWidth: '36px' }}>{mass} kg</b>
               </label>
 
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
@@ -162,7 +162,7 @@ export default function Slide14({ slideCount }: { slideCount?: string }) {
                   onChange={(e) => setHeightCm(parseFloat(e.target.value))}
                   style={{ width: '65px' }}
                 />
-                <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '42px' }}>{heightCm} cm</b>
+                <b style={{ fontFamily: 'var(--mono)', minWidth: '42px' }}>{heightCm} cm</b>
               </label>
 
               <div style={{ display: 'inline-flex', gap: '2px', border: '1px solid var(--line)', borderRadius: '4px', padding: '1px' }}>

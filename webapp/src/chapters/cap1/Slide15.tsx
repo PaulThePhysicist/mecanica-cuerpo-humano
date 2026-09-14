@@ -162,10 +162,10 @@ export default function Slide15({ slideCount }: { slideCount?: string }) {
                         }}
                       >
                         <td><b>{s.name}</b></td>
-                        <td style={{ fontFamily: 'JetBrains Mono, monospace', color: s.n > 1 ? '#b02318' : '#0d6e64' }}>
+                        <td style={{ fontFamily: 'var(--mono)', color: s.n > 1 ? '#b02318' : '#0d6e64' }}>
                           n = {fmt(s.n, 2)}
                         </td>
-                        <td style={{ fontFamily: 'JetBrains Mono, monospace', color: s.n > 1 ? '#b02318' : 'var(--teal-deep)' }}>
+                        <td style={{ fontFamily: 'var(--mono)', color: s.n > 1 ? '#b02318' : 'var(--teal-deep)' }}>
                           ×{mult}
                         </td>
                       </tr>
