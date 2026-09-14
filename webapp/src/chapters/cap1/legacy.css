@@ -444,6 +444,7 @@
 }
 .prof-controls label{display:flex;align-items:center;gap:.3rem;cursor:pointer;flex-shrink:0;font-size:.64rem}
 .prof-controls input[type="range"]{width:74px;accent-color:var(--teal);}
+.prof-controls input[type="checkbox"]{accent-color:var(--teal);}
 .prof-controls select{
   background:var(--card);color:var(--ink);border:1px solid var(--line);
   border-radius:6px;padding:.18rem .4rem;font-size:.64rem;cursor:pointer;

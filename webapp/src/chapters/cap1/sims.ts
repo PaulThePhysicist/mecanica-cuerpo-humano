@@ -13,6 +13,7 @@
 
 import { STANDARD_MAN, STANDARD_GRAVITY } from './standardMan';
 import { fmt } from './format';
+import { AMBER, BODY_SEGMENT_SHADES } from './colorTokens';
 
 export const TOTAL = 17;
 export const MODULES = [
@@ -3847,15 +3848,15 @@ window.drawBodyProportions = drawBodyProportions;
    altura de la cadera).
    ═══════════════════════════════════════════════════════════════════ */
 var C2_PARTS = [
-  { key: 'cabeza',      name: 'Cabeza',      frac: 0.130, color: '#0d6e64' },
-  { key: 'cuello',      name: 'Cuello',      frac: 0.052, color: '#0d8577' },
-  { key: 'brazo',       name: 'Brazo',       frac: 0.186, color: '#106b64' },
-  { key: 'antebrazo',   name: 'Antebrazo',   frac: 0.146, color: '#0d5b56' },
-  { key: 'mano',        name: 'Mano',        frac: 0.108, color: '#0b4a46' },
-  { key: 'muslo',       name: 'Muslo',       frac: 0.245, color: '#6d5fbf' },
-  { key: 'pantorrilla', name: 'Pantorrilla', frac: 0.246, color: '#7c5fcf' },
-  { key: 'pie',         name: 'Pie',         frac: 0.152, color: '#6d46c4' },
-  { key: 'hombros',     name: 'Ancho hombros', frac: 0.259, color: '#a35c00', horiz: true }
+  { key: 'cabeza',      name: 'Cabeza',      frac: 0.130, color: BODY_SEGMENT_SHADES.cabeza },
+  { key: 'cuello',      name: 'Cuello',      frac: 0.052, color: BODY_SEGMENT_SHADES.cuello },
+  { key: 'brazo',       name: 'Brazo',       frac: 0.186, color: BODY_SEGMENT_SHADES.brazo },
+  { key: 'antebrazo',   name: 'Antebrazo',   frac: 0.146, color: BODY_SEGMENT_SHADES.antebrazo },
+  { key: 'mano',        name: 'Mano',        frac: 0.108, color: BODY_SEGMENT_SHADES.mano },
+  { key: 'muslo',       name: 'Muslo',       frac: 0.245, color: BODY_SEGMENT_SHADES.muslo },
+  { key: 'pantorrilla', name: 'Pantorrilla', frac: 0.246, color: BODY_SEGMENT_SHADES.pantorrilla },
+  { key: 'pie',         name: 'Pie',         frac: 0.152, color: BODY_SEGMENT_SHADES.pie },
+  { key: 'hombros',     name: 'Ancho hombros', frac: 0.259, color: AMBER, horiz: true }
 ];
 
 export function drawProportions(highlight?: string | null, customHeight?: number) {
@@ -3956,7 +3957,7 @@ export function drawProportions(highlight?: string | null, customHeight?: number
   var shDimY = top - bodyH * 0.045;
   CFX.dimH(ctx, cx - g.sh, cx + g.sh, shDimY,
     fmt(0.259 * height, 1) + ' cm · 0,259·H',
-    '#a35c00', { above: true, W: W, alpha: shOn ? 1 : 0.88, size: shOn ? 11.5 : 10.5 });
+    AMBER, { above: true, W: W, alpha: shOn ? 1 : 0.88, size: shOn ? 11.5 : 10.5 });
   // líneas de proyección desde los hombros hasta la cota
   ctx.save();
   ctx.strokeStyle = 'rgba(163,92,0,' + (shOn ? 0.75 : 0.4) + ')';

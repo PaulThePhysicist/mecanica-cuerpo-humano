@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import { Center, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { FULL_BODY_FLOOR_Y, FULL_BODY_SCALE, FULL_BODY_SHADOW_Y } from './bodySceneGeometry';
+import { PLANE_COLORS } from './colorTokens';
 import { AnatomyStage } from './three/AnatomyStage';
 import { useAnatomyScene } from './three/useAnatomyNodes';
 import { AnchoredLabelOverlay, useCalloutStore } from './three/Callouts';
@@ -70,7 +71,7 @@ const PLANES: PlaneDefinition[] = [
     name: 'Plano sagital',
     sub: 'Derecha / Izquierda · Flexión/Extensión',
     eq: 'y = 0 (midsagital)',
-    color: '#6d5fbf', // Púrpura sagital
+    color: PLANE_COLORS.sagittal,
     width: 0.48,
     height: 0.95,
     pos: [0.005, 0.05, -0.006],
@@ -83,7 +84,7 @@ const PLANES: PlaneDefinition[] = [
     name: 'Plano coronal',
     sub: 'Anterior / Posterior · Abducción/Aducción',
     eq: 'x = 0 (frontal)',
-    color: '#0d6e64', // Verde teal coronal
+    color: PLANE_COLORS.coronal,
     width: 0.54,
     height: 0.95,
     pos: [0.005, 0.05, -0.006],
@@ -96,7 +97,7 @@ const PLANES: PlaneDefinition[] = [
     name: 'Plano transverso',
     sub: 'Superior / Inferior · Rotaciones',
     eq: 'z = 0 (horizontal)',
-    color: '#c0681e', // Ámbar transverso
+    color: PLANE_COLORS.transverse,
     width: 0.54,
     height: 0.48,
     pos: [0.005, 0.05, -0.006],

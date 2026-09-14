@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { fmt } from './format';
+import { SERIES_COLORS } from './colorTokens';
 
 interface StevensCanvasProps {
   n: number;
@@ -18,13 +19,13 @@ interface SensationInfo {
 }
 
 const SENSATIONS: Record<string, SensationInfo> = {
-  brillo: { id: 'brillo', name: 'Brillo visual', emoji: '💡', n: 0.33, color: '#eab308', unit: 'Lux (cd/m²)', desc: 'Compresión óptica retiniana' },
-  sonoridad: { id: 'sonoridad', name: 'Sonoridad (1 kHz)', emoji: '🔊', n: 0.54, color: '#0d8577', unit: 'Presión acústica (dB)', desc: 'Compresión logarítmica coclear' },
-  olor: { id: 'olor', name: 'Olor (Heptano)', emoji: '👃', n: 0.55, color: '#10b981', unit: 'Concentración (ppm)', desc: 'Saturación de quimiorreceptores' },
-  vibracion: { id: 'vibracion', name: 'Vibración táctil', emoji: '📳', n: 0.60, color: '#6366f1', unit: 'Amplitud 60 Hz (μm)', desc: 'Corpúsculos de Pacini/Meissner' },
-  presion: { id: 'presion', name: 'Presión palmar', emoji: '✋', n: 1.10, color: '#0d6e64', unit: 'Fuerza aplicada (N)', desc: 'Detección proporcional de agarre' },
-  pesadez: { id: 'pesadez', name: 'Pesadez (Levantar)', emoji: '🏋️', n: 1.45, color: '#d97706', unit: 'Masa levantada (kg)', desc: 'Fatiga neuromuscular progresiva' },
-  descarga: { id: 'descarga', name: 'Descarga eléctrica', emoji: '⚡', n: 3.50, color: '#b02318', unit: 'Corriente 60 Hz (mA)', desc: 'Alarma nociceptiva superlineal extrema' },
+  brillo: { id: 'brillo', name: 'Brillo visual', emoji: '💡', n: 0.33, color: SERIES_COLORS[0], unit: 'Lux (cd/m²)', desc: 'Compresión óptica retiniana' },
+  sonoridad: { id: 'sonoridad', name: 'Sonoridad (1 kHz)', emoji: '🔊', n: 0.54, color: SERIES_COLORS[1], unit: 'Presión acústica (dB)', desc: 'Compresión logarítmica coclear' },
+  olor: { id: 'olor', name: 'Olor (Heptano)', emoji: '👃', n: 0.55, color: SERIES_COLORS[2], unit: 'Concentración (ppm)', desc: 'Saturación de quimiorreceptores' },
+  vibracion: { id: 'vibracion', name: 'Vibración táctil', emoji: '📳', n: 0.60, color: SERIES_COLORS[3], unit: 'Amplitud 60 Hz (μm)', desc: 'Corpúsculos de Pacini/Meissner' },
+  presion: { id: 'presion', name: 'Presión palmar', emoji: '✋', n: 1.10, color: SERIES_COLORS[4], unit: 'Fuerza aplicada (N)', desc: 'Detección proporcional de agarre' },
+  pesadez: { id: 'pesadez', name: 'Pesadez (Levantar)', emoji: '🏋️', n: 1.45, color: SERIES_COLORS[5], unit: 'Masa levantada (kg)', desc: 'Fatiga neuromuscular progresiva' },
+  descarga: { id: 'descarga', name: 'Descarga eléctrica', emoji: '⚡', n: 3.50, color: SERIES_COLORS[6], unit: 'Corriente 60 Hz (mA)', desc: 'Alarma nociceptiva superlineal extrema' },
 };
 
 const SUPERSCRIPT: Record<string, string> = {

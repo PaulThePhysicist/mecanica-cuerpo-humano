@@ -33,7 +33,19 @@
   --coronal: #2d7d4f;
   --transverse: #b86a1e;
   --bone: #b6a67f;
-  
+
+  /* Escala categórica de series, para gráficas con varias curvas sin relación
+     jerárquica entre sí (p.ej. las 7 sensaciones de Stevens en cap1/D4).
+     Mismo L≈0,50 / C≈0,115 (OKLCH) que teal/sangre/ámbar, tono variable.
+     Debe coincidir con SERIES_COLORS en src/chapters/cap1/colorTokens.ts. */
+  --series-1: #347435;
+  --series-2: #017273;
+  --series-3: #1e67a1;
+  --series-4: #6c539b;
+  --series-5: #92446d;
+  --series-6: #98492a;
+  --series-7: #776104;
+
   --serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
   --sans: 'Karla', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --mono: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', monospace;

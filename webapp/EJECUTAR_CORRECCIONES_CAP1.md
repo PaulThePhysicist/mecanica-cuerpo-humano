@@ -1073,6 +1073,36 @@ Anota aquí lo que encuentres durante la ejecución y **no** corrijas en el tick
   `[data-stevens]` tampoco existía: se añadió de cero en esta sesión. Mismo patrón de código muerto
   que `PLANES` (`C1-01`), `calcBMI` (`C1-02`) y `drawAllometry`/`drawStevens` (`V2-04`). *(Detectado
   al diagnosticar `E3-02`.)*
+- **`nColor` (color según régimen n<1/≈1/n>1) está duplicado con valores que ya
+  divergieron entre sí:** `StevensCanvas.tsx` usa `n<0,95?'#d97706':(n>1,05?'#b02318':'#0d6e64')`
+  y `Slide15.tsx:115` usa `n<0,95?'#c0681e':(n>1,05?'#b02318':'#0d6e64')` — el caso
+  sublineal ya no coincide (`#d97706` vs `#c0681e`) aunque ambos pintan el mismo
+  estado para el mismo `n`. `S4-02` no lo tocó: Pasos solo pedía la serie
+  categórica de las 7 sensaciones y el checkbox, no este mapeo semántico
+  separado (ordinal, no categórico). Candidato a unificar con una constante
+  compartida (p. ej. en `colorTokens.ts`) en un ticket aparte. *(Detectado al
+  diagnosticar `S4-02`.)*
+- **El síntoma de `S4-02` decía «cinco curvas» en D4; el código tiene 7
+  `SENSATIONS`** (brillo, sonoridad, olor, vibración, presión, pesadez,
+  descarga). Se declaró `SERIES_COLORS` con 7 tonos (no 5) para cubrir las que
+  existen de verdad, asignados en el mismo orden que la tabla. *(Detectado al
+  diagnosticar `S4-02`.)*
+- **`Slide9.tsx` (C2) tenía su propia copia de los 9 colores de `C2_PARTS`**
+  (`SEGMENTS_DATA`, un punto de color por fila de la tabla de teoría) con los
+  mismos literales que `sims.ts`. No estaba en el «Dónde» del ticket, pero
+  dejarla sin tocar habría creado el mismo desajuste que `S4-02` busca
+  eliminar (el punto de la fila ya no habría coincidido con la barra). Se
+  corrigió con las mismas constantes de `colorTokens.ts` para que ambas
+  copias coincidan exactamente. *(Detectado al diagnosticar `S4-02`.)*
+- **`S4-02` no agotó todos los literales hex de `cap1/**`:** el grep de
+  literales sigue devolviendo ~24 archivos (p. ej. `BodyScene.tsx`,
+  `three/materials.ts`, `KinematicsCanvas.tsx`, `AllometryCanvas.tsx`,
+  `BoneScaleCanvas.tsx`, colores de `nColor` de arriba). Ninguno estaba en los
+  cuatro puntos de **Pasos** (planos, serie de D4, checkbox, barras de C2); la
+  mayoría son o código muerto ya anotado (`PLANES` de `BodyScene.tsx`,
+  `drawAllometry`/`drawStevens` de `sims.ts`) o corresponde a `S4-03` (coser
+  los tres lenguajes visuales, que explícitamente vuelve a tocar `--bone` y
+  los materiales de Three.js). *(Detectado al diagnosticar `S4-02`.)*
 - **`.data-mini tr{cursor:pointer}` en `legacy.css:454` es una regla ciega:** se aplica a *todas* las
   tablas con esa clase, incluidas las que no son interactivas (p. ej. «Masa de los órganos» en C3,
   `Slide10.tsx:212`), dando un cursor de mano falso sobre filas que no hacen nada al pulsarlas. No se
