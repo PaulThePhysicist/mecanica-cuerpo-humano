@@ -657,7 +657,7 @@ function Interactive3DNodes({
             {/* Rótulo sólo para el nódulo seleccionado o en hover: los 7 a la
                 vez saturaban el mapa. */}
             {(isSelected || isHovered) && (
-              <Html position={[0.08, 0, 0]} center={false} zIndexRange={[100, 0]}>
+              <Html position={[0.08, 0, 0]} center={false} zIndexRange={[100, 0]} occlude="blending">
                 <div
                   style={{
                     background: isSelected ? 'rgba(13, 110, 100, 0.96)' : 'rgba(255, 255, 255, 0.92)',

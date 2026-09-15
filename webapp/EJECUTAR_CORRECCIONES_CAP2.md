@@ -870,3 +870,20 @@ Cuando los doce tickets estén cerrados:
   articulación + vectores reales (mismo caso que ya documenta `AnatomyStage` `contextChildren`, citado
   en el propio código de cap1 como "V2-01, B3"). Se mantiene visible, solo fuera del cálculo de la
   caja envolvente. *(Detectado al ejecutar `V2-01`.)*
+- **La premisa de `V2-02` estaba desactualizada: E1 ya no tiene el problema que describe el ticket.**
+  El ticket auditaba "los rótulos de los músculos masticadores se montan entre sí" en E1 y recomendaba
+  "(1) mostrar solo el rótulo de la estructura activa" ahí. Verificado con grep: `JawCanvas.tsx` tiene
+  **0** `<Html>` propios — la migración al riel de leader-lines (ver memoria del proyecto,
+  "MIGRACIÓN DE RIEL DE CAP2 COMPLETA") ya reemplazó esos rótulos flotantes por `<Callout>` (va al
+  riel lateral, fuera del lienzo) + 2 `<DclTag>` bien separados. `BicepsCanvas.tsx:56` y
+  `LeverAnatomyCanvas.tsx:41`, citados también, resultaron ser spinners de carga ("Cargando
+  anatomía…"), no rótulos de estructura. El problema real (reproducido en vivo, rotando D2): dos
+  `DclTag` (`⚠ hernia` / `⚡ ciatalgia`) que se proyectan cerca en pantalla desde cierto ángulo y el
+  texto se mezcla. Aplicado solo el Paso 1 del ticket (`occlude="blending"` en `DclTag` —
+  `DclReadout.tsx` — y en los 2 `<Html>` sueltos de `BiomechSummaryCanvas`/`NewtonCanvas`, ambos ya
+  con `zIndexRange`): un tag detrás de la vértebra ahora desaparece en vez de flotar encima.
+  **No implementado** (confirmado con el usuario): el desapilado que evitaría que dos tags visibles
+  se solapen entre sí cuando sus puntos de anclaje 3D caen cerca en pantalla — el propio ticket pide
+  no construir ese algoritmo sin hablarlo. Sigue reproducible en D2 rotando ~180°; candidato a ticket
+  propio si se quiere resolver (separar a mano los anclajes de D2, o el patrón overlay que ya usa
+  `Callouts.tsx`). *(Detectado al ejecutar `V2-02`.)*

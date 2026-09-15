@@ -29,7 +29,7 @@ export function DclTag({
   const visible = useLabelsVisible();
   if (!visible) return null;
   return (
-    <Html position={position} center zIndexRange={[60, 0]} style={{ pointerEvents: 'none' }}>
+    <Html position={position} center zIndexRange={[60, 0]} occlude="blending" style={{ pointerEvents: 'none' }}>
       <span
         style={{
           display: 'inline-block',

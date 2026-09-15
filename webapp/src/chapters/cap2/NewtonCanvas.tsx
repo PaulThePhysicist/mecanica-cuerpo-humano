@@ -216,7 +216,7 @@ function GlenohumeralJointGLB({
           />
         </mesh>
         {showLabels && (
-          <Html position={[0.10, 0.09, 0.04]} center zIndexRange={[80, 0]}>
+          <Html position={[0.10, 0.09, 0.04]} center zIndexRange={[80, 0]} occlude="blending">
             <span
               style={{
                 background: 'rgba(255,255,255,0.92)',
@@ -522,7 +522,7 @@ function SceneContent({
         <>
           <Line points={dclRing} color="#7a8a99" lineWidth={1.2} dashed dashScale={26} dashSize={0.05} gapSize={0.04} transparent opacity={0.68} />
           {showLabels && (
-            <Html position={[0.48, 0.42, 0]} center zIndexRange={[70, 0]}>
+            <Html position={[0.48, 0.42, 0]} center zIndexRange={[70, 0]} occlude="blending">
               <span style={{ color: '#5d6b76', fontSize: '0.52rem', fontFamily: 'Karla, sans-serif', fontWeight: 700, whiteSpace: 'nowrap', pointerEvents: 'none', background: 'rgba(251,248,240,0.7)', padding: '1px 4px', borderRadius: 3 }}>
                 DCL · húmero aislado
               </span>
