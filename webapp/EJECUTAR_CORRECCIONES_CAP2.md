@@ -887,3 +887,22 @@ Cuando los doce tickets estén cerrados:
   no construir ese algoritmo sin hablarlo. Sigue reproducible en D2 rotando ~180°; candidato a ticket
   propio si se quiere resolver (separar a mano los anclajes de D2, o el patrón overlay que ya usa
   `Callouts.tsx`). *(Detectado al ejecutar `V2-02`.)*
+- **Ojo al leer el historial de cap1: hay un `V2-03` de cap1 que no es este ticket.** El commit
+  `25e6613 fix(cap1): V2-03 eliminar las colisiones de rótulos` construyó `AnchoredLabelOverlay`
+  en `cap1/three/Callouts.tsx` — un desapilador por empuje para rótulos de eje (`+z`, `Posterior/
+  Dorsal`…) que deben quedarse junto a su punto en vez de ir al riel. Coincidencia de numeración
+  entre los dos planes (cap1 y cap2 tienen su propio ticket "V2-03"), nada que ver con las masas
+  segmentarias de F1. Se evaluó usarlo aquí y se descartó: el Paso 1 del ticket de **cap2** pide
+  literalmente "sacar las cifras... a una columna alineada al margen con línea guía" — exactamente
+  lo que ya hace `<Callout>` + `<CalloutRail>` (el mismo mecanismo que este archivo ya usaba para
+  CG/margen) — así que no hacía falta el desapilador de `AnchoredLabelOverlay`, pensado para un
+  problema distinto (rótulos que NO deben moverse del punto). *(Detectado al ejecutar `V2-03`.)*
+- **El riel de F1 se recorta en el layout móvil de cap2 (≤820px de ancho) por falta de altura, no
+  por solape.** Verificado en vivo a 768×1000: con 9 letreros en el riel (7 masas + CG + margen),
+  la mayoría queda invisible (recortada, no superpuesta) porque `.sim-area` en cap2.css solo tiene
+  `min-height:200px` — **cap2 nunca recibió el fix `min-height:56vh` para el layout móvil que ya
+  tiene cap1** (memoria del proyecto, "Bug de layout en MÓVIL" del pase de cap1). A 1024×768 y
+  1440×900 los 9 letreros se leen completos y sin solape (verificado en vivo). Es un problema de
+  layout general de cap2 en móvil, no específico de F1 ni de este ticket — mismo síntoma afectaría
+  cualquier riel con varios letreros en cualquier escena 3D del capítulo. *(Detectado al verificar
+  `V2-03`.)*

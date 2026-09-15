@@ -193,12 +193,10 @@ function SegmentMassMarker3D({
   position,
   massPct,
   shortName,
-  labelOffset = [0, 0.045, 0] as [number, number, number],
 }: {
   position: [number, number, number];
   massPct: number;
   shortName: string;
-  labelOffset?: [number, number, number];
 }) {
   const r = 0.016 + Math.sqrt(massPct) * 0.038;
 
@@ -228,11 +226,9 @@ function SegmentMassMarker3D({
         <meshBasicMaterial color="#232c36" />
       </mesh>
 
-      <DclTag
-        position={[labelOffset[0], labelOffset[1], labelOffset[2]]}
-        color="#7c6a4e"
-        symbol={`${shortName} ${(massPct * 100).toFixed(0)}%`}
-      />
+      {/* Cifra → riel lateral (V2-03: en el centro se solapaban en los
+          segmentos cortos, antebrazo/manos y piernas). */}
+      <Callout position={[0, 0, 0]} label={shortName} sub={`${(massPct * 100).toFixed(0)}%`} color="#7c6a4e" />
     </group>
   );
 }
@@ -774,7 +770,6 @@ function DempsterSkeletonRig3D({
           position={seg.pos}
           massPct={seg.massPct}
           shortName={seg.shortName}
-          labelOffset={idx === 0 ? [0, 0.06, 0] : (idx === 4 ? [0, -0.05, 0] : [0, 0.045, 0])}
         />
       ))}
 
@@ -888,7 +883,7 @@ export default function BodySegmentsCanvas({
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
 
-      {/* Lectura CG · estabilidad → riel lateral con línea guía */}
+      {/* Masas segmentarias + lectura CG · estabilidad → riel lateral con línea guía */}
       <CalloutRail
         store={callouts}
         side="left"
