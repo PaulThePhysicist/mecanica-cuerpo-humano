@@ -47,7 +47,7 @@ body{
   font-family:var(--sans);color:var(--ink);background-color:var(--paper);
   background-image:linear-gradient(rgba(35,44,54,.028) 1px,transparent 1px);
   background-size:100% 44px;
-  overflow-y: auto; overflow-x: hidden;min-height: 100dvh;user-select:none;line-height:1.5;
+  overflow-y: auto; overflow-x: hidden;min-height: 100dvh;user-select: none;line-height: 1.5;
 }
 ::selection{background:rgba(13,110,100,.18)}
 :focus-visible{outline:2px solid var(--teal);outline-offset:2px}
