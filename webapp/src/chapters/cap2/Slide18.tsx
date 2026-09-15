@@ -106,17 +106,21 @@ export default function Slide18({
             </div>
             <div className="card-body">
               <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '.62rem' }}>
-                <span className="pill" style={{ borderLeft: '3px solid #0d8577' }}>
-                  <b>1. Estática Corpórea:</b> {'$\\Sigma \\vec{F} = 0$ y $\\Sigma \\vec{\\tau} = 0$ rigen todo el soporte postural.'}
+                <span className="pill has-marker">
+                  <span className="pill-dot" style={{ background: '#0d8577' }} />
+                  <span><b>1. Estática Corpórea:</b> {'$\\Sigma \\vec{F} = 0$ y $\\Sigma \\vec{\\tau} = 0$ rigen todo el soporte postural.'}</span>
                 </span>
-                <span className="pill" style={{ borderLeft: '3px solid #2563eb' }}>
-                  <b>2. Dominio de la 3ª Clase:</b> La mayoría de músculos sacrifican fuerza para maximizar la velocidad angular distal.
+                <span className="pill has-marker">
+                  <span className="pill-dot" style={{ background: '#2563eb' }} />
+                  <span><b>2. Dominio de la 3ª Clase:</b> La mayoría de músculos sacrifican fuerza para maximizar la velocidad angular distal.</span>
                 </span>
-                <span className="pill" style={{ borderLeft: '3px solid #b02318' }}>
-                  <b>3. Fuerzas Articulares Masivas:</b> {'La tensión muscular multiplica la compresión en cadera ($2{,}7\\times W$) y L5-S1 ($>3500\\text{ N}$).'}
+                <span className="pill has-marker">
+                  <span className="pill-dot" style={{ background: '#b02318' }} />
+                  <span><b>3. Fuerzas Articulares Masivas:</b> {'La tensión muscular multiplica la compresión en cadera ($2{,}7\\times W$) y L5-S1 ($>3500\\text{ N}$).'}</span>
                 </span>
-                <span className="pill" style={{ borderLeft: '3px solid #d97706' }}>
-                  <b>4. Alivio Terapéutico:</b> Bastón contralateral ($-50\\%$) y levantamiento con rodillas flexionadas.
+                <span className="pill has-marker">
+                  <span className="pill-dot" style={{ background: '#d97706' }} />
+                  <span><b>4. Alivio Terapéutico:</b> Bastón contralateral ($-50\\%$) y levantamiento con rodillas flexionadas.</span>
                 </span>
               </div>
             </div>

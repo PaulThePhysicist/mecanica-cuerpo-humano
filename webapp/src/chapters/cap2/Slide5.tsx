@@ -67,13 +67,13 @@ export default function Slide5({
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '.62rem', marginTop: '.25rem' }}>
                 <span className="pill">
-                  <b>1. Braquial anterior:</b> {'$d = 2{,}5\\text{ cm}$, $\\theta = 85^\\circ$. Músculo monoarticular profundo más potente (~45% del torque neto).'}
+                  <span><b>1. Braquial:</b> {'$d = 2{,}5\\text{ cm}$, $\\theta = 85^\\circ$. Músculo monoarticular profundo más potente (~45% del torque neto).'}</span>
                 </span>
                 <span className="pill">
-                  <b>2. Bíceps braquial:</b> {'$d = 4{,}0\\text{ cm}$, $\\theta = 80^\\circ$. Biarticular, potente supinador y flexor (~40% del torque neto).'}
+                  <span><b>2. Bíceps:</b> {'$d = 4{,}0\\text{ cm}$, $\\theta = 80^\\circ$. Biarticular, potente supinador y flexor (~40% del torque neto).'}</span>
                 </span>
                 <span className="pill">
-                  <b>3. Braquiorradial:</b> {'$d = 25{,}0\\text{ cm}$, $\\theta = 15^\\circ$. Brazo de palanca muy largo; estabilizador dinámico y shunt (~15% del torque).'}
+                  <span><b>3. Braquiorradial:</b> {'$d = 25{,}0\\text{ cm}$, $\\theta = 15^\\circ$. Brazo de palanca muy largo; estabilizador dinámico y shunt (~15% del torque).'}</span>
                 </span>
               </div>
             

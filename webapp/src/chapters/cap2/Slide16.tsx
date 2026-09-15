@@ -77,39 +77,43 @@ export default function Slide16({
               <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '.62rem', marginTop: '.25rem' }}>
                 <button
                   type="button"
-                  className="pill"
+                  className="pill has-marker"
                   aria-pressed={freqHz === PRESETS[0].freq && amplitudeUm === PRESETS[0].amp}
-                  style={{ borderLeft: '3px solid #2563eb', cursor: 'pointer' }}
+                  style={{ cursor: 'pointer' }}
                   onClick={() => handleApplyPreset(PRESETS[0])}
                 >
-                  <b>Corpúsculo de Pacini:</b> {'Valle de máxima agudeza de apenas $\\sim 0{,}08\\,\\mu\\text{m}$ ($80\\text{ nm}$) a $250\\text{ Hz}$.'}
+                  <span className="pill-dot" style={{ background: '#2563eb' }} />
+                  <span><b>Corpúsculo de Pacini:</b> {'Valle de máxima agudeza de apenas $\\sim 0{,}08\\,\\mu\\text{m}$ ($80\\text{ nm}$) a $250\\text{ Hz}$.'}</span>
                 </button>
                 <button
                   type="button"
-                  className="pill"
+                  className="pill has-marker"
                   aria-pressed={freqHz === PRESETS[1].freq && amplitudeUm === PRESETS[1].amp}
-                  style={{ borderLeft: '3px solid #0d8577', cursor: 'pointer' }}
+                  style={{ cursor: 'pointer' }}
                   onClick={() => handleApplyPreset(PRESETS[1])}
                 >
-                  <b>Corpúsculo de Meissner:</b> {'Óptimo de $\\sim 1{,}8\\,\\mu\\text{m}$ a $35\\text{ Hz}$ (sensación de aleteo).'}
+                  <span className="pill-dot" style={{ background: '#0d8577' }} />
+                  <span><b>Corpúsculo de Meissner:</b> {'Óptimo de $\\sim 1{,}8\\,\\mu\\text{m}$ a $35\\text{ Hz}$ (sensación de aleteo).'}</span>
                 </button>
                 <button
                   type="button"
-                  className="pill"
+                  className="pill has-marker"
                   aria-pressed={freqHz === PRESETS[2].freq && amplitudeUm === PRESETS[2].amp}
-                  style={{ borderLeft: '3px solid #b02318', cursor: 'pointer' }}
+                  style={{ cursor: 'pointer' }}
                   onClick={() => handleApplyPreset(PRESETS[2])}
                 >
-                  <b>Discos de Merkel:</b> {'Umbral de $\\sim 6{,}5\\,\\mu\\text{m}$ a frecuencias muy bajas ($< 5\\text{ Hz}$).'}
+                  <span className="pill-dot" style={{ background: '#b02318' }} />
+                  <span><b>Discos de Merkel:</b> {'Umbral de $\\sim 6{,}5\\,\\mu\\text{m}$ a frecuencias muy bajas ($< 5\\text{ Hz}$).'}</span>
                 </button>
                 <button
                   type="button"
-                  className="pill"
+                  className="pill has-marker"
                   aria-pressed={freqHz === 12 && amplitudeUm === 20}
-                  style={{ borderLeft: '3px solid #d97706', cursor: 'pointer' }}
+                  style={{ cursor: 'pointer' }}
                   onClick={() => { setFreqHz(12); setAmplitudeUm(20); }}
                 >
-                  <b>Terminación de Ruffini:</b> {'Sensible al estiramiento sostenido ($\\sim 20\\,\\mu\\text{m}$).'}
+                  <span className="pill-dot" style={{ background: '#d97706' }} />
+                  <span><b>Terminación de Ruffini:</b> {'Sensible al estiramiento sostenido ($\\sim 20\\,\\mu\\text{m}$).'}</span>
                 </button>
               </div>
             </div>

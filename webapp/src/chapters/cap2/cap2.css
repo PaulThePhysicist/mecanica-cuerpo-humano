@@ -206,6 +206,18 @@ body{
 }
 .theory .card .card-body .pill:active{transform:scale(.96)}
 .theory .card .card-body .pill b{color:var(--ink)}
+/* L3-02: variante con marcador de categoría. Antes el color vivía en un
+   border-left sobre el pill entero, así que su alto seguía el largo del
+   texto y las entradas de una misma lista no compartían alto ni línea
+   base. El marcador ahora es una celda de rejilla propia (tamaño fijo,
+   alineada arriba), independiente de cuántas líneas ocupe el texto. */
+.theory .card .card-body .pill.has-marker{
+  display:grid;grid-template-columns:8px 1fr;align-items:start;gap:.5rem;
+  min-height:2.3em;text-align:left;
+}
+.theory .card .card-body .pill.has-marker .pill-dot{
+  width:8px;height:8px;border-radius:2px;margin-top:.5em;flex-shrink:0;
+}
 .theory .card .card-body .highlight{color:var(--ink);font-weight:600}
 
 /* ─── ECUACIONES ─── */

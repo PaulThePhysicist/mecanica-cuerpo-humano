@@ -921,3 +921,22 @@ Cuando los doce tickets estén cerrados:
   `L3-01` sin tocar código y seguir con `L3-02`.** Sigue abierto — retomar cuando haya un criterio
   de iconografía definido; candidato real a ticket transversal (cap1 + cap2, ~326 emoji en total).
   *(Detectado al abrir `L3-01`.)*
+- **`L3-02`: B3 no tenía el problema que describe la auditoría (pastillas en fila horizontal sin
+  wrap) — tenía uno distinto, más sutil.** Las 3 entradas de "Los 3 flexores" (`Slide5.tsx`) ya
+  estaban apiladas en columna, sin overflow horizontal. El bug real: `.pill` es
+  `display:inline-flex` sin envolver su contenido en un solo hijo, así que cada fragmento de texto
+  entre llaves de JSX (la negrita, cada fórmula KaTeX `$d=...$`/`$\theta=...$`, la descripción) se
+  volvía un ítem flex independiente — y cada uno envolvía su propio texto por separado, produciendo
+  el patrón roto "d= / 2,5cm" en dos columnas falsas. Solo se manifestaba en las entradas con texto
+  suficiente para necesitar salto (Braquial, Braquiorradial); Bíceps, más corta, cabía en una línea
+  y por eso parecía normal — de ahí que el hallazgo pareciera "una pastilla distinta de las otras
+  dos". Arreglado envolviendo el contenido de cada `<span className="pill">` en un `<span>` hijo
+  único (mismo truco que en G2/H2, sin necesitar el marcador de color). Además, confirmado con el
+  usuario: las etiquetas se abrevian a "Braquial"/"Bíceps"/"Braquiorradial" (ya usadas así en el
+  panel de torque del mismo canvas). *(Detectado y corregido al ejecutar `L3-02`.)*
+- **`L3-02`: el patrón `.pill` + `borderLeft` como marcador de color también existe en G1 (`Slide15.tsx`)
+  y H1 (`Slide17.tsx`), fuera del alcance nombrado por el ticket (solo cita B3/G2/H2).** Mismo
+  defecto exacto (alto inconsistente, marcador que no se alinea) — 4 instancias cada uno, idéntica
+  paleta de 4 colores. No tocado a propósito (regla de alcance: "aplica solo lo que dice Pasos").
+  La clase nueva `.pill.has-marker` + `.pill-dot` ya está en `cap2.css`; aplicar el mismo cambio de
+  marcado a G1/H1 es mecánico si se abre un ticket para ello. *(Detectado al ejecutar `L3-02`.)*
