@@ -42,7 +42,10 @@ export function setup(ctx: CanvasRenderingContext2D, w: number, h: number): void
 }
 
 export function fmt(x: number, d: number = 1): string {
-  let s = Number(x).toFixed(d).replace(/\.?0+$/, '').replace('.', ',');
+  let s = Number(x).toFixed(d);
+  // Recortar ceros finales SOLO en la parte decimal, y la coma si queda sola.
+  if (s.includes('.')) s = s.replace(/0+$/, '').replace(/\.$/, '');
+  s = s.replace('.', ',');
   if (s === '' || s === '-') s = '0';
   return s;
 }
