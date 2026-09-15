@@ -906,3 +906,18 @@ Cuando los doce tickets estén cerrados:
   layout general de cap2 en móvil, no específico de F1 ni de este ticket — mismo síntoma afectaría
   cualquier riel con varios letreros en cualquier escena 3D del capítulo. *(Detectado al verificar
   `V2-03`.)*
+- **`L3-01` tiene una premisa falsa: cap1 nunca eliminó los emoji.** El ticket dice "el cap. 1 ya
+  eliminó esta práctica; la regla global 'sin emoji' viene de ahí" y pide reutilizar "el set de
+  glifos SVG monocromos que usa cap1". Un primer grep dio 0 emoji en cap1 — falso negativo por un
+  problema de locale de `grep -P` con rangos Unicode en este entorno (Bash lo reportó: "supports
+  only unibyte and UTF-8 locales"). Repetido con la herramienta de búsqueda correcta: **cap1 tiene
+  140 emoji en 26 archivos** (module tabs `🏠🧭🦾📐📈✓`, encabezados de tarjeta, etc.) — el mismo
+  patrón que cap2. No existe ningún vocabulario de glifos SVG en cap1 para copiar. Además, el
+  barrido de cap2 (`grep -rnP` del propio ticket) da **186 emoji en 39 de 53 archivos**, no las ~4
+  líneas que el ticket marca VERIFICADO — es la iconografía de todo el capítulo (module tabs,
+  encabezados de tarjetas de teoría, botones, chips clínicos), no un caso aislado en
+  `BiomechSummaryCanvas.tsx`. Presentado al usuario con tres opciones (alcance mínimo de las 4
+  líneas VERIFICADAS / vocabulario nuevo si el usuario lo define / posponer). **Decisión: pausar
+  `L3-01` sin tocar código y seguir con `L3-02`.** Sigue abierto — retomar cuando haya un criterio
+  de iconografía definido; candidato real a ticket transversal (cap1 + cap2, ~326 emoji en total).
+  *(Detectado al abrir `L3-01`.)*
