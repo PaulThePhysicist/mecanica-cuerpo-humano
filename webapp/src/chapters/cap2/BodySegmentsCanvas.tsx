@@ -14,6 +14,7 @@ import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
 import { STUDIO_BG_DEEP } from '../cap1/three/materials';
 import { StudioLights } from '../cap1/three/StudioLights';
+import { FitCameraResize as FitCamera } from './three/FitCameraResize';
 
 interface BodySegmentsCanvasProps {
   posture: 'standing' | 'arms_up' | 'bent_forward' | 'squat'; // Postura del cuerpo
@@ -855,11 +856,13 @@ export default function BodySegmentsCanvas({
         <StudioLights keyIntensity={1.6} />
 
         <Suspense fallback={null}>
-          <DempsterSkeletonRig3D
-            posture={posture}
-            bodyHeightCm={bodyHeightCm}
-            bodyMassKg={bodyMassKg}
-          />
+          <group name="fit-root">
+            <DempsterSkeletonRig3D
+              posture={posture}
+              bodyHeightCm={bodyHeightCm}
+              bodyMassKg={bodyMassKg}
+            />
+          </group>
         </Suspense>
 
         {/* Sombra de contacto */}
@@ -880,6 +883,8 @@ export default function BodySegmentsCanvas({
           maxDistance={4.5}
           target={[0, 0.10, 0]}
         />
+
+        <FitCamera padding={1.35} lookTarget={[0, 0.10, 0]} refit={posture} />
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
 

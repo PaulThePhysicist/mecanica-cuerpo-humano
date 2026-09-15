@@ -6,6 +6,7 @@ import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
 import { STUDIO_BG_DEEP } from '../cap1/three/materials';
 import { StudioLights } from '../cap1/three/StudioLights';
+import { FitCameraResize as FitCamera } from './three/FitCameraResize';
 import {
   Callout,
   CalloutProvider,
@@ -590,11 +591,13 @@ export default function SpineCanvas({
         <StudioLights keyIntensity={1.55} />
 
         <Suspense fallback={null}>
-          <LumbarSpine3D
-            trunkAngleDeg={trunkAngleDeg}
-            handLoadKg={handLoadKg}
-            bodyMassKg={bodyMassKg}
-          />
+          <group name="fit-root">
+            <LumbarSpine3D
+              trunkAngleDeg={trunkAngleDeg}
+              handLoadKg={handLoadKg}
+              bodyMassKg={bodyMassKg}
+            />
+          </group>
         </Suspense>
 
         <OrbitControls
@@ -608,6 +611,8 @@ export default function SpineCanvas({
           dampingFactor={0.08}
           target={[0, 0.4, 0]}
         />
+
+        <FitCamera padding={1.35} lookTarget={[0, 0.4, 0]} refit={trunkAngleDeg} />
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
 

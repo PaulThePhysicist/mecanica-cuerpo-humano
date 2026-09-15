@@ -275,6 +275,8 @@ export default function AnkleCanvas({
         maxDistance={7}
         grid={false}
         shadow={false}
+        fit
+        refit={betaDeg}
         overlay={
           <>
             <CalloutRail

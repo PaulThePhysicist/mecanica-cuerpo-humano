@@ -292,6 +292,8 @@ export default function KneeCanvas({
         maxDistance={7}
         grid={false}
         shadow={false}
+        fit
+        refit={betaDeg}
         overlay={
           <>
             <CalloutRail store={callouts} side="left" note={railNote} />

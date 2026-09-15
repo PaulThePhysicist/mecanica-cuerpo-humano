@@ -843,3 +843,30 @@ Cuando los doce tickets estén cerrados:
   correcto y es lo que pedía el ticket (y protege si `sims.ts` se revive), pero el "recorrido
   visual" de la Verificación de `N1-01` no puede mostrar ningún cambio: no hay cifra que cambie
   en las 21 diapositivas. *(Detectado al cerrar `N1-01`.)*
+- **`FitCamera` (cap1) no reencuadra al redimensionar el `<Canvas>`.** Su `useEffect` depende de
+  `[refit, targetName, padding, camera, scene, controls]`, ninguno de los cuales cambia cuando el
+  contenedor cambia de tamaño (r3f solo actualiza `camera.aspect` internamente). Verificado en vivo:
+  redimensionar de 800px a 1024px sin ningún cambio de `refit` deja el encuadre calculado para el
+  aspecto anterior — el sujeto se veía más pequeño y descentrado tras el resize. Es un límite del
+  componente compartido, no de cap2. **Workaround dentro de cap2** (no toca cap1): nuevo
+  `cap2/three/FitCameraResize.tsx`, un wrapper que lee `useThree(s => s.size)` y lo añade al `refit`
+  que le pasa a `FitCamera`, forzando el recálculo en cada resize. Los 13 canvas de `<Canvas>` crudo
+  de V2-01 lo usan (import aliased `FitCameraResize as FitCamera`); Knee/Ankle (que llegan a
+  `FitCamera` a través de `AnatomyStage`, cap1) **siguen con el hueco**: no hay forma de aplicar el
+  mismo parche sin tocar `AnatomyStage.tsx`. Cualquier escena de **cap1** que use `fit` en
+  `AnatomyStage` probablemente tiene el mismo hueco — no se verificó, pero el mecanismo es idéntico.
+  Ticket propio si se quiere cerrar también ahí: mover el `useThree(size)` dentro de `AnatomyStage`
+  mismo, o exponer un prop `refit` ya compuesto con el tamaño. *(Detectado al verificar `V2-01`.)*
+- **`BiomechSummaryCanvas` (H2) excluido de `V2-01` a propósito.** Su cámara no usa un único encuadre
+  estático: `CameraRig` (local al archivo) hace `camera.position.lerp(...)` en un `useFrame`
+  **continuo**, con un `targetPos`/`targetLook` propio por nodo articular (`NODES_DATA[node].camPos`)
+  más un modo "overview" para el esqueleto completo. Montar `FitCamera` ahí competiría por escribir
+  `camera.position` cada frame contra ese lerp — exactamente el conflicto que el ticket pide evitar
+  (Pasos, paso 6). Encuadrar cada uno de los 7 nodos + overview de forma responsiva exigiría rehacer
+  `CameraRig` para que sea consciente del bbox real, un ticket propio (bastante más grande que
+  "quitar camera.position y montar FitCamera"). *(Detectado al ejecutar `V2-01`.)*
+- **`NewtonCanvas` (A1): el anillo del DCL (`dclRing`) se sacó de `fit-root`.** Es una referencia de
+  radio fijo (0.5u), no anatomía — de contarlo, habría alejado la cámara más de lo necesario para la
+  articulación + vectores reales (mismo caso que ya documenta `AnatomyStage` `contextChildren`, citado
+  en el propio código de cap1 como "V2-01, B3"). Se mantiene visible, solo fuera del cálculo de la
+  caja envolvente. *(Detectado al ejecutar `V2-01`.)*

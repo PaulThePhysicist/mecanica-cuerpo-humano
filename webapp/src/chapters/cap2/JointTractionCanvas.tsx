@@ -14,6 +14,7 @@ import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
 import { STUDIO_BG_DEEP } from '../cap1/three/materials';
 import { StudioLights } from '../cap1/three/StudioLights';
+import { FitCameraResize as FitCamera } from './three/FitCameraResize';
 
 interface JointTractionCanvasProps {
   tractionKg: number;    // Masa de tracción en kg (1 a 15 kg)
@@ -781,7 +782,9 @@ export default function JointTractionCanvas({
         <StudioLights keyIntensity={1.55} />
 
         <Suspense fallback={null}>
-          <CervicalSpineRig3D tractionKg={tractionKg} angleDeg={angleDeg} />
+          <group name="fit-root">
+            <CervicalSpineRig3D tractionKg={tractionKg} angleDeg={angleDeg} />
+          </group>
         </Suspense>
 
         {/* Sombra de contacto suave en el suelo */}
@@ -802,6 +805,8 @@ export default function JointTractionCanvas({
           maxDistance={3.5}
           target={[0, 0.22, 0.05]}
         />
+
+        <FitCamera padding={1.35} lookTarget={[0, 0.22, 0.05]} refit={angleDeg} />
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
 

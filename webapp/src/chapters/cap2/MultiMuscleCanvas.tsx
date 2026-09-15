@@ -6,6 +6,7 @@ import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
 import { STUDIO_BG_DEEP } from '../cap1/three/materials';
 import { StudioLights } from '../cap1/three/StudioLights';
+import { FitCameraResize as FitCamera } from './three/FitCameraResize';
 import {
   Callout,
   CalloutProvider,
@@ -543,10 +544,12 @@ export default function MultiMuscleCanvas({
         <gridHelper args={[6, 12, '#bdb199', '#d3c9b4']} position={[0, -1.2, 0]} />
 
         <Suspense fallback={null}>
-          <MultiMuscleScene
-            handLoadKg={handLoadKg}
-            activeMuscleCount={activeMuscleCount}
-          />
+          <group name="fit-root">
+            <MultiMuscleScene
+              handLoadKg={handLoadKg}
+              activeMuscleCount={activeMuscleCount}
+            />
+          </group>
 
           <ContactShadows
             position={[0, -1.19, 0]}
@@ -568,6 +571,7 @@ export default function MultiMuscleCanvas({
           maxDistance={5.0}
           target={[0, 0, 0]}
         />
+        <FitCamera padding={1.35} lookTarget={[0, 0, 0]} refit={`${cameraView}:${activeMuscleCount}`} />
         <CalloutSource />
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />

@@ -7,6 +7,7 @@ import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
 import { STUDIO_BG_DEEP } from '../cap1/three/materials';
 import { StudioLights } from '../cap1/three/StudioLights';
+import { FitCameraResize as FitCamera } from './three/FitCameraResize';
 import {
   Callout,
   CalloutProvider,
@@ -215,7 +216,9 @@ export default function LeverAnatomyCanvas({
         <StudioLights keyIntensity={1.5} />
         <gridHelper args={[2.8, 14, '#bdb199', '#d3c9b4']} position={[0, -0.48, 0]} />
         <Suspense fallback={<LeverLoading />}>
-          <AnatomyRegion leverClass={leverClass} />
+          <group name="fit-root">
+            <AnatomyRegion leverClass={leverClass} />
+          </group>
         </Suspense>
         <Cap2ZoomHandler
           initialPosition={leverClass === 3 ? [1.15, 0.30, 1.90] : (leverClass === 2 ? [1.15, 0.28, 2.05] : [0.95, 0.28, 1.95])}
@@ -224,6 +227,7 @@ export default function LeverAnatomyCanvas({
           maxDistance={3.2}
         />
         <OrbitControls ref={controlsRef} enableDamping dampingFactor={0.08} minDistance={0.55} maxDistance={3.2} target={[0, 0.12, 0]} />
+        <FitCamera padding={1.35} lookTarget={[0, 0.12, 0]} refit={leverClass} />
         <CalloutSource />
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />

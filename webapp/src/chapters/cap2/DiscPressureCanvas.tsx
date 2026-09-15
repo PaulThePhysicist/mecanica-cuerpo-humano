@@ -6,6 +6,7 @@ import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
 import { STUDIO_BG_DEEP } from '../cap1/three/materials';
 import { StudioLights } from '../cap1/three/StudioLights';
+import { FitCameraResize as FitCamera } from './three/FitCameraResize';
 import { DclTag } from './DclReadout';
 import {
   Callout,
@@ -660,10 +661,12 @@ export default function DiscPressureCanvas({
         <StudioLights keyIntensity={1.6} />
 
         <Suspense fallback={null}>
-          <SpinalFunctionalUnit3D
-            posture={posture}
-            loadKg={loadKg}
-          />
+          <group name="fit-root">
+            <SpinalFunctionalUnit3D
+              posture={posture}
+              loadKg={loadKg}
+            />
+          </group>
         </Suspense>
 
         <OrbitControls
@@ -676,6 +679,8 @@ export default function DiscPressureCanvas({
           maxPolarAngle={Math.PI / 2 + 0.12}
           dampingFactor={0.08}
         />
+
+        <FitCamera padding={1.35} lookTarget={[0, 0, 0]} refit={posture} />
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
 

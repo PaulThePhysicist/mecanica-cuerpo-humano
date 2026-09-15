@@ -5,6 +5,7 @@ import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import Cap2ZoomHandler from './Cap2ZoomHandler';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
+import { FitCameraResize as FitCamera } from './three/FitCameraResize';
 import {
   Callout,
   CalloutProvider,
@@ -458,8 +459,15 @@ function SceneContent({
         color="#241d12"
       />
 
+      <FitCamera padding={1.35} lookTarget={[0, 0, 0]} refit={`${armAbductionDeg}:${showPolygon}:${autoEquilibrium}:${showAnatomy}`} />
+
       {/* Grupo de encuadre: centra articulación + brazo + vectores en el cuadro. */}
       <group position={[-0.14, -0.12, 0]}>
+      {/* fit-root: solo lo que debe contar para el auto-encuadre. La frontera
+          del DCL queda fuera (más abajo) porque es una referencia — un anillo
+          de radio fijo mayor que la anatomía la empequeñecería (mismo caso que
+          documenta AnatomyStage `contextChildren`). */}
+      <group name="fit-root">
       <group scale={S} position={[0, 0, 0]}>
         <GlenohumeralJointGLB
           armAngle={armAngle}
@@ -467,20 +475,6 @@ function SceneContent({
           showAnatomy={showAnatomy}
         />
       </group>
-
-      {/* ── Frontera del DCL (sólo en la vista anclada) ── */}
-      {!showPolygon && (
-        <>
-          <Line points={dclRing} color="#7a8a99" lineWidth={1.2} dashed dashScale={26} dashSize={0.05} gapSize={0.04} transparent opacity={0.68} />
-          {showLabels && (
-            <Html position={[0.48, 0.42, 0]} center zIndexRange={[70, 0]}>
-              <span style={{ color: '#5d6b76', fontSize: '0.52rem', fontFamily: 'Karla, sans-serif', fontWeight: 700, whiteSpace: 'nowrap', pointerEvents: 'none', background: 'rgba(251,248,240,0.7)', padding: '1px 4px', borderRadius: 3 }}>
-                DCL · húmero aislado
-              </span>
-            </Html>
-          )}
-        </>
-      )}
 
       {showPolygon ? (
         <>
@@ -518,6 +512,21 @@ function SceneContent({
           {/* ΣF ≠ 0 · el segmento acelera / se subluxa */}
           {!autoEquilibrium && fNet > 1 && (
             <ForceVector3D origin={headW} vector={Fnetvec} color={cR} label={lR} sub={sR} emphasis="strong" isDashed dim={dimR} />
+          )}
+        </>
+      )}
+      </group>
+
+      {/* ── Frontera del DCL (sólo en la vista anclada) — fuera de fit-root ── */}
+      {!showPolygon && (
+        <>
+          <Line points={dclRing} color="#7a8a99" lineWidth={1.2} dashed dashScale={26} dashSize={0.05} gapSize={0.04} transparent opacity={0.68} />
+          {showLabels && (
+            <Html position={[0.48, 0.42, 0]} center zIndexRange={[70, 0]}>
+              <span style={{ color: '#5d6b76', fontSize: '0.52rem', fontFamily: 'Karla, sans-serif', fontWeight: 700, whiteSpace: 'nowrap', pointerEvents: 'none', background: 'rgba(251,248,240,0.7)', padding: '1px 4px', borderRadius: 3 }}>
+                DCL · húmero aislado
+              </span>
+            </Html>
           )}
         </>
       )}

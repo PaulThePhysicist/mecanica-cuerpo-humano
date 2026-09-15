@@ -6,6 +6,7 @@ import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
 import { STUDIO_BG_DEEP } from '../cap1/three/materials';
 import { StudioLights } from '../cap1/three/StudioLights';
+import { FitCameraResize as FitCamera } from './three/FitCameraResize';
 import {
   Callout,
   CalloutProvider,
@@ -653,11 +654,13 @@ export default function CaneCanvas({
         <StudioLights keyIntensity={1.55} />
 
         <Suspense fallback={null}>
-          <CaneScene3D
-            caneHand={caneHand}
-            caneForceKg={caneForceKg}
-            bodyMassKg={bodyMassKg}
-          />
+          <group name="fit-root">
+            <CaneScene3D
+              caneHand={caneHand}
+              caneForceKg={caneForceKg}
+              bodyMassKg={bodyMassKg}
+            />
+          </group>
         </Suspense>
 
         <OrbitControls
@@ -670,6 +673,8 @@ export default function CaneCanvas({
           maxPolarAngle={Math.PI / 2 + 0.15}
           dampingFactor={0.08}
         />
+
+        <FitCamera padding={1.35} lookTarget={[0, 0, 0]} refit={caneHand} />
 
         {/* Proyecta cada <Callout> de la escena a píxeles para el riel lateral. */}
         <CalloutSource />

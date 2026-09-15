@@ -4,6 +4,7 @@ import { OrbitControls, ContactShadows, Line, useGLTF } from '@react-three/drei'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
+import { FitCameraResize as FitCamera } from './three/FitCameraResize';
 import { DclTag } from './DclReadout';
 import {
   Callout,
@@ -866,7 +867,7 @@ export default function ForcePlateCanvas({
         <directionalLight position={[0, -2, 2]} intensity={0.2} color="#e0f2fe" />
 
         <Suspense fallback={null}>
-          <group position={[0, 0, 0]}>
+          <group name="fit-root" position={[0, 0, 0]}>
             {/* 1. Plataforma Dinamométrica de Fuerza con Sensores Piezoeléctricos */}
             <ForcePlatform3D />
 
@@ -891,6 +892,7 @@ export default function ForcePlateCanvas({
           />
         </Suspense>
 
+        <FitCamera padding={1.35} lookTarget={[0, 0.35, 0]} refit={`${gaitPhase}:${viewPreset}`} />
       </Canvas>
       <SceneControlPad controlsRef={controlsRef} />
 

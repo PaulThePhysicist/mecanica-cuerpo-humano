@@ -7,6 +7,7 @@ import Cap2ZoomHandler from './Cap2ZoomHandler';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
 import { STUDIO_BG_DEEP } from '../cap1/three/materials';
 import { StudioLights } from '../cap1/three/StudioLights';
+import { FitCameraResize as FitCamera } from './three/FitCameraResize';
 import {
   Callout,
   CalloutProvider,
@@ -318,11 +319,13 @@ export default function BicepsCanvas({
         <gridHelper args={[6, 12, '#bdb199', '#d3c9b4']} position={[0, -1.2, 0]} />
 
         <Suspense fallback={<BicepsLoading />}>
-          <RealArmBicepsScene
-            handLoadKg={handLoadKg}
-            insertCm={insertCm}
-            elbowAngleDeg={elbowAngleDeg}
-          />
+          <group name="fit-root">
+            <RealArmBicepsScene
+              handLoadKg={handLoadKg}
+              insertCm={insertCm}
+              elbowAngleDeg={elbowAngleDeg}
+            />
+          </group>
 
           <ContactShadows
             position={[0, -1.19, 0]}
@@ -333,6 +336,7 @@ export default function BicepsCanvas({
             color="#241d12"
           />
         </Suspense>
+        <FitCamera padding={1.35} lookTarget={cameraTarget} refit={elbowAngleDeg} />
 
         <OrbitControls
           ref={controlsRef}
