@@ -188,7 +188,13 @@ function usePlantarHeatmapTexture(gaitPhase: string) {
     canvas.width = size;
     canvas.height = size;
     const ctx = canvas.getContext('2d');
-    if (!ctx) return new THREE.CanvasTexture(canvas);
+    if (!ctx) {
+      // E5-02: sin contexto 2D no hay mapa de calor que generar; la textura en
+      // blanco ya es benigna aquí (overlay aditivo transparente sobre la
+      // plataforma, no la escena completa), pero el fallo debe quedar en consola.
+      console.error('[ForcePlateCanvas] usePlantarHeatmapTexture: no se pudo obtener el contexto 2D.');
+      return new THREE.CanvasTexture(canvas);
+    }
 
     ctx.clearRect(0, 0, size, size);
 

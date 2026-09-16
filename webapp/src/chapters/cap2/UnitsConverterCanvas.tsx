@@ -1,5 +1,6 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { readCap2Tokens, tokenRgba } from './designTokens';
+import CanvasReserveState from './CanvasReserveState';
 
 interface UnitsConverterCanvasProps {
   quantityType: 'force' | 'torque' | 'pressure';
@@ -45,6 +46,7 @@ export default function UnitsConverterCanvas({
   const rafRef = useRef<number | null>(null);
   const animTimeRef = useRef<number>(0);
   const hoveredBenchRef = useRef<number | null>(null);
+  const [ctxUnavailable, setCtxUnavailable] = useState(false);
 
   const curRefs = REFERENCES[quantityType] || REFERENCES.force;
 
@@ -115,7 +117,11 @@ export default function UnitsConverterCanvas({
       }
 
       const ctx = canvas.getContext('2d');
-      if (!ctx) return;
+      if (!ctx) {
+        console.error('[UnitsConverterCanvas] No se pudo obtener el contexto 2D del lienzo.');
+        setCtxUnavailable(true);
+        return;
+      }
 
       // S4-01: tokens de :root leídos una vez por pasada de dibujo (no por trazo).
       const T = readCap2Tokens();
@@ -198,6 +204,11 @@ export default function UnitsConverterCanvas({
         ctx.fillStyle = isPrimary ? tokenRgba(T.teal, 0.09) : 'rgba(255, 255, 255, 0.94)';
         ctx.shadowColor = tokenRgba(T.ink, 0.07);
         ctx.shadowBlur = 6;
+        // E5-02: sin beginPath() el path de cada fila se acumulaba sobre el de
+        // las anteriores -- el fill()/stroke() de una fila repintaba también
+        // todas las filas previas, borrando su texto (solo la última fila,
+        // sin ninguna repintada encima, quedaba visible).
+        ctx.beginPath();
         ctx.roundRect(tableX, iy, tableW, itemH, 6);
         ctx.fill();
         ctx.shadowBlur = 0;
@@ -428,11 +439,19 @@ export default function UnitsConverterCanvas({
       canvas.removeEventListener('pointermove', handlePointerMove);
       canvas.removeEventListener('pointerdown', handlePointerDown);
     };
-  }, [quantityType, inputValue, onSelectBenchmark]);
+    // E5-02: `onSelectBenchmark` fuera de las deps a propósito -- es un
+    // callback estable en la práctica (Slide17 solo hace setState) y
+    // reconstruir el loop de rAF cada vez que el padre le pasa una identidad
+    // nueva le impedía completar un solo frame: el efecto se desmontaba antes
+    // de que el rAF ya agendado llegara a dispararse, dejando el lienzo
+    // congelado en el tamaño por defecto de <canvas> (300×150) para siempre.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quantityType, inputValue]);
 
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative' }}>
       <canvas ref={canvasRef} style={{ width: '100%', height: '100%', display: 'block' }} />
+      {ctxUnavailable && <CanvasReserveState label="UnitsConverterCanvas" />}
     </div>
   );
 }

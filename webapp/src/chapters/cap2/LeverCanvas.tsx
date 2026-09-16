@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { readCap2Tokens, tokenRgba } from './designTokens';
+import CanvasReserveState from './CanvasReserveState';
 
 interface LeverCanvasProps {
   leverClass: 1 | 2 | 3; // Clase 1, 2 o 3
@@ -57,6 +58,7 @@ export default function LeverCanvas({
   const animTimeRef = useRef<number>(0);
   const [viewMode, setViewMode] = useState<'both' | 'anatomy' | 'beam'>('both');
   const [showVmPanel, setShowVmPanel] = useState(true);
+  const [ctxUnavailable, setCtxUnavailable] = useState(false);
 
   const curData = LEVER_DATA[leverClass] || LEVER_DATA[3];
 
@@ -89,7 +91,13 @@ export default function LeverCanvas({
       }
 
       const ctx = canvas.getContext('2d');
-      if (!ctx) return;
+      if (!ctx) {
+        // E5-02: sin contexto 2D no hay forma de pintar nada en el canvas
+        // mismo -- el aviso vive en consola y en el overlay del DOM.
+        console.error('[LeverCanvas] No se pudo obtener el contexto 2D del lienzo.');
+        setCtxUnavailable(true);
+        return;
+      }
 
       // S4-01: tokens de :root leídos una vez por pasada de dibujo. El color de
       // la clase 1 (LEVER_DATA) coincidía por casualidad con --teal; se lee de
@@ -829,6 +837,7 @@ export default function LeverCanvas({
   return (
     <div className="cap2-raster-canvas" style={{ width: '100%', height: '100%', position: 'relative' }}>
       <canvas ref={canvasRef} style={{ width: '100%', height: '100%', display: 'block' }} />
+      {ctxUnavailable && <CanvasReserveState label="LeverCanvas" />}
 
       <button
         type="button"

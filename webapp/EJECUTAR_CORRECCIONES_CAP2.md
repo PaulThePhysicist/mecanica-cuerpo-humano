@@ -1026,3 +1026,51 @@ Cuando los doce tickets estén cerrados:
   viewports 1024/768 y revertido después de capturar; no se commiteó ese cambio): 84 capturas de
   las 21 diapositivas × 4 anchos, sin errores de consola. *(Detectado y corregido al ejecutar
   `S4-03`.)*
+- **`E5-02`: la premisa de que `ForcePlateCanvas` explica "el vacío de H1" es geométricamente
+  imposible.** `ForcePlateCanvas` se usa en F2 (`Slide14.tsx`); H1 (`Slide17.tsx`) usa
+  `UnitsConverterCanvas` — son dos slides y dos componentes distintos, sin relación de import entre
+  ellos. Aun así, Paso 1/2 (registrar en consola + estado de reserva en cada guarda `if (!ctx)
+  return`) se aplicó tal cual a los 6 sitios reales del capítulo: `LeverCanvas`,
+  `MechanoreceptorsCanvas`, `TactileThresholdCanvas`, `TorqueCanvas` y `UnitsConverterCanvas` (los 5
+  lienzos 2D con bucle rAF continuo) ganaron `console.error` + `<CanvasReserveState>` (nuevo,
+  `cap2/CanvasReserveState.tsx`: retícula + leyenda con tokens, superpuesta en el DOM porque un
+  contexto nulo no puede pintarse a sí mismo). `ForcePlateCanvas.tsx:191` (`usePlantarHeatmapTexture`,
+  la cita real del ticket) es distinto: genera una textura de calor para un material 3D en un canvas
+  offscreen, no un `<canvas>` montado — solo se le añadió el `console.error`, sin estado de reserva
+  visual (no hay overlay DOM que superponer a una textura).
+  **Paso 3, diagnóstico en ejecución de H1: los avisos nuevos nunca saltaron** (ninguna guarda de
+  `!ctx` falla nunca) — pero el vacío SÍ era real y SÍ reproducía, con una causa completamente
+  distinta a cualquier guarda de contexto. Encontradas y corregidas dos causas independientes en
+  `UnitsConverterCanvas.tsx`:
+  1. **La real, la que explica el síntoma:** el bucle `unitsTable.forEach` (línea ~200) llamaba
+     `ctx.roundRect(...)` en cada fila **sin `ctx.beginPath()` antes**. El path de canvas no se
+     resetea solo — cada fila iba *acumulando* el rectángulo de las filas anteriores en el mismo
+     path, así que el `ctx.fill()`/`ctx.stroke()` de la fila N repintaba también las filas 0..N-1
+     con el color de fondo de la fila N (blanco/case casi blanco), borrando su texto ya dibujado.
+     Solo la última fila —sin ninguna repintada por encima— quedaba visible; con 4 filas
+     (Newtons/kgf/lbf/dyn) las 3 primeras se leían en blanco, con 3 filas (torque) las 2 primeras.
+     Fix: un `ctx.beginPath()` antes de cada `roundRect()` del loop. El mismo patrón (roundRect sin
+     beginPath) existe también en el cuadro del dial (línea ~347) y en la caja de "BENCHMARKS
+     FISIOLÓGICOS" (línea ~373) del mismo archivo, pero ahí es inofensivo por ahora — coincide que
+     todos esos rects comparten un fill blanco/casi blanco, así que acumularse no borra nada visible
+     todavía; **no corregido** (no hay defecto que arreglar), solo anotado por si algún día uno de
+     esos fills cambia de color.
+  2. **Independiente, hallada en el camino:** el efecto de dibujo tenía `onSelectBenchmark` en su
+     array de dependencias, y `Slide17.tsx` pasa `handleSelectBenchmark` sin `useCallback` (una
+     función nueva en cada render). Cada vez que un ancestro de Slide17 se re-renderizaba, el efecto
+     se desmontaba y volvía a montar — cancelando el `requestAnimationFrame` recién agendado antes de
+     que llegara a dispararse. Se confirmó en vivo instrumentando `render()`: varias reconstrucciones
+     seguidas justo después de navegar a H1. Fix: sacar `onSelectBenchmark` del array de deps (mismo
+     patrón ya usado por `TorqueCanvas`/`LeverCanvas` en su efecto principal, que no incluyen su
+     callback de interacción).
+  **Nota metodológica:** verificar esto en vivo fue inusualmente difícil porque, con el panel del
+  navegador oculto (no enfocado en pantalla), Chromium suspende `requestAnimationFrame` por
+  completo — confirmado con un `requestAnimationFrame` completamente aislado que nunca disparó en
+  500 ms — y solo una captura de pantalla fuerza un tick de pintado real. Eso producía lecturas
+  contradictorias (`canvas.width` congelado en el 300×150 por defecto hasta la primera captura;
+  después, coherente). La verificación final se hizo con `getImageData` inmediatamente después de
+  forzar una captura, no confiando en la imagen de la captura para el detalle fino (mismo espejismo
+  de inspección visual reducida que ya documentan `S4-01`/`S4-03`).
+  De paso, se subió el color de texto de `CanvasReserveState` de `--ink-3` a `--ink-2` (más
+  contraste sobre `--paper-2`) tras verificar el estado de reserva en vivo forzando `ctx = null`
+  temporalmente en `TorqueCanvas` (revertido). *(Detectado y corregido al ejecutar `E5-02`.)*

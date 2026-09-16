@@ -1,5 +1,6 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { readCap2Tokens, tokenRgba } from './designTokens';
+import CanvasReserveState from './CanvasReserveState';
 
 interface TactileThresholdCanvasProps {
   freqHz: number; // Frecuencia del estímulo en Hz (1 a 500 Hz)
@@ -17,6 +18,7 @@ export default function TactileThresholdCanvas({
   const animTimeRef = useRef<number>(0);
   const isDraggingRef = useRef<boolean>(false);
   const isHoveringPlotRef = useRef<boolean>(false);
+  const [ctxUnavailable, setCtxUnavailable] = useState(false);
 
   // Modelos analíticos de umbrales psicofísicos (en µm)
   const calcPaciniThreshold = (f: number) => {
@@ -131,7 +133,11 @@ export default function TactileThresholdCanvas({
       }
 
       const ctx = canvas.getContext('2d');
-      if (!ctx) return;
+      if (!ctx) {
+        console.error('[TactileThresholdCanvas] No se pudo obtener el contexto 2D del lienzo.');
+        setCtxUnavailable(true);
+        return;
+      }
 
       // S4-01: tokens de :root leídos una vez por pasada de dibujo (no por trazo).
       const T = readCap2Tokens();
@@ -616,6 +622,7 @@ export default function TactileThresholdCanvas({
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative', cursor: 'grab', touchAction: 'none' }}>
       <canvas ref={canvasRef} style={{ width: '100%', height: '100%', display: 'block' }} />
+      {ctxUnavailable && <CanvasReserveState label="TactileThresholdCanvas" />}
     </div>
   );
 }

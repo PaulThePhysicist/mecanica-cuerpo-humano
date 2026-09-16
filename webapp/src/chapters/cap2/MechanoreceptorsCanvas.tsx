@@ -1,5 +1,6 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { readCap2Tokens, tokenRgba } from './designTokens';
+import CanvasReserveState from './CanvasReserveState';
 
 interface MechanoreceptorsCanvasProps {
   selectedReceptor: 'meissner' | 'pacini' | 'merkel' | 'ruffini';
@@ -97,6 +98,7 @@ export default function MechanoreceptorsCanvas({
   const rafRef = useRef<number | null>(null);
   const animTimeRef = useRef<number>(0);
   const hoveredRecRef = useRef<string | null>(null);
+  const [ctxUnavailable, setCtxUnavailable] = useState(false);
 
   const curRec = RECEPTORS[selectedReceptor] || RECEPTORS.meissner;
 
@@ -186,7 +188,11 @@ export default function MechanoreceptorsCanvas({
       }
 
       const ctx = canvas.getContext('2d');
-      if (!ctx) return;
+      if (!ctx) {
+        console.error('[MechanoreceptorsCanvas] No se pudo obtener el contexto 2D del lienzo.');
+        setCtxUnavailable(true);
+        return;
+      }
 
       // S4-01: tokens de :root leídos una vez por pasada de dibujo (no por trazo).
       const T = readCap2Tokens();
@@ -962,6 +968,7 @@ export default function MechanoreceptorsCanvas({
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative' }}>
       <canvas ref={canvasRef} style={{ width: '100%', height: '100%', display: 'block' }} />
+      {ctxUnavailable && <CanvasReserveState label="MechanoreceptorsCanvas" />}
     </div>
   );
 }

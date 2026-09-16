@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { readCap2Tokens, tokenRgba } from './designTokens';
+import CanvasReserveState from './CanvasReserveState';
 
 interface LabelChipOpts {
   align?: 'left' | 'center' | 'right';
@@ -95,6 +96,7 @@ export default function TorqueCanvas({
   const animTimeRef = useRef<number>(0);
   const [isDraggingForce, setIsDraggingForce] = useState<boolean>(false);
   const [isHoveredForce, setIsHoveredForce] = useState<boolean>(false);
+  const [ctxUnavailable, setCtxUnavailable] = useState<boolean>(false);
 
   // Cálculos reactivos de torque y componentes
   const rM = rCm / 100;
@@ -217,7 +219,11 @@ export default function TorqueCanvas({
       }
 
       const ctx = canvas.getContext('2d');
-      if (!ctx) return;
+      if (!ctx) {
+        console.error('[TorqueCanvas] No se pudo obtener el contexto 2D del lienzo.');
+        setCtxUnavailable(true);
+        return;
+      }
 
       // S4-01: tokens de :root leídos una vez por pasada de dibujo (no por trazo).
       const T = readCap2Tokens();
@@ -743,6 +749,7 @@ export default function TorqueCanvas({
         onPointerCancel={handlePointerUp}
         style={{ width: '100%', height: '100%', display: 'block', touchAction: 'none' }}
       />
+      {ctxUnavailable && <CanvasReserveState label="TorqueCanvas" />}
     </div>
   );
 }
