@@ -966,3 +966,36 @@ Cuando los doce tickets estén cerrados:
   `ctx.fillStyle` no interpreta `var()`, así que esa línea nunca pintó con el token, siempre cayó al
   valor por defecto tal cual; corregido de paso al sustituirla. *(Detectado y corregido al ejecutar
   `S4-01`.)*
+- **`S4-02`: la premisa "cap1 ya tiene un helper de rótulo encajonado" resultó verdadera** — a
+  diferencia de `L3-01` y `S4-01`, esta vez `chip(ctx, x, y, text, opts)` existe de verdad en
+  `cap1/sims.ts:2762` (fondo opaco + borde tonal + sombra de contacto + `opts.align`/`opts.mono`) y
+  lo usan `StevensCanvas.tsx`/`AllometryCanvas.tsx` vía `CFX.chip`. Tal como pide el Paso 3, **no se
+  importó** (vive en el archivo `@ts-nocheck` de 4.500 líneas): se escribió `drawLabelChip(...)`
+  local a `TorqueCanvas.tsx`, mismo lenguaje visual (sombra offset, rect redondeado, borde de acento)
+  pero con tokens de cap2 en vez de los literales `rgba(35,44,54,...)` de cap1.
+  Unificados los 5 rótulos de la clase "magnitud de fuerza / brazo de palanca" en A2: `r`, `r⊥`,
+  `F∥`, `F⊥` y el badge `F` + `θ` — antes con tratamientos distintos (unos con pastilla, otros
+  texto suelto; incluso los dos que ya tenían pastilla usaban blancos ad hoc distintos entre sí,
+  `rgba(255,250,242,.92)` vs `rgba(255,255,255,.95)`, ninguno un token). Ahora los 5 comparten fondo
+  `tokenRgba(T.paper, .94)`, un tamaño (`7.5 * uiScale`) y `T.mono` (nuevo campo en
+  `designTokens.ts`, lee `--mono` de `:root` vía `getComputedStyle` — canvas tampoco interpreta
+  `var()` para `font-family`, mismo mecanismo que ya evitó el bug de color en `S4-01`).
+  **Decisión de contraste, no solo de estilo:** el texto de los 5 rótulos es siempre `T.ink`, nunca
+  `tauColor`. Verificado el motivo con la fórmula de contraste WCAG: `tauColor` puede ser `T.ink3`
+  (estado "sin giro", |τ|≈0) y `T.ink3` sobre `T.paper` da **~3.97:1** — por debajo del 4,5:1 que
+  exige el propio criterio de aceptación. `T.ink` sobre `T.paper` da ~12,4:1 en cualquier estado. La
+  variante "destacada" (Paso 2, reservada para `F`, el único valor que el usuario arrastra) se marca
+  solo con el borde: más grueso (1.7px vs 1px) y del color de sentido (`tauColor`: teal/antihorario,
+  `#b02318`/horario, `T.ink3`/sin giro) — nunca con el color del texto. Verificado en vivo
+  inspeccionando los píxeles del canvas (canvas auxiliar con `drawImage` + escala ×5/×7, sin
+  necesidad de `getImageData` manual) en los tres estados de signo (preset "15° Bíceps" no se usó;
+  se usaron "0° Compresión" para `T.ink3` y "240° Inverso" para el rojo): en los tres, los 5 rótulos
+  se leen igual de nítidos y solo el borde de `F` cambia.
+  **No tocado a propósito:** la lectura central del dial (`+36.4 N·m`, "ANTIHORARIO"/"HORARIO"/"SIN
+  GIRO", las marcas `↻ −`/`↺ +`) y la pista de interacción inferior. El Síntoma del ticket habla
+  específicamente de los rótulos de vector (fuerza/brazo) que "coexisten en el mismo diagrama"; el
+  dial es un widget de lectura aparte con su propia convención (color = signo, ya usada también en
+  el HUD colapsable de `Slide2.tsx`). Dicho esto, el número central del dial también pinta con
+  `tauColor` y por tanto **tiene el mismo riesgo de contraste marginal (~3,9:1) en el estado "sin
+  giro"** — no se corrigió por no ser parte de lo que pide Pasos; candidato a ticket propio si se
+  quiere un dial con el mismo criterio de contraste. *(Detectado y corregido al ejecutar `S4-02`.)*

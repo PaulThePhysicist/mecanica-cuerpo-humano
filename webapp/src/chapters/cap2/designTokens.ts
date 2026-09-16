@@ -27,6 +27,8 @@ export interface Cap2Tokens {
   bloodDeep: string;
   amber: string;
   amberDeep: string;
+  /** S4-02: pila de fuentes de `--mono`, para `ctx.font` (canvas no interpreta var()). */
+  mono: string;
 }
 
 export function readCap2Tokens(): Cap2Tokens {
@@ -48,6 +50,7 @@ export function readCap2Tokens(): Cap2Tokens {
     bloodDeep: v('--blood-deep'),
     amber: v('--amber'),
     amberDeep: v('--amber-deep'),
+    mono: v('--mono'),
   };
 }
 

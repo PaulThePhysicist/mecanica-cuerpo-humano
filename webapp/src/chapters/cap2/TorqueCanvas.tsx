@@ -1,6 +1,82 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { readCap2Tokens, tokenRgba } from './designTokens';
 
+interface LabelChipOpts {
+  align?: 'left' | 'center' | 'right';
+  accent: string;
+  highlight?: boolean;
+  fontPx: number;
+  monoFont: string;
+  paperBg: string;
+  inkText: string;
+  ink2Text: string;
+  shadowTint: string;
+  sub?: { text: string; fontPx: number };
+}
+
+/**
+ * S4-02: un solo rótulo para las cifras de A2 (r, r⊥, F, F∥, F⊥) — mismo
+ * fondo (--paper), mismo tamaño de cifra y --mono para número + unidad.
+ * `highlight` queda reservado para el valor que el usuario arrastra (F):
+ * el borde se engrosa y toma el color de sentido del torque; el texto
+ * siempre es --ink para no depender del contraste de ese color variable.
+ */
+function drawLabelChip(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  text: string,
+  opts: LabelChipOpts,
+) {
+  const { align = 'center', accent, highlight = false, fontPx, monoFont, paperBg, inkText, ink2Text, shadowTint, sub } = opts;
+  ctx.save();
+  ctx.textBaseline = 'middle';
+
+  ctx.font = `bold ${fontPx}px ${monoFont}`;
+  const tw = ctx.measureText(text).width;
+  let subW = 0;
+  if (sub) {
+    ctx.font = `bold ${sub.fontPx}px ${monoFont}`;
+    subW = ctx.measureText(sub.text).width;
+  }
+
+  const padX = 7;
+  const padY = 4;
+  const w = Math.max(tw, subW) + padX * 2;
+  const mainH = fontPx + padY * 1.4;
+  const subH = sub ? sub.fontPx + padY * 1.1 : 0;
+  const h = mainH + subH;
+
+  const ax = Math.max(3, align === 'right' ? x - w : align === 'center' ? x - w / 2 : x);
+  const ay = y - h / 2;
+
+  ctx.fillStyle = shadowTint;
+  ctx.beginPath();
+  ctx.roundRect(ax + 1, ay + 1.5, w, h, 5);
+  ctx.fill();
+
+  ctx.fillStyle = paperBg;
+  ctx.strokeStyle = accent;
+  ctx.lineWidth = highlight ? 1.7 : 1;
+  ctx.beginPath();
+  ctx.roundRect(ax, ay, w, h, 5);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.textAlign = 'center';
+  ctx.fillStyle = inkText;
+  ctx.font = `bold ${fontPx}px ${monoFont}`;
+  ctx.fillText(text, ax + w / 2, ay + mainH / 2 + 0.5);
+
+  if (sub) {
+    ctx.fillStyle = ink2Text;
+    ctx.font = `bold ${sub.fontPx}px ${monoFont}`;
+    ctx.fillText(sub.text, ax + w / 2, ay + mainH + subH / 2 + 0.5);
+  }
+
+  ctx.restore();
+}
+
 interface TorqueCanvasProps {
   theta: number;   // Ángulo en grados (0 a 360)
   rCm: number;     // Brazo en cm (20 a 100)
@@ -146,6 +222,12 @@ export default function TorqueCanvas({
       // S4-01: tokens de :root leídos una vez por pasada de dibujo (no por trazo).
       const T = readCap2Tokens();
       const tauColor = isCCW ? T.teal : (isCW ? '#b02318' : T.ink3);
+      // S4-02: mismo rótulo para todas las cifras de A2; solo F (la que se
+      // arrastra) usa el borde de sentido — el resto lleva el neutro.
+      const chipPaper = tokenRgba(T.paper, 0.94);
+      const chipShadow = tokenRgba(T.ink, 0.10);
+      const neutralAccent = tokenRgba(T.ink3, 0.55);
+      const chipFontPx = 7.5 * uiScale;
 
       ctx.save();
       ctx.scale(dpr, dpr);
@@ -308,10 +390,10 @@ export default function TorqueCanvas({
       ctx.fill();
 
       // Badge con valor r
-      ctx.fillStyle = T.ink;
-      ctx.font = `bold ${7.5 * uiScale}px JetBrains Mono, monospace`;
-      ctx.textAlign = 'center';
-      ctx.fillText(`r = ${rCm} cm (${rM.toFixed(2)} m)`, (pivotX + armEndX) / 2, pivotY + 41);
+      drawLabelChip(ctx, (pivotX + armEndX) / 2, pivotY + 41, `r = ${rCm} cm (${rM.toFixed(2)} m)`, {
+        align: 'center', accent: neutralAccent, fontPx: chipFontPx, monoFont: T.mono,
+        paperBg: chipPaper, inkText: T.ink, ink2Text: T.ink2, shadowTint: chipShadow,
+      });
       ctx.restore();
 
       // ─── 5. Geometría Vectorial de Fuerza Aplicada F (Calibrada a 1/4 - 1/3 del brazo) ───
@@ -381,15 +463,10 @@ export default function TorqueCanvas({
         const lx = pivotX + (footX - pivotX) * 0.66 - ry1 * 14 * dSign;
         const ly = pivotY + (footY - pivotY) * 0.66 + rx1 * 14 * dSign;
         const rlTxt = `r⊥ = ${rPerp.toFixed(2)} m`;
-        ctx.font = `bold ${7.5 * uiScale}px JetBrains Mono, monospace`;
-        ctx.textAlign = 'center';
-        const rlW = ctx.measureText(rlTxt).width + 8;
-        ctx.fillStyle = 'rgba(255, 250, 242, 0.92)';
-        ctx.beginPath();
-        ctx.roundRect(lx - rlW / 2, ly - 7 * uiScale, rlW, 12 * uiScale, 3);
-        ctx.fill();
-        ctx.fillStyle = '#b8690f';
-        ctx.fillText(rlTxt, lx, ly + 3);
+        drawLabelChip(ctx, lx, ly, rlTxt, {
+          align: 'center', accent: neutralAccent, fontPx: chipFontPx, monoFont: T.mono,
+          paperBg: chipPaper, inkText: T.ink, ink2Text: T.ink2, shadowTint: chipShadow,
+        });
         ctx.restore();
       }
 
@@ -433,11 +510,11 @@ export default function TorqueCanvas({
       }
 
       // Badge F_parallel
-      ctx.fillStyle = T.ink2;
-      ctx.font = `bold ${7 * uiScale}px JetBrains Mono, monospace`;
-      ctx.textAlign = 'center';
       const parLabel = fParallel >= 0 ? `F∥ = ${fParallel.toFixed(1)} N` : `F∥ = ${Math.abs(fParallel).toFixed(1)} N`;
-      ctx.fillText(parLabel, (armEndX + fParX) / 2, armEndY + (fEndY < armEndY ? 11 : -7));
+      drawLabelChip(ctx, (armEndX + fParX) / 2, armEndY + (fEndY < armEndY ? 11 : -7), parLabel, {
+        align: 'center', accent: neutralAccent, fontPx: chipFontPx, monoFont: T.mono,
+        paperBg: chipPaper, inkText: T.ink, ink2Text: T.ink2, shadowTint: chipShadow,
+      });
 
       // 2. Componente perpendicular F_perp (tangencial: genera 100% torque)
       ctx.strokeStyle = tauColor;
@@ -460,10 +537,10 @@ export default function TorqueCanvas({
       }
 
       // Badge F_perp
-      ctx.fillStyle = tauColor;
-      ctx.font = `bold ${7 * uiScale}px JetBrains Mono, monospace`;
-      ctx.textAlign = 'right';
-      ctx.fillText(`F⊥ = ${Math.abs(fPerp).toFixed(1)} N`, armEndX - 6, (armEndY + fEndY) / 2);
+      drawLabelChip(ctx, armEndX - 6, (armEndY + fEndY) / 2, `F⊥ = ${Math.abs(fPerp).toFixed(1)} N`, {
+        align: 'right', accent: neutralAccent, fontPx: chipFontPx, monoFont: T.mono,
+        paperBg: chipPaper, inkText: T.ink, ink2Text: T.ink2, shadowTint: chipShadow,
+      });
       ctx.restore();
 
       // ─── 8. Vector de Fuerza Total F con Mango de Arrastre ───
@@ -501,34 +578,22 @@ export default function TorqueCanvas({
       ctx.lineWidth = 1.6;
       ctx.stroke();
 
-      // Badge flotante compacto con F y ángulo theta.
+      // Badge flotante compacto con F y ángulo theta: es el único rótulo
+      // "destacado" (S4-02) porque F es el valor que el usuario arrastra.
       // Se mantiene dentro del lienzo y a la izquierda de la columna del dial.
       const fLabelDist = 16 * uiScale;
-      const badgeW = 68 * uiScale;
-      const badgeH = 20 * uiScale;
+      const badgeW = 72 * uiScale;
+      const badgeH = 32 * uiScale;
       const dialColX = W * 0.62; // borde izquierdo de la columna del medidor
       let flx = fEndX + Math.cos(fAngle) * fLabelDist;
       let fly = fEndY + Math.sin(fAngle) * fLabelDist;
       flx = Math.max(badgeW / 2 + 4, Math.min(flx, dialColX - badgeW / 2 - 4));
       fly = Math.max(badgeH / 2 + 4, Math.min(fly, H - badgeH / 2 - 4));
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-      ctx.shadowColor = tokenRgba(T.ink, 0.10);
-      ctx.shadowBlur = 4;
-      ctx.beginPath();
-      ctx.roundRect(flx - badgeW / 2, fly - badgeH / 2, badgeW, badgeH, 4);
-      ctx.fill();
-      ctx.shadowBlur = 0;
-      ctx.strokeStyle = tauColor;
-      ctx.lineWidth = 1.1;
-      ctx.stroke();
-
-      ctx.fillStyle = tauColor;
-      ctx.font = `bold ${7.5 * uiScale}px JetBrains Mono, monospace`;
-      ctx.textAlign = 'center';
-      ctx.fillText(`F = ${fN.toFixed(0)} N`, flx, fly);
-      ctx.font = `${6.5 * uiScale}px Karla, system-ui, sans-serif`;
-      ctx.fillStyle = T.ink2;
-      ctx.fillText(`θ = ${theta}°`, flx, fly + 7);
+      drawLabelChip(ctx, flx, fly, `F = ${fN.toFixed(0)} N`, {
+        align: 'center', accent: tauColor, highlight: true, fontPx: chipFontPx, monoFont: T.mono,
+        paperBg: chipPaper, inkText: T.ink, ink2Text: T.ink2, shadowTint: chipShadow,
+        sub: { text: `θ = ${theta}°`, fontPx: 6.5 * uiScale },
+      });
       ctx.restore();
 
       // ─── 9. Arco Angular θ en la Inserción ───
