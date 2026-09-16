@@ -173,6 +173,7 @@ export default function Slide10({
             badge={`${totalP.toFixed(2)} MPa (${totalPBar.toFixed(1)} BAR)`}
             icon="⚡"
             footer="💡 Selecciona la postura para observar la deformación del núcleo pulposo"
+            width="270px"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.62rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>

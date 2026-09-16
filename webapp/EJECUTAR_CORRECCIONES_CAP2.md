@@ -999,3 +999,30 @@ Cuando los doce tickets estén cerrados:
   `tauColor` y por tanto **tiene el mismo riesgo de contraste marginal (~3,9:1) en el estado "sin
   giro"** — no se corrigió por no ser parte de lo que pide Pasos; candidato a ticket propio si se
   quiere un dial con el mismo criterio de contraste. *(Detectado y corregido al ejecutar `S4-02`.)*
+- **`S4-03`: el mecanismo que describe el ticket (desbordamiento de `.content-grid` sin
+  `minmax(0,1fr)`) no se reproduce.** Medido en vivo con `getBoundingClientRect()` /
+  `document.documentElement.scrollWidth` en D2 a 768, 821 (el ancho más apretado de 2 columnas,
+  justo antes del breakpoint de columna única a 820px), 1024 y 1440px: en ninguno de los cuatro
+  `scrollWidth` excede el viewport ni `.content-grid`/`.theory`/`.sim-area` se salen de su pista.
+  Aplicar el Paso 1 tal cual no habría corregido nada visible. El síntoma real (reproducido
+  idéntico en los cuatro anchos, porque no depende del viewport) vive en otro archivo no citado
+  por el ticket: `HudPanel.tsx` (reutilizado por las 20 diapositivas de cap2) tiene `width:'215px'`
+  fijo, y las filas largas de D2 ("Área Transversal: 18,0 cm² (0,0018 m²)", "Estado Discal: ⚠️
+  Riesgo Crítico de Hernia") se quiebran a media palabra/unidad dentro de esos 215px — no
+  literalmente "recortadas" (ningún texto se vuelve invisible, la premisa de `overflow-x:hidden`
+  no aplica aquí porque `HudPanel` no está clipeado, solo mal encajado), pero sí ilegible como
+  bloque limpio, que es lo que probablemente vio la auditoría. Tercera vez en este plan que el
+  síntoma es real pero el mecanismo propuesto no ([[S4-01]] con cap1/`getComputedStyle`, `L3-01`
+  con los glifos de cap1). Presentado al usuario con cuatro opciones; **decisión: ensanchar el
+  panel solo en D2** vía el prop `width` que `HudPanel` ya expone (`width="270px"` en
+  `Slide10.tsx`, antes sin override — ninguna otra diapositiva lo usaba). No se tocó `cap2.css` ni
+  `HudPanel.tsx`: cero impacto en las otras 19 diapositivas. Verificado con `getClientRects()` (no
+  con captura visual — a esta escala de fuente, ~8-10px, el downscale de una captura ya indujo una
+  falsa lectura de quiebre de línea que el DOM contradecía; mismo tipo de espejismo que ya advertía
+  el hallazgo de `S4-01` sobre inspección visual reducida) en los 4 anchos, además con el peor caso
+  de cifra (Paso 2: carga deslizada a 30 kg, la postura más lesiva ya estaba activa por defecto) —
+  las 10 líneas del panel (título, badge y 4 filas) miden 1 sola línea en los cuatro anchos.
+  Confirmado además con `scripts/shoot-slides.mjs` (editado momentáneamente para añadir los
+  viewports 1024/768 y revertido después de capturar; no se commiteó ese cambio): 84 capturas de
+  las 21 diapositivas × 4 anchos, sin errores de consola. *(Detectado y corregido al ejecutar
+  `S4-03`.)*
