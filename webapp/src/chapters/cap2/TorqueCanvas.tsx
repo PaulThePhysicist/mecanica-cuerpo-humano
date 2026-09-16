@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
+import { readCap2Tokens, tokenRgba } from './designTokens';
 
 interface TorqueCanvasProps {
   theta: number;   // Ángulo en grados (0 a 360)
@@ -29,7 +30,6 @@ export default function TorqueCanvas({
 
   const isCCW = tau > 0.05;
   const isCW = tau < -0.05;
-  const tauColor = isCCW ? '#0d6e64' : (isCW ? '#b02318' : '#6b7885');
 
   // Interacción táctil y de arrastre del vector de fuerza
   const getPointerCoord = (e: React.PointerEvent<HTMLCanvasElement>) => {
@@ -143,6 +143,10 @@ export default function TorqueCanvas({
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
 
+      // S4-01: tokens de :root leídos una vez por pasada de dibujo (no por trazo).
+      const T = readCap2Tokens();
+      const tauColor = isCCW ? T.teal : (isCW ? '#b02318' : T.ink3);
+
       ctx.save();
       ctx.scale(dpr, dpr);
       ctx.clearRect(0, 0, W, H);
@@ -156,7 +160,7 @@ export default function TorqueCanvas({
       ctx.fillRect(0, 0, W, H);
 
       // Rejilla milimetrada técnica sutil
-      ctx.strokeStyle = 'rgba(67, 80, 92, 0.045)';
+      ctx.strokeStyle = tokenRgba(T.ink2, 0.045);
       ctx.lineWidth = 1;
       const gStep = 34;
       for (let x = gStep; x < W; x += gStep) {
@@ -185,7 +189,7 @@ export default function TorqueCanvas({
 
       // Sombra de contacto difusa bajo la articulación y la palanca
       ctx.save();
-      ctx.fillStyle = 'rgba(35, 44, 54, 0.14)';
+      ctx.fillStyle = tokenRgba(T.ink, 0.14);
       ctx.beginPath();
       ctx.ellipse(pivotX, pivotY + 22, 32, 8, 0, 0, Math.PI * 2);
       ctx.ellipse(armEndX, armEndY + 14, 22, 6, 0, 0, Math.PI * 2);
@@ -220,7 +224,7 @@ export default function TorqueCanvas({
       ctx.arc(pivotX, pivotY, 13, 0, Math.PI * 2);
       ctx.fillStyle = '#f5ecd8';
       ctx.fill();
-      ctx.strokeStyle = '#43505c';
+      ctx.strokeStyle = T.ink2;
       ctx.lineWidth = 2.2;
       ctx.stroke();
 
@@ -234,7 +238,7 @@ export default function TorqueCanvas({
       // Perno joya central con pivote
       ctx.beginPath();
       ctx.arc(pivotX, pivotY, 4.5, 0, Math.PI * 2);
-      ctx.fillStyle = '#232c36';
+      ctx.fillStyle = T.ink;
       ctx.fill();
       ctx.strokeStyle = '#ffffff';
       ctx.lineWidth = 1.2;
@@ -277,7 +281,7 @@ export default function TorqueCanvas({
       ctx.stroke();
 
       // Cota de longitud r (Brazo del punto de aplicación)
-      ctx.strokeStyle = 'rgba(107, 120, 133, 0.75)';
+      ctx.strokeStyle = tokenRgba(T.ink3, 0.75);
       ctx.lineWidth = 1.1;
       ctx.setLineDash([3, 3]);
       ctx.beginPath();
@@ -291,7 +295,7 @@ export default function TorqueCanvas({
       ctx.setLineDash([]);
 
       // Puntas de flecha de la cota r
-      ctx.fillStyle = 'rgba(107, 120, 133, 0.9)';
+      ctx.fillStyle = tokenRgba(T.ink3, 0.9);
       ctx.beginPath();
       ctx.moveTo(pivotX, pivotY + 28);
       ctx.lineTo(pivotX + 4, pivotY + 25.5);
@@ -304,7 +308,7 @@ export default function TorqueCanvas({
       ctx.fill();
 
       // Badge con valor r
-      ctx.fillStyle = '#232c36';
+      ctx.fillStyle = T.ink;
       ctx.font = `bold ${7.5 * uiScale}px JetBrains Mono, monospace`;
       ctx.textAlign = 'center';
       ctx.fillText(`r = ${rCm} cm (${rM.toFixed(2)} m)`, (pivotX + armEndX) / 2, pivotY + 41);
@@ -323,7 +327,7 @@ export default function TorqueCanvas({
       // Es la recta sobre la que "resbala" la fuerza; el brazo de momento r⊥ se
       // mide perpendicular a ELLA desde el eje articular.
       ctx.save();
-      ctx.strokeStyle = 'rgba(67, 80, 92, 0.45)';
+      ctx.strokeStyle = tokenRgba(T.ink2, 0.45);
       ctx.lineWidth = 1.1;
       ctx.setLineDash([4, 3]);
       const actExt = Math.max(fLenPx * 1.6, rPx * 0.5);
@@ -395,7 +399,7 @@ export default function TorqueCanvas({
 
       ctx.save();
       // Caja de descomposición rectangular
-      ctx.strokeStyle = 'rgba(107, 120, 133, 0.35)';
+      ctx.strokeStyle = tokenRgba(T.ink3, 0.35);
       ctx.lineWidth = 1.0;
       ctx.setLineDash([2, 2]);
       ctx.beginPath();
@@ -409,7 +413,7 @@ export default function TorqueCanvas({
       ctx.setLineDash([]);
 
       // Vector F_parallel
-      ctx.strokeStyle = 'rgba(107, 120, 133, 0.85)';
+      ctx.strokeStyle = tokenRgba(T.ink3, 0.85);
       ctx.lineWidth = 1.6;
       ctx.beginPath();
       ctx.moveTo(armEndX, armEndY);
@@ -419,7 +423,7 @@ export default function TorqueCanvas({
       // Flecha F_parallel
       if (Math.abs(fParallel) > 3) {
         const parDir = fParallel >= 0 ? 1 : -1;
-        ctx.fillStyle = 'rgba(107, 120, 133, 0.9)';
+        ctx.fillStyle = tokenRgba(T.ink3, 0.9);
         ctx.beginPath();
         ctx.moveTo(fParX, fParY);
         ctx.lineTo(fParX - parDir * 4.5, fParY - 3);
@@ -429,7 +433,7 @@ export default function TorqueCanvas({
       }
 
       // Badge F_parallel
-      ctx.fillStyle = '#43505c';
+      ctx.fillStyle = T.ink2;
       ctx.font = `bold ${7 * uiScale}px JetBrains Mono, monospace`;
       ctx.textAlign = 'center';
       const parLabel = fParallel >= 0 ? `F∥ = ${fParallel.toFixed(1)} N` : `F∥ = ${Math.abs(fParallel).toFixed(1)} N`;
@@ -508,7 +512,7 @@ export default function TorqueCanvas({
       flx = Math.max(badgeW / 2 + 4, Math.min(flx, dialColX - badgeW / 2 - 4));
       fly = Math.max(badgeH / 2 + 4, Math.min(fly, H - badgeH / 2 - 4));
       ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-      ctx.shadowColor = 'rgba(35, 44, 54, 0.10)';
+      ctx.shadowColor = tokenRgba(T.ink, 0.10);
       ctx.shadowBlur = 4;
       ctx.beginPath();
       ctx.roundRect(flx - badgeW / 2, fly - badgeH / 2, badgeW, badgeH, 4);
@@ -523,21 +527,21 @@ export default function TorqueCanvas({
       ctx.textAlign = 'center';
       ctx.fillText(`F = ${fN.toFixed(0)} N`, flx, fly);
       ctx.font = `${6.5 * uiScale}px Karla, system-ui, sans-serif`;
-      ctx.fillStyle = '#43505c';
+      ctx.fillStyle = T.ink2;
       ctx.fillText(`θ = ${theta}°`, flx, fly + 7);
       ctx.restore();
 
       // ─── 9. Arco Angular θ en la Inserción ───
       ctx.save();
       const arcR = 22;
-      ctx.strokeStyle = 'rgba(67, 80, 92, 0.65)';
+      ctx.strokeStyle = tokenRgba(T.ink2, 0.65);
       ctx.lineWidth = 1.2;
       ctx.beginPath();
       ctx.arc(armEndX, armEndY, arcR, 0, -rad, rad > 0);
       ctx.stroke();
 
       // Línea de referencia horizontal continua
-      ctx.strokeStyle = 'rgba(107, 120, 133, 0.4)';
+      ctx.strokeStyle = tokenRgba(T.ink3, 0.4);
       ctx.setLineDash([2, 2]);
       ctx.beginPath();
       ctx.moveTo(armEndX, armEndY);
@@ -590,7 +594,7 @@ export default function TorqueCanvas({
       ctx.stroke();
       ctx.beginPath();
       ctx.arc(dialX, dialY, dialR, zeroAngle, endAngle);
-      ctx.strokeStyle = 'rgba(13, 110, 100, 0.16)';
+      ctx.strokeStyle = tokenRgba(T.teal, 0.16);
       ctx.lineWidth = 9;
       ctx.stroke();
 
@@ -603,7 +607,7 @@ export default function TorqueCanvas({
       ctx.stroke();
 
       // Marca de cero (arriba)
-      ctx.strokeStyle = 'rgba(67, 80, 92, 0.55)';
+      ctx.strokeStyle = tokenRgba(T.ink2, 0.55);
       ctx.lineWidth = 1.6;
       ctx.beginPath();
       ctx.moveTo(dialX + Math.cos(zeroAngle) * (dialR - 8), dialY + Math.sin(zeroAngle) * (dialR - 8));
@@ -615,7 +619,7 @@ export default function TorqueCanvas({
       ctx.textAlign = 'center';
       ctx.fillStyle = 'rgba(176, 35, 24, 0.75)';
       ctx.fillText('↻ −', dialX + Math.cos(startAngle) * (dialR + 12), dialY + Math.sin(startAngle) * (dialR + 12) + 3);
-      ctx.fillStyle = 'rgba(13, 110, 100, 0.8)';
+      ctx.fillStyle = tokenRgba(T.teal, 0.8);
       ctx.fillText('↺ +', dialX + Math.cos(endAngle) * (dialR + 12), dialY + Math.sin(endAngle) * (dialR + 12) + 3);
 
       // Aguja
@@ -640,7 +644,7 @@ export default function TorqueCanvas({
       ctx.textAlign = 'center';
       ctx.fillText(`${signStr}${Math.abs(tau).toFixed(1)}`, dialX, dialY + dialR * 0.42);
       ctx.font = `bold ${8.5 * uiScale}px Karla, system-ui, sans-serif`;
-      ctx.fillStyle = 'rgba(67, 80, 92, 0.8)';
+      ctx.fillStyle = tokenRgba(T.ink2, 0.8);
       ctx.fillText('N·m', dialX, dialY + dialR * 0.42 + 13 * uiScale);
       ctx.font = `bold ${7.5 * uiScale}px Karla, system-ui, sans-serif`;
       ctx.fillStyle = tauColor;
@@ -649,7 +653,7 @@ export default function TorqueCanvas({
       ctx.restore();
 
       // ─── 12. Pista de interacción (discreta, esquina inferior) ───
-      ctx.fillStyle = 'rgba(107, 120, 133, 0.75)';
+      ctx.fillStyle = tokenRgba(T.ink3, 0.75);
       ctx.font = `${7 * uiScale}px Karla, system-ui, sans-serif`;
       ctx.textAlign = 'left';
       ctx.fillText('Arrastra la punta de F para cambiar θ y magnitud', W * 0.04, H - 10);
@@ -662,7 +666,7 @@ export default function TorqueCanvas({
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [theta, rCm, fN, rad, tau, fPerp, fParallel, rPerp, isCCW, isCW, tauColor, isDraggingForce, isHoveredForce]);
+  }, [theta, rCm, fN, rad, tau, fPerp, fParallel, rPerp, isCCW, isCW, isDraggingForce, isHoveredForce]);
 
   return (
     <div className="cap2-raster-canvas" style={{ width: '100%', height: '100%', position: 'relative', cursor: isDraggingForce ? 'grabbing' : (isHoveredForce ? 'grab' : 'default') }}>

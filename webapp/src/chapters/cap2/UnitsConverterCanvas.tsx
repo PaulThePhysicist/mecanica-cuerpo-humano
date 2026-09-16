@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import { readCap2Tokens, tokenRgba } from './designTokens';
 
 interface UnitsConverterCanvasProps {
   quantityType: 'force' | 'torque' | 'pressure';
@@ -116,6 +117,9 @@ export default function UnitsConverterCanvas({
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
 
+      // S4-01: tokens de :root leídos una vez por pasada de dibujo (no por trazo).
+      const T = readCap2Tokens();
+
       ctx.save();
       ctx.scale(dpr, dpr);
       ctx.clearRect(0, 0, W, H);
@@ -191,14 +195,14 @@ export default function UnitsConverterCanvas({
         const isPrimary = idx === 0;
 
         ctx.save();
-        ctx.fillStyle = isPrimary ? 'rgba(13, 110, 100, 0.09)' : 'rgba(255, 255, 255, 0.94)';
-        ctx.shadowColor = 'rgba(35, 44, 54, 0.07)';
+        ctx.fillStyle = isPrimary ? tokenRgba(T.teal, 0.09) : 'rgba(255, 255, 255, 0.94)';
+        ctx.shadowColor = tokenRgba(T.ink, 0.07);
         ctx.shadowBlur = 6;
         ctx.roundRect(tableX, iy, tableW, itemH, 6);
         ctx.fill();
         ctx.shadowBlur = 0;
 
-        ctx.strokeStyle = isPrimary ? '#0d6e64' : 'rgba(207, 195, 169, 0.8)';
+        ctx.strokeStyle = isPrimary ? T.teal : tokenRgba(T.line, 0.8);
         ctx.lineWidth = isPrimary ? 1.5 : 0.9;
         ctx.stroke();
 
@@ -210,11 +214,11 @@ export default function UnitsConverterCanvas({
         ctx.fillRect(tableX + barPad, iy + itemH - 6.0, bW, bH);
 
         const fillW = Math.max(2, item.ratio * bW);
-        ctx.fillStyle = isPrimary ? '#0d6e64' : (item.ratio > 0.75 ? '#b02318' : (item.ratio > 0.4 ? '#d97706' : '#2563eb'));
+        ctx.fillStyle = isPrimary ? T.teal : (item.ratio > 0.75 ? '#b02318' : (item.ratio > 0.4 ? '#d97706' : '#2563eb'));
         ctx.fillRect(tableX + barPad, iy + itemH - 6.0, fillW, bH);
 
         // Nombre de unidad
-        ctx.fillStyle = isPrimary ? '#0d6e64' : '#1e293b';
+        ctx.fillStyle = isPrimary ? T.teal : '#1e293b';
         ctx.font = 'bold 8px Karla, system-ui, sans-serif';
         ctx.textAlign = 'left';
         ctx.fillText(item.unit, tableX + 10, iy + itemH * 0.42);
@@ -225,7 +229,7 @@ export default function UnitsConverterCanvas({
         ctx.fillText(item.factor, tableX + 10, iy + itemH * 0.72);
 
         // Valor numérico convertido
-        ctx.fillStyle = isPrimary ? '#0d6e64' : '#b02318';
+        ctx.fillStyle = isPrimary ? T.teal : '#b02318';
         ctx.font = 'bold 10.5px JetBrains Mono, monospace';
         ctx.textAlign = 'right';
         ctx.fillText(item.valStr, tableX + tableW - 10, iy + itemH * 0.54);
@@ -240,7 +244,7 @@ export default function UnitsConverterCanvas({
       ctx.save();
       // Fondo del dial
       ctx.fillStyle = 'rgba(255, 255, 255, 0.96)';
-      ctx.shadowColor = 'rgba(35, 44, 54, 0.10)';
+      ctx.shadowColor = tokenRgba(T.ink, 0.10);
       ctx.shadowBlur = 8;
       ctx.beginPath();
       ctx.arc(dialX, dialY, dialR + 11, 0, Math.PI * 2);
@@ -325,7 +329,7 @@ export default function UnitsConverterCanvas({
 
       // Rótulo central digital en el dial
       ctx.fillStyle = 'rgba(255, 255, 255, 0.96)';
-      ctx.strokeStyle = '#0d6e64';
+      ctx.strokeStyle = T.teal;
       ctx.lineWidth = 0.9;
       const dW = 76;
       const dH = 16;
@@ -333,7 +337,7 @@ export default function UnitsConverterCanvas({
       ctx.fill();
       ctx.stroke();
 
-      ctx.fillStyle = '#0d6e64';
+      ctx.fillStyle = T.teal;
       ctx.font = 'bold 7px JetBrains Mono, monospace';
       ctx.textAlign = 'center';
       const readVal =
@@ -353,16 +357,16 @@ export default function UnitsConverterCanvas({
 
       ctx.save();
       ctx.fillStyle = 'rgba(255, 255, 255, 0.96)';
-      ctx.shadowColor = 'rgba(35, 44, 54, 0.08)';
+      ctx.shadowColor = tokenRgba(T.ink, 0.08);
       ctx.shadowBlur = 7;
       ctx.roundRect(refX, refY, refW, refH, 6);
       ctx.fill();
       ctx.shadowBlur = 0;
-      ctx.strokeStyle = '#0d6e64';
+      ctx.strokeStyle = T.teal;
       ctx.lineWidth = 1.3;
       ctx.strokeRect(refX, refY, refW, refH);
 
-      ctx.fillStyle = '#0d6e64';
+      ctx.fillStyle = T.teal;
       ctx.font = 'bold 8px Karla, system-ui, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText('BENCHMARKS FISIOLÓGICOS (Haz clic para cargar)', refX + refW / 2, refY + 13);
@@ -374,9 +378,9 @@ export default function UnitsConverterCanvas({
         const isHov = hoveredBenchRef.current === idx;
 
         if (isMatched || isHov) {
-          ctx.fillStyle = isMatched ? 'rgba(13, 110, 100, 0.12)' : 'rgba(13, 110, 100, 0.05)';
+          ctx.fillStyle = isMatched ? tokenRgba(T.teal, 0.12) : tokenRgba(T.teal, 0.05);
           ctx.fillRect(refX + 3, ry - 2, refW - 6, refItemH - 2);
-          ctx.strokeStyle = '#0d6e64';
+          ctx.strokeStyle = T.teal;
           ctx.lineWidth = 0.9;
           ctx.strokeRect(refX + 3, ry - 2, refW - 6, refItemH - 2);
         }
@@ -392,7 +396,7 @@ export default function UnitsConverterCanvas({
         ctx.textAlign = 'left';
         ctx.fillText(r.name, refX + 18, ry + 6.5);
 
-        ctx.fillStyle = '#0d6e64';
+        ctx.fillStyle = T.teal;
         ctx.font = 'bold 7.2px JetBrains Mono, monospace';
         ctx.textAlign = 'right';
         ctx.fillText(`${r.siValue} ${r.unitSi}`, refX + refW - 6, ry + 6.5);
@@ -405,12 +409,12 @@ export default function UnitsConverterCanvas({
       ctx.restore();
 
       // ─── 6. Cabecera Superior del Canvas ───
-      ctx.fillStyle = 'var(--ink, #232c36)';
+      ctx.fillStyle = T.ink;
       ctx.font = 'bold 11.5px Karla, system-ui, sans-serif';
       ctx.textAlign = 'left';
       ctx.fillText(`CONVERSOR DE UNIDADES BIOMECÁNICAS: ${quantityType.toUpperCase()}`, W * 0.045, 22);
 
-      ctx.fillStyle = 'rgba(107, 120, 133, 0.9)';
+      ctx.fillStyle = tokenRgba(T.ink3, 0.9);
       ctx.font = '8px Karla, system-ui, sans-serif';
       ctx.fillText('Equivalencias exactas, tacómetro de carga tisular y benchmarks anatómicos humanos.', W * 0.045, 35);
 

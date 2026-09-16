@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
+import { readCap2Tokens, tokenRgba } from './designTokens';
 
 interface LeverCanvasProps {
   leverClass: 1 | 2 | 3; // Clase 1, 2 o 3
@@ -90,6 +91,13 @@ export default function LeverCanvas({
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
 
+      // S4-01: tokens de :root leídos una vez por pasada de dibujo. El color de
+      // la clase 1 (LEVER_DATA) coincidía por casualidad con --teal; se lee de
+      // ahí en vez de repetir el literal. Las clases 2 y 3 usan colores propios
+      // sin token equivalente (paleta deliberada), se dejan como están.
+      const T = readCap2Tokens();
+      const curColor = leverClass === 1 ? T.teal : curData.color;
+
       ctx.save();
       ctx.scale(dpr, dpr);
       ctx.clearRect(0, 0, W, H);
@@ -103,7 +111,7 @@ export default function LeverCanvas({
       ctx.fillRect(0, 0, W, H);
 
       // Rejilla sutil
-      ctx.strokeStyle = 'rgba(67, 80, 92, 0.085)';
+      ctx.strokeStyle = tokenRgba(T.ink2, 0.085);
       ctx.lineWidth = 1;
       const gStep = 24;
       for (let x = gStep; x < W; x += gStep) {
@@ -149,7 +157,7 @@ export default function LeverCanvas({
         ctx.fill();
         ctx.stroke();
 
-        ctx.fillStyle = '#43505c';
+        ctx.fillStyle = T.ink2;
         ctx.beginPath();
         ctx.arc(spineX, spineY, 5, 0, Math.PI * 2);
         ctx.fill();
@@ -222,9 +230,9 @@ export default function LeverCanvas({
         const muscY = anatCenterY + 12;
 
         const mGrad = ctx.createLinearGradient(muscX, muscY, muscX + 10, spineY + 35);
-        mGrad.addColorStop(0, '#a92a1e');
+        mGrad.addColorStop(0, T.blood);
         mGrad.addColorStop(0.5, '#c14b4b');
-        mGrad.addColorStop(1, '#8c1f16');
+        mGrad.addColorStop(1, T.bloodDeep);
         ctx.fillStyle = mGrad;
         ctx.strokeStyle = '#73140e';
         ctx.lineWidth = 1.3;
@@ -267,7 +275,7 @@ export default function LeverCanvas({
         const fulcFootY = footOriginY;
 
         // Suelo de apoyo
-        ctx.strokeStyle = 'rgba(67, 80, 92, 0.4)';
+        ctx.strokeStyle = tokenRgba(T.ink2, 0.4);
         ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.moveTo(footOriginX - 20, fulcFootY + 8);
@@ -301,7 +309,7 @@ export default function LeverCanvas({
         ctx.stroke();
 
         // Fulcro en el metatarso
-        ctx.fillStyle = '#43505c';
+        ctx.fillStyle = T.ink2;
         ctx.beginPath();
         ctx.arc(fulcFootX, footOriginY + 4, 4.5, 0, Math.PI * 2);
         ctx.fill();
@@ -348,9 +356,9 @@ export default function LeverCanvas({
 
         // Músculo gemelo
         const calfGrad = ctx.createLinearGradient(achillesX - 10, achillesY - 60, achillesX + 10, achillesY - 25);
-        calfGrad.addColorStop(0, '#a92a1e');
+        calfGrad.addColorStop(0, T.blood);
         calfGrad.addColorStop(0.6, '#c14b4b');
-        calfGrad.addColorStop(1, '#8c1f16');
+        calfGrad.addColorStop(1, T.bloodDeep);
         ctx.fillStyle = calfGrad;
         ctx.strokeStyle = '#73140e';
         ctx.lineWidth = 1.3;
@@ -438,9 +446,9 @@ export default function LeverCanvas({
         const bInsertY = elbowJointY - 6;
 
         const bicGrad = ctx.createLinearGradient(bOriginX, bOriginY, bInsertX, bInsertY);
-        bicGrad.addColorStop(0, '#a92a1e');
+        bicGrad.addColorStop(0, T.blood);
         bicGrad.addColorStop(0.5, '#c14b4b');
-        bicGrad.addColorStop(1, '#8c1f16');
+        bicGrad.addColorStop(1, T.bloodDeep);
         ctx.fillStyle = bicGrad;
         ctx.strokeStyle = '#73140e';
         ctx.lineWidth = 1.3;
@@ -532,7 +540,7 @@ export default function LeverCanvas({
 
       // Sombra de contacto
       ctx.save();
-      ctx.fillStyle = 'rgba(35, 44, 54, 0.14)';
+      ctx.fillStyle = tokenRgba(T.ink, 0.14);
       ctx.beginPath();
       ctx.ellipse(fulcrumX, barY + 22, 28, 7, 0, 0, Math.PI * 2);
       ctx.ellipse(loadX, barY + 16, 20, 5, 0, 0, Math.PI * 2);
@@ -590,7 +598,7 @@ export default function LeverCanvas({
       ctx.lineWidth = 1.5;
       ctx.stroke();
 
-      ctx.fillStyle = 'var(--ink, #232c36)';
+      ctx.fillStyle = T.ink;
       ctx.font = `bold ${8.5 * uiScale}px Karla, system-ui, sans-serif`;
       ctx.textAlign = 'center';
       ctx.fillText('Fulcro (Δ)', fulcrumX, barY + 39);
@@ -653,8 +661,8 @@ export default function LeverCanvas({
       ctx.stroke();
 
       // Vector de tracción muscular
-      ctx.strokeStyle = curData.color;
-      ctx.fillStyle = curData.color;
+      ctx.strokeStyle = curColor;
+      ctx.fillStyle = curColor;
       ctx.lineWidth = 2.0;
       ctx.beginPath();
       ctx.moveTo(muscleX, barY + (isPullUp ? -7 : 7));
@@ -676,29 +684,29 @@ export default function LeverCanvas({
       const badgeY = isPullUp ? muscEndY - 22 : muscEndY + 6;
 
       ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-      ctx.shadowColor = 'rgba(35, 44, 54, 0.10)';
+      ctx.shadowColor = tokenRgba(T.ink, 0.10);
       ctx.shadowBlur = 4;
       ctx.beginPath();
       ctx.roundRect(muscleX - badgeW / 2, badgeY, badgeW, badgeH, 3);
       ctx.fill();
       ctx.shadowBlur = 0;
-      ctx.strokeStyle = curData.color;
+      ctx.strokeStyle = curColor;
       ctx.lineWidth = 1.1;
       ctx.stroke();
 
-      ctx.fillStyle = curData.color;
+      ctx.fillStyle = curColor;
       ctx.font = `bold ${7.5 * uiScale}px JetBrains Mono, monospace`;
       ctx.textAlign = 'center';
       ctx.fillText(`F_m = ${fMuscNewtons.toFixed(0)} N`, muscleX, badgeY + 8);
       ctx.font = `${6.5 * uiScale}px Karla, system-ui, sans-serif`;
-      ctx.fillStyle = 'rgba(107, 120, 133, 0.95)';
+      ctx.fillStyle = tokenRgba(T.ink3, 0.95);
       ctx.fillText(`(${(fMuscNewtons / 9.81).toFixed(1)} kgf)`, muscleX, badgeY + 15);
       ctx.restore();
 
       // Cotas de Brazos de Palanca (bp y br)
       ctx.save();
       // Cota bp
-      ctx.strokeStyle = curData.color;
+      ctx.strokeStyle = curColor;
       ctx.lineWidth = 1.0;
       ctx.setLineDash([2, 2]);
       ctx.beginPath();
@@ -711,7 +719,7 @@ export default function LeverCanvas({
       ctx.stroke();
       ctx.setLineDash([]);
 
-      ctx.fillStyle = curData.color;
+      ctx.fillStyle = curColor;
       ctx.font = `bold ${7 * uiScale}px JetBrains Mono, monospace`;
       ctx.textAlign = 'center';
       ctx.fillText(`bp = ${bp} cm`, (fulcrumX + muscleX) / 2, barY - 19);
@@ -744,17 +752,17 @@ export default function LeverCanvas({
 
       ctx.save();
       ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-      ctx.shadowColor = 'rgba(35, 44, 54, 0.10)';
+      ctx.shadowColor = tokenRgba(T.ink, 0.10);
       ctx.shadowBlur = 8;
       ctx.beginPath();
       ctx.roundRect(cardX, cardY, cardW, cardH, 6);
       ctx.fill();
       ctx.shadowBlur = 0;
-      ctx.strokeStyle = curData.color;
+      ctx.strokeStyle = curColor;
       ctx.lineWidth = 1.5;
       ctx.stroke();
 
-      ctx.fillStyle = curData.color;
+      ctx.fillStyle = curColor;
       ctx.font = `bold ${8.5 * uiScale}px Karla, system-ui, sans-serif`;
       ctx.textAlign = 'center';
       ctx.fillText('VENTAJA MECÁNICA', cardX + cardW / 2, cardY + 15);
@@ -770,13 +778,13 @@ export default function LeverCanvas({
       const barBoxX = cardX + 10;
       const barBoxY = cardY + 59;
 
-      ctx.fillStyle = 'rgba(107, 120, 133, 0.15)';
+      ctx.fillStyle = tokenRgba(T.ink3, 0.15);
       ctx.fillRect(barBoxX, barBoxY, barBoxW, barBoxH);
 
       const fillRatio = Math.min(1, Math.max(0.06, vm / 2.0));
       ctx.fillStyle = vm >= 1.0 ? '#2e8b57' : '#b02318';
       ctx.fillRect(barBoxX, barBoxY, barBoxW * fillRatio, barBoxH);
-      ctx.strokeStyle = 'rgba(67, 80, 92, 0.35)';
+      ctx.strokeStyle = tokenRgba(T.ink2, 0.35);
       ctx.strokeRect(barBoxX, barBoxY, barBoxW, barBoxH);
 
       ctx.font = `bold ${7.5 * uiScale}px Karla, system-ui, sans-serif`;
@@ -788,7 +796,7 @@ export default function LeverCanvas({
       );
 
       ctx.font = `${7 * uiScale}px Karla, system-ui, sans-serif`;
-      ctx.fillStyle = '#43505c';
+      ctx.fillStyle = T.ink2;
       ctx.fillText(`Fm/W = ${(1 / vm).toFixed(1)} ×`, cardX + cardW / 2, cardY + 95);
       ctx.fillText(`bp ${bp} cm · br ${br} cm`, cardX + cardW / 2, cardY + 108);
       ctx.fillText(vm < 1.0 ? '⚡ Más velocidad distal' : '💪 Ahorro de fuerza', cardX + cardW / 2, cardY + 121);
@@ -797,13 +805,13 @@ export default function LeverCanvas({
       }
 
       // ─── 6. Cabecera Superior ───
-      ctx.fillStyle = 'var(--ink, #232c36)';
+      ctx.fillStyle = T.ink;
       ctx.font = `bold ${12.5 * uiScale}px Karla, system-ui, sans-serif`;
       ctx.textAlign = 'left';
       const shortClassName = leverClass === 1 ? 'INTERAPOYO' : (leverClass === 2 ? 'INTERRESIST.' : 'INTERPOTENCIA');
       ctx.fillText(`PALANCA ${leverClass}ª · ${shortClassName}`, W * 0.04, 56);
 
-      ctx.fillStyle = 'rgba(107, 120, 133, 0.9)';
+      ctx.fillStyle = tokenRgba(T.ink3, 0.9);
       ctx.font = `${8.5 * uiScale}px Karla, system-ui, sans-serif`;
       const shortAnatomy = leverClass === 1 ? 'Cuello / C1' : (leverClass === 2 ? 'Tobillo / metatarsos' : 'Codo / bíceps');
       ctx.fillText(`Anatomía: ${shortAnatomy} · Fm y W`, W * 0.04, 71);

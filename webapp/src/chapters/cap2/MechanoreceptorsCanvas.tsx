@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import { readCap2Tokens, tokenRgba } from './designTokens';
 
 interface MechanoreceptorsCanvasProps {
   selectedReceptor: 'meissner' | 'pacini' | 'merkel' | 'ruffini';
@@ -186,6 +187,9 @@ export default function MechanoreceptorsCanvas({
 
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
+
+      // S4-01: tokens de :root leídos una vez por pasada de dibujo (no por trazo).
+      const T = readCap2Tokens();
 
       ctx.save();
       ctx.scale(dpr, dpr);
@@ -707,7 +711,7 @@ export default function MechanoreceptorsCanvas({
       const probeY = skinTop + totalProbeIndentY;
       ctx.save();
       // Sombra de contacto del cabezal
-      ctx.fillStyle = 'rgba(35, 44, 54, 0.22)';
+      ctx.fillStyle = tokenRgba(T.ink, 0.22);
       ctx.beginPath();
       ctx.ellipse(probeCenterX, probeY + 1, 6, 2.5, 0, 0, Math.PI * 2);
       ctx.fill();
@@ -934,12 +938,12 @@ export default function MechanoreceptorsCanvas({
       ctx.restore();
 
       // ─── 9. Cabecera Superior del Canvas ───
-      ctx.fillStyle = 'var(--ink, #232c36)';
+      ctx.fillStyle = T.ink;
       ctx.font = 'bold 11.5px Karla, system-ui, sans-serif';
       ctx.textAlign = 'left';
       ctx.fillText(`${curRec.name.toUpperCase()}  ·  ${curRec.type}`, W * 0.085, 22);
 
-      ctx.fillStyle = 'rgba(107, 120, 133, 0.9)';
+      ctx.fillStyle = tokenRgba(T.ink3, 0.9);
       ctx.font = '8px Karla, system-ui, sans-serif';
       ctx.fillText(`${curRec.function} — ${curRec.depthStr}`, W * 0.085, 35);
 

@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import { readCap2Tokens, tokenRgba } from './designTokens';
 
 interface TactileThresholdCanvasProps {
   freqHz: number; // Frecuencia del estímulo en Hz (1 a 500 Hz)
@@ -132,6 +133,9 @@ export default function TactileThresholdCanvas({
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
 
+      // S4-01: tokens de :root leídos una vez por pasada de dibujo (no por trazo).
+      const T = readCap2Tokens();
+
       ctx.save();
       ctx.scale(dpr, dpr);
       ctx.clearRect(0, 0, W, H);
@@ -159,7 +163,7 @@ export default function TactileThresholdCanvas({
 
       // Sombra suave del plano cartesiano
       ctx.save();
-      ctx.fillStyle = 'rgba(35, 44, 54, 0.06)';
+      ctx.fillStyle = tokenRgba(T.ink, 0.06);
       ctx.fillRect(plotLeft + 3, plotTop + 3, plotW, plotH);
 
       // Fondo del gráfico
@@ -490,7 +494,7 @@ export default function TactileThresholdCanvas({
 
       ctx.save();
       ctx.fillStyle = 'rgba(255, 255, 255, 0.96)';
-      ctx.shadowColor = 'rgba(35, 44, 54, 0.10)';
+      ctx.shadowColor = tokenRgba(T.ink, 0.10);
       ctx.shadowBlur = 8;
       ctx.roundRect(cardX, cardY, cardW, cardH, 6);
       ctx.fill();
@@ -510,7 +514,7 @@ export default function TactileThresholdCanvas({
       ctx.fillText(channelTag, cardX + cardW / 2, cardY + 30);
 
       // Línea divisoria
-      ctx.strokeStyle = 'rgba(207, 195, 169, 0.6)';
+      ctx.strokeStyle = tokenRgba(T.line, 0.6);
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(cardX + 10, cardY + 38);
@@ -586,12 +590,12 @@ export default function TactileThresholdCanvas({
       ctx.restore();
 
       // ─── 6. Cabecera Superior del Canvas ───
-      ctx.fillStyle = 'var(--ink, #232c36)';
+      ctx.fillStyle = T.ink;
       ctx.font = 'bold 11.5px Karla, system-ui, sans-serif';
       ctx.textAlign = 'left';
       ctx.fillText(`CURVAS DE SINTONÍA PSICOFÍSICA: ${freqHz} Hz · ${amplitudeUm < 1 ? amplitudeUm.toFixed(2) : amplitudeUm.toFixed(1)} µm`, W * 0.04, 22);
 
-      ctx.fillStyle = 'rgba(107, 120, 133, 0.9)';
+      ctx.fillStyle = tokenRgba(T.ink3, 0.9);
       ctx.font = '8px Karla, system-ui, sans-serif';
       ctx.fillText('Arrastra el cursor en el plano logarítmico para explorar la selectividad sensorial de la piel.', W * 0.04, 35);
 

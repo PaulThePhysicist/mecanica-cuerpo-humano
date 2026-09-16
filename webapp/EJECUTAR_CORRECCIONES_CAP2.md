@@ -940,3 +940,29 @@ Cuando los doce tickets estén cerrados:
   paleta de 4 colores. No tocado a propósito (regla de alcance: "aplica solo lo que dice Pasos").
   La clase nueva `.pill.has-marker` + `.pill-dot` ya está en `cap2.css`; aplicar el mismo cambio de
   marcado a G1/H1 es mecánico si se abre un ticket para ello. *(Detectado al ejecutar `L3-02`.)*
+- **`S4-01` tiene la misma premisa falsa que `L3-01`: cap1 tampoco lee tokens con `getComputedStyle`.**
+  El ticket dice "leer los tokens... como ya hace cap1". Verificado: cap1 tiene **cero** usos de
+  `getComputedStyle` — sus propios canvas 2D (`BMICalculatorCanvas.tsx` y otros) usan literales a
+  mano igual que cap2 (`'#232c36'`, `'rgba(35, 44, 54, 0.25)'`). Segunda vez en este plan que una
+  justificación "cap1 ya lo resolvió, cópialo" resulta falsa (la primera fue `L3-01` con los emoji)
+  — vale la pena leer con más escepticismo esa frase en los tickets que quedan (S4-02, S4-03,
+  E5-01, E5-02).
+  El barrido real también era mucho mayor que las 3 líneas VERIFICADAS: ~410 literales de color en
+  6 archivos con canvas 2D de verdad (TactileThreshold, Mechanoreceptors, Torque, Lever,
+  UnitsConverter; ForcePlate resultó no tener ninguno real — sus 4 coincidencias eran color de
+  material 3D y `boxShadow` de overlays HTML, no `ctx.fillStyle`). De esos ~410, la inmensa mayoría
+  son paletas ilustrativas deliberadas (tonos de piel, chasis de osciloscopio, sombreado de
+  receptores) que el propio Paso 4 del ticket exceptúa. Presentado al usuario con tres opciones;
+  **decisión: solo los duplicados exactos de un token existente** (~76 literales) — no se
+  promovieron a tokens nuevos los 4 colores "marcador" (`#b02318` rojo, `#2563eb` azul, `#0d8577`
+  teal, `#d97706` ámbar) usados de forma consistente en decenas de sitios de cap2 (incluidos los
+  pills de `L3-02`) sin ser duplicado casual de ningún token — quedan como están, candidato a
+  decisión de paleta aparte si se quiere formalizarlos.
+  Mecanismo: `cap2/designTokens.ts` (nuevo) — `readCap2Tokens()` lee `:root` una vez por pasada de
+  dibujo vía `getComputedStyle`; `tokenRgba(hex, alpha)` deriva la opacidad. Verificado en vivo
+  cambiando `--ink` con JS y leyendo el píxel real del canvas (`getImageData`): el lienzo de G2 lo
+  siguió correctamente (revertido después). De paso, dos literales `ctx.fillStyle = 'var(--ink,
+  #232c36)'` (en TactileThreshold y Mechanoreceptors) resultaron ser un bug preexistente —
+  `ctx.fillStyle` no interpreta `var()`, así que esa línea nunca pintó con el token, siempre cayó al
+  valor por defecto tal cual; corregido de paso al sustituirla. *(Detectado y corregido al ejecutar
+  `S4-01`.)*
