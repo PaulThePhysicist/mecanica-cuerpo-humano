@@ -17,7 +17,7 @@ React + Vite + TypeScript SPA (la nueva arquitectura en `webapp/`: slide-engine 
 
 ## Product Purpose
 
-Interactive presentation of the Herman *Physics of the Human Body* chapters (translated to Spanish), delivered as a React SPA the professor can use to teach in class. **Chapter 2 — "Fuerzas y Torcas en el Cuerpo" — is fully migrated and verified** (19 slides, 15 interactive 2D simulations, KaTeX equations). Chapter 1 is partially migrated (hybrid). Success = the full lesson can be dictated from the deck and students stay engaged.
+Interactive presentation of the Herman *Physics of the Human Body* chapters (translated to Spanish), delivered as a React SPA the professor can use to teach in class. **Chapter 1 and Chapter 2 are fully migrated, audited, and live in production** (with anatomical 3D models, interactive 2D simulations, and dynamic KaTeX equations). Chapters 3 to 13 are staged in code, rolling out incrementally. Success = the full lesson can be dictated from the deck and students stay engaged.
 
 The deck replaces a previous dark/neon "cyber" design that the owner got stuck polishing, and the single-file HTML approach is being superseded by the SPA for maintainability and offline use.
 

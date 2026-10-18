@@ -1,47 +1,71 @@
 # STATUS — Estado Maestro del Proyecto
 
-**Última actualización:** 2026-08-15
-**Fase Actual:** Desarrollo Web y Simulaciones Interactivas (React + Vite + TS + Canvas 2D + Three.js 3D + KaTeX)
+**Última actualización:** 2026-10-18  
+**Fase Actual:** Fase 2 — Plataforma Web Interactiva (React 19 + TypeScript + Vite + Canvas 2D + Three.js 3D + KaTeX)  
+**Estado de Despliegue:** En producción en Vercel (conectado a `main` en GitHub).
 
 ---
 
-## Resumen Ejecutivo
+## 🚀 Resumen Ejecutivo
 
-| Aspecto | Estado |
-| :--- | :--- |
-| **Repositorio Git** | Inicializado, estructurado y comiteado |
-| **Migración React SPA** | **13 de 13 Capítulos Completados (100%)** |
-| **Total de Diapositivas** | **295 Diapositivas Modulares React** |
-| **Simulaciones Físicas** | **> 200 Simulaciones 2D/3D Activas y Paramétricas** |
-| **Verificación de Build** | **`npm run build` exitoso (0 errores TS/Vite)** |
-| **Documentación** | Íntegra (`LIBRO_COMPLETO.md`, `ROADMAP.md`, `STATUS.md`) |
-
----
-
-## Detalle de Capítulos Migrados
-
-| Capítulo | Título | Diapositivas | Módulos | Simulaciones Clave | Estado |
-| :--- | :--- | :---: | :---: | :--- | :---: |
-| **Capítulo 1** | Terminología, Humano Estándar y Escalado | 21 | 8 | Planos anatómicos, modelo esquelético, alometría, palancas | ✅ Completado |
-| **Capítulo 2** | Estática del Cuerpo Humano | 23 | 8 | Palancas de 1°, 2° y 3° clase, columna lumbar, mandíbula | ✅ Completado |
-| **Capítulo 3** | El Movimiento | 19 | 8 | Bipedestación 3D, marcha, carrera, saltos, lanzamientos, bateo, colisiones | ✅ Completado |
-| **Capítulo 4** | Propiedades Mecánicas de los Materiales | 21 | 8 | Esfuerzo-deformación, módulo de Young, viscoelasticidad, fracturas óseas | ✅ Completado |
-| **Capítulo 5** | Músculos y Mecánica de Contracción | 22 | 8 | Sarcómeros, modelo de Hill, fuerza-longitud-velocidad, EMG | ✅ Completado |
-| **Capítulo 6** | Metabolismo, Energía y Calor | 23 | 8 | Tasa metabólica basal (BMR), ley de Kleiber, termorregulación, radiación | ✅ Completado |
-| **Capítulo 7** | Fluidos del Cuerpo | 23 | 8 | Presión hidrostática, ley de Laplace, Poiseuille, natación y vuelo | ✅ Completado |
-| **Capítulo 8** | Sistema Cardiovascular | 24 | 9 | Gasto cardíaco, Reynolds, modelo Windkessel, resistencia vascular | ✅ Completado |
-| **Capítulo 9** | Los Pulmones y la Respiración | 24 | 9 | Alvéolos, tensión superficial y surfactante, curva P-V, espirometría | ✅ Completado |
-| **Capítulo 10** | Sonido, Habla y Audición | 24 | 9 | Decibelios, formantes vocales, modelo de 2 tubos, cóclea, ultrasonido | ✅ Completado |
-| **Capítulo 11** | Luz, Ojos y Visión | 24 | 9 | Óptica ocular, ley de Snell, bastones/conos, ametropías, diagrama CIE | ✅ Completado |
-| **Capítulo 12** | Propiedades Eléctricas y Magnéticas | 24 | 9 | Potencial de membrana (Nernst/Goldman), dipolo cardíaco Einthoven, ECG, EEG | ✅ Completado |
-| **Capítulo 13** | Retroalimentación y Control | 24 | 8 | Homeostasis LEC, criterio estabilidad con retardo, termorregulación, pupila 3D | ✅ Completado |
+| Aspecto | Estado | Detalle |
+| :--- | :---: | :--- |
+| **Repositorio Git** | 🟢 **Al día** | Sincronizado al 100% con `origin/main` (`PaulThePhysicist/mecanica-cuerpo-humano`). |
+| **Fase 1 (Editorial LaTeX)** | ✅ **100% Cerrada** | 13/13 Capítulos + Preliminares + Apéndices verificados con paridad matemática y estructural 100% (`reporte.md`). |
+| **Capítulos en Producción** | 🟢 **Cap. 1 y Cap. 2 Activos** | `available: true` en `App.tsx`. Acceso público directo en la SPA. |
+| **Capítulos 3 al 13 (Staging)** | 🟡 **Migrados (Ocultos)** | Código y diapositivas React funcionales (295 slides totales), pero con `available: false` a la espera de auditoría individual y estandarización 3D. |
+| **Compilación & Tipos** | 🟢 **Verde** | `npm run build` (`tsc -b && vite build`) exitoso con **0 errores**. |
+| **Vendor Chunking** | ⚡ **Optimizado** | `index.js` inicial de solo **12.8 kB** (5 kB gzip); Three.js y KaTeX completamente desacoplados en lazy chunks. |
+| **Estándar Biomecánico 3D** | 📐 **Estandarizado** | Especificación única en `BIOMECHANICAL_3D_STANDARD_AND_WORKFLOW.md` con coordenadas canónicas y `AnatomyStage`. |
 
 ---
 
-## Infraestructura y Arquitectura
+## 📋 Matriz de Estado por Capítulos (Fase 2 - Web)
+
+| Capítulo | Título | Slides | Estado en Web | Estado de Producción (`App.tsx`) | Próxima Acción |
+| :---: | :--- | :---: | :---: | :---: | :--- |
+| **1** | Antropometría y Anatomía | 21 | ✅ Auditado y Optimizado | **`available: true` (Público)** | Listo en producción. |
+| **2** | Estática del Cuerpo Humano | 23 | ✅ Auditado y Optimizado | **`available: true` (Público)** | Listo en producción. |
+| **3** | El Movimiento | 19 | 🟡 Migrado (base) | `available: false` (Oculto) | **🎯 Siguiente objetivo al retomar**: Auditoría de interacción y migración a `AnatomyStage`. |
+| **4** | Propiedades Mecánicas | 21 | 🟡 Migrado (base) | `available: false` (Oculto) | Pendiente de auditoría y tokens CSS. |
+| **5** | Músculos y Mecánica Contráctil | 22 | 🟡 Migrado (base) | `available: false` (Oculto) | Pendiente de auditoría y acoplamiento con mallas musculares 3D. |
+| **6** | Metabolismo, Energía y Calor | 23 | 🟡 Migrado (base) | `available: false` (Oculto) | Pendiente de auditoría. |
+| **7** | Fluidos del Cuerpo | 23 | 🟡 Migrado (base) | `available: false` (Oculto) | Pendiente de auditoría. |
+| **8** | Sistema Cardiovascular | 24 | 🟡 Migrado (base) | `available: false` (Oculto) | Pendiente de auditoría. |
+| **9** | Los Pulmones y la Respiración | 24 | 🟡 Migrado (base) | `available: false` (Oculto) | Pendiente de auditoría. |
+| **10** | Sonido, Habla y Audición | 24 | 🟡 Migrado (base) | `available: false` (Oculto) | Pendiente de auditoría. |
+| **11** | Luz, Ojos y Visión | 24 | 🟡 Migrado (base) | `available: false` (Oculto) | Pendiente de auditoría. |
+| **12** | Propiedades Eléctricas y Magnéticas | 24 | 🟡 Migrado (base) | `available: false` (Oculto) | Pendiente de auditoría. |
+| **13** | Retroalimentación y Control | 24 | 🟡 Migrado (base) | `available: false` (Oculto) | Pendiente de auditoría. |
+
+---
+
+## 🛠️ Arquitectura Técnica de la Plataforma
 
 - **Framework:** React 19 + TypeScript + Vite.
-- **Renderizado Matemático:** KaTeX con delimitadores inline (`\\( ... \\)`) y bloque (`\\[ ... \\]`).
-- **Simulaciones 2D:** Canvas HTML5 de alto rendimiento con render loops desacoplados y redibujado bajo demanda.
-- **Simulaciones 3D:** Three.js con orbit controls, iluminación realista y mallas anatómicas interactivas.
-- **Navegación:** `App.tsx` con catálogo general de selección de capítulos, navegación por diapositivas con teclado (`←` / `→` / `Espacio`), saltos modulares por pills y botón "← Volver al Índice" en cada capítulo.
+- **Tipografía y Matemáticas:** KaTeX con sintaxis estricta `\\( ... \\)` (inline) y `\\[ ... \\]` (bloque).
+- **Simulaciones 2D:** Canvas HTML5 con `useHarmonicClock` o bucles rAF protegidos contra congelamientos y estados de reserva (`CanvasReserveState.tsx`).
+- **Simulaciones 3D:** Three.js / React Three Fiber con el contenedor compartido `AnatomyStage`, materiales PBR unificados (`materials.ts`) y mallas anatómicas con centroide normalizado en `public/assets/cap1/`.
+- **Despliegue Continuo:** Configurado en `vercel.json` con build automático al hacer push a `main`.
+
+---
+
+## 🏁 Protocolo para Retomar el Proyecto (Quick-Start)
+
+Cuando se reactive el desarrollo (en 2 meses):
+
+1. **Entorno local:**
+   ```bash
+   cd webapp
+   npm install
+   npm run dev
+   ```
+2. **Consultar guías y estándares:**
+   - Hoja de ruta para retomar: `RETOMAR_PROYECTO.md`.
+   - Especificaciones y arquitectura 3D: `BIOMECHANICAL_3D_STANDARD_AND_WORKFLOW.md`.
+   - Auditorías modelo (Cap 1 y Cap 2): `AUDITORIA_CAP1.md` y `AUDITORIA_CAP1_INTERACCION.md`.
+3. **Misión inmediata (Capítulo 3):**
+   - Ejecutar auditoría técnica y de interacción sobre `webapp/src/chapters/cap3/`.
+   - Verificar desacople de rAF, adopción de tokens CSS de `:root`, y encuadre 3D de bipedestación/marcha.
+   - Probar build con `npm run build`.
+   - En `webapp/src/App.tsx`, cambiar `id: 3` a `available: true` para enviarlo a producción.
