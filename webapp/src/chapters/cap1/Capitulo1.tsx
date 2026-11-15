@@ -39,6 +39,40 @@ const SLIDES: React.ComponentType<any>[] = [
   Slide9, Slide10, Slide11, Slide12, Slide13, Slide14, Slide15, Slide16,
 ];
 
+/* Límite de error por diapositiva: un fallo de render en una diapositiva
+   muestra una tarjeta de aviso en su lugar en vez de desmontar toda la app.
+   Se monta con `key` = índice de diapositiva, así que se reinicia al cambiar. */
+class SlideErrorBoundary extends React.Component<
+  { index: number; children: React.ReactNode },
+  { hasError: boolean }
+> {
+  state = { hasError: false };
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  componentDidCatch(error: unknown) {
+    console.error(`[Capitulo1] Error al renderizar la diapositiva ${this.props.index + 1}:`, error);
+  }
+  render() {
+    if (!this.state.hasError) return this.props.children;
+    return (
+      <div className="theory" role="alert">
+        <div className="card">
+          <div className="card-hdr">Esta diapositiva no pudo mostrarse</div>
+          <div className="card-body">
+            <p>Ocurrió un error al cargar el contenido. Puedes seguir con otra diapositiva o volver a intentarlo.</p>
+            <div className="row">
+              <button type="button" className="pill" onClick={() => this.setState({ hasError: false })}>
+                Reintentar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
 /* Contador «n / total» de la cabecera de módulo, derivado de MODULES en vez de
    estar escrito a mano en cada diapositiva. Los módulos de una sola diapositiva
    (Inicio, Resumen) no muestran fracción: devuelven el separador «·». */
@@ -536,6 +570,7 @@ export default function Capitulo1({ onBack }: { onBack?: () => void }) {
             data-module={MODULES.find((m) => m.slides.includes(i))?.id ?? 0}
           >
             {mounted && (
+              <SlideErrorBoundary key={i} index={i}>
               <Slide
                 isActive={isActive}
                 engine={engine}
@@ -553,6 +588,7 @@ export default function Capitulo1({ onBack }: { onBack?: () => void }) {
                 toggleMovementAnimation={toggleMovementAnimation}
                 onBack={onBack}
               />
+              </SlideErrorBoundary>
             )}
           </div>
         );
