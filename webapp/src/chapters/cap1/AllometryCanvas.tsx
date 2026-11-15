@@ -77,6 +77,64 @@ function drawFittedText(
   ctx.fillText(text, x, y);
 }
 
+// Coeficiente con sus cifras propias (4.1, 0.085, 11.89…) y coma decimal.
+// `fmt` exige un número fijo de decimales; aquí cada curva trae los suyos.
+function fmtCoef(n: number) {
+  return String(n).replace('.', ',');
+}
+
+interface ScriptedSegment {
+  text: string;
+  sub?: string;
+  sup?: string;
+}
+
+// Texto con subíndice/superíndice DIBUJADOS (P6-11): los glifos Unicode no
+// sirven aquí — «ᵦ» es una beta, no una b, y no existe coma en superíndice.
+// Sub y super comparten columna (como m_b^α en KaTeX), al 70 % del cuerpo.
+function drawScriptedText(
+  ctx: CanvasRenderingContext2D,
+  segments: ScriptedSegment[],
+  x: number,
+  y: number,
+  maxWidth: number,
+  baseSize: number,
+  minSize: number,
+  family: string,
+  weight = '',
+) {
+  const fontOf = (px: number) => `${weight ? `${weight} ` : ''}${px}px ${family}`;
+  const scriptWidth = (seg: ScriptedSegment, size: number) => {
+    ctx.font = fontOf(size * 0.7);
+    return Math.max(
+      seg.sub ? ctx.measureText(seg.sub).width : 0,
+      seg.sup ? ctx.measureText(seg.sup).width : 0,
+    );
+  };
+  const totalWidth = (size: number) =>
+    segments.reduce((sum, seg) => {
+      ctx.font = fontOf(size);
+      return sum + ctx.measureText(seg.text).width + scriptWidth(seg, size);
+    }, 0);
+
+  let size = baseSize;
+  while (size > minSize && totalWidth(size) > maxWidth) size -= 0.5;
+
+  ctx.textAlign = 'left';
+  let cx = x;
+  segments.forEach((seg) => {
+    ctx.font = fontOf(size);
+    ctx.fillText(seg.text, cx, y);
+    cx += ctx.measureText(seg.text).width;
+    if (seg.sub || seg.sup) {
+      const w = scriptWidth(seg, size); // deja la fuente al 70 %
+      if (seg.sub) ctx.fillText(seg.sub, cx, y + 3);
+      if (seg.sup) ctx.fillText(seg.sup, cx, y - size * 0.36);
+      cx += w;
+    }
+  });
+}
+
 export default function AllometryCanvas({
   selectedParam,
   customMass = 70,
@@ -199,7 +257,12 @@ export default function AllometryCanvas({
           ctx.fillStyle = '#17212b';
           ctx.font = `${scaled(10)}px JetBrains Mono, monospace`;
           ctx.textAlign = 'right';
-          ctx.fillText(val >= 1000 ? val.toExponential(0) : (val < 0.01 ? val.toExponential(0) : String(val)), pad.left - 6, my + 3);
+          // Mismas potencias de 10 que el eje X (10³, 10⁻³…); entre 0,01 y
+          // 999 la cifra llana, con coma decimal (P6-11).
+          const yLabel = dec >= 3 || dec < -2
+            ? `10${toSuperscript(String(dec))}`
+            : (dec < 0 ? fmt(val, -dec) : String(val));
+          ctx.fillText(yLabel, pad.left - 6, my + 3);
         }
       }
 
@@ -438,11 +501,15 @@ export default function AllometryCanvas({
       // Keep the responsive header inside the canvas; long parameter descriptions
       // otherwise spill over the right edge on compact slide layouts.
       const headerMaxWidth = Math.max(80, W - pad.left - pad.right);
-      const exponent = toSuperscript(fmt(activeCurve.alpha, 2));
+      const exponent = fmt(activeCurve.alpha, 2).replace('-', '−');
       ctx.fillStyle = '#f1eadc';
       ctx.fillRect(pad.left - 2, 10, headerMaxWidth + 4, 34);
       ctx.fillStyle = '#232c36';
-      drawFittedText(ctx, `LEY DE POTENCIA ALOMÉTRICA: f = ${activeCurve.a} · mᵦ${exponent}`, pad.left, 24, headerMaxWidth, scaled(14), scaled(9), 'Karla, system-ui, sans-serif', 'bold');
+      drawScriptedText(
+        ctx,
+        [{ text: `LEY DE POTENCIA ALOMÉTRICA: f = ${fmtCoef(activeCurve.a)} · m`, sub: 'b', sup: exponent }],
+        pad.left, 24, headerMaxWidth, scaled(14), scaled(9), 'Karla, system-ui, sans-serif', 'bold',
+      );
       ctx.fillStyle = '#17212b';
       drawFittedText(ctx, `${activeCurve.name} [${activeCurve.unit}] · ${activeCurve.desc}`, pad.left, 38, headerMaxWidth, scaled(10.5), scaled(7), 'Karla, system-ui, sans-serif');
 
@@ -452,9 +519,14 @@ export default function AllometryCanvas({
       // que abajo (pad.bottom) nunca queda realmente libre. Arriba sí lo está,
       // confirmado en pantalla (V2-04).
       ctx.fillStyle = '#17212b';
-      ctx.font = `${scaled(9)}px Karla, system-ui, sans-serif`;
-      ctx.textAlign = 'left';
-      ctx.fillText('Eje X: masa corporal mᵦ (kg, escala logarítmica de 10 g a 150 t) →', pad.left, pad.top - 8);
+      drawScriptedText(
+        ctx,
+        [
+          { text: 'Eje X: masa corporal m', sub: 'b' },
+          { text: ' (kg, escala logarítmica de 10 g a 150 t) →' },
+        ],
+        pad.left, pad.top - 8, headerMaxWidth, scaled(9), scaled(9), 'Karla, system-ui, sans-serif',
+      );
 
       ctx.restore();
       rafRef.current = requestAnimationFrame(render);
