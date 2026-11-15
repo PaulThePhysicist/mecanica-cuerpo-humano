@@ -108,7 +108,8 @@ export default function Slide7({ slideCount }: { slideCount?: string }) {
   useHarmonicClock({ playing: isAnimating }, (t) => {
     if (mode === 'eye') {
       // Recorrido automático del test clínico en H
-      const gKey = H_TEST_ORDER[Math.floor((t * 0.8) % H_TEST_ORDER.length)];
+      const step = Math.floor(Math.max(0, t) * 0.8) % H_TEST_ORDER.length;
+      const gKey = H_TEST_ORDER[step] ?? 'center';
       const target = EYE_GAZE_PRESETS[gKey];
       setSelectedGaze(gKey);
       setGaze({ x: target.x, y: target.y });
