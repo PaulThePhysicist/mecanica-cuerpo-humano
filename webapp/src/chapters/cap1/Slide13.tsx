@@ -137,15 +137,15 @@ export default function Slide13({ slideCount }: { slideCount?: string }) {
           </div>
           <div className="card">
             <div className="card-hdr">
-              <span className="icon">🦘</span> Invariantes de escala (Tabla 1.14)
+              <span className="icon">🦘</span> Lo que no escala con la masa (§1.4)
             </div>
             <div className="card-body">
               <div style={{ display: 'flex', gap: '.4rem', flexWrap: 'wrap' }}>
-                <span className="pill"><b>Salto vertical:</b> ~2/3 m (todas las masas)</span>
-                <span className="pill"><b>Velocidad máx.:</b> ~7 m/s</span>
+                <span className="pill"><b>Salto vertical:</b> ~2/3 m (factor 2)</span>
+                <span className="pill"><b>Carrera máx.:</b> ~7 m/s (factor 2)</span>
               </div>
               <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '.25rem' }}>
-                La fuerza muscular $\propto H^2$, mientras el peso $\propto H^3$. La energía de salto por unidad de masa se mantiene constante.
+                Del ratón al elefante (masa ×10 000): la fuerza muscular $\propto H^2$, mientras el peso $\propto H^3$. La energía de salto por unidad de masa se mantiene constante.
               </p>
             </div>
           </div>
