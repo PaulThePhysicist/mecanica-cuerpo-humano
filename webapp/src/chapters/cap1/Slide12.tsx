@@ -125,7 +125,7 @@ export default function Slide12({ slideCount }: { slideCount?: string }) {
       <div className="module-header">
         <span className="mnum">D1</span>
         <span className="mtitle">Reglas alométricas</span>
-        <span className="msub">f = a · m_b^α · del ratón al elefante (Tabla 1.13)</span>
+        <span className="msub">{'$f = a\\,m_b^{\\alpha}$ · del ratón al elefante (Tabla 1.13)'}</span>
         <span className="mslide-count">{slideCount ?? '1 / 4'}</span>
       </div>
       <div className="content-grid" id="d1-math-root">

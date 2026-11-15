@@ -114,7 +114,7 @@ export default function Slide13({ slideCount }: { slideCount?: string }) {
       <div className="module-header">
         <span className="mnum">D2</span>
         <span className="mtitle">Escalado estructural</span>
-        <span className="msub">¿Por qué el elefante no tiene patas de ratón gigante? (w ∝ L^3/2)</span>
+        <span className="msub">{'¿Por qué el elefante no tiene patas de rata gigante? ($w \\propto L^{3/2}$)'}</span>
         <span className="mslide-count">{slideCount ?? '2 / 4'}</span>
       </div>
       <div className="content-grid" id="d2-math-root">
@@ -247,7 +247,7 @@ export default function Slide13({ slideCount }: { slideCount?: string }) {
                 checked={isAllometric}
                 onChange={(e) => setIsAllometric(e.target.checked)}
               />
-              <b>{isAllometric ? 'Alométrico Real (w ∝ L^1,5)' : '⚠️ Modo Isométrico (Fractura)'}</b>
+              <b>{isAllometric ? 'Alométrico Real ($w \\propto L^{3/2}$)' : '⚠️ Modo Isométrico (Fractura)'}</b>
             </label>
 
             <button
