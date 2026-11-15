@@ -98,16 +98,6 @@ const DESCRIPTIONS: Record<string, string> = {
   'plane-sagittal': '<b>Plano sagital</b>: divide en izquierda y derecha; flexión/extensión.',
   'plane-coronal': '<b>Plano coronal (frontal)</b>: divide en anterior y posterior; abducción/aducción.',
   'plane-transverse': '<b>Plano transversal (axial)</b>: divide en superior e inferior; rotaciones.',
-  'region-caput': '<b>Cefálica</b>: cabeza. Contiene el cerebro (~1.400 g).',
-  'region-cervical': '<b>Cervical</b>: cuello; 7 vértebras.',
-  'region-acromion': '<b>Acromial</b>: parte superior del hombro; articulación de 3 GL.',
-  'region-brachium': '<b>Braquial</b>: brazo, parte superior (húmero).',
-  'region-antebrachium': '<b>Antebraquial</b>: antebrazo (cúbito y radio); el pivote radiocubital añade 1 GL.',
-  'region-carpus': '<b>Carpiana</b>: muñeca; articulación condílea de 2 GL.',
-  'region-femur': '<b>Femoral</b>: muslo; contiene el fémur, el hueso más largo.',
-  'region-popliteus': '<b>Poplítea</b>: parte posterior de la rodilla.',
-  'region-crus': '<b>Crural</b>: frente de la pierna (tibia y peroné).',
-  'region-tarsus': '<b>Tarsiana</b>: tobillo (huesos tarsianos).',
   'BMR': '<b>Ley de Kleiber:</b> el metabolismo basal escala con α = 0,75.',
   'area': '<b>Área superficial:</b> α = 0,65 (ver Du Bois en D3).',
   'HR': '<b>Frecuencia cardíaca:</b> α = −0,25 — el corazón del elefante late más lento.',
@@ -433,27 +423,19 @@ export default function Capitulo1({ onBack }: { onBack?: () => void }) {
 
     document.querySelectorAll('[data-highlight^="region-"]').forEach((el) => {
       const key = (el as HTMLElement).dataset.highlight || '';
-      const slide = (el.closest('.slide') as HTMLElement)?.dataset.slide || '';
-      const infoKey = { '1': 'a1', '2': 'a2', '3': 'a3' }[slide] || '';
-      
+      // El apunte de A3 lo escribe Slide3 (hover y clic); aquí solo el estado 3D.
       const isSelected = regionSel === key;
       (el as HTMLElement).dataset.selected = isSelected ? 'true' : 'false';
       el.classList.toggle('active', isSelected);
 
       (el as HTMLElement).onclick = () => {
-        setRegionSel((prev) => {
-          const nextVal = prev === key ? null : key;
-          setInfo(nextVal || '', infoKey);
-          return nextVal;
-        });
+        setRegionSel((prev) => (prev === key ? null : key));
       };
       (el as HTMLElement).onmouseenter = () => {
-        setInfo(key, infoKey);
         setRegionSel(key);
       };
       (el as HTMLElement).onmouseleave = () => {
         setRegionSel(regionSel);
-        setInfo(regionSel || '', infoKey);
       };
     });
 

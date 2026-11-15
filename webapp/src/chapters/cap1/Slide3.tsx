@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import BodyScene from './BodyScene';
 
 interface Slide3Props {
@@ -46,23 +46,26 @@ const REGIONS_LIST = [
 
 export default function Slide3({ regionSel: parentRegionSel, slideCount }: Slide3Props) {
   const [localRegion, setLocalRegion] = useState<string | null>(null);
+  const [hoverRegion, setHoverRegion] = useState<string | null>(null);
   const [resetSignal, setResetSignal] = useState(0);
   const [zoomSignal, setZoomSignal] = useState<{ type: 'in' | 'out'; time: number } | null>(null);
 
   const activeRegion = localRegion !== null ? localRegion : parentRegionSel;
 
   const handleSelectRegion = (rId: string) => {
-    const next = activeRegion === rId ? null : rId;
-    setLocalRegion(next);
-    const info = document.getElementById('info-text-a3');
-    if (info) {
-      if (next && REGION_DESCRIPTIONS[next]) {
-        info.innerHTML = REGION_DESCRIPTIONS[next];
-      } else {
-        info.innerHTML = 'Pasa el cursor o haz clic sobre cada región para verla en el modelo 3D y su relevancia clínica.';
-      }
-    }
+    setLocalRegion(localRegion === rId ? null : rId);
   };
+
+  // El apunte se deriva en render: hover > selección > pista por defecto.
+  const shownRegion = hoverRegion ?? activeRegion ?? null;
+  const apunteHtml = useMemo(
+    () => ({
+      __html:
+        (shownRegion && REGION_DESCRIPTIONS[shownRegion]) ||
+        'Pasa el cursor o haz clic sobre cada región para verla en el modelo 3D y su relevancia clínica.',
+    }),
+    [shownRegion],
+  );
 
   const handleZoomIn = () => setZoomSignal({ type: 'in', time: Date.now() });
   const handleZoomOut = () => setZoomSignal({ type: 'out', time: Date.now() });
@@ -93,6 +96,8 @@ export default function Slide3({ regionSel: parentRegionSel, slideCount }: Slide
                     className={`pill ${activeRegion === r.id ? 'active' : ''}`}
                     data-highlight={r.id}
                     onClick={() => handleSelectRegion(r.id)}
+                    onMouseEnter={() => setHoverRegion(r.id)}
+                    onMouseLeave={() => setHoverRegion(null)}
                     style={{ cursor: 'pointer' }}
                   >
                     <b>{r.name}</b> {r.trans}
@@ -120,9 +125,7 @@ export default function Slide3({ regionSel: parentRegionSel, slideCount }: Slide
           </div>
           <div className="apuntes">
             <div className="a-hdr"><span>✍️</span> Apunte de cátedra</div>
-            <div className="a-text" id="info-text-a3">
-              Pasa el cursor o haz clic sobre cada región para verla en el modelo 3D y su relevancia clínica.
-            </div>
+            <div className="a-text" id="info-text-a3" dangerouslySetInnerHTML={apunteHtml} />
           </div>
         </div>
         <div className="sim-area" id="sim-regiones" style={{ position: 'relative' }}>
