@@ -12,7 +12,6 @@ interface SomatotypeDetail {
   scores: string;
   desc: string;
   features: string;
-  athletes: string;
 }
 
 const SOMATO_DATA: Record<SomatotypeKey, SomatotypeDetail> = {
@@ -23,9 +22,8 @@ const SOMATO_DATA: Record<SomatotypeKey, SomatotypeDetail> = {
     color: '#0d6e64',
     tag: 'Ectomorfia alta',
     scores: '1,0 · 1,5 · 6,5',
-    desc: '<b>Ectomorfo (Linealidad dominante):</b> Predominio de longitud sobre masa. Miembros largos y finos, escasa grasa subcutánea y caja torácica plana.',
+    desc: '<b>Ectomorfo (Linealidad dominante):</b> Cuerpo largo y magro. Prototipos: bailarines de ballet, saltadores de altura y corredores de maratón (alta ectomorfia, baja mesomorfia y endomorfia).',
     features: 'Cuerpo largo, delgado y magro; huesos finos, poca grasa y poco músculo; caderas más anchas que los hombros. Ballet, salto de altura, maratón.',
-    athletes: 'Corredores de fondo, maratón, salto de altura, baloncesto.',
   },
   meso: {
     id: 'meso',
@@ -34,9 +32,8 @@ const SOMATO_DATA: Record<SomatotypeKey, SomatotypeDetail> = {
     color: '#c0681e',
     tag: 'Mesomorfia alta',
     scores: '2,0 · 6,5 · 1,5',
-    desc: '<b>Mesomorfo (Desarrollo musculoesquelético):</b> Predominio óseo y muscular. Hombros anchos, tórax en V, cintura estrecha y articulaciones robustas.',
+    desc: '<b>Mesomorfo (Desarrollo musculoesquelético):</b> Cuerpo sólido y atlético. Atletas de fuerza: halterofilia, boxeo y lucha.',
     features: 'Cuerpo sólido, musculoso y atlético; hombros más anchos que las caderas. Halterofilia, boxeo, lucha.',
-    athletes: 'Gimnastas, velocistas, boxeadores, halterofilia.',
   },
   endo: {
     id: 'endo',
@@ -45,9 +42,8 @@ const SOMATO_DATA: Record<SomatotypeKey, SomatotypeDetail> = {
     color: '#6d5fbf',
     tag: 'Endomorfia alta',
     scores: '6,5 · 3,5 · 1,0',
-    desc: '<b>Endomorfo (Adiposidad y volumen):</b> Predominio del tejido adiposo y órganos digestivos. Silueta redondeada, hombros y caderas anchos (forma de pera).',
+    desc: '<b>Endomorfo (Adiposidad y volumen):</b> Cuerpo redondeado con exceso de tejido graso. Prototipos: luchadores de sumo y hombres sedentarios de mediana edad.',
     features: 'Cuerpo redondeado, en forma de pera; huesos grandes y exceso de tejido graso; hombros algo más anchos que las caderas. Sumo; adultos sedentarios.',
-    athletes: 'Luchadores de sumo, lanzadores de disco/peso, pilares de rugby.',
   },
 };
 
