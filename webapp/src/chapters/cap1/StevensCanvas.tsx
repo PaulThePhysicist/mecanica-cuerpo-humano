@@ -24,9 +24,9 @@ const SENSATIONS: Record<string, SensationInfo> = {
   sonoridad: { id: 'sonoridad', name: 'Sonoridad (monoaural)', emoji: '🔊', n: 0.54, color: SERIES_COLORS[1], unit: 'Nivel sonoro (dB)', desc: 'Compresión logarítmica coclear' },
   olor: { id: 'olor', name: 'Olor (café)', emoji: '👃', n: 0.55, color: SERIES_COLORS[2], unit: 'Concentración (ppm)', desc: 'Saturación de quimiorreceptores' },
   vibracion: { id: 'vibracion', name: 'Vibración (250 Hz, en el dedo)', emoji: '📳', n: 0.60, color: SERIES_COLORS[3], unit: 'Amplitud 250 Hz (μm)', desc: 'Corpúsculos de Pacini/Meissner' },
-  presion: { id: 'presion', name: 'Presión palmar', emoji: '✋', n: 1.10, color: SERIES_COLORS[4], unit: 'Fuerza aplicada (N)', desc: 'Detección proporcional de agarre' },
-  pesadez: { id: 'pesadez', name: 'Pesadez (Levantar)', emoji: '🏋️', n: 1.45, color: SERIES_COLORS[5], unit: 'Masa levantada (kg)', desc: 'Fatiga neuromuscular progresiva' },
-  descarga: { id: 'descarga', name: 'Descarga eléctrica', emoji: '⚡', n: 3.50, color: SERIES_COLORS[6], unit: 'Corriente 60 Hz (mA)', desc: 'Alarma nociceptiva superlineal extrema' },
+  presion: { id: 'presion', name: 'Presión en la palma', emoji: '✋', n: 1.10, color: SERIES_COLORS[4], unit: 'Fuerza aplicada (N)', desc: 'Detección proporcional de agarre' },
+  pesadez: { id: 'pesadez', name: 'Pesadez (Levantar pesos)', emoji: '🏋️', n: 1.45, color: SERIES_COLORS[5], unit: 'Masa levantada (kg)', desc: 'Fatiga neuromuscular progresiva' },
+  descarga: { id: 'descarga', name: 'Descarga eléctrica (60 Hz)', emoji: '⚡', n: 3.50, color: SERIES_COLORS[6], unit: 'Corriente 60 Hz (mA)', desc: 'Alarma nociceptiva superlineal extrema' },
 };
 
 const SUPERSCRIPT: Record<string, string> = {
@@ -127,7 +127,7 @@ export default function StevensCanvas({
       const xFromS = (sVal: number) => pad.left + (sVal / sMax) * plotW;
       const yFromP = (pVal: number) => pad.top + plotH - (Math.max(0, pVal) / pMax) * plotH;
 
-      // Rejilla de fondo + marcas del eje X (múltiplos de S₀)
+      // Rejilla de fondo + marcas del eje X (unidades relativas)
       ctx.strokeStyle = 'rgba(67, 80, 92, 0.08)';
       ctx.lineWidth = 1;
       for (let sStep = 1; sStep <= 4; sStep++) {
@@ -140,7 +140,7 @@ export default function StevensCanvas({
         ctx.fillStyle = '#43505c';
         ctx.font = `${scaled(11)}px JetBrains Mono, monospace`;
         ctx.textAlign = 'center';
-        ctx.fillText(`${sStep}S₀`, sx, pad.top + plotH + 14);
+        ctx.fillText(`${sStep}`, sx, pad.top + plotH + 14);
       }
 
       // Marcas del eje Y (percepción P, fracciones de su máximo con el
@@ -169,7 +169,7 @@ export default function StevensCanvas({
       ctx.fillStyle = '#43505c';
       ctx.font = `${scaled(10)}px Karla, system-ui, sans-serif`;
       ctx.textAlign = 'center';
-      ctx.fillText('Estímulo S (múltiplos de S₀)', pad.left + plotW / 2, pad.top + plotH + 30);
+      ctx.fillText('Estímulo S (unidades relativas)', pad.left + plotW / 2, pad.top + plotH + 30);
 
       ctx.save();
       ctx.translate(14, pad.top + plotH / 2);

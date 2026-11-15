@@ -34,7 +34,7 @@ const STEVENS_SENSATIONS: Record<string, SensationDetail> = {
     name: 'Brillo visual',
     n: 0.33,
     type: 'sub',
-    desc: '<b>Brillo ($n = 0{,}33$ · Sublineal):</b> La visión comprime el enorme rango dinámico de la luz ambiental. Duplicar el flujo lumínico ($2S$) solo produce una sensación $1{,}26\\times$ mayor ($2^{0{,}33}$).',
+    desc: '<b>Brillo ($n = 0{,}33$ · Sublineal):</b> La visión comprime el enorme rango dinámico de la luz ambiental. Duplicar el exceso sobre el umbral del flujo lumínico ($S - S_0$) solo produce una sensación $1{,}26\\times$ mayor ($2^{0{,}33}$).',
   },
   sonoridad: {
     id: 'sonoridad',
@@ -76,7 +76,7 @@ const STEVENS_SENSATIONS: Record<string, SensationDetail> = {
     name: 'Descarga eléctrica (60 Hz)',
     n: 3.50,
     type: 'super',
-    desc: '<b>Descarga eléctrica ($n = 3{,}50$ · Extremadamente superlineal):</b> Un incremento de $2\\times$ en la corriente produce una sensación de dolor $\\mathbf{11{,}3\\times}$ más intensa ($2^{3{,}5}$). Alarma fisiológica extrema.',
+    desc: '<b>Descarga eléctrica ($n = 3{,}50$ · Extremadamente superlineal):</b> Duplicar el exceso sobre el umbral de la corriente ($S - S_0$) produce una sensación de dolor $\\mathbf{11{,}31\\times}$ más intensa ($2^{3{,}5}$). Alarma fisiológica extrema.',
   },
 };
 
@@ -194,7 +194,7 @@ export default function Slide15({ slideCount }: { slideCount?: string }) {
             title="LEY DE STEVENS"
             badge={`n = ${fmt(n, 2)} · ${nType.toUpperCase()}`}
             icon="🧠"
-            footer="💡 P = K · (S - S₀)^n · Compara sublineal vs superlineal"
+            footer="💡 P = K · (S − S₀)ⁿ · Compara sublineal vs superlineal"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
               {Object.values(STEVENS_SENSATIONS).map((s) => {
@@ -224,7 +224,7 @@ export default function Slide15({ slideCount }: { slideCount?: string }) {
               })}
 
               <div style={{ marginTop: '4px', borderTop: '1px dashed var(--line)', paddingTop: '4px', fontSize: '0.54rem', color: 'var(--ink-3)' }}>
-                ⚡ <b>Duplicación:</b> 2^n = {fmt(Math.pow(2, n), 2)}×
+                ⚡ <b>Duplicación:</b> 2ⁿ = {fmt(Math.pow(2, n), 2)}×
               </div>
             </div>
           </HudPanel>
