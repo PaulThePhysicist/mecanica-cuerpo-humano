@@ -7,41 +7,41 @@ interface Slide3Props {
 }
 
 const REGION_DESCRIPTIONS: Record<string, string> = {
-  'region-thorax': '<b>Thorax (Pecho):</b> Caja torácica formada por esternón, costillas y vértebras torácicas; protege corazón y pulmones.',
-  'region-digital': '<b>Digital (Dedos):</b> Región distal de manos y pies; el modelo dispone de metacarpianos y metatarsianos como referencia ósea.',
-  'region-gluteal': '<b>Gluteal (Nalga):</b> Región posterior de la cintura pélvica, representada aquí por los huesos de la cadera.',
+  'region-thorax': '<b>Torácica (Pecho):</b> Caja torácica formada por esternón, costillas y vértebras torácicas; protege corazón y pulmones.',
+  'region-digital': '<b>Digital (Dedo de la mano o del pie):</b> Región distal de manos y pies; el modelo dispone de metacarpianos y metatarsianos como referencia ósea.',
+  'region-gluteal': '<b>Glútea (Nalga):</b> Región posterior de la cintura pélvica, representada aquí por los huesos de la cadera.',
   'region-plantar': '<b>Plantar (Planta del pie):</b> Superficie inferior del pie, asociada en el modelo a los huesos metatarsianos.',
-  'region-vertebral': '<b>Vertebral (Columna):</b> Eje óseo formado por las regiones cervical, torácica, lumbar y sacra.',
-  'region-caput': '<b>Caput (Cabeza):</b> Aloja el encéfalo (~1.400 g) y los órganos sensoriales especiales (vista, oído, gusto, olfato).',
+  'region-vertebral': '<b>Vertebral (Columna vertebral):</b> Eje óseo formado por las regiones cervical, torácica, lumbar y sacra.',
+  'region-caput': '<b>Cefálica (Cabeza):</b> Aloja el encéfalo (~1.400 g) y los órganos sensoriales especiales (vista, oído, gusto, olfato).',
   'region-cervical': '<b>Cervical (Cuello):</b> Segmento móvil de 7 vértebras (C1–C7) que soporta y orienta la cabeza.',
-  'region-acromion': '<b>Acromion (Hombro):</b> Vértice superior de la escápula. Complejo articular esferoidal de 3 GL.',
+  'region-acromion': '<b>Acromial (Parte superior del hombro):</b> Región del acromion, vértice superior de la escápula. Complejo articular esferoidal de 3 GL.',
   'region-coxal': '<b>Coxal (Cadera):</b> Región de unión entre el tronco y los miembros inferiores; articula la pelvis con el fémur.',
-  'region-brachium': '<b>Brachium (Brazo):</b> Segmento proximal del miembro superior constituido por el hueso húmero.',
-  'region-antebrachium': '<b>Antebrachium (Antebrazo):</b> Cúbito y radio con pivote radiocubital (+1 GL de pronación/supinación).',
-  'region-carpus': '<b>Carpus (Muñeca):</b> Conjunto de 8 huesos carpianos; articulación condílea de 2 GL.',
-  'region-femur': '<b>Femur (Muslo):</b> Hueso más largo, pesado y resistente del cuerpo humano; soporta cargas de impacto.',
-  'region-popliteus': '<b>Popliteus (Fosa poplítea):</b> Región posterior a la articulación de la rodilla por donde cruzan vasos y nervios.',
-  'region-crus': '<b>Crus (Pierna):</b> Tibia (soporte de peso) y peroné (estabilizador muscular y de tobillo).',
-  'region-tarsus': '<b>Tarsus (Tobillo / Tarso):</b> 7 huesos tarsianos dispuestos en arco para la absorción elástica del impacto al caminar.',
+  'region-brachium': '<b>Braquial (Brazo, parte superior):</b> Segmento proximal del miembro superior constituido por el hueso húmero.',
+  'region-antebrachium': '<b>Antebraquial (Antebrazo):</b> Cúbito y radio con pivote radiocubital (+1 GL de pronación/supinación).',
+  'region-carpus': '<b>Carpiana (Muñeca):</b> Conjunto de 8 huesos carpianos; articulación condílea de 2 GL.',
+  'region-femur': '<b>Femoral (Muslo):</b> Región del muslo; contiene el fémur, el hueso más largo, pesado y resistente del cuerpo humano, que soporta cargas de impacto.',
+  'region-popliteus': '<b>Poplítea (Parte posterior de la rodilla):</b> Región posterior a la articulación de la rodilla por donde cruzan vasos y nervios.',
+  'region-crus': '<b>Crural (Frente de la pierna):</b> Región de la pierna que contiene la tibia (soporte de peso) y peroné (estabilizador muscular y de tobillo).',
+  'region-tarsus': '<b>Tarsiana (Tobillo):</b> Región de los 7 huesos tarsianos dispuestos en arco para la absorción elástica del impacto al caminar.',
 };
 
 const REGIONS_LIST = [
-  { id: 'region-thorax', name: 'Thorax', trans: 'Pecho' },
-  { id: 'region-digital', name: 'Digital', trans: 'Dedos' },
-  { id: 'region-gluteal', name: 'Gluteal', trans: 'Nalga' },
+  { id: 'region-thorax', name: 'Torácica', trans: 'Pecho' },
+  { id: 'region-digital', name: 'Digital', trans: 'Dedo (de la mano o del pie)' },
+  { id: 'region-gluteal', name: 'Glútea', trans: 'Nalga' },
   { id: 'region-plantar', name: 'Plantar', trans: 'Planta del pie' },
-  { id: 'region-vertebral', name: 'Vertebral', trans: 'Columna' },
-  { id: 'region-caput', name: 'Caput', trans: 'Cabeza' },
+  { id: 'region-vertebral', name: 'Vertebral', trans: 'Columna vertebral' },
+  { id: 'region-caput', name: 'Cefálica', trans: 'Cabeza' },
   { id: 'region-cervical', name: 'Cervical', trans: 'Cuello' },
-  { id: 'region-acromion', name: 'Acromion', trans: 'Hombro' },
+  { id: 'region-acromion', name: 'Acromial', trans: 'Parte superior del hombro' },
   { id: 'region-coxal', name: 'Coxal', trans: 'Cadera' },
-  { id: 'region-brachium', name: 'Brachium', trans: 'Brazo' },
-  { id: 'region-antebrachium', name: 'Antebrachium', trans: 'Antebrazo' },
-  { id: 'region-carpus', name: 'Carpus', trans: 'Muñeca' },
-  { id: 'region-femur', name: 'Femur', trans: 'Muslo' },
-  { id: 'region-popliteus', name: 'Popliteus', trans: 'Rodilla' },
-  { id: 'region-crus', name: 'Crus', trans: 'Pierna' },
-  { id: 'region-tarsus', name: 'Tarsus', trans: 'Tobillo' },
+  { id: 'region-brachium', name: 'Braquial', trans: 'Brazo (superior)' },
+  { id: 'region-antebrachium', name: 'Antebraquial', trans: 'Antebrazo' },
+  { id: 'region-carpus', name: 'Carpiana', trans: 'Muñeca' },
+  { id: 'region-femur', name: 'Femoral', trans: 'Muslo' },
+  { id: 'region-popliteus', name: 'Poplítea', trans: 'Parte posterior de la rodilla' },
+  { id: 'region-crus', name: 'Crural', trans: 'Frente de la pierna' },
+  { id: 'region-tarsus', name: 'Tarsiana', trans: 'Tobillo' },
 ];
 
 export default function Slide3({ regionSel: parentRegionSel, slideCount }: Slide3Props) {
@@ -100,7 +100,7 @@ export default function Slide3({ regionSel: parentRegionSel, slideCount }: Slide
                 ))}
               </div>
               <p style={{ fontSize: '.6rem', color: 'var(--ink-3)', marginTop: '.3rem' }}>
-                💡 El nombre <em>braquial</em> de los músculos del brazo proviene de <strong>brachium</strong>.
+                💡 El nombre <em>braquial</em> viene de <strong>brachium</strong> (brazo): bíceps braquial, tríceps braquial.
               </p>
             </div>
           </div>
@@ -112,8 +112,8 @@ export default function Slide3({ regionSel: parentRegionSel, slideCount }: Slide
               <table className="data-mini data-terms">
                 <tbody>
                   <tr><th>Sin chip 3D equivalente arriba</th></tr>
-                  <tr><td><b>Occipital</b>: nuca</td></tr>
-                  <tr><td><b>Sural</b>: pantorrilla</td></tr>
+                  <tr><td><b>Occipital</b>: parte posterior de la cabeza</td></tr>
+                  <tr><td><b>Sural</b>: parte posterior de la pierna (pantorrilla)</td></tr>
                 </tbody>
               </table>
             </div>
