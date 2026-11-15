@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import StandardHumanCanvas from './StandardHumanCanvas';
 import { STANDARD_MAN } from './standardMan';
 import { fmt } from './format';
+// @ts-ignore - katex auto-render no incluye tipos
+import renderMathInElement from 'katex/contrib/auto-render';
 
 interface ParamDetail {
   id: string;
@@ -51,30 +53,58 @@ const PARAMS_DATA: Record<string, ParamDetail> = {
   },
 };
 
+function renderC1Math() {
+  const info = document.getElementById('info-text-c1');
+  if (!info) return;
+  renderMathInElement(info, {
+    delimiters: [
+      { left: '$$', right: '$$', display: true },
+      { left: '$', right: '$', display: false },
+      { left: '\\(', right: '\\)', display: false },
+      { left: '\\[', right: '\\]', display: true },
+    ],
+    throwOnError: false,
+  });
+}
+
 export default function Slide8({ slideCount }: { slideCount?: string }) {
   const [mass, setMass] = useState<number>(STANDARD_MAN.massKg);
   const [height, setHeight] = useState<number>(STANDARD_MAN.heightM * 100);
   const [selectedParam, setSelectedParam] = useState<string>('mass');
 
   const currentDetail = PARAMS_DATA[selectedParam] || PARAMS_DATA.mass;
+  // El apunte tiene un único dueño: el estado `selectedParam`. El objeto se
+  // memoiza para que React no reescriba el innerHTML (ya pasado por KaTeX) en
+  // cada render ajeno, p. ej. al mover los deslizadores de masa/estatura.
+  const apunteHtml = useMemo(() => ({ __html: currentDetail.desc }), [currentDetail.desc]);
+
+  // KaTeX se vuelve a aplicar cada vez que cambia el contenido del apunte
+  // (mismo mecanismo que C3 y D1).
+  useEffect(() => {
+    const info = document.getElementById('info-text-c1');
+    if (!info) return undefined;
+
+    const renderIfNeeded = () => {
+      if (info.textContent?.includes('$')) renderC1Math();
+    };
+    const timers = [0, 80, 200].map((delay) => window.setTimeout(renderIfNeeded, delay));
+    const observer = new MutationObserver(renderIfNeeded);
+    observer.observe(info, { childList: true, subtree: true, characterData: true });
+
+    return () => {
+      timers.forEach((id) => window.clearTimeout(id));
+      observer.disconnect();
+    };
+  }, [selectedParam]);
 
   const handleSelectParam = (pId: string) => {
     setSelectedParam(pId);
-    const detail = PARAMS_DATA[pId];
-    const info = document.getElementById('info-text-c1');
-    if (info && detail) {
-      info.innerHTML = detail.desc;
-    }
   };
 
   const handleReset = () => {
     setMass(STANDARD_MAN.massKg);
     setHeight(STANDARD_MAN.heightM * 100);
     setSelectedParam('mass');
-    const info = document.getElementById('info-text-c1');
-    if (info) {
-      info.innerHTML = PARAMS_DATA.mass.desc;
-    }
   };
 
   // Cálculos reactivos
@@ -155,7 +185,7 @@ export default function Slide8({ slideCount }: { slideCount?: string }) {
           <div className="apuntes">
             <div className="a-hdr"><span>✍️</span> Apunte de cátedra</div>
             <div className="a-text" id="info-text-c1">
-              <span dangerouslySetInnerHTML={{ __html: currentDetail.desc }} />
+              <span dangerouslySetInnerHTML={apunteHtml} />
             </div>
           </div>
         </div>
