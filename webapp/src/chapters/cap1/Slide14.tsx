@@ -45,7 +45,7 @@ export default function Slide14({ slideCount }: { slideCount?: string }) {
       <div className="module-header">
         <span className="mnum">D3</span>
         <span className="mtitle">Índices de escala</span>
-        <span className="msub">Superficie, densidad, IMC y grasa corporal · Ecuaciones 1.2–1.3</span>
+        <span className="msub">Superficie, densidad, IMC y grasa corporal · Ecuaciones 1.2–1.5</span>
         <span className="mslide-count">{slideCount ?? '3 / 4'}</span>
       </div>
       <div className="content-grid">
@@ -74,7 +74,7 @@ export default function Slide14({ slideCount }: { slideCount?: string }) {
           </div>
           <div className="card">
             <div className="card-hdr">
-              <span className="icon">🟧</span> Área superficial: Du Bois (Eq. 1.2)
+              <span className="icon">🟧</span> Área superficial: Du Bois (Ec. 1.2)
             </div>
             <div className="card-body">
               <div className="eq-block">
@@ -88,7 +88,7 @@ export default function Slide14({ slideCount }: { slideCount?: string }) {
           <div className="apuntes">
             <div className="a-hdr"><span>✍️</span> Apunte de cátedra</div>
             <div className="a-text" id="info-text-d3">
-              Con <b>{mass} kg</b> y <b>{heightCm} cm</b>: Tu IMC es de <b style={{ color: catColor }}>{fmt(bmi, 1)} ({cat})</b>, tu área Du Bois es de <b>{fmt(bsa, 2)} m²</b> y tu grasa corporal estimada por IMC ({gender === 'H' ? 'Varón' : 'Mujer'}) es de <b>{fmt(currentFat, 1)}%</b>.
+              Con <b>{mass} kg</b> y <b>{heightCm} cm</b>: Tu IMC es de <b style={{ color: catColor }}>{fmt(bmi, 1)} ({cat})</b>, tu área Du Bois es de <b>{fmt(bsa, 2)} m²</b> y tu grasa corporal estimada por IMC ({gender === 'H' ? 'Varón' : 'Mujer'}) es de <b>{fmt(currentFat, 1)} %</b>.
             </div>
           </div>
         </div>
@@ -123,7 +123,7 @@ export default function Slide14({ slideCount }: { slideCount?: string }) {
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Grasa Estimada por IMC ({gender === 'H' ? 'Varón' : 'Mujer'}):</span>
-                <b style={{ color: '#b86a1e', fontFamily: 'var(--mono)' }}>{fmt(currentFat, 1)}%</b>
+                <b style={{ color: '#b86a1e', fontFamily: 'var(--mono)' }}>{fmt(currentFat, 1)} %</b>
               </div>
             </div>
           </HudPanel>

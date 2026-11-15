@@ -240,7 +240,7 @@ export default function BMICalculatorCanvas({
 
       ctx.font = `${scaled(8)}px Karla, system-ui, sans-serif`;
       ctx.fillStyle = '#17212b';
-      ctx.fillText('Área Du Bois (Eq. 1.2)', discCenterX, discCenterY + curDiscR + 13);
+      ctx.fillText('Área Du Bois (Ec. 1.2)', discCenterX, discCenterY + curDiscR + 13);
       ctx.restore();
 
       // ── 3.3 Medidor Hidrostático de Densidad y Flotabilidad (ρ) ──
@@ -313,7 +313,7 @@ export default function BMICalculatorCanvas({
       ctx.fillStyle = '#17212b';
       ctx.font = `${scaled(8)}px Karla, system-ui, sans-serif`;
       ctx.textAlign = 'left';
-      ctx.fillText(`Composición (IMC): Magra ${fmt(100 - fatPct, 1)}%  ·  Grasa ${fmt(fatPct, 1)}% (${gender === 'H' ? 'Varón' : 'Mujer'})`, barX, barY + barH + 12);
+      ctx.fillText(`Composición (IMC): Magra ${fmt(100 - fatPct, 1)} %  ·  Grasa ${fmt(fatPct, 1)} % (${gender === 'H' ? 'Varón' : 'Mujer'})`, barX, barY + barH + 12);
       ctx.restore();
 
       ctx.restore();
