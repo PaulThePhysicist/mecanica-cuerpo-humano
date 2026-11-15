@@ -29,7 +29,7 @@ const PARAMS_DATA: Record<string, ParamDetail> = {
   },
   bmr: {
     id: 'bmr',
-    name: 'Tasa Metabólica Basal (Kleiber)',
+    name: 'Tasa metabólica basal',
     refValue: `${STANDARD_MAN.bmrKcalH} kcal/h (${STANDARD_MAN.bmrKcalDay} kcal/día)`,
     desc: `<b>Tasa metabólica basal (TMB):</b> ${STANDARD_MAN.bmrKcalH} kcal/h = ${STANDARD_MAN.bmrKcalDay} kcal/día ≈ 81 W (Tabla 1.5). La ley de Kleiber (módulo D1) predice $4{,}1\\,m_b^{0{,}75} \\approx 99\\text{ W}$ para 70 kg: el libro advierte que sus tablas proceden de fuentes distintas y no siempre coinciden.`,
   },
@@ -42,7 +42,7 @@ const PARAMS_DATA: Record<string, ParamDetail> = {
   pulmonary: {
     id: 'pulmonary',
     name: 'Sistema Respiratorio',
-    refValue: `${STANDARD_MAN.restingRR} rpm · ${fmt(STANDARD_MAN.lungCapacityTotalL, 1)} L CPT`,
+    refValue: `${STANDARD_MAN.restingRR} resp/min · ${fmt(STANDARD_MAN.lungCapacityTotalL, 1)} L CPT`,
     desc: `<b>Capacidad Pulmonar Total (CPT):</b> ${fmt(STANDARD_MAN.lungCapacityTotalL, 1)} L con un volumen corriente en reposo de ~500 ml a una frecuencia de ${STANDARD_MAN.restingRR} respiraciones por minuto.`,
   },
   composition: {
@@ -154,13 +154,13 @@ export default function Slide8({ slideCount }: { slideCount?: string }) {
                     onClick={() => handleSelectParam('cardio')}
                     style={{ cursor: 'pointer', background: selectedParam === 'cardio' ? 'var(--teal-tint)' : 'transparent' }}
                   >
-                    <td><b>Frecuencia cardíaca</b></td><td>{STANDARD_MAN.restingHR} latidos/min · {fmt(STANDARD_MAN.bloodVolumeL, 1)} L</td>
+                    <td><b>Frecuencia cardíaca</b></td><td>{STANDARD_MAN.restingHR} latidos/min · {fmt(STANDARD_MAN.bloodVolumeL, 1)} L de sangre</td>
                   </tr>
                   <tr
                     onClick={() => handleSelectParam('pulmonary')}
                     style={{ cursor: 'pointer', background: selectedParam === 'pulmonary' ? 'var(--teal-tint)' : 'transparent' }}
                   >
-                    <td><b>Capacidad pulmonar</b></td><td>{fmt(STANDARD_MAN.lungCapacityTotalL, 1)} L total · {STANDARD_MAN.restingRR} rpm</td>
+                    <td><b>Capacidad pulmonar</b></td><td>{fmt(STANDARD_MAN.lungCapacityTotalL, 1)} L total · {STANDARD_MAN.restingRR} resp/min</td>
                   </tr>
                   <tr
                     onClick={() => handleSelectParam('composition')}
