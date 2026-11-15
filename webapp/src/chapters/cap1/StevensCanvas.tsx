@@ -291,9 +291,11 @@ export default function StevensCanvas({
       ctx.restore();
       ctx.restore(); // cierra el recorte al rectángulo del gráfico
 
-      // ─── 4. Puntos de Duplicación del Estímulo (S y 2S) ───
-      const sRef = 1.5;
-      const sDouble = 3.0; // 2 * sRef
+      // ─── 4. Puntos de Duplicación del exceso sobre el umbral (S − S₀ y 2·(S − S₀)) ───
+      // Medidos desde S₀ para que el cociente percibido sea 2ⁿ exacto, el
+      // mismo factor que dan la tabla y el panel (P6-02).
+      const sRef = s0 + 1;
+      const sDouble = s0 + 2;
       const pRef = Math.pow(Math.max(0, sRef - s0), n);
       const pDouble = Math.pow(Math.max(0, sDouble - s0), n);
       const ratioPerceived = pRef > 0 ? (pDouble / pRef) : Math.pow(2, n);
@@ -323,8 +325,8 @@ export default function StevensCanvas({
       ctx.lineWidth = 1.5;
       ctx.stroke();
 
-      CFX.chip(ctx, refX, refY + 14, 'Estímulo S', { color: CFX.PAL.ink2, size: scaled(10), align: 'center', W });
-      CFX.chip(ctx, dblX, dblY - 8, `Estímulo 2S (×${fmt(ratioPerceived, 2)})`, { color: CFX.PAL.ink2, size: scaled(10), align: 'center', W });
+      CFX.chip(ctx, refX, refY + 14, 'S − S₀', { color: CFX.PAL.ink2, size: scaled(10), align: 'center', W });
+      CFX.chip(ctx, dblX, dblY - 8, `2·(S − S₀) (×${fmt(ratioPerceived, 2)})`, { color: CFX.PAL.ink2, size: scaled(10), align: 'center', W });
       ctx.restore();
 
       // ─── 5. Laboratorio Sensorial Interactivo (Widget Derecho) ───
@@ -429,7 +431,7 @@ export default function StevensCanvas({
       ctx.fillStyle = '#232c36';
       ctx.font = `bold ${scaled(10.5)}px Karla, system-ui, sans-serif`;
       ctx.textAlign = 'center';
-      ctx.fillText('Duplicar estímulo (2×S):', widgetX + widgetW / 2, factorY);
+      ctx.fillText('Duplicar (S − S₀):', widgetX + widgetW / 2, factorY);
 
       ctx.fillStyle = nColor;
       ctx.font = `bold ${scaled(13)}px JetBrains Mono, monospace`;

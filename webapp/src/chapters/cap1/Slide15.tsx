@@ -144,7 +144,7 @@ export default function Slide15({ slideCount }: { slideCount?: string }) {
             <div className="card-body">
               <table className="interactive-table">
                 <tbody>
-                  <tr><th>Modalidad Sensorial</th><th>Exponente n</th><th>Duplicar (2×S)</th></tr>
+                  <tr><th>Modalidad Sensorial</th><th>Exponente n</th><th>Duplicar (S − S₀)</th></tr>
                   {Object.values(STEVENS_SENSATIONS).map((s) => {
                     const isSel = selectedSensation === s.id;
                     const mult = fmt(Math.pow(2, s.n), 2);
