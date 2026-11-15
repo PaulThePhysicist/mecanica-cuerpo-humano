@@ -37,7 +37,7 @@ const ANIMALS_INFO: Record<string, AnimalDetail> = {
     wl: 4.0,
     length: 190,
     color: '#6d5fbf',
-    desc: '<b>Elefante ($w/L \\approx 4{,}0$):</b> Huesos masivos en columna. Si tuviera patas de ratón escaladas isométricamente, <strong>se fracturarían bajo su propio peso de 5 toneladas (215 MPa > 150 MPa)</strong>.',
+    desc: '<b>Elefante ($w/L \\approx 4{,}0$):</b> Huesos masivos en columna. Si tuviera patas de rata escaladas isométricamente, <strong>se fracturarían bajo su propio peso de 5 t (215 MPa > 150 MPa)</strong>.',
   },
 };
 
@@ -194,7 +194,7 @@ export default function Slide13({ slideCount }: { slideCount?: string }) {
           {/* Panel HUD Colapsable en la esquina superior derecha */}
           <HudPanel
             title="ESCALADO ESTRUCTURAL"
-            badge={isAllometric ? 'ALOMÉTRICO (w ∝ L^3/2)' : 'ISOMÉTRICO (w ∝ L)'}
+            badge={isAllometric ? 'ALOMÉTRICO' : 'ISOMÉTRICO'}
             icon="🦴"
             footer="💡 Haz clic en los fémures para inspeccionar su esfuerzo en MPa"
           >
@@ -226,7 +226,7 @@ export default function Slide13({ slideCount }: { slideCount?: string }) {
               })}
 
               <div style={{ marginTop: '4px', borderTop: '1px dashed var(--line)', paddingTop: '4px', fontSize: '0.54rem', color: 'var(--ink-3)' }}>
-                📐 <b>Tensión límite:</b> σ_rotura ≈ 150 MPa
+                📐 <b>Tensión límite (ilustrativa):</b> σ_rotura ≈ 150 MPa
               </div>
             </div>
           </HudPanel>

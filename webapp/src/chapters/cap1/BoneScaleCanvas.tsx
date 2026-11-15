@@ -217,7 +217,7 @@ export default function BoneScaleCanvas({
         ctx.fillStyle = isFractured ? '#b02318' : '#0d6e64';
         ctx.font = (compact ? 'bold 12px' : 'bold 12.5px') + ' JetBrains Mono, monospace';
         ctx.textAlign = 'center';
-        ctx.fillText(spec.massKg >= 1000 ? `${fmt(spec.massKg / 1000, 0)} ton` : `${Number.isInteger(spec.massKg) ? spec.massKg : fmt(spec.massKg, 2)} kg`, cx, arrowY - 3);
+        ctx.fillText(spec.massKg >= 1000 ? `${fmt(spec.massKg / 1000, 0)} t` : `${Number.isInteger(spec.massKg) ? spec.massKg : fmt(spec.massKg, 2)} kg`, cx, arrowY - 3);
         ctx.restore();
 
         // ─── Tarjeta Inferior de la Especie ───
@@ -252,7 +252,7 @@ export default function BoneScaleCanvas({
       ctx.fillStyle = '#17212b';
       ctx.font = `${scaled(11.5)}px Karla, system-ui, sans-serif`;
       ctx.fillText(
-        'Peso ∝ L³  ·  resistencia ∝ w²  ·  w/L ∝ mᵦ¹ᐟ⁶',
+        'Peso ∝ L³  ·  resistencia ∝ w²  ·  w/L ∝ mᵦ¹ᐟ⁶  ·  esfuerzos ilustrativos',
         W * 0.05,
         36
       );
