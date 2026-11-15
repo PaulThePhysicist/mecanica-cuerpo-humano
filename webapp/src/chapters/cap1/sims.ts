@@ -4440,8 +4440,8 @@ export function drawSomatotype(type) {
       ctx.beginPath(); ctx.moveTo(cx - g.hp, hpY); ctx.lineTo(cx + g.hp, hpY); ctx.stroke();
       ctx.setLineDash([]);
       ctx.restore();
-      CFX.chip(ctx, cx, top - 8, 'hombro/cadera ' + fmt(g.sh / g.hp, 2),
-        { color: T.color, size: 11, mono: true, align: 'center', W: W });
+      CFX.chip(ctx, cx, top - 8, (k === 'ecto' ? 'caderas > hombros' : k === 'meso' ? 'hombros > caderas' : 'hombros ≳ caderas'),
+        { color: T.color, size: 11, mono: false, align: 'center', W: W });
     }
 
     // Nombre
