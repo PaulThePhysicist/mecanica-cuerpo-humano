@@ -21,9 +21,9 @@ interface SensationInfo {
 
 const SENSATIONS: Record<string, SensationInfo> = {
   brillo: { id: 'brillo', name: 'Brillo visual', emoji: '💡', n: 0.33, color: SERIES_COLORS[0], unit: 'Lux (cd/m²)', desc: 'Compresión óptica retiniana' },
-  sonoridad: { id: 'sonoridad', name: 'Sonoridad (1 kHz)', emoji: '🔊', n: 0.54, color: SERIES_COLORS[1], unit: 'Presión acústica (dB)', desc: 'Compresión logarítmica coclear' },
-  olor: { id: 'olor', name: 'Olor (Heptano)', emoji: '👃', n: 0.55, color: SERIES_COLORS[2], unit: 'Concentración (ppm)', desc: 'Saturación de quimiorreceptores' },
-  vibracion: { id: 'vibracion', name: 'Vibración táctil', emoji: '📳', n: 0.60, color: SERIES_COLORS[3], unit: 'Amplitud 60 Hz (μm)', desc: 'Corpúsculos de Pacini/Meissner' },
+  sonoridad: { id: 'sonoridad', name: 'Sonoridad (monoaural)', emoji: '🔊', n: 0.54, color: SERIES_COLORS[1], unit: 'Presión acústica (dB)', desc: 'Compresión logarítmica coclear' },
+  olor: { id: 'olor', name: 'Olor (café)', emoji: '👃', n: 0.55, color: SERIES_COLORS[2], unit: 'Concentración (ppm)', desc: 'Saturación de quimiorreceptores' },
+  vibracion: { id: 'vibracion', name: 'Vibración (250 Hz, en el dedo)', emoji: '📳', n: 0.60, color: SERIES_COLORS[3], unit: 'Amplitud 250 Hz (μm)', desc: 'Corpúsculos de Pacini/Meissner' },
   presion: { id: 'presion', name: 'Presión palmar', emoji: '✋', n: 1.10, color: SERIES_COLORS[4], unit: 'Fuerza aplicada (N)', desc: 'Detección proporcional de agarre' },
   pesadez: { id: 'pesadez', name: 'Pesadez (Levantar)', emoji: '🏋️', n: 1.45, color: SERIES_COLORS[5], unit: 'Masa levantada (kg)', desc: 'Fatiga neuromuscular progresiva' },
   descarga: { id: 'descarga', name: 'Descarga eléctrica', emoji: '⚡', n: 3.50, color: SERIES_COLORS[6], unit: 'Corriente 60 Hz (mA)', desc: 'Alarma nociceptiva superlineal extrema' },
@@ -40,8 +40,8 @@ function toSuperscript(value: string) {
 }
 
 /** Encoge la fuente hasta que el texto quepa en `maxWidth`; si ni al tamaño
- *  mínimo cabe, trunca con «…». Evita que un nombre largo (p.ej. «Sonoridad
- *  (1 kHz)») se salga de la tarjeta del widget en lienzos angostos (V2-04). */
+ *  mínimo cabe, trunca con «…». Evita que un nombre largo (p.ej. «Vibración
+ *  (250 Hz, en el dedo)») se salga de la tarjeta del widget en lienzos angostos (V2-04). */
 function fitText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number, baseSize: number, minSize: number, weight: string) {
   let size = baseSize;
   const setFont = () => { ctx.font = `${weight}${size}px Karla, system-ui, sans-serif`; };
