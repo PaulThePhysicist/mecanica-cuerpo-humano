@@ -24,7 +24,7 @@ const SOMATO_DATA: Record<SomatotypeKey, SomatotypeDetail> = {
     tag: 'Ectomorfia alta',
     scores: '1,0 · 1,5 · 6,5',
     desc: '<b>Ectomorfo (Linealidad dominante):</b> Predominio de longitud sobre masa. Miembros largos y finos, escasa grasa subcutánea y caja torácica plana.',
-    features: 'Estatura relativa alta, caderas anchas en proporción a hombros, índice ponderal elevado.',
+    features: 'Cuerpo largo, delgado y magro; huesos finos, poca grasa y poco músculo; caderas más anchas que los hombros. Ballet, salto de altura, maratón.',
     athletes: 'Corredores de fondo, maratón, salto de altura, baloncesto.',
   },
   meso: {
@@ -35,7 +35,7 @@ const SOMATO_DATA: Record<SomatotypeKey, SomatotypeDetail> = {
     tag: 'Mesomorfia alta',
     scores: '2,0 · 6,5 · 1,5',
     desc: '<b>Mesomorfo (Desarrollo musculoesquelético):</b> Predominio óseo y muscular. Hombros anchos, tórax en V, cintura estrecha y articulaciones robustas.',
-    features: 'Gran masa magra, relación hombro/cadera > 1,15, alta fuerza específica.',
+    features: 'Cuerpo sólido, musculoso y atlético; hombros más anchos que las caderas. Halterofilia, boxeo, lucha.',
     athletes: 'Gimnastas, velocistas, boxeadores, halterofilia.',
   },
   endo: {
@@ -46,7 +46,7 @@ const SOMATO_DATA: Record<SomatotypeKey, SomatotypeDetail> = {
     tag: 'Endomorfia alta',
     scores: '6,5 · 3,5 · 1,0',
     desc: '<b>Endomorfo (Adiposidad y volumen):</b> Predominio del tejido adiposo y órganos digestivos. Silueta redondeada, hombros y caderas anchos (forma de pera).',
-    features: 'Mayor flotabilidad, centro de gravedad bajo, densidad ósea elevada.',
+    features: 'Cuerpo redondeado, en forma de pera; huesos grandes y exceso de tejido graso; hombros algo más anchos que las caderas. Sumo; adultos sedentarios.',
     athletes: 'Luchadores de sumo, lanzadores de disco/peso, pilares de rugby.',
   },
 };
@@ -124,8 +124,11 @@ export default function Slide11({ slideCount }: { slideCount?: string }) {
                   );
                 })}
               </div>
+              <p style={{ fontSize: '.55rem', color: 'var(--ink-3)', marginTop: '.3rem' }}>
+                Terna ilustrativa (endo · meso · ecto), escala 1–7. De lanzadores a velocistas a fondistas, la mesomorfia baja y la ectomorfia sube.
+              </p>
               <p style={{ fontSize: '.62rem', color: 'var(--ink-2)', marginTop: '.35rem' }}>
-                La <strong>técnica de Heath-Carter</strong> evalúa cada somatotipo en una escala del 1 al 7 como un <strong>continuo tridimensional</strong>, no como categorías aisladas.
+                La <strong>técnica de Heath-Carter</strong> evalúa cada somatotipo en una escala del 1 al 7 como un <strong>continuo tridimensional</strong>, no como categorías aisladas. La ectomorfia se deriva de la masa y la altura; la mesomorfia, de los tamaños del codo, la rodilla, el brazo y la pantorrilla respecto a la altura; la endomorfia, de los pliegues cutáneos del brazo y del tronco.
               </p>
               <p style={{ fontSize: '.62rem', color: 'var(--ink)', marginTop: '.35rem', lineHeight: 1.35 }}>
                 <strong>Cómo leer la somatocarta:</strong> cada vértice representa un predominio: <strong>ECTO</strong> = linealidad, <strong>MESO</strong> = desarrollo musculoesquelético y <strong>ENDO</strong> = adiposidad y volumen. El punto indica la combinación de los tres componentes del tipo seleccionado.
