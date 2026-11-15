@@ -3861,7 +3861,7 @@ var C2_PARTS = [
   { key: 'muslo',       name: 'Muslo',       frac: 0.245, color: BODY_SEGMENT_SHADES.muslo },
   { key: 'pantorrilla', name: 'Pantorrilla', frac: 0.246, color: BODY_SEGMENT_SHADES.pantorrilla },
   { key: 'pie',         name: 'Pie',         frac: 0.152, color: BODY_SEGMENT_SHADES.pie },
-  { key: 'hombros',     name: 'Ancho hombros', frac: 0.259, color: AMBER, horiz: true }
+  { key: 'hombros',     name: 'Ancho de hombros', frac: 0.259, color: AMBER, horiz: true }
 ];
 
 export function drawProportions(highlight?: string | null, customHeight?: number) {
@@ -4005,7 +4005,7 @@ function stackedBar(ctx, x, y, w, h, height, hl) {
   ctx.save();
   ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
   ctx.fillStyle = PAL.ink; ctx.font = 'bold 13px Karla, system-ui, sans-serif';
-  ctx.fillText('Σ segmentos', x + w / 2, y - 7);
+  ctx.fillText('Segmentos a escala', x + w / 2, y - 7);
 
   var cum = y;
   verts.forEach(function (p) {
@@ -4040,15 +4040,8 @@ function stackedBar(ctx, x, y, w, h, height, hl) {
     cum += hh;
   });
 
-  /* «Σ segmentos» prometía una suma que nunca se mostraba: cada barra solo
-     repetía el valor de su fila en la tabla 1.6, ya visible ahí y en las
-     cotas del maniquí (S4-06). El total apilado es lo único que faltaba. */
-  ctx.strokeStyle = PAL.line; ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(x, cum + 2); ctx.lineTo(x + w, cum + 2); ctx.stroke();
-  ctx.fillStyle = PAL.ink; ctx.font = 'bold 12px Karla, system-ui, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('Σ = ' + fmt(total * height, 1) + ' cm', x + w / 2, cum + 16);
-
+  /* Sin línea de total: los segmentos no son colineales y su suma (≈ 217 cm
+     para H = 172 cm) no es ninguna longitud del cuerpo (P6-19). */
   ctx.restore();
 }
 
