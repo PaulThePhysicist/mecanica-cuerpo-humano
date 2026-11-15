@@ -34,7 +34,7 @@ export function useHarmonicClock(
     }
     let last = performance.now();
     const loop = (now: number) => {
-      const dt = Math.min(0.1, (now - last) / 1000) * speed;
+      const dt = Math.max(0, Math.min(0.1, (now - last) / 1000)) * speed;
       last = now;
       tRef.current += dt;
       tickRef.current(tRef.current, dt);
