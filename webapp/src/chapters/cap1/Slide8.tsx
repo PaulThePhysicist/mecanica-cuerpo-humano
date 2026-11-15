@@ -31,7 +31,7 @@ const PARAMS_DATA: Record<string, ParamDetail> = {
     id: 'bmr',
     name: 'Tasa Metabólica Basal (Kleiber)',
     refValue: `${STANDARD_MAN.bmrKcalH} kcal/h (${STANDARD_MAN.bmrKcalDay} kcal/día)`,
-    desc: `<b>Tasa Metabólica Basal (TMB · Ley de Kleiber):</b> $\\text{TMB} = ${STANDARD_MAN.bmrKcalH} \\cdot (m / ${STANDARD_MAN.massKg})^{0{,}75}\\text{ kcal/h}$. Escala alométrica con exponente $3/4$.`,
+    desc: `<b>Tasa metabólica basal (TMB):</b> ${STANDARD_MAN.bmrKcalH} kcal/h = ${STANDARD_MAN.bmrKcalDay} kcal/día ≈ 81 W (Tabla 1.5). La ley de Kleiber (módulo D1) predice $4{,}1\\,m_b^{0{,}75} \\approx 99\\text{ W}$ para 70 kg: el libro advierte que sus tablas proceden de fuentes distintas y no siempre coinciden.`,
   },
   cardio: {
     id: 'cardio',
