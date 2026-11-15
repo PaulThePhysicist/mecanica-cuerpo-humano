@@ -41,7 +41,7 @@ const STEVENS_SENSATIONS: Record<string, SensationDetail> = {
     name: 'Sonoridad (monoaural)',
     n: 0.54,
     type: 'sub',
-    desc: '<b>Sonoridad ($n = 0{,}54$ · Sublineal):</b> El oído humano abarca 12 órdenes de magnitud de presión sonora (de $10^{-12}\\text{ W/m}^2$ al umbral de dolor).',
+    desc: '<b>Sonoridad ($n = 0{,}54$ · Sublineal):</b> El oído humano abarca 12 órdenes de magnitud de intensidad sonora (de $10^{-12}\\text{ W/m}^2$ al umbral de dolor).',
   },
   olor: {
     id: 'olor',

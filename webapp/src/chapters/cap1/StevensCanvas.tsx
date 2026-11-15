@@ -20,8 +20,8 @@ interface SensationInfo {
 }
 
 const SENSATIONS: Record<string, SensationInfo> = {
-  brillo: { id: 'brillo', name: 'Brillo visual', emoji: '💡', n: 0.33, color: SERIES_COLORS[0], unit: 'Lux (cd/m²)', desc: 'Compresión óptica retiniana' },
-  sonoridad: { id: 'sonoridad', name: 'Sonoridad (monoaural)', emoji: '🔊', n: 0.54, color: SERIES_COLORS[1], unit: 'Presión acústica (dB)', desc: 'Compresión logarítmica coclear' },
+  brillo: { id: 'brillo', name: 'Brillo visual', emoji: '💡', n: 0.33, color: SERIES_COLORS[0], unit: 'Luminancia (cd/m²)', desc: 'Compresión óptica retiniana' },
+  sonoridad: { id: 'sonoridad', name: 'Sonoridad (monoaural)', emoji: '🔊', n: 0.54, color: SERIES_COLORS[1], unit: 'Nivel sonoro (dB)', desc: 'Compresión logarítmica coclear' },
   olor: { id: 'olor', name: 'Olor (café)', emoji: '👃', n: 0.55, color: SERIES_COLORS[2], unit: 'Concentración (ppm)', desc: 'Saturación de quimiorreceptores' },
   vibracion: { id: 'vibracion', name: 'Vibración (250 Hz, en el dedo)', emoji: '📳', n: 0.60, color: SERIES_COLORS[3], unit: 'Amplitud 250 Hz (μm)', desc: 'Corpúsculos de Pacini/Meissner' },
   presion: { id: 'presion', name: 'Presión palmar', emoji: '✋', n: 1.10, color: SERIES_COLORS[4], unit: 'Fuerza aplicada (N)', desc: 'Detección proporcional de agarre' },
