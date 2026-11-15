@@ -21,9 +21,9 @@ const PARAMS_DATA: Record<string, ParamDetail> = {
   },
   area: {
     id: 'area',
-    name: 'Área de Superficie (Du Bois)',
+    name: 'Área de superficie',
     refValue: `${fmt(STANDARD_MAN.bsaM2, 2)} m²`,
-    desc: '<b>Área de Superficie (Fórmula de Du Bois):</b> $A = 0{,}202 \\cdot m^{0{,}425} \\cdot H^{0{,}725}$. Clave para la disipación térmica y dosificación farmacológica.',
+    desc: '<b>Área de superficie:</b> 1,85 m² es el valor tabulado (Tabla 1.5). La fórmula de Du Bois (Ec. 1.2, módulo D3) da 1,82 m² para 70 kg y 1,72 m: las tablas del libro no siempre coinciden entre sí. Clave para la disipación térmica y la dosificación farmacológica.',
   },
   bmr: {
     id: 'bmr',
@@ -112,7 +112,7 @@ export default function Slide8({ slideCount }: { slideCount?: string }) {
                     onClick={() => handleSelectParam('area')}
                     style={{ cursor: 'pointer', background: selectedParam === 'area' ? 'var(--teal-tint)' : 'transparent' }}
                   >
-                    <td><b>Área de superficie</b></td><td>{fmt(STANDARD_MAN.bsaM2, 2)} m² (Du Bois)</td>
+                    <td><b>Área de superficie</b></td><td>{fmt(STANDARD_MAN.bsaM2, 2)} m²</td>
                   </tr>
                   <tr
                     onClick={() => handleSelectParam('bmr')}
