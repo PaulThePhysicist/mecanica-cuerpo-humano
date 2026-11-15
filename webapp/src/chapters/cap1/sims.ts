@@ -2801,12 +2801,12 @@ var CFX = (function () {
   /* ── Título de escena ── */
   function title(ctx, W, main, sub, color, xCenter, subColor) {
     ctx.save();
-    const isStandardHuman = typeof main === 'string' && main.includes('Hombre Estándar');
+    const isStandardHuman = typeof main === 'string' && (main.includes('Hombre Estándar') || main.includes('⚖ Sujeto'));
     const isSegmental = typeof main === 'string' && main.includes('Proporciones segmentarias');
     const isMobility = typeof main === 'string' && main.includes('Rango de movilidad');
     const isSomatotype = typeof main === 'string' && main.includes('Los tres somatotipos');
     const titleX = xCenter == null ? (isStandardHuman ? W * 0.31 : isSegmental ? W * 0.27 : W / 2) : xCenter;
-    const displayMain = isStandardHuman ? '⚖ Hombre Estándar · 70 kg' : isSegmental ? '📏 Proporciones' : main;
+    const displayMain = isStandardHuman ? (main.includes('⚖ Sujeto') ? main : '⚖ Hombre Estándar · 70 kg') : isSegmental ? '📏 Proporciones' : main;
     const mainSize = isStandardHuman ? Math.max(15, Math.min(18, W * 0.033)) : isSegmental ? Math.max(14, Math.min(16, W * 0.029)) : isMobility || isSomatotype ? Math.max(16, Math.min(21, W * 0.038)) : 13;
     const subSize = isStandardHuman || isSegmental ? Math.max(11.5, Math.min(14, W * 0.024)) : isMobility || isSomatotype ? Math.max(12, Math.min(15, W * 0.027)) : 9.5;
     ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
@@ -3561,7 +3561,7 @@ export function drawBodyProportions(customMass?: number, customHeight?: number) 
   /* ── Escena ── */
   var floorY = H * 0.905;
   CFX.scene(ctx, W, H, { floor: true, floorY: floorY, spotX: W * 0.40, gridStep: 26 });
-  CFX.title(ctx, W, '⚖ Hombre Estándar · 70 kg de referencia', 'Tabla 1.5 · valores fisiológicos en reposo');
+  CFX.title(ctx, W, isRefBody ? '⚖ Hombre Estándar · 70 kg de referencia' : '⚖ Sujeto · ' + mass + ' kg', 'Tabla 1.5 · valores fisiológicos en reposo');
 
   /* ── Figura ── */
   var bodyH = H * 0.66 * (Href / 1.72);
@@ -3594,10 +3594,10 @@ export function drawBodyProportions(customMass?: number, customHeight?: number) 
   // El panel necesita suficiente ancho para que los valores clínicos no
   // colisionen con sus etiquetas, especialmente en visores estrechos.
   var pw = Math.min(W * 0.42, 210), px = W - pw - 12;
-  vitalsPanel(ctx, px, H * 0.13, pw, H, mass, area, bmr, bmi, hr, rr, t);
+  vitalsPanel(ctx, px, H * 0.13, pw, H, mass, area, bmr, bmi, hr, rr, t, isRefBody);
 
   /* ── HUD y pie ── */
-  window.__stage('sim-body', 'REFERENCIA',
+  window.__stage('sim-body', isRefBody ? 'REFERENCIA' : 'SUJETO',
     mass + ' kg · ' + fmt(area, 2) + ' m²', 'teal', 'anatomy');
   CFX.footnote(ctx, W, H, 'Du Bois: A = 0,202 · m⁰,⁴²⁵ · H⁰,⁷²⁵   ·   Kleiber: TMB ∝ m⁰,⁷⁵');
 }
@@ -3756,13 +3756,13 @@ function organWindow(ctx, cx, top, bodyH, geo, t, hr, rr) {
 }
 
 /* ── Panel de constantes vitales con ECG en vivo ── */
-function vitalsPanel(ctx, x, y, w, H, mass, area, bmr, bmi, hr, rr, t) {
+function vitalsPanel(ctx, x, y, w, H, mass, area, bmr, bmi, hr, rr, t, isRefBody) {
   var PAL = CFX.PAL;
   ctx.save();
   // Tarjeta
   // La altura anterior dependía demasiado de H y dejaba un bloque vacío
   // debajo de la última fila en pantallas externas o a pantalla completa.
-  var cardH = Math.min(H * 0.64, 245);
+  var cardH = Math.min(H * 0.64, 245) + (isRefBody ? 0 : 16);
   CFX.roundRect(ctx, x, y, w, cardH, 9);
   ctx.fillStyle = 'rgba(251,248,240,0.92)'; ctx.fill();
   ctx.strokeStyle = 'rgba(207,195,169,0.95)'; ctx.lineWidth = 1; ctx.stroke();
@@ -3805,9 +3805,9 @@ function vitalsPanel(ctx, x, y, w, H, mass, area, bmr, bmi, hr, rr, t) {
     ['Área', fmt(area, 2) + ' m²', PAL.teal],
     ['TMB', Math.round(bmr) + ' kcal/h', PAL.blood],
     ['IMC', fmt(bmi, 1), bmiColor(bmi)],
-    ['Sangre', '5,2 L', PAL.blood],
-    ['Pulmón', '6,0 L', '#2b7d97'],
-    ['Fluidos', '51 L · 53 %', PAL.violet]
+    ['Sangre', '5,2 L', isRefBody ? PAL.blood : PAL.ink3],
+    ['Pulmón', '6,0 L', isRefBody ? '#2b7d97' : PAL.ink3],
+    ['Fluidos', '51 L · 53 %', isRefBody ? PAL.violet : PAL.ink3]
   ];
   var ry = ey + eh + 19;
   rows.forEach(function (r, i) {
@@ -3821,6 +3821,11 @@ function vitalsPanel(ctx, x, y, w, H, mass, area, bmr, bmi, hr, rr, t) {
       ctx.beginPath(); ctx.moveTo(x + 10, yy2 + 5); ctx.lineTo(x + w - 10, yy2 + 5); ctx.stroke();
     }
   });
+  if (!isRefBody) {
+    ctx.fillStyle = PAL.ink3; ctx.font = 'italic 11px Karla, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('atenuado: valor de referencia (70 kg)', x + 11, y + cardH - 7);
+  }
   ctx.restore();
 }
 
