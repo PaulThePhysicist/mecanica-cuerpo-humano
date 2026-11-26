@@ -1,4 +1,5 @@
 import React, { Suspense, useMemo, useRef, useEffect } from 'react';
+import { fx } from './ab';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, ContactShadows, useGLTF } from '@react-three/drei';
 import { DclTag } from './DclReadout';
@@ -195,7 +196,7 @@ function BiteDynamometerGauge({
         {fBiteN.toFixed(0)} N
       </div>
       <div style={{ fontSize: '0.74rem', fontWeight: 700, color: statusColor, fontFamily: 'JetBrains Mono, monospace' }}>
-        ({fBiteKgf.toFixed(1)} kgf)
+        ({fx(fBiteKgf, 1)} kgf)
       </div>
 
       <div

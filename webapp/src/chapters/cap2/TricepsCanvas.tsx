@@ -1,4 +1,5 @@
 import React, { Suspense, useRef, useMemo, useState } from 'react';
+import { fx } from './ab';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, ContactShadows, useGLTF } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
@@ -165,7 +166,7 @@ function RealArmTricepsScene({
   const { wPushN, mechanicalRatio, fTricepsN } = tricepsSolve(pushLoadKg, insertCm);
   const rJointN = fTricepsN + wPushN;
   const lFt = `M = ${fTricepsN.toFixed(0)} N`;
-  const sFt = `${mechanicalRatio.toFixed(1)}× W`;
+  const sFt = `${fx(mechanicalRatio, 1)}× W`;
   const lW = `W = ${wPushN.toFixed(0)} N`;
   const sW = `${pushLoadKg} kg`;
   const lRj = `R = ${rJointN.toFixed(0)} N`;
@@ -325,7 +326,7 @@ function RealArmTricepsScene({
           start={[0, 0, 0]}
           end={olecranonOffset}
           color="#dc2626"
-          label={`d = ${insertCm.toFixed(1)} cm`}
+          label={`d = ${fx(insertCm, 1)} cm`}
         />
         <LeverArmCaliper3D
           start={[0, 0, 0]}
@@ -436,7 +437,7 @@ export default function TricepsCanvas({
       <CalloutRail
         store={callouts}
         side="left"
-        note={`Palanca de 1ª clase: brazos ${insertCm.toFixed(1)} cm vs 36 cm (ilustrativo) → el tríceps tira ${mechanicalRatio.toFixed(1)}× la carga; la reacción troclear es aditiva.`}
+        note={`Palanca de 1ª clase: brazos ${fx(insertCm, 1)} cm vs 36 cm (ilustrativo) → el tríceps tira ${fx(mechanicalRatio, 1)}× la carga; la reacción troclear es aditiva.`}
       />
 
       {/* Selector de Vistas de Cámara en Esquina Superior Izquierda */}
@@ -521,7 +522,7 @@ export default function TricepsCanvas({
             PALANCA DE 1ª CLASE
           </span>
           <span style={{ fontSize: '0.52rem', fontFamily: 'JetBrains Mono, monospace', color: '#7c3aed', fontWeight: 700 }}>
-            D/d = {mechanicalRatio.toFixed(1)}×
+            D/d = {fx(mechanicalRatio, 1)}×
           </span>
         </div>
 
@@ -540,7 +541,7 @@ export default function TricepsCanvas({
             fontFamily: 'JetBrains Mono, monospace',
           }}
         >
-          <span style={{ color: '#dc2626', fontWeight: 700 }}>▲ Ft ({insertCm.toFixed(1)}cm)</span>
+          <span style={{ color: '#dc2626', fontWeight: 700 }}>▲ Ft ({fx(insertCm, 1)}cm)</span>
           <span style={{ color: '#7c3aed', fontWeight: 800 }}>▼ FULCRO (O)</span>
           <span style={{ color: '#d97706', fontWeight: 700 }}>▼ W (35cm)</span>
         </div>
@@ -550,7 +551,7 @@ export default function TricepsCanvas({
           <div style={{ display: 'flex', justifyContent: 'space-between', color: '#dc2626' }}>
             <span>■ Tracción Tríceps (Ft):</span>
             <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>
-              {fTricepsN.toFixed(0)} N ({fTricepsKgf.toFixed(1)} kgf)
+              {fTricepsN.toFixed(0)} N ({fx(fTricepsKgf, 1)} kgf)
             </b>
           </div>
 
@@ -575,7 +576,7 @@ export default function TricepsCanvas({
             <div style={{ display: 'flex', justifyContent: 'space-between', color: '#7c3aed' }}>
               <span style={{ fontWeight: 700 }}>Compresión Troclear (Rj):</span>
               <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>
-                {rJointN.toFixed(0)} N ({rJointKgf.toFixed(1)} kgf)
+                {rJointN.toFixed(0)} N ({fx(rJointKgf, 1)} kgf)
               </b>
             </div>
 

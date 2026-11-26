@@ -1,4 +1,5 @@
 import React, { useState, Suspense } from 'react';
+import { fx } from './ab';
 import NewtonCanvas from './NewtonCanvas';
 import type { FocusForce } from './NewtonCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
@@ -306,7 +307,7 @@ export default function Slide1({
           {/* Panel HUD Colapsable */}
           <HudPanel
             title="EQUILIBRIO ESTÁTICO"
-            badge={autoEquilibrium ? 'ΣF = 0 (ESTÁTICA)' : `${fNetMag.toFixed(1)} N (DINÁMICA)`}
+            badge={autoEquilibrium ? 'ΣF = 0 (ESTÁTICA)' : `${fx(fNetMag, 1)} N (DINÁMICA)`}
             icon="⚖️"
             footer="💡 Arrastra el modelo para rotarlo; usa los presets o los controles inferiores para cambiar las fuerzas"
           >
@@ -322,13 +323,13 @@ export default function Slide1({
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: '#b02318' }}>Reacción (R):</span>
                 <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>
-                  {autoEquilibrium ? `${rMag.toFixed(1)} N @ ${rAngle.toFixed(0)}°` : 'Inactiva (Dinámica)'}
+                  {autoEquilibrium ? `${fx(rMag, 1)} N @ ${rAngle.toFixed(0)}°` : 'Inactiva (Dinámica)'}
                 </b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Fuerza Neta:</span>
                 <b style={{ color: autoEquilibrium ? '#0d6e64' : '#b02318', fontFamily: 'JetBrains Mono, monospace' }}>
-                  {autoEquilibrium ? '0,0 N (Equilibrio)' : `${fNetMag.toFixed(1)} N (Acelera)`}
+                  {autoEquilibrium ? '0,0 N (Equilibrio)' : `${fx(fNetMag, 1)} N (Acelera)`}
                 </b>
               </div>
             </div>
@@ -356,7 +357,7 @@ export default function Slide1({
             )}
           </Suspense>
           <div className="prof-controls">
-            <span className="badge">2.1 · Newton</span>
+            <span className="badge">§2.1 · Equilibrio</span>
 
             {/* Botones de Escenarios Preestablecidos */}
             {(() => {

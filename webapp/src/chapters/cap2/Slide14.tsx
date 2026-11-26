@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { fx } from './ab';
 import ForcePlateCanvas from './ForcePlateCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
@@ -153,7 +154,7 @@ export default function Slide14({
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Fuerza Vertical (Fz):</span>
                 <b style={{ color: '#0d6e64', fontFamily: 'JetBrains Mono, monospace' }}>
-                  {fzN.toFixed(0)} N ({(fzN / (bodyMassKg * 9.81)).toFixed(2)}× W)
+                  {fzN.toFixed(0)} N ({fx((fzN / (bodyMassKg * 9.81)), 2)}× W)
                 </b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
@@ -180,7 +181,7 @@ export default function Slide14({
             bodyMassKg={bodyMassKg}
           />
           <div className="prof-controls">
-            <span className="badge">2.6 · Dinamometría</span>
+            <span className="badge">Complementario · Marcha</span>
             <span>Fase: <b style={{ color: 'var(--teal-deep)' }}>{curPhase.name}</b></span>
 
             <div style={{ display: 'flex', gap: '0.45rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>

@@ -170,7 +170,7 @@ export default function Slide11({
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.62rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Fuerza de Mordida:</span>
-                <b style={{ color: '#0d6e64', fontFamily: 'JetBrains Mono, monospace' }}>{fBiteN.toFixed(0)} N ({fBiteKgf.toFixed(1)} kgf)</b>
+                <b style={{ color: '#0d6e64', fontFamily: 'JetBrains Mono, monospace' }}>{fBiteN.toFixed(0)} N ({fx(fBiteKgf, 1)} kgf)</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Masetero (M):</span>
@@ -178,7 +178,7 @@ export default function Slide11({
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Brazo Dental (d):</span>
-                <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>{(dBiteM * 100).toFixed(1)} cm ({biteMode === 'incisor' ? 'Incisivos' : 'Molares'})</b>
+                <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>{fx((dBiteM * 100), 1)} cm ({biteMode === 'incisor' ? 'Incisivos' : 'Molares'})</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Ventaja Mecánica (dm/d):</span>
@@ -188,7 +188,7 @@ export default function Slide11({
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Carga Cóndilo ATM (R):</span>
-                <b style={{ color: '#43505c', fontFamily: 'JetBrains Mono, monospace' }}>{rAtmN.toFixed(0)} N ({rAtmKgf.toFixed(1)} kgf)</b>
+                <b style={{ color: '#43505c', fontFamily: 'JetBrains Mono, monospace' }}>{rAtmN.toFixed(0)} N ({fx(rAtmKgf, 1)} kgf)</b>
               </div>
             </div>
           </HudPanel>
@@ -198,7 +198,7 @@ export default function Slide11({
             muscleForceN={muscleForceN}
           />
           <div className="prof-controls">
-            <span className="badge">2.5 · Mandíbula</span>
+            <span className="badge">§2.3.3 · Mandíbula</span>
             <span>Mordida = <b style={{ color: '#0d6e64' }}>{fBiteN.toFixed(0)} N</b> ({biteMode === 'incisor' ? '0,50 M' : '0,76 M'})</span>
 
             <div style={{ display: 'flex', gap: '0.45rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>

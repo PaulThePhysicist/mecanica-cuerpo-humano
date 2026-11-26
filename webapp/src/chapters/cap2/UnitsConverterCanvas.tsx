@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
+import { fx, fexp } from './ab';
 import { readCap2Tokens, tokenRgba } from './designTokens';
 import CanvasReserveState from './CanvasReserveState';
 
@@ -153,10 +154,10 @@ export default function UnitsConverterCanvas({
         const dynVal = nVal * 1e5;
 
         unitsTable = [
-          { unit: 'Newtons (N)', valStr: `${nVal.toFixed(1)} N`, factor: 'SI Base: 1 N = 1 kg·m/s²', ratio: curValNorm },
-          { unit: 'Kilogramos-fuerza (kgf / kp)', valStr: `${kgfVal.toFixed(2)} kgf`, factor: '1 kgf = 9,80665 N (Gravedad estándar)', ratio: curValNorm },
-          { unit: 'Libras-fuerza (lbf)', valStr: `${lbfVal.toFixed(2)} lbf`, factor: '1 lbf = 4,44822 N (Sistema anglosajón)', ratio: curValNorm },
-          { unit: 'Dinas (dyn)', valStr: `${dynVal.toExponential(2)} dyn`, factor: '1 dyn = 10⁻⁵ N (Sistema CGS)', ratio: curValNorm },
+          { unit: 'Newtons (N)', valStr: `${fx(nVal, 1)} N`, factor: 'SI Base: 1 N = 1 kg·m/s²', ratio: curValNorm },
+          { unit: 'Kilogramos-fuerza (kgf / kp)', valStr: `${fx(kgfVal, 2)} kgf`, factor: '1 kgf = 9,80665 N (Gravedad estándar)', ratio: curValNorm },
+          { unit: 'Libras-fuerza (lbf)', valStr: `${fx(lbfVal, 2)} lbf`, factor: '1 lbf = 4,44822 N (Sistema anglosajón)', ratio: curValNorm },
+          { unit: 'Dinas (dyn)', valStr: `${fexp(dynVal, 2)} dyn`, factor: '1 dyn = 10⁻⁵ N (Sistema CGS)', ratio: curValNorm },
         ];
       } else if (quantityType === 'torque') {
         maxRange = 250;
@@ -166,9 +167,9 @@ export default function UnitsConverterCanvas({
         const lbfftVal = nmVal * 0.737562;
 
         unitsTable = [
-          { unit: 'Newton·metro (N·m)', valStr: `${nmVal.toFixed(1)} N·m`, factor: 'SI Base: 1 N·m = 1 J/rad', ratio: curValNorm },
-          { unit: 'Kilogramo-fuerza·metro (kgf·m)', valStr: `${kgfmVal.toFixed(2)} kgf·m`, factor: '1 kgf·m = 9,80665 N·m', ratio: curValNorm },
-          { unit: 'Libra·pie (lbf·ft)', valStr: `${lbfftVal.toFixed(2)} lbf·ft`, factor: '1 lbf·ft = 1,35582 N·m', ratio: curValNorm },
+          { unit: 'Newton·metro (N·m)', valStr: `${fx(nmVal, 1)} N·m`, factor: 'SI Base: 1 N·m = 1 J/rad', ratio: curValNorm },
+          { unit: 'Kilogramo-fuerza·metro (kgf·m)', valStr: `${fx(kgfmVal, 2)} kgf·m`, factor: '1 kgf·m = 9,80665 N·m', ratio: curValNorm },
+          { unit: 'Libra·pie (lbf·ft)', valStr: `${fx(lbfftVal, 2)} lbf·ft`, factor: '1 lbf·ft = 1,35582 N·m', ratio: curValNorm },
         ];
       } else {
         maxRange = 3500000;
@@ -181,12 +182,12 @@ export default function UnitsConverterCanvas({
         const psiVal = paVal * 0.000145038;
 
         unitsTable = [
-          { unit: 'Pascales (Pa)', valStr: `${paVal >= 10000 ? paVal.toExponential(2) : paVal.toFixed(0)} Pa`, factor: 'SI Base: 1 Pa = 1 N/m²', ratio: curValNorm },
-          { unit: 'Kilopascales (kPa)', valStr: `${kpaVal.toFixed(1)} kPa`, factor: '1 kPa = 10³ Pa (Presión fisiológica)', ratio: curValNorm },
-          { unit: 'Megapascales (MPa)', valStr: `${mpaVal.toFixed(3)} MPa`, factor: '1 MPa = 10⁶ Pa (Esfuerzo mecánico tisular)', ratio: curValNorm },
-          { unit: 'Bares (bar)', valStr: `${barVal.toFixed(2)} bar`, factor: '1 bar = 100 kPa ≈ 1 atm física', ratio: curValNorm },
-          { unit: 'Milímetros de Mercurio (mmHg)', valStr: `${mmhgVal.toFixed(1)} mmHg`, factor: '1 mmHg = 133,322 Pa (Presión arterial)', ratio: curValNorm },
-          { unit: 'Libras/pulgada² (psi)', valStr: `${psiVal.toFixed(1)} psi`, factor: '1 psi = 6.894,76 Pa (Sistema técnico)', ratio: curValNorm },
+          { unit: 'Pascales (Pa)', valStr: `${paVal >= 10000 ? fexp(paVal, 2) : paVal.toFixed(0)} Pa`, factor: 'SI Base: 1 Pa = 1 N/m²', ratio: curValNorm },
+          { unit: 'Kilopascales (kPa)', valStr: `${fx(kpaVal, 1)} kPa`, factor: '1 kPa = 10³ Pa (Presión fisiológica)', ratio: curValNorm },
+          { unit: 'Megapascales (MPa)', valStr: `${fx(mpaVal, 3)} MPa`, factor: '1 MPa = 10⁶ Pa (Esfuerzo mecánico tisular)', ratio: curValNorm },
+          { unit: 'Bares (bar)', valStr: `${fx(barVal, 2)} bar`, factor: '1 bar = 100 kPa ≈ 1 atm física', ratio: curValNorm },
+          { unit: 'Milímetros de Mercurio (mmHg)', valStr: `${fx(mmhgVal, 1)} mmHg`, factor: '1 mmHg = 133,322 Pa (Presión arterial)', ratio: curValNorm },
+          { unit: 'Libras/pulgada² (psi)', valStr: `${fx(psiVal, 1)} psi`, factor: '1 psi = 6.894,76 Pa (Sistema técnico)', ratio: curValNorm },
         ];
       }
 
@@ -354,7 +355,7 @@ export default function UnitsConverterCanvas({
       ctx.textAlign = 'center';
       const readVal =
         quantityType === 'pressure'
-          ? `${(inputValue / 1e6).toFixed(2)} MPa`
+          ? `${fx((inputValue / 1e6), 2)} MPa`
           : quantityType === 'torque'
           ? `${inputValue} N·m`
           : `${inputValue} N`;

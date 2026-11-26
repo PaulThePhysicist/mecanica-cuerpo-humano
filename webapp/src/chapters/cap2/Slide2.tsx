@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { fx } from './ab';
 import TorqueCanvas from './TorqueCanvas';
 import HudPanel from './HudPanel';
 import ThreeForceDiagram from './ThreeForceDiagram';
@@ -153,7 +154,7 @@ export default function Slide2({
           {/* Panel HUD Colapsable */}
           <HudPanel
             title="TORQUE VECTORIAL"
-            badge={`${tau >= 0 ? '+' : ''}${tau.toFixed(1)} N·m`}
+            badge={`${tau >= 0 ? '+' : ''}${fx(tau, 1)} N·m`}
             icon="🔄"
             footer="💡 Arrastra la punta de la flecha o ajusta los controles inferiores"
           >
@@ -161,7 +162,7 @@ export default function Slide2({
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Torque Neto (τ):</span>
                 <b style={{ color: tauColor, fontFamily: 'JetBrains Mono, monospace' }}>
-                  {tau >= 0 ? '+' : ''}{tau.toFixed(2).replace('.', ',')} N·m
+                  {tau >= 0 ? '+' : ''}{fx(tau, 2)} N·m
                 </b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
@@ -172,15 +173,15 @@ export default function Slide2({
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Brazo Perpendicular (r⊥):</span>
-                <b style={{ fontFamily: 'JetBrains Mono, monospace', color: '#d97706' }}>{rPerp.toFixed(3)} m ({(rPerp * 100).toFixed(1)} cm)</b>
+                <b style={{ fontFamily: 'JetBrains Mono, monospace', color: '#d97706' }}>{fx(rPerp, 3)} m ({fx((rPerp * 100), 1)} cm)</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Fuerza Tangencial (F⊥):</span>
-                <b style={{ color: tauColor, fontFamily: 'JetBrains Mono, monospace' }}>{Math.abs(fPerp).toFixed(1)} N ({((Math.abs(fPerp) / Math.max(1, fN)) * 100).toFixed(0)}%)</b>
+                <b style={{ color: tauColor, fontFamily: 'JetBrains Mono, monospace' }}>{fx(Math.abs(fPerp), 1)} N ({((Math.abs(fPerp) / Math.max(1, fN)) * 100).toFixed(0)}%)</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Fuerza Radial (F∥):</span>
-                <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>{fParallel.toFixed(1)} N ({fParallel >= 0 ? 'Tracción' : 'Compresión'})</b>
+                <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>{fx(fParallel, 1)} N ({fParallel >= 0 ? 'Tracción' : 'Compresión'})</b>
               </div>
             </div>
           </HudPanel>
@@ -192,7 +193,7 @@ export default function Slide2({
             onUpdate={handleUpdate}
           />
           <div className="prof-controls">
-            <span className="badge">2.1 · Torque</span>
+            <span className="badge">§2.1 · Torque</span>
 
             {/* Botones de Presets */}
             {(() => {

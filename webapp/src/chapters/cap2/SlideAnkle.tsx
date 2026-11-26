@@ -1,4 +1,5 @@
 import React, { Suspense, useState } from 'react';
+import { fx } from './ab';
 import AnkleCanvas from './AnkleCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
@@ -102,7 +103,7 @@ export default function SlideAnkle({
         <div className="sim-area" style={{ position: 'relative' }}>
           <HudPanel
             title="BIOMECÁNICA TOBILLO"
-            badge={`R = ${(R / Wb).toFixed(2)}·Wb`}
+            badge={`R = ${fx((R / Wb), 2)}·Wb`}
             icon="🦶"
             defaultCollapsed={true}
             footer="💡 Sube β para acercarte a la posición vertical del pie"
@@ -110,11 +111,11 @@ export default function SlideAnkle({
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.62rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Aquiles (M):</span>
-                <b style={{ color: '#0d6e64', fontFamily: 'JetBrains Mono, monospace' }}>{M.toFixed(0)} N ({(M / Wb).toFixed(2)}·Wb)</b>
+                <b style={{ color: '#0d6e64', fontFamily: 'JetBrains Mono, monospace' }}>{M.toFixed(0)} N ({fx((M / Wb), 2)}·Wb)</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Reacción astrágalo (R):</span>
-                <b style={{ color: '#b02318', fontFamily: 'JetBrains Mono, monospace' }}>{R.toFixed(0)} N ({(R / Wb).toFixed(2)}·Wb)</b>
+                <b style={{ color: '#b02318', fontFamily: 'JetBrains Mono, monospace' }}>{R.toFixed(0)} N ({fx((R / Wb), 2)}·Wb)</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Peso corporal (Wb):</span>
@@ -138,7 +139,7 @@ export default function SlideAnkle({
           </Suspense>
 
           <div className="prof-controls">
-            <span className="badge">2.3 · Tobillo</span>
+            <span className="badge">§2.3.3 · Tobillo</span>
             <span>M = <b style={{ color: '#0d6e64' }}>{M.toFixed(0)} N</b> · R = <b style={{ color: '#b02318' }}>{R.toFixed(0)} N</b></span>
 
             <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto', flexWrap: 'wrap' }}>

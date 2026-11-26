@@ -1,4 +1,5 @@
 import React, { Suspense, useRef, useMemo, useState } from 'react';
+import { fx } from './ab';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, ContactShadows, useGLTF } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
@@ -624,7 +625,7 @@ export default function MultiMuscleCanvas({
             DISTRIBUCIÓN DE TORQUE
           </span>
           <span style={{ fontSize: '0.52rem', fontFamily: 'JetBrains Mono, monospace', color: '#0d6e64', fontWeight: 700 }}>
-            Στ = {totalTauNm.toFixed(1)} N·m
+            Στ = {fx(totalTauNm, 1)} N·m
           </span>
         </div>
 
@@ -718,7 +719,7 @@ export default function MultiMuscleCanvas({
               Braquial (d = 3,4 cm · 7,0 cm²):
             </span>
             <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>
-              {activeMuscleCount === 3 ? `${fBrachN.toFixed(0)} N (${(fBrachN / 9.81).toFixed(1)} kgf)` : '0 N (Inactivo)'}
+              {activeMuscleCount === 3 ? `${fBrachN.toFixed(0)} N (${fx((fBrachN / 9.81), 1)} kgf)` : '0 N (Inactivo)'}
             </b>
           </div>
 
@@ -729,7 +730,7 @@ export default function MultiMuscleCanvas({
               Bíceps (d = 4,6 cm · 4,6 cm²):
             </span>
             <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>
-              {fBicN.toFixed(0)} N ({(fBicN / 9.81).toFixed(1)} kgf)
+              {fBicN.toFixed(0)} N ({fx((fBicN / 9.81), 1)} kgf)
             </b>
           </div>
 
@@ -740,7 +741,7 @@ export default function MultiMuscleCanvas({
               Braquiorradial (d = 7,5 cm · 1,5 cm²):
             </span>
             <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>
-              {activeMuscleCount === 3 ? `${fBradN.toFixed(0)} N (${(fBradN / 9.81).toFixed(1)} kgf)` : '0 N (Inactivo)'}
+              {activeMuscleCount === 3 ? `${fBradN.toFixed(0)} N (${fx((fBradN / 9.81), 1)} kgf)` : '0 N (Inactivo)'}
             </b>
           </div>
 
@@ -758,7 +759,7 @@ export default function MultiMuscleCanvas({
             <div style={{ display: 'flex', justifyContent: 'space-between', color: '#232c36' }}>
               <span style={{ fontWeight: 600 }}>Fuerza Muscular Total:</span>
               <b style={{ fontFamily: 'JetBrains Mono, monospace', color: '#0d6e64' }}>
-                {totalMuscleForceN.toFixed(0)} N ({(totalMuscleForceN / 9.81).toFixed(1)} kgf)
+                {totalMuscleForceN.toFixed(0)} N ({fx((totalMuscleForceN / 9.81), 1)} kgf)
               </b>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', color: '#43505c' }}>

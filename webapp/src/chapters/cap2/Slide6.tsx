@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { fx } from './ab';
 import TricepsCanvas from './TricepsCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
@@ -103,7 +104,7 @@ export default function Slide6({
           {/* Panel HUD Colapsable */}
           <HudPanel
             title="MECÁNICA DEL TRÍCEPS"
-            badge={`M = ${fTricepsN.toFixed(0)} N (${fTricepsKgf.toFixed(1)} kgf)`}
+            badge={`M = ${fTricepsN.toFixed(0)} N (${fx(fTricepsKgf, 1)} kgf)`}
             icon="🥊"
             footer="💡 Rota la escena 3D y ajusta la fuerza de empuje o el brazo del olécranon"
           >
@@ -118,15 +119,15 @@ export default function Slide6({
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Brazo olécranon (d):</span>
-                <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>{insertCm.toFixed(1)} cm</b>
+                <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>{fx(insertCm, 1)} cm</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Relación Ft / W:</span>
-                <b style={{ color: '#dc2626', fontFamily: 'JetBrains Mono, monospace' }}>{(0.36 / (insertCm / 100)).toFixed(1)}×</b>
+                <b style={{ color: '#dc2626', fontFamily: 'JetBrains Mono, monospace' }}>{fx((0.36 / (insertCm / 100)), 1)}×</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Compresión en el codo (R):</span>
-                <b style={{ color: '#7c3aed', fontFamily: 'JetBrains Mono, monospace' }}>{rJointN.toFixed(0)} N ({(rJointN / 9.81).toFixed(1)} kgf)</b>
+                <b style={{ color: '#7c3aed', fontFamily: 'JetBrains Mono, monospace' }}>{rJointN.toFixed(0)} N ({fx((rJointN / 9.81), 1)} kgf)</b>
               </div>
             </div>
           </HudPanel>
@@ -136,7 +137,7 @@ export default function Slide6({
             insertCm={insertCm}
           />
           <div className="prof-controls">
-            <span className="badge">2.2 · Tríceps</span>
+            <span className="badge">§2.2 · Tríceps</span>
 
             {/* Presets */}
             {(() => {
@@ -226,7 +227,7 @@ export default function Slide6({
                   onChange={(e) => setInsertCm(parseFloat(e.target.value))}
                   style={{ width: '45px' }}
                 />
-                <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '28px' }}>{insertCm.toFixed(1)}cm</b>
+                <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '28px' }}>{fx(insertCm, 1)}cm</b>
               </label>
 
               <button

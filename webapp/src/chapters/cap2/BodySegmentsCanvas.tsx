@@ -1,4 +1,5 @@
 import React, { Suspense, useMemo, useRef, useEffect } from 'react';
+import { fx } from './ab';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, ContactShadows, useGLTF } from '@react-three/drei';
 import { DclTag } from './DclReadout';
@@ -387,7 +388,7 @@ function StabilityGauge({
       </svg>
 
       <div style={{ fontSize: '1.15rem', fontWeight: 800, color: statusColor, fontFamily: 'JetBrains Mono, monospace', margin: '0' }}>
-        {cgHeightCm.toFixed(1)} cm
+        {fx(cgHeightCm, 1)} cm
       </div>
       <div style={{ fontSize: '0.62rem', fontWeight: 700, color: statusColor }}>
         {!isStable ? '⚠️ Fuera de Base (Caída)' : (isWarning ? '⚠️ Límite Anterior' : '✓ Equilibrio Estable')}
@@ -395,7 +396,7 @@ function StabilityGauge({
 
       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.52rem', color: '#475569', marginTop: '4px', borderTop: '1px solid #e2e8f0', paddingTop: '3px' }}>
         <span>Altura Baricentro:</span>
-        <b style={{ color: statusColor, fontFamily: 'JetBrains Mono, monospace' }}>{cgHeightPct.toFixed(1)}% H</b>
+        <b style={{ color: statusColor, fontFamily: 'JetBrains Mono, monospace' }}>{fx(cgHeightPct, 1)}% H</b>
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.52rem', color: '#475569', marginTop: '1px' }}>
         <span>Margen Estabilidad:</span>
@@ -581,7 +582,7 @@ function DempsterSkeletonRig3D({
   const stabilityMarginPct = Math.max(0, Math.min(100, (minMarginZ / ((bosAntZ - bosPostZ) / 2)) * 100));
 
   // Letreros del riel lateral (la tabla de esquina «CG · estabilidad»).
-  const lCG = `CG = ${cgHeightCm.toFixed(1)} cm`;
+  const lCG = `CG = ${fx(cgHeightCm, 1)} cm`;
   const sCG = `${cgHeightPct.toFixed(0)}% de la estatura`;
   const lMargen = `margen = ${stabilityMarginPct.toFixed(0)} %`;
   const sMargen = isStable ? (isWarning ? 'al límite anterior' : 'dentro de la BoS') : 'fuera de la BoS';

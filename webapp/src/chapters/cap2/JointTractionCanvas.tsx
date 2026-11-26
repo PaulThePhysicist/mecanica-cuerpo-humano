@@ -1,4 +1,5 @@
 import React, { Suspense, useMemo, useRef } from 'react';
+import { fx } from './ab';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, ContactShadows, useGLTF } from '@react-three/drei';
 import { DclTag } from './DclReadout';
@@ -199,7 +200,7 @@ function TractionDosimetryGauge({
 
       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.52rem', color: '#475569', marginTop: '4px', borderTop: '1px solid #e2e8f0', paddingTop: '3px' }}>
         <span>Δh Foraminal:</span>
-        <b style={{ color: EMERALD_DECOMP, fontFamily: 'JetBrains Mono, monospace' }}>+{deltaH_mm.toFixed(2)} mm</b>
+        <b style={{ color: EMERALD_DECOMP, fontFamily: 'JetBrains Mono, monospace' }}>+{fx(deltaH_mm, 2)} mm</b>
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.52rem', color: '#475569', marginTop: '1px' }}>
         <span>Momento Flexor:</span>
@@ -235,8 +236,8 @@ function CervicalSpineRig3D({
 
   // Letreros del riel lateral (mismos valores que llenaban el DclReadout de esquina).
   const lT = `T = ${tN.toFixed(0)} N`;
-  const lFax = `F_ax = ${fAxialN.toFixed(0)} N`;
-  const lFtr = `F_tr = ${fTransN.toFixed(0)} N`;
+  const lFax = `F axial = ${fAxialN.toFixed(0)} N`;
+  const lFtr = `F transversal = ${fTransN.toFixed(0)} N`;
 
   // LERP suave y vibración de cable
   const cableVibeRef = useRef<number>(0);
@@ -715,7 +716,7 @@ function CervicalSpineRig3D({
             <ForceVector3D origin={[0, 0, 0]} vector={[tVecX, tVecY, tVecZ]} color={TEAL_ACCENT} label={lT} sub={`${tractionKg} kg · β ${angleDeg}°`} />
 
             {/* 2. Vector F_axial (Descompresión raquídea longitudinal) */}
-            <ForceVector3D origin={[0, 0, 0]} vector={[0, axVecY, 0]} color={EMERALD_DECOMP} label={lFax} sub={`Δh +${deltaH_mm.toFixed(2)} mm`} emphasis="strong" />
+            <ForceVector3D origin={[0, 0, 0]} vector={[0, axVecY, 0]} color={EMERALD_DECOMP} label={lFax} sub={`Δh +${fx(deltaH_mm, 2)} mm`} emphasis="strong" />
 
             {/* 3. Vector F_trans (Momento flexor anterior) */}
             <ForceVector3D origin={[0, axVecY, 0]} vector={[0, 0, trVecZ]} color={AMBER_ACCENT} label={lFtr} sub="flexión cefálica" emphasis="muted" />
@@ -817,7 +818,7 @@ export default function JointTractionCanvas({
         note={
           stats.isTherapeutic
             ? 'Rango terapéutico (5–8 kg): descompresión axial sin flexión cefálica excesiva.'
-            : 'Un ángulo β alto desvía tracción a F_trans (flexión) en vez de a la descompresión axial.'
+            : 'Un ángulo β alto desvía tracción a la componente transversal (flexión) en vez de a la descompresión axial.'
         }
       />
 

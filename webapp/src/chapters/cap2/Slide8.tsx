@@ -142,7 +142,7 @@ export default function Slide8({
             bodyMassKg={bodyMassKg}
           />
           <div className="prof-controls">
-            <span className="badge">2.3 · Bastón</span>
+            <span className="badge">§2.3.2 · Bastón</span>
             <span>R = <b style={{ color: 'var(--teal)' }}>{fx(rJointN / totalWeightN, 2)} W<sub>b</sub></b> ({fx(rJointN)} N)</span>
 
             <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>

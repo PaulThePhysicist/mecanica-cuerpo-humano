@@ -133,7 +133,7 @@ export default function Slide5({
             activeMuscleCount={activeMuscleCount}
           />
           <div className="prof-controls">
-            <span className="badge">2.2 · Flexores</span>
+            <span className="badge">§2.3.1 · Caso 4</span>
 
             {/* Presets */}
             {(() => {

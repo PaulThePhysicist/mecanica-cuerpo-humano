@@ -145,7 +145,7 @@ export default function SlideKnee({
           </Suspense>
 
           <div className="prof-controls">
-            <span className="badge">2.3 · Rodilla</span>
+            <span className="badge">§2.3.3 · Rodilla</span>
             <span>M = <b style={{ color: '#0d6e64' }}>{M.toFixed(0)} N</b> · R = <b style={{ color: '#b02318' }}>{R.toFixed(0)} N</b></span>
 
             <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto', flexWrap: 'wrap' }}>

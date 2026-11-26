@@ -1,4 +1,5 @@
 import React, { Suspense, useMemo, useRef } from 'react';
+import { fx } from './ab';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, ContactShadows, useGLTF } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
@@ -236,10 +237,10 @@ function PressureManometerGauge({
       </svg>
 
       <div style={{ fontSize: '1.35rem', fontWeight: 800, color: statusColor, fontFamily: 'JetBrains Mono, monospace', margin: '2px 0 0' }}>
-        {totalPressureMPa.toFixed(2)} MPa
+        {fx(totalPressureMPa, 2)} MPa
       </div>
       <div style={{ fontSize: '0.74rem', fontWeight: 700, color: statusColor, fontFamily: 'JetBrains Mono, monospace' }}>
-        ({totalPressureBar.toFixed(1)} bar)
+        ({fx(totalPressureBar, 1)} bar)
       </div>
 
       <div

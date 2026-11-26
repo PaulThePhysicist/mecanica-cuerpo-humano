@@ -1,4 +1,5 @@
 import React, { Suspense, useRef, useMemo } from 'react';
+import { fx } from './ab';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, ContactShadows, Html, Line, useGLTF } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
@@ -336,7 +337,7 @@ function SceneContent({
   const sF1 = `${theta1}° · deltoides`;
   const lF2 = `F₂ = ${f2.toFixed(0)} N`;
   const sF2 = `${theta2}° · peso + carga`;
-  const lR = autoEquilibrium ? `R = ${rMag.toFixed(0)} N` : `ΣF = ${rMag.toFixed(1)} N`;
+  const lR = autoEquilibrium ? `R = ${rMag.toFixed(0)} N` : `ΣF = ${fx(rMag, 1)} N`;
   const sR = autoEquilibrium ? 'reacción glenoidea' : 'el húmero acelera (m·a)';
   const cR = autoEquilibrium ? '#dc2626' : '#8b5cf6';
 

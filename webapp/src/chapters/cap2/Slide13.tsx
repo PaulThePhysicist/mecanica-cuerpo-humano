@@ -170,7 +170,7 @@ export default function Slide13({
             bodyMassKg={bodyMassKg}
           />
           <div className="prof-controls">
-            <span className="badge">2.6 · Segmentos</span>
+            <span className="badge">§2.3.6 · Segmentos</span>
             <span>Postura: <b style={{ color: 'var(--teal-deep)' }}>{curOpt.name}</b></span>
 
             <div style={{ display: 'flex', gap: '0.45rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>

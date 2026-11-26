@@ -212,7 +212,7 @@ export default function Slide10({
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Presión L5-S1:</span>
                 <b style={{ color: isCritical ? '#b02318' : '#0d6e64', fontFamily: 'JetBrains Mono, monospace' }}>
-                  {totalP.toFixed(2)} MPa ({totalPBar.toFixed(1)} bar)
+                  {fx(totalP, 2)} MPa ({fx(totalPBar, 1)} bar)
                 </b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
@@ -237,7 +237,7 @@ export default function Slide10({
             loadKg={loadKg}
           />
           <div className="prof-controls">
-            <span className="badge">2.4 · Presión L5-S1</span>
+            <span className="badge">§2.3.4 · Disco</span>
             <span>P ≈ <b style={{ color: isCritical ? 'var(--blood)' : 'var(--teal)' }}>{fx(totalP, 2)} MPa</b> ({curDetail.mult} %)</span>
 
             <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>

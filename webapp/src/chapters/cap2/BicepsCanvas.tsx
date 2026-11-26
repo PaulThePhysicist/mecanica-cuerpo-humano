@@ -1,4 +1,5 @@
 import React, { Suspense, useRef, useMemo } from 'react';
+import { fx } from './ab';
 import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls, ContactShadows, Html, useGLTF } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
@@ -154,7 +155,7 @@ function RealArmBicepsScene({
   // Física del codo (fuente única)
   const { wHandN, fMuscN, fMuscKgf, rJointN } = elbowSolve(handLoadKg, insertCm, elbowAngleDeg);
   const lFm = `M = ${fMuscN.toFixed(0)} N`;
-  const sFm = `${fMuscKgf.toFixed(1)} kgf`;
+  const sFm = `${fx(fMuscKgf, 1)} kgf`;
   const lW = `W = ${wHandN.toFixed(0)} N`;
   const sW = `${handLoadKg} kg`;
   const lRj = `R = ${rJointN.toFixed(0)} N`;

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { fx } from './ab';
 import BicepsCanvas from './BicepsCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
@@ -127,7 +128,7 @@ export default function Slide4({
           {/* Panel HUD Colapsable */}
           <HudPanel
             title="MECÁNICA DEL BÍCEPS"
-            badge={`M = ${fMuscN.toFixed(0)} N (${fMuscKgf.toFixed(1)} kgf)`}
+            badge={`M = ${fMuscN.toFixed(0)} N (${fx(fMuscKgf, 1)} kgf)`}
             icon="💪"
             footer="💡 Rota la escena 3D y ajusta la carga o la distancia de inserción"
           >
@@ -138,7 +139,7 @@ export default function Slide4({
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Equivalente masa:</span>
-                <b style={{ color: '#0d6e64', fontFamily: 'JetBrains Mono, monospace' }}>{fMuscKgf.toFixed(1)} kgf</b>
+                <b style={{ color: '#0d6e64', fontFamily: 'JetBrains Mono, monospace' }}>{fx(fMuscKgf, 1)} kgf</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Carga en mano:</span>
@@ -146,11 +147,11 @@ export default function Slide4({
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Brazo del bíceps (d<sub>M</sub>):</span>
-                <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>{insertCm.toFixed(1)} cm</b>
+                <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>{fx(insertCm, 1)} cm</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Compresión en el codo (R):</span>
-                <b style={{ color: '#dc2626', fontFamily: 'JetBrains Mono, monospace' }}>{rJointN.toFixed(0)} N ({(rJointN / 9.81).toFixed(1)} kgf)</b>
+                <b style={{ color: '#dc2626', fontFamily: 'JetBrains Mono, monospace' }}>{rJointN.toFixed(0)} N ({fx((rJointN / 9.81), 1)} kgf)</b>
               </div>
             </div>
           </HudPanel>
@@ -161,7 +162,7 @@ export default function Slide4({
             elbowAngleDeg={elbowAngleDeg}
           />
           <div className="prof-controls">
-            <span className="badge">2.2 · Bíceps</span>
+            <span className="badge">§2.3.1 · Antebrazo</span>
 
             {/* Presets */}
             {(() => {
@@ -269,7 +270,7 @@ export default function Slide4({
                   onChange={(e) => setInsertCm(parseFloat(e.target.value))}
                   style={{ width: '45px' }}
                 />
-                <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '28px' }}>{insertCm.toFixed(1)}cm</b>
+                <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '28px' }}>{fx(insertCm, 1)}cm</b>
               </label>
 
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '2px' }}>

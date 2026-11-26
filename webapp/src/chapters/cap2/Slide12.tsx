@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { fx } from './ab';
 import JointTractionCanvas from './JointTractionCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
@@ -165,7 +166,7 @@ export default function Slide12({
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Apertura Discal (Δh):</span>
-                <b style={{ color: '#059669', fontFamily: 'JetBrains Mono, monospace' }}>+{deltaH_mm.toFixed(2)} mm</b>
+                <b style={{ color: '#059669', fontFamily: 'JetBrains Mono, monospace' }}>+{fx(deltaH_mm, 2)} mm</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Ángulo de Tiro (β):</span>
@@ -180,8 +181,8 @@ export default function Slide12({
             tractionType="cervical"
           />
           <div className="prof-controls">
-            <span className="badge">2.5 · Tracción</span>
-            <span>T = <b style={{ color: '#0d8577' }}>{tN.toFixed(0)} N</b> · F_axial = {fAxialN.toFixed(0)} N</span>
+            <span className="badge">Complementario · Tracción</span>
+            <span>T = <b style={{ color: '#0d8577' }}>{tN.toFixed(0)} N</b> · F<sub>axial</sub> = {fAxialN.toFixed(0)} N</span>
 
             <div style={{ display: 'flex', gap: '0.45rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>
               {/* Presets de dosimetría */}

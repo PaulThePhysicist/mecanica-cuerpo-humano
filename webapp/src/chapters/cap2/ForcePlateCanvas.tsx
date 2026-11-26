@@ -1,4 +1,5 @@
 import React, { Suspense, useMemo, useRef, useState, useEffect } from 'react';
+import { fx } from './ab';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, ContactShadows, Line, useGLTF } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
@@ -580,10 +581,10 @@ function CopAndGrfVectors3D({
       </group>
 
       {/* ── Vector Resultante de la Reacción del Suelo (GRF) ── */}
-      <ForceVector3D origin={copPos} vector={grfVec} color={TEAL_ACCENT} label={lGRF} sub={`${(grfResultantN / weightN).toFixed(2)}·W`} emphasis="strong" shaftRadius={0.016} />
+      <ForceVector3D origin={copPos} vector={grfVec} color={TEAL_ACCENT} label={lGRF} sub={`${fx((grfResultantN / weightN), 2)}·W`} emphasis="strong" shaftRadius={0.016} />
 
       {/* ── Componente Vertical Fz (Verde Esmeralda) ── */}
-      <ForceVector3D origin={copPos} vector={fzVec} color={GREEN_ACCENT} label={lFz} sub={`vertical · ${cfg.fzMult.toFixed(2)} W`} emphasis="muted" shaftRadius={0.012} />
+      <ForceVector3D origin={copPos} vector={fzVec} color={GREEN_ACCENT} label={lFz} sub={`vertical · ${fx(cfg.fzMult, 2)} W`} emphasis="muted" shaftRadius={0.012} />
 
       {/* ── Componente Anteroposterior Fy (Frenado / Propulsión) ── */}
       {Math.abs(fyN) > 5 && (
@@ -681,7 +682,7 @@ function VerticalMCurveOscilloscope({
       <svg width="160" height="75" viewBox="0 0 160 75" style={{ display: 'block', margin: '0 auto' }}>
         {/* Línea base de 1.0 W (Peso corporal de referencia) */}
         <line x1="8" y1="45" x2="152" y2="45" stroke="#94a3b8" strokeWidth="1" strokeDasharray="3 2" />
-        <text x="126" y="42" fontSize="6.5" fill="#64748b" fontFamily="JetBrains Mono, monospace">1.0 W</text>
+        <text x="126" y="42" fontSize="6.5" fill="#64748b" fontFamily="JetBrains Mono, monospace">1,0 W</text>
 
         {/* Curva en M clásica */}
         <path
@@ -708,9 +709,9 @@ function VerticalMCurveOscilloscope({
           <circle cx="130" cy="12" r="6" fill="none" stroke={RED_ACCENT} strokeWidth="1.5" />
         )}
 
-        <text x="48" y="10" fontSize="6" fill={gaitPhase === 'heel_strike' ? RED_ACCENT : '#64748b'} textAnchor="middle" fontWeight="bold">1.15 W</text>
-        <text x="88" y="66" fontSize="6" fill={gaitPhase === 'mid_stance' ? RED_ACCENT : '#64748b'} textAnchor="middle" fontWeight="bold">0.85 W</text>
-        <text x="130" y="6" fontSize="6" fill={gaitPhase === 'toe_off' ? RED_ACCENT : '#64748b'} textAnchor="middle" fontWeight="bold">1.25 W</text>
+        <text x="48" y="10" fontSize="6" fill={gaitPhase === 'heel_strike' ? RED_ACCENT : '#64748b'} textAnchor="middle" fontWeight="bold">1,15 W</text>
+        <text x="88" y="66" fontSize="6" fill={gaitPhase === 'mid_stance' ? RED_ACCENT : '#64748b'} textAnchor="middle" fontWeight="bold">0,85 W</text>
+        <text x="130" y="6" fontSize="6" fill={gaitPhase === 'toe_off' ? RED_ACCENT : '#64748b'} textAnchor="middle" fontWeight="bold">1,25 W</text>
       </svg>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.54rem', fontFamily: 'JetBrains Mono, monospace', marginTop: '3px', color: '#475569' }}>

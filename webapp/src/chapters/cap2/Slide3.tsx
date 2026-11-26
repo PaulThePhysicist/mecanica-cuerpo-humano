@@ -233,7 +233,7 @@ export default function Slide3({
             )}
           </div>
           <div className="prof-controls">
-            <span className="badge">2.2 · Palancas</span>
+            <span className="badge">§2.2 · Palancas</span>
 
             {/* Selector de clase segmentado */}
             <div style={{ display: 'flex', gap: '3px', alignItems: 'center' }}>

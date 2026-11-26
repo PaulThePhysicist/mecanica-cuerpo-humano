@@ -157,7 +157,7 @@ export default function Slide7({
             showBreakdown={showBreakdown}
           />
           <div className="prof-controls">
-            <span className="badge">2.3 · Cadera</span>
+            <span className="badge">§2.3.2 · Cadera</span>
             <span>R = <b style={{ color: trendelenburg ? 'var(--blood)' : 'var(--teal)' }}>{fx(rJointN)} N</b> ({fx(rJointN / totalWeightN, 2)} W<sub>b</sub>)</span>
 
             <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>

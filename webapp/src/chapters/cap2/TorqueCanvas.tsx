@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
+import { fx } from './ab';
 import { readCap2Tokens, tokenRgba } from './designTokens';
 import CanvasReserveState from './CanvasReserveState';
 
@@ -396,7 +397,7 @@ export default function TorqueCanvas({
       ctx.fill();
 
       // Badge con valor r
-      drawLabelChip(ctx, (pivotX + armEndX) / 2, pivotY + 41, `r = ${rCm} cm (${rM.toFixed(2)} m)`, {
+      drawLabelChip(ctx, (pivotX + armEndX) / 2, pivotY + 41, `r = ${rCm} cm (${fx(rM, 2)} m)`, {
         align: 'center', accent: neutralAccent, fontPx: chipFontPx, monoFont: T.mono,
         paperBg: chipPaper, inkText: T.ink, ink2Text: T.ink2, shadowTint: chipShadow,
       });
@@ -468,7 +469,7 @@ export default function TorqueCanvas({
         // no chocar con la cota "r = .. cm" que va bajo el hueso.
         const lx = pivotX + (footX - pivotX) * 0.66 - ry1 * 14 * dSign;
         const ly = pivotY + (footY - pivotY) * 0.66 + rx1 * 14 * dSign;
-        const rlTxt = `r⊥ = ${rPerp.toFixed(2)} m`;
+        const rlTxt = `r⊥ = ${fx(rPerp, 2)} m`;
         drawLabelChip(ctx, lx, ly, rlTxt, {
           align: 'center', accent: neutralAccent, fontPx: chipFontPx, monoFont: T.mono,
           paperBg: chipPaper, inkText: T.ink, ink2Text: T.ink2, shadowTint: chipShadow,
@@ -516,7 +517,7 @@ export default function TorqueCanvas({
       }
 
       // Badge F_parallel
-      const parLabel = fParallel >= 0 ? `F∥ = ${fParallel.toFixed(1)} N` : `F∥ = ${Math.abs(fParallel).toFixed(1)} N`;
+      const parLabel = fParallel >= 0 ? `F∥ = ${fx(fParallel, 1)} N` : `F∥ = ${fx(Math.abs(fParallel), 1)} N`;
       drawLabelChip(ctx, (armEndX + fParX) / 2, armEndY + (fEndY < armEndY ? 11 : -7), parLabel, {
         align: 'center', accent: neutralAccent, fontPx: chipFontPx, monoFont: T.mono,
         paperBg: chipPaper, inkText: T.ink, ink2Text: T.ink2, shadowTint: chipShadow,
@@ -543,7 +544,7 @@ export default function TorqueCanvas({
       }
 
       // Badge F_perp
-      drawLabelChip(ctx, armEndX - 6, (armEndY + fEndY) / 2, `F⊥ = ${Math.abs(fPerp).toFixed(1)} N`, {
+      drawLabelChip(ctx, armEndX - 6, (armEndY + fEndY) / 2, `F⊥ = ${fx(Math.abs(fPerp), 1)} N`, {
         align: 'right', accent: neutralAccent, fontPx: chipFontPx, monoFont: T.mono,
         paperBg: chipPaper, inkText: T.ink, ink2Text: T.ink2, shadowTint: chipShadow,
       });
@@ -713,7 +714,7 @@ export default function TorqueCanvas({
       ctx.fillStyle = tauColor;
       ctx.font = `bold ${17 * uiScale}px JetBrains Mono, monospace`;
       ctx.textAlign = 'center';
-      ctx.fillText(`${signStr}${Math.abs(tau).toFixed(1)}`, dialX, dialY + dialR * 0.42);
+      ctx.fillText(`${signStr}${fx(Math.abs(tau), 1)}`, dialX, dialY + dialR * 0.42);
       ctx.font = `bold ${8.5 * uiScale}px Karla, system-ui, sans-serif`;
       ctx.fillStyle = tokenRgba(T.ink2, 0.8);
       ctx.fillText('N·m', dialX, dialY + dialR * 0.42 + 13 * uiScale);

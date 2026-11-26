@@ -154,7 +154,7 @@ export default function Slide9({
             bodyMassKg={bodyMassKg}
           />
           <div className="prof-controls">
-            <span className="badge">2.4 · Columna</span>
+            <span className="badge">§2.3.4 · Espalda</span>
             <span>M = <b style={{ color: fErectorN > 2500 ? 'var(--blood)' : 'var(--teal)' }}>{fx(fErectorN)} N</b> · R = {fx(rCompN)} N</span>
 
             <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { fx } from './ab';
 import TactileThresholdCanvas from './TactileThresholdCanvas';
 import HudPanel from './HudPanel';
 import type { Engine } from './useEngine';
@@ -153,7 +154,7 @@ export default function Slide16({
           {/* Panel HUD Colapsable */}
           <HudPanel
             title="PSICOFÍSICA TÁCTIL"
-            badge={`${freqHz} Hz · ${amplitudeUm < 0.1 ? `${(amplitudeUm * 1000).toFixed(0)} nm` : `${amplitudeUm < 1 ? amplitudeUm.toFixed(2) : amplitudeUm.toFixed(1)} µm`}`}
+            badge={`${freqHz} Hz · ${amplitudeUm < 0.1 ? `${(amplitudeUm * 1000).toFixed(0)} nm` : `${amplitudeUm < 1 ? fx(amplitudeUm, 2) : fx(amplitudeUm, 1)} µm`}`}
             icon="📊"
             footer="💡 Haz clic y arrastra directamente sobre el gráfico logarítmico para explorar las curvas en U"
           >
@@ -165,7 +166,7 @@ export default function Slide16({
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Amplitud (Indentación):</span>
                 <b style={{ color: '#d97706', fontFamily: 'JetBrains Mono, monospace' }}>
-                  {amplitudeUm < 0.1 ? `${(amplitudeUm * 1000).toFixed(0)} nm` : `${amplitudeUm < 1 ? amplitudeUm.toFixed(2) : amplitudeUm.toFixed(1)} µm`}
+                  {amplitudeUm < 0.1 ? `${(amplitudeUm * 1000).toFixed(0)} nm` : `${amplitudeUm < 1 ? fx(amplitudeUm, 2) : fx(amplitudeUm, 1)} µm`}
                 </b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
@@ -187,8 +188,8 @@ export default function Slide16({
             onStimulusChange={handleStimulusChange}
           />
           <div className="prof-controls">
-            <span className="badge">2.7 · Umbrales</span>
-            <span>Estímulo: <b style={{ color: '#0d6e64' }}>{freqHz} Hz</b> ({amplitudeUm < 0.1 ? `${(amplitudeUm * 1000).toFixed(0)} nm` : `${amplitudeUm < 1 ? amplitudeUm.toFixed(2) : amplitudeUm.toFixed(1)} µm`})</span>
+            <span className="badge">§2.4 · Umbrales</span>
+            <span>Estímulo: <b style={{ color: '#0d6e64' }}>{freqHz} Hz</b> ({amplitudeUm < 0.1 ? `${(amplitudeUm * 1000).toFixed(0)} nm` : `${amplitudeUm < 1 ? fx(amplitudeUm, 2) : fx(amplitudeUm, 1)} µm`})</span>
 
             <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto', flexWrap: 'wrap' }}>
               <div style={{ display: 'inline-flex', gap: '2px', border: '1px solid var(--line)', borderRadius: '4px', padding: '1px', background: 'rgba(255,255,255,0.6)' }}>
@@ -239,7 +240,7 @@ export default function Slide16({
                   style={{ width: '45px' }}
                 />
                 <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '32px' }}>
-                  {amplitudeUm < 0.1 ? `${(amplitudeUm * 1000).toFixed(0)} nm` : `${amplitudeUm < 1 ? amplitudeUm.toFixed(2) : amplitudeUm.toFixed(1)} µm`}
+                  {amplitudeUm < 0.1 ? `${(amplitudeUm * 1000).toFixed(0)} nm` : `${amplitudeUm < 1 ? fx(amplitudeUm, 2) : fx(amplitudeUm, 1)} µm`}
                 </b>
               </label>
 

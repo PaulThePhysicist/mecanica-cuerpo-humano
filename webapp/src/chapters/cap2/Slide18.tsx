@@ -196,7 +196,7 @@ export default function Slide18({
             onSelectNode={handleSelectNode}
           />
           <div className="prof-controls">
-            <span className="badge">2.8 · Síntesis</span>
+            <span className="badge">§2.6 · Resumen</span>
             <span>Nódulo: <b style={{ color: 'var(--teal-deep)' }}>{selectedNode.toUpperCase()}</b></span>
 
             <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto', flexWrap: 'wrap' }}>

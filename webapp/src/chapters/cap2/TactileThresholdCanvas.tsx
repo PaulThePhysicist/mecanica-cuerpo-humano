@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
+import { fx } from './ab';
 import { readCap2Tokens, tokenRgba } from './designTokens';
 import CanvasReserveState from './CanvasReserveState';
 
@@ -233,7 +234,7 @@ export default function TactileThresholdCanvas({
         ctx.fillStyle = '#64748b';
         ctx.font = 'bold 7px JetBrains Mono, monospace';
         ctx.textAlign = 'right';
-        ctx.fillText(`${a < 1 ? a.toFixed(2) : a} µm`, plotLeft - 4, y + 2.5);
+        ctx.fillText(`${a < 1 ? fx(a, 2) : a} µm`, plotLeft - 4, y + 2.5);
       });
 
       // Marco del gráfico
@@ -446,7 +447,7 @@ export default function TactileThresholdCanvas({
       ctx.fillText(`${freqHz} Hz`, stimX, plotBottom + 10.5);
 
       // Insignia en el eje Y (Amplitud)
-      const ampBadgeText = amplitudeUm < 0.1 ? `${(amplitudeUm * 1000).toFixed(0)} nm` : `${amplitudeUm < 1 ? amplitudeUm.toFixed(2) : amplitudeUm.toFixed(1)} µm`;
+      const ampBadgeText = amplitudeUm < 0.1 ? `${(amplitudeUm * 1000).toFixed(0)} nm` : `${amplitudeUm < 1 ? fx(amplitudeUm, 2) : fx(amplitudeUm, 1)} µm`;
       ctx.beginPath();
       ctx.fillStyle = dominantColor;
       ctx.roundRect(plotLeft - 38, stimY - 6, 36, 12, 2.5);
@@ -488,7 +489,7 @@ export default function TactileThresholdCanvas({
       ctx.fillStyle = dominantColor;
       ctx.font = 'bold 7px JetBrains Mono, monospace';
       ctx.textAlign = 'center';
-      const ampLabel = amplitudeUm < 0.1 ? `${(amplitudeUm * 1000).toFixed(0)} nm` : `${amplitudeUm.toFixed(2)} µm`;
+      const ampLabel = amplitudeUm < 0.1 ? `${(amplitudeUm * 1000).toFixed(0)} nm` : `${fx(amplitudeUm, 2)} µm`;
       ctx.fillText(`${freqHz} Hz · ${ampLabel}`, pX + pW / 2, pY + 10.5);
       ctx.restore();
 
@@ -599,7 +600,7 @@ export default function TactileThresholdCanvas({
       ctx.fillStyle = T.ink;
       ctx.font = 'bold 11.5px Karla, system-ui, sans-serif';
       ctx.textAlign = 'left';
-      ctx.fillText(`CURVAS DE SINTONÍA PSICOFÍSICA: ${freqHz} Hz · ${amplitudeUm < 1 ? amplitudeUm.toFixed(2) : amplitudeUm.toFixed(1)} µm`, W * 0.04, 22);
+      ctx.fillText(`CURVAS DE SINTONÍA PSICOFÍSICA: ${freqHz} Hz · ${amplitudeUm < 1 ? fx(amplitudeUm, 2) : fx(amplitudeUm, 1)} µm`, W * 0.04, 22);
 
       ctx.fillStyle = tokenRgba(T.ink3, 0.9);
       ctx.font = '8px Karla, system-ui, sans-serif';

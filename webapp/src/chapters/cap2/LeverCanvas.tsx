@@ -1,4 +1,4 @@
-import { fmt } from './ab';
+import { fmt, fx } from './ab';
 import React, { useRef, useEffect, useState } from 'react';
 import { readCap2Tokens, tokenRgba } from './designTokens';
 import CanvasReserveState from './CanvasReserveState';
@@ -779,7 +779,7 @@ export default function LeverCanvas({
       ctx.fillText('(VM)', cardX + cardW / 2, cardY + 27);
 
       ctx.font = `bold ${18 * uiScale}px JetBrains Mono, monospace`;
-      ctx.fillText(`VM = ${vm.toFixed(2).replace('.', ',')}`, cardX + cardW / 2, cardY + 50);
+      ctx.fillText(`VM = ${fx(vm, 2)}`, cardX + cardW / 2, cardY + 50);
 
       // Barra medidora de ventaja
       const barBoxW = cardW - 20;

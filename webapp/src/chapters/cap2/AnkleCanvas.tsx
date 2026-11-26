@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { fx } from './ab';
 import { Line } from '@react-three/drei';
 import * as THREE from 'three';
 import { AnatomyStage } from '../cap1/three/AnatomyStage';
@@ -239,9 +240,9 @@ function AnkleAnatomy({ betaDeg, bodyWeightN, showComponents }: AnkleCanvasProps
       </mesh>
 
       {/* ── Vectores (letrero → riel lateral con línea guía) ── */}
-      <ForceArrow origin={heelP.toArray()} vector={mVec} color={TEAL} label={lM} sub={`${(M / Wb).toFixed(2)}·Wb · tríceps sural`} />
+      <ForceArrow origin={heelP.toArray()} vector={mVec} color={TEAL} label={lM} sub={`${fx((M / Wb), 2)}·Wb · tríceps sural`} />
       <ForceArrow origin={FULCRUM.toArray()} vector={nVec} color={SLATE} label={lN} sub="= Wb (normal del suelo)" />
-      <ForceArrow origin={ankP.toArray()} vector={rVec} color={RED} label={lR} sub={`${(R / Wb).toFixed(2)}·Wb · astrágalo`} emphasis="strong" />
+      <ForceArrow origin={ankP.toArray()} vector={rVec} color={RED} label={lR} sub={`${fx((R / Wb), 2)}·Wb · astrágalo`} emphasis="strong" />
 
       {showComponents && (
         <>

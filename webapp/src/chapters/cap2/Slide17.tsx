@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { fx } from './ab';
 import UnitsConverterCanvas from './UnitsConverterCanvas';
 import HudPanel from './HudPanel';
 import type { Engine } from './useEngine';
@@ -124,17 +125,17 @@ export default function Slide17({
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Valor SI Base:</span>
                 <b style={{ color: '#0d8577', fontFamily: 'JetBrains Mono, monospace' }}>
-                  {quantityType === 'pressure' ? `${(inputValue / 1e6).toFixed(3)} MPa` : `${inputValue} ${quantityType === 'force' ? 'N' : 'N·m'}`}
+                  {quantityType === 'pressure' ? `${fx((inputValue / 1e6), 3)} MPa` : `${inputValue} ${quantityType === 'force' ? 'N' : 'N·m'}`}
                 </b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Equivalente Técnico:</span>
                 <b style={{ color: '#b02318', fontFamily: 'JetBrains Mono, monospace' }}>
                   {quantityType === 'force'
-                    ? `${(inputValue / 9.80665).toFixed(1)} kgf`
+                    ? `${fx((inputValue / 9.80665), 1)} kgf`
                     : quantityType === 'torque'
-                    ? `${(inputValue / 9.80665).toFixed(1)} kgf·m`
-                    : `${(inputValue / 1e5).toFixed(1)} bar (${(inputValue / 133.322).toFixed(0)} mmHg)`}
+                    ? `${fx((inputValue / 9.80665), 1)} kgf·m`
+                    : `${fx((inputValue / 1e5), 1)} bar (${(inputValue / 133.322).toFixed(0)} mmHg)`}
                 </b>
               </div>
             </div>
@@ -146,7 +147,7 @@ export default function Slide17({
             onSelectBenchmark={handleSelectBenchmark}
           />
           <div className="prof-controls">
-            <span className="badge">2.8 · Unidades</span>
+            <span className="badge">§2.5 · Unidades</span>
             <span>Tipo: <b style={{ color: 'var(--teal-deep)' }}>{quantityType.toUpperCase()}</b></span>
 
             <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto', flexWrap: 'wrap' }}>
@@ -185,7 +186,7 @@ export default function Slide17({
                   style={{ width: '65px' }}
                 />
                 <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '42px' }}>
-                  {quantityType === 'pressure' ? `${(inputValue / 1e6).toFixed(2)} MPa` : `${inputValue}`}
+                  {quantityType === 'pressure' ? `${fx((inputValue / 1e6), 2)} MPa` : `${inputValue}`}
                 </b>
               </label>
 

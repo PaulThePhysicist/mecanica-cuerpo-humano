@@ -221,7 +221,7 @@ export default function Slide15({
             onSelectReceptor={handleSelect}
           />
           <div className="prof-controls">
-            <span className="badge">2.7 · Tacto</span>
+            <span className="badge">§2.4 · Tacto</span>
             <span>Canal: <b style={{ color: curRec.color }}>{curRec.name}</b> ({estimatedSpikes} Hz)</span>
 
             <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto', flexWrap: 'wrap' }}>
