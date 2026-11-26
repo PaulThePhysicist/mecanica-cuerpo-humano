@@ -3,6 +3,8 @@ import HipCanvas from './HipCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
 import type { Engine } from './useEngine';
+import { G, hipStatics } from './staticsModels';
+import { fx } from './ab';
 
 export default function Slide7({
   isActive,
@@ -12,28 +14,23 @@ export default function Slide7({
   engine?: Engine;
   [key: string]: any;
 }) {
-  const [bodyMassKg, setBodyMassKg] = useState<number>(70);
+  const [bodyMassKg, setBodyMassKg] = useState<number>(90);
   // Los letreros del visor los enciende el texto de abajo, no un botón
   // sobre el lienzo: el mando cuelga del párrafo que los explica.
   const [showLabels, setShowLabels] = useState<boolean>(false);
   const [trendelenburg, setTrendelenburg] = useState<boolean>(false);
   const [showBreakdown, setShowBreakdown] = useState<boolean>(false);
 
-  const g = 9.81;
-  const totalWeightN = bodyMassKg * g;
-  const wbN = (5 / 6) * totalWeightN;
-  const sin70 = Math.sin((70 * Math.PI) / 180);
-  const cos70 = Math.cos((70 * Math.PI) / 180);
-
-  const fAbductorN = trendelenburg ? (wbN * 0.18 * 0.25) / (0.07 * sin70) : (wbN * 0.18) / (0.07 * sin70);
-  const fAbductorKgf = fAbductorN / g;
-  const rxN = fAbductorN * cos70;
-  const ryN = fAbductorN * sin70 + wbN;
-  const rJointN = Math.hypot(rxN, ryN);
-  const rJointKgf = rJointN / g;
+  // Modelo del libro (Ecs. 2.25–2.28): fuerzas sobre la pierna derecha libre.
+  const totalWeightN = bodyMassKg * G; // W_b
+  const hip = hipStatics(totalWeightN, { abductorFraction: trendelenburg ? 0.25 : 1 });
+  const fAbductorN = hip.M;
+  const rJointN = hip.R;
+  const rJointKgf = rJointN / G;
+  const fAbductorKgf = fAbductorN / G;
 
   const handleReset = () => {
-    setBodyMassKg(70);
+    setBodyMassKg(90);
     setTrendelenburg(false);
     setShowBreakdown(false);
   };
@@ -54,24 +51,23 @@ export default function Slide7({
             </div>
             <div className="card-body">
               <p style={{ fontSize: '.7rem' }}>
-                {'Al pararse en un pie, el peso suprayacente más la pierna suspendida ($W_b = \\frac{5}{6} W$) tiende a hacer bascular la pelvis hacia el lado sin apoyo.'}
+                {'De pie sobre la pierna derecha (buen modelo de la marcha lenta), se aísla la pierna como cuerpo rígido. Actúan cuatro fuerzas: la normal $N = W_b$ del suelo, el peso de la pierna $W_{\\text{leg}} = 0{,}16\\,W_b$, la reacción $\\vec{R}$ del acetábulo sobre la cabeza femoral y la fuerza $\\vec{M}$ de los abductores (tensor de la fascia lata, glúteo menor y glúteo medio, masas 1:2:4), a $70^\\circ$ de la horizontal sobre el trocánter mayor.'}
               </p>
               <div className="eq-block">
-                {'\\[ F_a\\, b_m\\, \\sin\\theta_m = W_b\\, b_w \\]'}
+                {'\\[ \\begin{aligned} F_x &= M\\cos 70^\\circ - R_x = 0 \\\\ F_y &= M\\sin 70^\\circ - R_y - 0{,}16\\,W_b + W_b = 0 \\end{aligned} \\]'}
               </div>
               <p style={{ fontSize: '.64rem' }}>
-                {'Con $b_m \\approx 7\\text{ cm}$, $\\theta_m \\approx 70^\\circ$ y $b_w \\approx 18\\text{ cm}$:'}
+                {'Eje en el centro de la cabeza femoral ($R$ no da torque): $N$ a $10{,}8\\text{ cm}$, la pierna a $3{,}2\\text{ cm}$ y los abductores a $7{,}0\\text{ cm}$ (Ec. 2.27):'}
               </p>
               <div className="eq-block" style={{ fontSize: '.72rem' }}>
-                {'\\[ F_a = W_b \\left(\\frac{0{,}18}{0{,}07\\, \\sin 70^\\circ}\\right) \\approx 2{,}74\\, W_b \\approx 2{,}28\\, W \\]'}
+                {'\\[ M = \\frac{10{,}8 - 0{,}5}{7{,}0\\,\\sin 70^\\circ}\\,W_b = 1{,}57\\,W_b \\]'}
               </div>
-            
               <div style={{ marginTop: '.4rem' }}>
                 <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
-                  <b>🏷️ Rotular W_b, F_a y R</b>
+                  <b>{'Rotular $W_b$, $M$ y $R$'}</b>
                 </TheoryToggle>
               </div>
-              <TheoryCue>Pone cifras sobre las tres fuerzas del apoyo monopodal: peso suprayacente, tracción del glúteo medio y reacción en la cabeza femoral.</TheoryCue>
+              <TheoryCue>Pone cifras sobre las fuerzas del apoyo monopodal: peso corporal, tracción de los abductores y reacción en la cabeza femoral.</TheoryCue>
             </div>
           </div>
           <div className="card">
@@ -79,21 +75,41 @@ export default function Slide7({
               <span className="icon">⚡</span> Carga sobre el cartílago acetabular
             </div>
             <div className="card-body">
-              <p style={{ fontSize: '.64rem', color: 'var(--ink-3)' }}>
-                {'La fuerza de reacción articular total $\\vec{R}$ en la cabeza femoral es la suma vectorial de $\\vec{F}_a$ y $\\vec{W}_b$:'}
+              <p style={{ fontSize: '.64rem', color: 'var(--ink-2)' }}>
+                {'Con $M$ en los balances de fuerza: $R_x = M\\cos 70^\\circ = 0{,}54\\,W_b$ y $R_y = M\\sin 70^\\circ + 0{,}84\\,W_b = 2{,}31\\,W_b$:'}
               </p>
               <div className="eq-block">
-                {'\\[ R = \\sqrt{R_x^2 + R_y^2} \\approx 2{,}7\\, W \\]'}
+                {'\\[ R = \\left(R_x^2 + R_y^2\\right)^{1/2} = 2{,}37\\,W_b, \\qquad \\tan\\phi = \\frac{R_x}{R_y} = 0{,}23 \\;\\Rightarrow\\; \\phi = 13^\\circ \\]'}
               </div>
               <p style={{ fontSize: '.62rem', color: 'var(--ink-3)' }}>
-                {'Para $70\\text{ kg}$, la cadera soporta $\\sim 185\\text{ kgf}$ ($1815\\text{ N}$) en cada paso al caminar.'}
+                {'Para $m_b = 90\\text{ kg}$ ($W_b = 880\\text{ N}$): $M \\simeq 1{,}6\\,W_b \\approx 1400\\text{ N}$ y $R \\simeq 2{,}4\\,W_b \\approx 2100\\text{ N}$. La fuerza en la cadera supera con mucho el peso corporal por los grandes brazos de momento: ahí está el origen de los problemas de cadera.'}
+              </p>
+            </div>
+          </div>
+          <div className="card">
+            <div className="card-hdr">
+              <span className="icon">📋</span> Tabla 2.2 · Fuerza máxima en la cadera
+            </div>
+            <div className="card-body">
+              <table className="data-mini">
+                <thead><tr><th>Actividad</th><th>{'$R_{\\max}/W_b$'}</th></tr></thead>
+                <tbody>
+                  <tr><td>Caminar</td><td>4,8–5,5</td></tr>
+                  <tr><td>Caminar lentamente con / sin bastón</td><td>2,2 / 3,4</td></tr>
+                  <tr><td>Subir escaleras</td><td>7,2–7,4</td></tr>
+                  <tr><td>Bajar escaleras</td><td>7,1</td></tr>
+                  <tr><td>Levantarse de una silla</td><td>3,3</td></tr>
+                </tbody>
+              </table>
+              <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '.3rem' }}>
+                Fuerzas excesivas y prolongadas desgastan el cartílago; el reemplazo total de cadera sustituye la bola del fémur (aleación de cobalto-cromo o titanio, a menudo fijada con PMMA, «cemento óseo») y el acetábulo (polietileno de peso molecular ultra alto).
               </p>
             </div>
           </div>
           <div className="apuntes">
             <div className="a-hdr"><span>✍️</span> Apunte de cátedra</div>
             <div className="a-text" id="info-text-7">
-              El <b>Signo de Trendelenburg</b> ocurre por debilidad o denervación del glúteo medio (nervio glúteo superior): la pelvis bascula hacia el lado contralateral sin apoyo durante la marcha.
+              {'El torque de la normal del suelo ($10{,}8\\text{ cm}\\cdot W_b$) pesa mucho más que el de la pierna ($0{,}5\\text{ cm}\\cdot W_b$). Si los abductores no pueden dar $M = 1{,}57\\,W_b$ (p. ej., glúteo medio débil, '}<b>signo de Trendelenburg</b>{'), no hay equilibrio estático y la pelvis bascula hacia el lado sin apoyo.'}
             </div>
           </div>
         </div>
@@ -102,35 +118,35 @@ export default function Slide7({
           {/* Panel HUD Colapsable */}
           <HudPanel
             title="BIOMECÁNICA CADERA"
-            badge={trendelenburg ? '⚠️ TRENDELENBURG' : `R = ${rJointN.toFixed(0)} N`}
+            badge={trendelenburg ? 'SIN EQUILIBRIO' : `R = ${fx(rJointN / totalWeightN, 2)} W_b`}
             icon="🦴"
             defaultCollapsed={true}
-            footer="💡 Activa la insuficiencia del glúteo medio para ver la caída pélvica"
+            footer="💡 «Trendelenburg» deja a los abductores con el 25 % de M: sin equilibrio, la pelvis cae"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.62rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Reacción Articular (R):</span>
                 <b style={{ color: trendelenburg ? '#b02318' : '#0d6e64', fontFamily: 'JetBrains Mono, monospace' }}>
-                  {rJointN.toFixed(0)} N ({rJointKgf.toFixed(1)} kgf)
+                  {fx(rJointN)} N ({fx(rJointN / totalWeightN, 2)} W<sub>b</sub>)
                 </b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
-                <span style={{ color: 'var(--ink-2)' }}>Abductores (Fa):</span>
-                <b style={{ color: '#b02318', fontFamily: 'JetBrains Mono, monospace' }}>{fAbductorN.toFixed(0)} N ({fAbductorKgf.toFixed(1)} kgf)</b>
+                <span style={{ color: 'var(--ink-2)' }}>Abductores (M):</span>
+                <b style={{ color: 'var(--blood)', fontFamily: 'var(--mono)' }}>{fx(fAbductorN)} N ({fx(fAbductorN / totalWeightN, 2)} W<sub>b</sub>)</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
-                <span style={{ color: 'var(--ink-2)' }}>Peso Carga (Wb = 5/6 W):</span>
-                <b style={{ color: '#d97706', fontFamily: 'JetBrains Mono, monospace' }}>{wbN.toFixed(0)} N</b>
+                <span style={{ color: 'var(--ink-2)' }}>Peso corporal (N = W<sub>b</sub>):</span>
+                <b style={{ color: 'var(--amber)', fontFamily: 'var(--mono)' }}>{fx(totalWeightN)} N</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
-                <span style={{ color: 'var(--ink-2)' }}>Ratio R / W_total:</span>
+                <span style={{ color: 'var(--ink-2)' }}>Ángulo de R con la vertical (φ):</span>
                 <b style={{ color: trendelenburg ? '#b02318' : '#0d6e64', fontFamily: 'JetBrains Mono, monospace' }}>
-                  {(rJointN / totalWeightN).toFixed(2)}×
+                  {fx(hip.phi)}°
                 </b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Brazos de palanca:</span>
-                <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>bm = 7 cm · bw = 18 cm</b>
+                <b style={{ fontFamily: 'var(--mono)' }}>10,8 · 3,2 · 7,0 cm</b>
               </div>
             </div>
           </HudPanel>
@@ -142,7 +158,7 @@ export default function Slide7({
           />
           <div className="prof-controls">
             <span className="badge">2.3 · Cadera</span>
-            <span>R = <b style={{ color: trendelenburg ? '#b02318' : '#0d6e64' }}>{rJointN.toFixed(0)} N</b> ({rJointKgf.toFixed(1)} kgf)</span>
+            <span>R = <b style={{ color: trendelenburg ? 'var(--blood)' : 'var(--teal)' }}>{fx(rJointN)} N</b> ({fx(rJointN / totalWeightN, 2)} W<sub>b</sub>)</span>
 
             <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>

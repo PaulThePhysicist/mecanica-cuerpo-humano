@@ -50,6 +50,16 @@ export function fmt(x: number, d: number = 1): string {
   return s;
 }
 
+/**
+ * Cifra con un número FIJO de decimales y coma decimal es-ES (a diferencia de
+ * `fmt`, no recorta ceros: 2,50 sigue siendo 2,50). Evita «-0».
+ */
+export function fx(x: number, d: number = 0): string {
+  const s = Number(x).toFixed(d);
+  const clean = Number(s) === 0 ? s.replace(/^-/, '') : s;
+  return clean.replace('.', ',');
+}
+
 export function text(
   ctx: CanvasRenderingContext2D,
   s: string,

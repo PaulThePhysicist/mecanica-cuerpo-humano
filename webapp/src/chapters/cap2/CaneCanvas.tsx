@@ -14,10 +14,12 @@ import {
   CalloutSource,
   useCalloutStore,
 } from '../cap1/three/Callouts';
+import { G, hipStatics } from './staticsModels';
+import { fx } from './ab';
 
 interface CaneCanvasProps {
   caneHand: 'contra' | 'ipsi' | 'none'; // Mano contralateral, ipsilateral o sin bastón
-  caneForceKg: number;                   // Fuerza de apoyo en el bastón (0 a 25 kgf)
+  caneForceKg: number;                   // Apoyo en el bastón, en kg (el libro: W_b/6)
   bodyMassKg: number;                    // Masa corporal en kg (70 kg default)
   /** Lo enciende la columna de teoría del slide, no un botón sobre el lienzo:
    *  el mando cuelga del párrafo que explica estas magnitudes. */
@@ -217,8 +219,8 @@ function CaneModel3D({
           origin={[0, caneHeight + 0.02, 0]}
           vector={[0, fCaneN * 0.00030 * 2.2, 0]}
           color={CANE_TEAL}
-          label={`Fc = ${fCaneN.toFixed(0)} N`}
-          sub={caneHand === 'contra' ? `${caneForceKg} kgf · apoyo` : `${caneForceKg} kgf · ipsilateral ⚠`}
+          label={`Nc = ${fx(fCaneN)} N`}
+          sub={caneHand === 'contra' ? `${caneForceKg} kg · 30,5 cm de la línea media` : `${caneForceKg} kg · mismo lado`}
         />
       )}
     </group>
@@ -260,7 +262,7 @@ function ReliefGauge({
       }}
     >
       <div style={{ fontSize: '0.60rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-        {caneHand === 'contra' ? '✓ Descarga Contralateral' : (caneHand === 'ipsi' ? '⚠️ Mano Ipsilateral' : 'Sin Bastón')}
+        {caneHand === 'contra' ? 'Bastón contralateral' : (caneHand === 'ipsi' ? 'Bastón del mismo lado' : 'Sin bastón')}
       </div>
 
       {/* Dial SVG de Alivio Articular */}
@@ -303,17 +305,17 @@ function ReliefGauge({
         </g>
 
         {/* Etiquetas de escala */}
-        <text x="12" y="72" fontSize="7" fill="#64748b" fontFamily="JetBrains Mono, monospace">0%</text>
-        <text x="54" y="16" fontSize="7" fill="#64748b" fontFamily="JetBrains Mono, monospace">−30%</text>
-        <text x="94" y="72" fontSize="7" fill="#64748b" fontFamily="JetBrains Mono, monospace">−60%</text>
+        <text x="12" y="72" fontSize="7" fill="#64748b" fontFamily="JetBrains Mono, monospace">0 %</text>
+        <text x="54" y="16" fontSize="7" fill="#64748b" fontFamily="JetBrains Mono, monospace">30 %</text>
+        <text x="94" y="72" fontSize="7" fill="#64748b" fontFamily="JetBrains Mono, monospace">60 %</text>
       </svg>
 
       {/* Lectura grande de alivio */}
       <div style={{ fontSize: '1.3rem', fontWeight: 800, color: isOptimal ? '#2e8b57' : '#0d6e64', fontFamily: 'JetBrains Mono, monospace', margin: '2px 0 0' }}>
-        {rJointN.toFixed(0)} N
+        {fx(rJointN)} N
       </div>
       <div style={{ fontSize: '0.68rem', fontWeight: 700, color: isOptimal ? '#2e8b57' : '#b02318' }}>
-        {caneHand === 'contra' ? `−${reliefPct.toFixed(0)}% ALIVIO ARTICULAR` : '0% Alivio (Sin descarga)'}
+        {caneHand === 'none' ? 'Sin bastón' : `R ${reliefPct >= 0 ? '−' : '+'}${fx(Math.abs(reliefPct))} % frente a sin bastón`}
       </div>
 
       {/* Barra de progreso comparativa */}
@@ -329,31 +331,19 @@ function ReliefGauge({
       </div>
 
       <div style={{ fontSize: '0.54rem', color: '#64748b' }}>
-        Sin bastón: <b>{rBaseN.toFixed(0)} N</b> · Con bastón: <b>{rJointN.toFixed(0)} N</b>
-      </div>
-      <div style={{ fontSize: '0.54rem', color: '#0d8577', marginTop: '2px' }}>
-        Torque de descarga: <b>{caneHand === 'contra' ? `+${(fCaneN * 0.30).toFixed(1)} N·m` : '0,0 N·m'}</b>
+        Sin bastón: <b>{fx(rBaseN)} N</b> · Con bastón: <b>{fx(rJointN)} N</b>
       </div>
     </div>
   );
 }
 
-/** Biomecánica del apoyo monopodal con bastón (determinista). */
+/** Apoyo monopodal con bastón: modelo del libro (Ecs. 2.29–2.33). */
 function caneStats(caneHand: CaneCanvasProps['caneHand'], caneForceKg: number, bodyMassKg: number) {
-  const g = 9.81;
-  const wbN = (5 / 6) * bodyMassKg * g;
-  const bwM = 0.18;
-  const bmM = 0.07;
-  const sin70 = Math.sin((70 * Math.PI) / 180);
-  const cos70 = Math.cos((70 * Math.PI) / 180);
-  const fCaneN = caneHand === 'none' ? 0 : caneForceKg * g;
-  const dCaneM = caneHand === 'contra' ? 0.30 : (caneHand === 'ipsi' ? -0.05 : 0);
-  const fAbductorN = Math.max(0, (wbN * bwM - fCaneN * dCaneM) / (bmM * sin70));
-  const rJointN = Math.hypot(fAbductorN * cos70, fAbductorN * sin70 + wbN);
-  const fAbductorBaseN = (wbN * bwM) / (bmM * sin70);
-  const rBaseN = Math.hypot(fAbductorBaseN * cos70, fAbductorBaseN * sin70 + wbN);
-  const reliefPct = Math.max(0, ((rBaseN - rJointN) / rBaseN) * 100);
-  return { g, wbN, sin70, cos70, fCaneN, dCaneM, fAbductorN, fAbductorKgf: fAbductorN / g, rxN: fAbductorN * cos70, ryN: fAbductorN * sin70 + wbN, rJointN, rJointKgf: rJointN / g, rBaseN, reliefPct, wbKgf: wbN / g };
+  const wbN = bodyMassKg * G;
+  const base = hipStatics(wbN);
+  const hip = hipStatics(wbN, { caneSide: caneHand, caneFrac: caneForceKg / bodyMassKg });
+  const reliefPct = ((base.R - hip.R) / base.R) * 100;
+  return { wbN, fCaneN: hip.Nc, fAbductorN: hip.M, rxN: hip.Rx, ryN: hip.Ry, rJointN: hip.R, rBaseN: base.R, reliefPct, L: hip.L };
 }
 
 // ── 4. Escena Anatómica 3D con Descarga Articular ──
@@ -422,28 +412,16 @@ function CaneScene3D({
     []
   );
 
-  // ── Cálculos Biomecánicos con Bastón ──
-  const g = 9.81;
-  const totalWeightN = bodyMassKg * g;
-  const wbN = (5 / 6) * totalWeightN; // Peso suprayacente + pierna libre
-  const bwM = 0.18; // Brazo del peso (18 cm)
-  const bmM = 0.07; // Brazo de abductores (7 cm)
+  // ── Estática con bastón: modelo del libro (Ecs. 2.29–2.33) ──
+  const cs = caneStats(caneHand, caneForceKg, bodyMassKg);
+  const wbN = cs.wbN;
   const sin70 = Math.sin((70 * Math.PI) / 180);
   const cos70 = Math.cos((70 * Math.PI) / 180);
-
-  const fCaneN = caneHand === 'none' ? 0 : caneForceKg * g;
-  // Distancia del bastón:
-  // Contralateral: dc = +30 cm (torque asistencial a favor de abductores)
-  // Ipsilateral: dc = -5 cm (desfavorable)
-  const dCaneM = caneHand === 'contra' ? 0.30 : (caneHand === 'ipsi' ? -0.05 : 0);
-
-  // Momento de equilibrio: Fa * bm * sin(70°) + Fc * dc = Wb * bw
-  const fAbductorN = Math.max(0, (wbN * bwM - fCaneN * dCaneM) / (bmM * sin70));
-
-  // Reacción articular en la cabeza femoral R
-  const rxN = fAbductorN * cos70;
-  const ryN = fAbductorN * sin70 + wbN;
-  const rJointN = Math.hypot(rxN, ryN);
+  const fCaneN = cs.fCaneN;
+  const fAbductorN = cs.fAbductorN;
+  const rxN = cs.rxN;
+  const ryN = cs.ryN;
+  const rJointN = cs.rJointN;
 
   const vectorScale = 0.00030;
 
@@ -464,9 +442,9 @@ function CaneScene3D({
   ];
 
   // Letreros del riel lateral (mismos valores que llenaban el DclReadout de esquina).
-  const lWb = `Wb = ${wbN.toFixed(0)} N`;
-  const lFa = `Fa = ${fAbductorN.toFixed(0)} N`;
-  const lR = `R = ${rJointN.toFixed(0)} N`;
+  const lWb = `Wb = ${fx(wbN)} N`;
+  const lFa = `M = ${fx(fAbductorN)} N`;
+  const lR = `R = ${fx(rJointN)} N`;
 
   const MODEL_SCALE = 6.2;
 
@@ -597,8 +575,8 @@ function CaneScene3D({
 export default function CaneCanvas({
   showLabels = false,
   caneHand = 'contra',
-  caneForceKg = 10,
-  bodyMassKg = 70,
+  caneForceKg = 15,
+  bodyMassKg = 90,
 }: CaneCanvasProps) {
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
   const stats = caneStats(caneHand, caneForceKg, bodyMassKg);
@@ -606,10 +584,10 @@ export default function CaneCanvas({
 
   const railNote =
     caneHand === 'contra'
-      ? 'Bastón contralateral: su torque ayuda a los abductores y baja la reacción R de la cadera.'
+      ? 'Bastón contralateral: el pie se desplaza hacia fuera, el brazo de la normal cae de 10,8 a 4,7 cm y bajan M y R.'
       : caneHand === 'ipsi'
-        ? 'Mano ipsilateral: el bastón casi no tiene brazo de palanca y no descarga la cadera.'
-        : 'Sin bastón: los abductores cargan todo el momento del peso.';
+        ? 'Bastón del mismo lado (extrapolación del modelo): el brazo de la normal crece y M y R aumentan.'
+        : 'Sin bastón: la normal (todo el peso) actúa a 10,8 cm de la cabeza femoral.';
 
   const handleResetCamera = () => {
     if (controlsRef.current) {

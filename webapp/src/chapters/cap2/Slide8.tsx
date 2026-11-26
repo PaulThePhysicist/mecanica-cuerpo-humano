@@ -3,6 +3,8 @@ import CaneCanvas from './CaneCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
 import type { Engine } from './useEngine';
+import { G, hipStatics } from './staticsModels';
+import { fx } from './ab';
 
 export default function Slide8({
   isActive,
@@ -16,35 +18,24 @@ export default function Slide8({
   // Los letreros del visor los enciende el texto de abajo, no un botón
   // sobre el lienzo: el mando cuelga del párrafo que los explica.
   const [showLabels, setShowLabels] = useState<boolean>(false);
-  const [caneForceKg, setCaneForceKg] = useState<number>(10);
-  const [bodyMassKg, setBodyMassKg] = useState<number>(70);
+  const [caneForceKg, setCaneForceKg] = useState<number>(15);
+  const [bodyMassKg, setBodyMassKg] = useState<number>(90);
 
-  const g = 9.81;
-  const totalWeightN = bodyMassKg * g;
-  const wbN = (5 / 6) * totalWeightN;
-  const sin70 = Math.sin((70 * Math.PI) / 180);
-  const cos70 = Math.cos((70 * Math.PI) / 180);
-
-  const fCaneN = caneHand === 'none' ? 0 : caneForceKg * g;
-  const dCaneM = caneHand === 'contra' ? 0.30 : (caneHand === 'ipsi' ? -0.05 : 0);
-
-  const fAbductorN = Math.max(0, (wbN * 0.18 - fCaneN * dCaneM) / (0.07 * sin70));
-  const fAbductorKgf = fAbductorN / g;
-  const rxN = fAbductorN * cos70;
-  const ryN = fAbductorN * sin70 + wbN;
-  const rJointN = Math.hypot(rxN, ryN);
-  const rJointKgf = rJointN / g;
-
-  const rBaseN = Math.hypot(
-    ((wbN * 0.18) / (0.07 * sin70)) * cos70,
-    ((wbN * 0.18) / (0.07 * sin70)) * sin70 + wbN
-  );
-  const reliefPct = Math.max(0, ((rBaseN - rJointN) / rBaseN) * 100);
+  // Modelo del libro (Ecs. 2.29–2.33): N_c en el bastón a 30,5 cm de la línea media.
+  const totalWeightN = bodyMassKg * G;
+  const caneFrac = caneForceKg / bodyMassKg; // N_c / W_b (el libro: 1/6)
+  const base = hipStatics(totalWeightN);
+  const hip = hipStatics(totalWeightN, { caneSide: caneHand, caneFrac });
+  const fCaneN = hip.Nc;
+  const fAbductorN = hip.M;
+  const rJointN = hip.R;
+  const rBaseN = base.R;
+  const reliefPct = ((rBaseN - rJointN) / rBaseN) * 100;
 
   const handleReset = () => {
     setCaneHand('contra');
-    setCaneForceKg(10);
-    setBodyMassKg(70);
+    setCaneForceKg(15);
+    setBodyMassKg(90);
   };
 
   return (
@@ -63,21 +54,23 @@ export default function Slide8({
             </div>
             <div className="card-body">
               <p style={{ fontSize: '.7rem' }}>
-                {'Al apoyar el bastón en la mano opuesta a la cadera afectada ($d_c \\approx 30\\text{ cm}$), la fuerza hacia arriba del bastón ($F_c$) produce un torque que ayuda directamente a los abductores:'}
+                {'De pie sobre la pierna derecha, el bastón se apoya en el lado izquierdo a $30{,}5\\text{ cm}$ (1 pie) de la línea media y recibe del suelo $N_c = W_b/6$. Equilibrio del cuerpo completo (Ecs. 2.29–2.30):'}
               </p>
               <div className="eq-block">
-                {'\\[ F_a\\, b_m\\, \\sin 70^\\circ + F_c\\, d_c = W_b\\, b_w \\]'}
+                {'\\[ N_f = \\tfrac{5}{6}W_b, \\qquad L = \\frac{N_c}{N_f}\\,30{,}5\\text{ cm} = 6{,}1\\text{ cm} \\]'}
               </div>
+              <p style={{ fontSize: '.64rem' }}>
+                {'El pie derecho se desplaza $L$ hacia la derecha y el brazo de momento de la normal baja de $10{,}8$ a $4{,}7\\text{ cm}$; el CM de la pierna pasa a $0{,}33\\text{ cm}$ a la izquierda de la vertical (Ec. 2.33):'}
+              </p>
               <div className="eq-block" style={{ fontSize: '.72rem' }}>
-                {'\\[ F_a = \\frac{W_b\\, b_w - F_c\\, d_c}{b_m\\, \\sin 70^\\circ} \\]'}
+                {'\\[ (4{,}7)\\tfrac{5}{6}W_b + (0{,}33)(0{,}16\\,W_b) - (6{,}98)\\,M\\sin 70^\\circ = 0 \\;\\Rightarrow\\; M = 0{,}61\\,W_b \\]'}
               </div>
               <p style={{ fontSize: '.64rem', color: 'var(--ink-3)' }}>
-                {'Apoyar apenas $10\\text{ kgf}$ ($98\\text{ N}$) en el bastón reduce la tensión del glúteo medio y descarga la cabeza femoral en casi un $\\mathbf{50\\%}$.'}
+                {'Entonces $R_x = 0{,}21\\,W_b$, $R_y = 1{,}24\\,W_b$, $R = 1{,}26\\,W_b$ y $\\phi = 9{,}5^\\circ$. Con $W_b = 880\\text{ N}$: $M$ baja de $1400$ a $540\\text{ N}$ y $R$ de $2100$ a $1100\\text{ N}$, con solo unos $145\\text{ N}$ sobre el bastón.'}
               </p>
-            
               <div style={{ marginTop: '.4rem' }}>
                 <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
-                  <b>🏷️ Rotular las fuerzas de la cadera</b>
+                  <b>Rotular las fuerzas de la cadera</b>
                 </TheoryToggle>
               </div>
               <TheoryCue>Muestra sobre el modelo cuánto baja la reacción articular <b>R</b> al descargar peso en el bastón.</TheoryCue>
@@ -85,18 +78,21 @@ export default function Slide8({
           </div>
           <div className="card">
             <div className="card-hdr">
-              <span className="icon">⚠️</span> El error de la mano ipsilateral
+              <span className="icon">⚠️</span> El efecto principal: el brazo de momento
             </div>
             <div className="card-body">
-              <p style={{ fontSize: '.64rem', color: 'var(--ink-3)' }}>
-                Si el paciente lleva el bastón en el <strong>mismo lado de la lesión</strong>, el brazo de palanca es casi nulo ($d_c \approx 0$) o negativo, obligando a inclinar el tronco y perdiendo la ventaja biomecánica de descarga.
+              <p style={{ fontSize: '.64rem', color: 'var(--ink-2)' }}>
+                {'Con diferencia, la consecuencia principal del bastón es que el brazo de momento de la normal del suelo cae de $10{,}8$ a $4{,}7\\text{ cm}$ porque el pie se desplaza $6{,}1\\text{ cm}$; la menor carga sobre la pierna ($\\tfrac{5}{6}W_b$) influye mucho menos.'}
+              </p>
+              <p style={{ fontSize: '.62rem', color: 'var(--ink-3)' }}>
+                {'Fuera del libro: con el bastón en la mano del mismo lado el modelo desplaza el pie hacia el otro lado y alarga ese brazo de momento, de modo que $M$ y $R$ aumentan (el visor extrapola la geometría de la Fig. 2.20).'}
               </p>
             </div>
           </div>
           <div className="apuntes">
             <div className="a-hdr"><span>✍️</span> Apunte de cátedra</div>
             <div className="a-text" id="info-text-8">
-              Prescripción clínica: <b>«Bastón siempre en la mano opuesta a la pierna que duele»</b>. Es una de las aplicaciones más elegantes y de mayor impacto terapéutico de la estática de momentos.
+              Un efecto muy grande para tan poco apoyo: ≈ $W_b/6$ en el bastón reduce $R$ casi a la mitad. Por eso el bastón se lleva en la mano <b>opuesta</b> a la cadera que duele. Variante (Problemas 2.8–2.9): cargar un peso en el lado izquierdo aumenta los brazos de momento y con ellos $M$ y $R$.
             </div>
           </div>
         </div>
@@ -105,36 +101,36 @@ export default function Slide8({
           {/* Panel HUD Colapsable */}
           <HudPanel
             title="DESCARGA CON BASTÓN"
-            badge={caneHand === 'contra' ? `−${reliefPct.toFixed(0)}% ALIVIO` : (caneHand === 'ipsi' ? 'IPSILATERAL' : 'SIN BASTÓN')}
+            badge={caneHand === 'none' ? 'SIN BASTÓN' : `R ${reliefPct >= 0 ? '−' : '+'}${fx(Math.abs(reliefPct))} %`}
             icon="🦯"
             defaultCollapsed={true}
-            footer="💡 Compara la mano contralateral vs ipsilateral para ver la reducción de carga"
+            footer="💡 Con 15 kg sobre 90 kg (1/6 del peso) el visor reproduce el caso del libro"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.62rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Carga Articular (R):</span>
-                <b style={{ color: caneHand === 'contra' ? '#2e8b57' : '#0d6e64', fontFamily: 'JetBrains Mono, monospace' }}>
-                  {rJointN.toFixed(0)} N ({rJointKgf.toFixed(1)} kgf)
+                <b style={{ color: 'var(--teal)', fontFamily: 'var(--mono)' }}>
+                  {fx(rJointN)} N ({fx(rJointN / totalWeightN, 2)} W<sub>b</sub>)
                 </b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
-                <span style={{ color: 'var(--ink-2)' }}>Alivio Relativo:</span>
-                <b style={{ color: caneHand === 'contra' ? '#2e8b57' : '#b02318' }}>
-                  {caneHand === 'contra' ? `−${reliefPct.toFixed(0)}% de carga` : '0% (Sin alivio)'}
+                <span style={{ color: 'var(--ink-2)' }}>Cambio de R frente a sin bastón:</span>
+                <b style={{ color: reliefPct > 0.5 ? 'var(--teal)' : 'var(--blood)' }}>
+                  {caneHand === 'none' ? '0 %' : `${reliefPct >= 0 ? '−' : '+'}${fx(Math.abs(reliefPct))} %`}
                 </b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
-                <span style={{ color: 'var(--ink-2)' }}>Fuerza en Bastón (Fc):</span>
-                <b style={{ color: '#0d8577', fontFamily: 'JetBrains Mono, monospace' }}>{fCaneN.toFixed(0)} N ({caneForceKg} kgf)</b>
+                <span style={{ color: 'var(--ink-2)' }}>Normal en el bastón (N<sub>c</sub>):</span>
+                <b style={{ color: 'var(--teal-deep)', fontFamily: 'var(--mono)' }}>{fx(fCaneN)} N ({fx(caneFrac * 100)} % W<sub>b</sub>)</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
-                <span style={{ color: 'var(--ink-2)' }}>Abductores (Fa):</span>
-                <b style={{ color: '#b02318', fontFamily: 'JetBrains Mono, monospace' }}>{fAbductorN.toFixed(0)} N ({fAbductorKgf.toFixed(1)} kgf)</b>
+                <span style={{ color: 'var(--ink-2)' }}>Abductores (M):</span>
+                <b style={{ color: 'var(--blood)', fontFamily: 'var(--mono)' }}>{fx(fAbductorN)} N ({fx(fAbductorN / totalWeightN, 2)} W<sub>b</sub>)</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--ink-2)' }}>Torque de ayuda (Fc · dc):</span>
-                <b style={{ color: '#0d8577', fontFamily: 'JetBrains Mono, monospace' }}>
-                  {caneHand === 'contra' ? `+${(fCaneN * 0.30).toFixed(1)} N·m` : '0,0 N·m'}
+                <span style={{ color: 'var(--ink-2)' }}>Desplazamiento del pie (L):</span>
+                <b style={{ color: 'var(--teal-deep)', fontFamily: 'var(--mono)' }}>
+                  {fx(hip.L, 1)} cm · brazo de N: {fx(hip.dN, 1)} cm
                 </b>
               </div>
             </div>
@@ -147,7 +143,7 @@ export default function Slide8({
           />
           <div className="prof-controls">
             <span className="badge">2.3 · Bastón</span>
-            <span>R = <b style={{ color: caneHand === 'contra' ? '#2e8b57' : '#0d6e64' }}>{rJointN.toFixed(0)} N</b> ({caneHand === 'contra' ? `−${reliefPct.toFixed(0)}%` : 'Sin descarga'})</span>
+            <span>R = <b style={{ color: 'var(--teal)' }}>{fx(rJointN / totalWeightN, 2)} W<sub>b</sub></b> ({fx(rJointN)} N)</span>
 
             <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>
               <div style={{ display: 'inline-flex', gap: '1px', border: '1px solid var(--line)', borderRadius: '4px', padding: '1px', background: 'var(--paper-2)' }}>
@@ -166,7 +162,7 @@ export default function Slide8({
                     transition: 'all 0.15s ease',
                   }}
                 >
-                  Contralateral (Óptimo)
+                  Contralateral
                 </button>
                 <button
                   type="button"
@@ -209,7 +205,7 @@ export default function Slide8({
                 <input
                   type="range"
                   min="0"
-                  max="25"
+                  max="30"
                   value={caneForceKg}
                   onChange={(e) => setCaneForceKg(parseFloat(e.target.value))}
                   style={{ width: '50px' }}
