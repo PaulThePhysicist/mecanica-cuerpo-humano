@@ -164,8 +164,22 @@ const CHAPTERS: ChapterMeta[] = [
   },
 ];
 
+function getPreviewChapters(): Set<number> | 'all' {
+  if (typeof window === 'undefined') return new Set();
+  const raw = new URLSearchParams(window.location.search).get('preview');
+  if (!raw) return new Set();
+  if (raw === 'all' || raw === '*') return 'all';
+  return new Set(
+    raw
+      .split(',')
+      .map((s) => Number.parseInt(s.trim(), 10))
+      .filter((n) => Number.isFinite(n) && n >= 1 && n <= 13),
+  );
+}
+
 export default function App() {
   const [chapter, setChapter] = useState<number | null>(null);
+  const previewChapters = getPreviewChapters();
 
   if (chapter !== null) {
     const onBack = () => setChapter(null);
@@ -212,7 +226,9 @@ export default function App() {
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(270px, 1fr))', gap: '1.3rem' }}>
           {CHAPTERS.map((c) => {
-            const isAvailable = c.available !== false;
+            const isPublished = c.available !== false;
+            const isPreview = !isPublished && (previewChapters === 'all' || previewChapters.has(c.id));
+            const isAvailable = isPublished || isPreview;
             return (
               <button
                 key={c.id}
@@ -265,7 +281,7 @@ export default function App() {
                         letterSpacing: '0.04em',
                       }}
                     >
-                      {isAvailable ? '🟢 DISPONIBLE' : '🔒 EN PREPARACIÓN'}
+                      {isPublished ? '🟢 DISPONIBLE' : isPreview ? '🧪 PREVIEW' : '🔒 EN PREPARACIÓN'}
                     </span>
                   </div>
                   <span style={{ fontSize: '1.4rem', filter: isAvailable ? 'none' : 'grayscale(0.8)' }}>{c.icon}</span>

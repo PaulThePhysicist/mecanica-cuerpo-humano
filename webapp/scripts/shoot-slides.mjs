@@ -33,6 +33,8 @@ const CHROME_CANDIDATES = [
 const VIEWPORTS = [
   { name: 'desk', width: 1440, height: 900 },
   { name: 'mob', width: 820, height: 1180 },
+  // Proyector de aula: el escenario real de clase.
+  { name: 'proj', width: 1280, height: 720 },
 ];
 
 /** Espera fija: los canvas 2D y las escenas 3D no exponen una señal de "listo". */
