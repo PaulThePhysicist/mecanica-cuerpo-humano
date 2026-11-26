@@ -143,6 +143,13 @@ export default function Slide7({ slideCount }: { slideCount?: string }) {
               <span className="icon">🔄</span> Principio antagonista
             </div>
             <div className="card-body">
+              <p style={{ marginBottom: '.25rem' }}>Cuatro componentes del movimiento:</p>
+              <div className="term-grid" style={{ marginBottom: '.4rem' }}>
+                <span><b>Huesos</b> la estructura; cartílago hialino en las sinoviales</span>
+                <span><b>Ligamentos</b> unen hueso con hueso</span>
+                <span><b>Músculos</b> los motores (esquelético; también cardíaco y liso)</span>
+                <span><b>Tendones</b> unen músculo con hueso (origen e inserción)</span>
+              </div>
               <p>
                 Los músculos <strong>solo se contraen</strong> (acortan bajo tensión); nunca empujan. Cada movimiento necesita su <strong>antagonista</strong> para relajar y permitir el retorno.
               </p>
@@ -157,6 +164,9 @@ export default function Slide7({ slideCount }: { slideCount?: string }) {
               </div>
               <p style={{ fontSize: '.64rem', color: 'var(--ink-3)', marginTop: '.2rem' }}>
                 El par bíceps/tríceps conforma una <strong>palanca de tercer género</strong> (fulcro en codo, esfuerzo en el radio).
+              </p>
+              <p style={{ marginTop: '.2rem' }}>
+                <strong>Regla del destornillador:</strong> supinar = atornillar con la mano derecha; pronar = desatornillar.
               </p>
             </div>
           </div>
@@ -210,10 +220,15 @@ export default function Slide7({ slideCount }: { slideCount?: string }) {
           </div>
           <div className="card">
             <div className="card-hdr">
-              <span className="icon">🖼️</span> Referencias (Figs. 1.12–1.14)
+              <span className="icon">🖼️</span> Referencias (Figs. 1.8, 1.12–1.14)
             </div>
             <div className="card-body">
               <div className="figure-pair" style={{ height: '120px' }}>
+                <ChapterImageLightbox src="/assets/cap1/18.png" alt="Músculos y tendones principales del cuerpo" label="FIG 1.8 · Músculos y tendones">
+                  <span className="fig-num">FIG 1.8</span>
+                  <img src="/assets/cap1/18.png" alt="Músculos y tendones principales del cuerpo" />
+                  <figcaption>Músculos y tendones</figcaption>
+                </ChapterImageLightbox>
                 <ChapterImageLightbox src="/assets/cap1/112.png" alt="Flexión y extensión del antebrazo" label="FIG 1.12 · Palanca: bíceps vs. tríceps">
                   <span className="fig-num">FIG 1.12</span>
                   <img src="/assets/cap1/112.png" alt="Flexión y extensión del antebrazo" />
