@@ -1,26 +1,13 @@
-import React, { useState } from 'react';
 import type { Engine } from './useEngine';
 import Sim from './Sim';
+import SlideHeader from './SlideHeader';
 
 export default function Slide7({ engine }: { engine: Engine }) {
-  const params = engine.paramsRef.current;
   const flags = engine.flagsRef.current;
-  const [playing, setPlaying] = useState(flags.pogoPlaying);
-
-  const togglePogo = () => {
-    const next = !playing;
-    setPlaying(next);
-    engine.setFlag('pogoPlaying', next);
-  };
 
   return (
     <div className="slide active" data-slide="7" data-module="3">
-      <div className="module-header">
-        <span className="mnum">3.6</span>
-        <span className="mtitle">El cuerpo como pogo stick</span>
-        <span className="msub">Energía elástica: tendón de Aquiles y arco del pie</span>
-        <span className="mslide-count">7 / 19</span>
-      </div>
+      <SlideHeader index={7} num="3.4.3–3.4.4" title="El cuerpo como pogo stick" sub="Energía elástica: tendón de Aquiles y arco del pie" />
       <div className="content-grid">
         <div className="theory">
           <div className="card active">
@@ -29,26 +16,28 @@ export default function Slide7({ engine }: { engine: Engine }) {
             </div>
             <div className="card-body">
               <p>
-                {"Durante el apoyo de la carrera, la energía cinética y potencial se convierte en <strong>energía elástica</strong> (\\(E_e = \\tfrac{1}{2} kx^2\\)) de tendones y arcos, y se devuelve al despegar — como un pogo stick:"}
+                En la pelota que rebota o el saltador (pogo stick), la energía total es constante: al tocar el suelo la
+                cinética se convierte en <strong>energía elástica</strong> {'\\(\\text{EE}\\)'} y se devuelve al despegar:
               </p>
-              <div className="eq-block">
-                {"\\[ E_{\\text{correr}} = KE + PE + E_{\\text{elástica}} \\]"}
-              </div>
+              <div className="eq-block">{'\\[ \\text{TE} = \\text{KE} + \\text{PE} + \\text{EE} = \\text{constante} \\]'}</div>
               <p>
-                En cada paso se pierden ≈ <span className="tag">100 J</span> de energía metabólica; buena parte vuelve.
+                En una carrera de maratón a 4,5 m/s se pierden ≈ <span className="tag">100 J</span> de energía{' '}
+                <strong>cinética</strong> cada vez que el pie toca el suelo (la metabólica necesaria para reponerla es
+                ≈ 5 veces mayor). La fuerza normal máxima es {'\\(2{,}7\\,W_b \\approx 1900\\ \\text{N}\\)'}; el tendón de
+                Aquiles tira con ≈ 4700 N.
               </p>
             </div>
           </div>
           <div className="card">
             <div className="card-hdr">
-              <span className="icon">🦵</span> Los números elásticos
+              <span className="icon">🦵</span> Los resortes del cuerpo
             </div>
             <div className="card-body">
               <table className="data-mini">
                 <thead>
                   <tr>
                     <th>Reservorio</th>
-                    <th>Energía</th>
+                    <th>Almacena</th>
                     <th>Recuperable</th>
                   </tr>
                 </thead>
@@ -64,50 +53,52 @@ export default function Slide7({ engine }: { engine: Engine }) {
                     <td>80 %</td>
                   </tr>
                   <tr>
-                    <td>Pistas atléticas</td>
-                    <td>≈ 12 J</td>
-                    <td>→ +2 % rapidez</td>
+                    <td>Zapatilla (≤ 10 mm)</td>
+                    <td>≈ 7 J</td>
+                    <td>54–66 %</td>
+                  </tr>
+                  <tr>
+                    <td>Pista sintonizada (Tabla 3.11)</td>
+                    <td>≤ 12 J</td>
+                    <td>+2 % rapidez</td>
                   </tr>
                 </tbody>
               </table>
-              <p>Las pistas modernas devuelven energía al corredor: un ahorro medible en la marca.</p>
+              <p>
+                En total ≈ 50 J vuelven de los resortes y ≈ 50 J los aportan los músculos. Matiz del libro: la Fig. 3.26
+                sugiere que solo ≈ 5 % es recuperable — la cifra no es universalmente aceptada.
+              </p>
             </div>
           </div>
           <div className="apuntes">
             <div className="a-hdr">
               <span>✍️</span> Apunte de cátedra
             </div>
-            <div className="a-text" id="info-text-7">
-              El modelo pogo resume la carrera: la pierna es un resorte. En el canvas ve cómo KE→elástica→KE en cada rebote
-              y cuánto se recupera según el coeficiente de rebote del suelo.
+            <div className="a-text">
+              La pista sintonizada (k ≈ 240 kN/m, unas 3 veces la rigidez de la pierna inferior, resonancia ≈ 2 Hz) puede
+              bajar ≈ 0,2 s en 100 m. Los velocistas compiten con zapatillas casi sin amortiguación: su cuerpo devuelve más.
             </div>
           </div>
         </div>
         <div className="sim-col">
           <div className="sim-area">
-            <Sim id="sim-pogo" className="sim" />
+            <Sim id="sim-pogo" className="sim" label="Saltador con resorte y balance de energía por pisada" />
             <div className="prof-controls">
-              <span className="badge">Pogo</span>
-              <label>
-                rigidez{' '}
-                <input
-                  type="range"
-                  id="po_k"
-                  min="5"
-                  max="60"
-                  defaultValue={params.po_k}
-                  onChange={(e) => {
-                    engine.setParam('po_k', parseFloat(e.target.value));
-                    engine.requestDraw();
-                  }}
-                />
-              </label>
-              <button id="po_play" onClick={togglePogo}>
-                {playing ? '⏸' : '▶'}
+              <span className="badge">{'\\(\\text{TE} = \\text{KE}+\\text{PE}+\\text{EE}\\)'}</span>
+              <button type="button" aria-pressed={flags.pogoPlaying} onClick={() => engine.setFlag('pogoPlaying', !flags.pogoPlaying)}>
+                {flags.pogoPlaying ? '⏸ Pausa' : '▶ Rebotar'}
               </button>
-              <span className="readout" id="po_out">
-                EE 35 J · 93 %
-              </span>
+              <button
+                type="button"
+                aria-pressed={flags.pogoTrack}
+                onClick={() => {
+                  engine.setFlag('pogoTrack', !flags.pogoTrack);
+                  engine.requestDraw();
+                }}
+              >
+                {flags.pogoTrack ? 'Pista sintonizada' : 'Suelo normal'}
+              </button>
+              <span className="readout" id="po_out" aria-live="polite" />
             </div>
           </div>
         </div>

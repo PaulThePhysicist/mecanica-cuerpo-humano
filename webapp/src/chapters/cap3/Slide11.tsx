@@ -1,35 +1,41 @@
-import React from 'react';
 import type { Engine } from './useEngine';
 import Sim from './Sim';
+import SlideHeader from './SlideHeader';
+
+const CASES: [string, string, string, string, string][] = [
+  ['a', '2 in · ⟨sin θ⟩ = 0,707', '81,7', '5,77', '12,9'],
+  ['b', '2 in · ⟨sin θ⟩ = 1', '115,5', '6,86', '15,3'],
+  ['c', '3 in · ⟨sin θ⟩ = 1', '308', '11,2', '25,0'],
+  ['d', '3 in · sin gravedad', '346', '11,9', '26,5'],
+];
 
 export default function Slide11({ engine }: { engine: Engine }) {
   const params = engine.paramsRef.current;
+  const flags = engine.flagsRef.current;
 
   return (
     <div className="slide active" data-slide="11" data-module="5">
-      <div className="module-header">
-        <span className="mnum">3.8</span>
-        <span className="mtitle">Lanzar: el modelo de un segmento</span>
-        <span className="msub">El antebrazo como cuerpo rígido giratorio</span>
-        <span className="mslide-count">11 / 19</span>
-      </div>
+      <SlideHeader index={11} num="3.6" title="Lanzar: el modelo de un segmento" sub="El antebrazo gira alrededor del codo (modelo d)" />
       <div className="content-grid">
         <div className="theory">
           <div className="card active">
             <div className="card-hdr">
-              <span className="icon">💪</span> La rotación del antebrazo
+              <span className="icon">💪</span> Torque y momento de inercia
             </div>
             <div className="card-body">
-              <p>Modelo simple: el antebrazo gira alrededor del codo, empujado por el bíceps. La aceleración angular:</p>
-              <div className="eq-block">
-                {"\\[ \\alpha = \\frac{(M d_M - W_F d_F - W_B d_B)\\sin\\theta}{I} \\]"}
-              </div>
               <p>
-                {"Con \\(L = 0{,}2H \\approx 36\\ \\text{cm}\\), \\(m_F \\approx 2\\ \\text{kg}\\), pelota \\(0{,}146\\ \\text{kg}\\):"}
+                El bíceps braquial (inserción a {'\\(d_M = 4\\ \\text{cm}\\)'}) gira el antebrazo con el húmero vertical; θ
+                va de 135° a 45°, la región más eficiente del músculo:
               </p>
               <div className="eq-block">
-                {"\\[ I = \\tfrac{1}{3}m_F L^2 + m_B L^2 = 0{,}105\\ \\text{kg·m}^2 \\]"}
+                {'\\[ \\tau_z = (M d_M - W_F d_F - W_B d_B)\\sin\\theta, \\qquad I = \\tfrac13 m_F L^2 + m_B L^2 \\]'}
               </div>
+              <p>
+                {'\\(L = 0{,}2\\,H \\approx 36\\ \\text{cm}\\)'}, {'\\(m_F \\approx 2\\ \\text{kg}\\)'} (jugador de 90 kg),
+                pelota {'\\(0{,}146\\ \\text{kg}\\)'} → {'\\(I = 1053\\ \\text{kg}\\cdot\\text{cm}^2\\)'}. Con 20 N/cm² y 2 in de
+                diámetro, {'\\(M = 405\\ \\text{N}\\)'}. Si {'\\(\\alpha\\)'} es constante:
+              </p>
+              <div className="eq-block">{'\\[ t_{\\text{final}} = \\sqrt{\\pi/\\alpha}, \\qquad v_B = L\\sqrt{\\pi\\alpha} \\]'}</div>
             </div>
           </div>
           <div className="card">
@@ -37,51 +43,31 @@ export default function Slide11({ engine }: { engine: Engine }) {
               <span className="icon">🎯</span> Los cuatro casos del libro
             </div>
             <div className="card-body">
-              <p>
-                {"Según los supuestos (tamaño del bíceps, si la gravedad cuenta), la rapidez final \\(v_B = L\\sqrt{\\pi\\alpha}\\) cambia:"}
-              </p>
               <table className="data-mini">
                 <thead>
                   <tr>
-                    <th>Caso</th>
-                    <th>v (m/s)</th>
+                    <th>Caso · bíceps</th>
+                    <th>{'\\(\\alpha\\)'} (s⁻²)</th>
+                    <th>{'\\(v_B\\)'} (m/s)</th>
                     <th>mph</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>
-                      <b>a</b> bíceps 2 in, sin gravedad
-                    </td>
-                    <td>5,77</td>
-                    <td>12,9</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <b>b</b> bíceps 3 in, sin gravedad
-                    </td>
-                    <td>6,86</td>
-                    <td>15,3</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <b>c</b> bíceps 2 in, con gravedad
-                    </td>
-                    <td>11,2</td>
-                    <td>25,0</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <b>d</b> bíceps 3 in, con gravedad
-                    </td>
-                    <td>11,9</td>
-                    <td>26,5</td>
-                  </tr>
+                  {CASES.map(([k, d, a, v, mph]) => (
+                    <tr key={k} className={params.th_case === k ? 'is-active' : undefined}>
+                      <td>
+                        <b>{k}</b> · {d}
+                      </td>
+                      <td>{a}</td>
+                      <td>{v}</td>
+                      <td>{mph}</td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
               <p>
-                Ninguno alcanza a un pitcher (90–100 mph):{' '}
-                <strong>la física es correcta, el modelo es demasiado simple</strong> — hacen falta más segmentos.
+                Muy lejos de los 90–100 mph de un lanzador. Con 30 N/cm² y los demás flexores (×2,6) se llega a ≈ 45 mph:{' '}
+                <strong>la física es correcta, el modelo es demasiado simple</strong> — faltan piernas, tronco y hombro.
               </p>
             </div>
           </div>
@@ -89,36 +75,49 @@ export default function Slide11({ engine }: { engine: Engine }) {
             <div className="a-hdr">
               <span>✍️</span> Apunte de cátedra
             </div>
-            <div className="a-text" id="info-text-11">
-              La moraleja: un buen modelo captura la física pero puede subestimar — aquí le falta la cadera y el tronco. En
-              la siguiente diapositiva los sumamos y la velocidad "aparece".
+            <div className="a-text">
+              «Es una catapulta de dos brazos» (Sandy Koufax). Pulse «▶ Lanzar»: el gesto real dura 0,1–0,2 s, aquí va a
+              cámara lenta. Siguiente diapositiva: sumamos segmentos y la velocidad aparece.
             </div>
           </div>
         </div>
         <div className="sim-col">
           <div className="sim-area">
-            <Sim id="sim-throw" className="sim" />
+            <Sim id="sim-throw" className="sim" label="Antebrazo girando alrededor del codo y tabla de casos" />
             <div className="prof-controls">
-              <span className="badge">v_B = L√(πα)</span>
+              <span className="badge">{'\\(v_B = L\\sqrt{\\pi\\alpha}\\)'}</span>
               <label>
-                caso{' '}
+                caso
                 <select
-                  id="th_case"
                   defaultValue={params.th_case}
+                  aria-label="Caso del modelo de lanzamiento"
                   onChange={(e) => {
                     engine.setParam('th_case', e.target.value as 'a' | 'b' | 'c' | 'd');
+                    engine.setFlag('throwPhase', 0);
                     engine.requestDraw();
                   }}
                 >
-                  <option value="a">a · 2in, sin g</option>
-                  <option value="b">b · 3in, sin g</option>
-                  <option value="c">c · 2in, con g</option>
-                  <option value="d">d · 3in, con g</option>
+                  <option value="a">a · 2 in, ⟨sin⟩ 0,707</option>
+                  <option value="b">b · 2 in, ⟨sin⟩ 1</option>
+                  <option value="c">c · 3 in, ⟨sin⟩ 1</option>
+                  <option value="d">d · 3 in, sin gravedad</option>
                 </select>
               </label>
-              <span className="readout" id="th_out">
-                v = 11,2 m/s
-              </span>
+              <button
+                type="button"
+                aria-pressed={flags.throwPlaying}
+                onClick={() => {
+                  if (flags.throwPlaying) {
+                    engine.setFlag('throwPlaying', false);
+                  } else {
+                    engine.setFlag('throwPhase', 0);
+                    engine.setFlag('throwPlaying', true);
+                  }
+                }}
+              >
+                {flags.throwPlaying ? '⏸ Pausa' : '▶ Lanzar'}
+              </button>
+              <span className="readout" id="th_out" aria-live="polite" />
             </div>
           </div>
         </div>

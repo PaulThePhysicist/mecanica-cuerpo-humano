@@ -1,68 +1,97 @@
-import React from 'react';
 import type { Engine } from './useEngine';
 import Sim from './Sim';
+import SlideHeader from './SlideHeader';
+
+/** Ejemplos del libro (§3.10.2): cabeza contra viga, salto de 1 m, cabeza a 50 mph en 10 ms. */
+const PRESETS = {
+  head: { v: 1, dx: 0.005, m: 3 },
+  jump: { v: 4.43, dx: 0.01, m: 70 },
+  crash: { v: 22.3, dx: 0.1115, m: 3 },
+} as const;
 
 export default function Slide16({ engine }: { engine: Engine }) {
   const params = engine.paramsRef.current;
 
-  const setColPreset = (type: 'head' | 'jump' | 'car') => {
-    const sets = {
-      head: { v: 1, dx: 0.005, m: 3 },
-      jump: { v: 4.43, dx: 0.01, m: 70 },
-      car: { v: 16.7, dx: 0.3, m: 70 },
-    };
-    const s = sets[type];
-    if (!s) return;
+  const setPreset = (k: keyof typeof PRESETS) => {
+    const s = PRESETS[k];
     engine.setParam('co_v', s.v);
     engine.setParam('co_dx', s.dx);
     engine.setParam('co_m', s.m);
+    const sync = (id: string, v: number) => {
+      const el = document.getElementById(id) as HTMLInputElement | null;
+      if (el) el.value = String(v);
+    };
+    sync('co_v', s.v);
+    sync('co_dx', s.dx);
+    sync('co_m', s.m);
     engine.requestDraw();
   };
+  const slider = (key: 'co_v' | 'co_dx' | 'co_m', label: string, min: number, max: number, step: number, aria: string) => (
+    <label>
+      {label}
+      <input
+        type="range"
+        id={key}
+        min={min}
+        max={max}
+        step={step}
+        defaultValue={params[key]}
+        aria-label={aria}
+        onChange={(e) => {
+          engine.setParam(key, parseFloat(e.target.value));
+          engine.requestDraw();
+        }}
+      />
+    </label>
+  );
 
   return (
     <div className="slide active" data-slide="16" data-module="7">
-      <div className="module-header">
-        <span className="mnum">3.11</span>
-        <span className="mtitle">Colisiones: desacelerar es el peligro</span>
-        <span className="msub">a = v²/2Δx y el factor G</span>
-        <span className="mslide-count">16 / 19</span>
-      </div>
+      <SlideHeader index={16} num="3.10.1–3.10.2" title="Colisiones: frenar en poco espacio" sub="Desaceleración, fractura y supervivencia" />
       <div className="content-grid">
         <div className="theory">
           <div className="card active">
             <div className="card-hdr">
-              <span className="icon">💥</span> Frenar en corto espacio
+              <span className="icon">💥</span> Cinemática de una colisión
             </div>
             <div className="card-body">
-              <p>
-                {"En una colisión, el cuerpo pasa de \\(v\\) a 0 en una distancia \\(\\Delta x\\). La desaceleración media:"}
-              </p>
+              <p>Si el cuerpo pasa de {'\\(v_i\\)'} a 0 con desaceleración uniforme (ec. 3.105–3.107):</p>
               <div className="eq-block">
-                {"\\[ a = \\frac{v^2}{2\\,\\Delta x},\\qquad G = \\frac{a}{g} \\]"}
+                {'\\[ a_{\\text{decel}} = \\frac{v_i^2}{2\\,\\Delta x}, \\qquad |F| = \\frac{m v_i}{t_{\\text{col}}}, \\qquad P = \\frac{m v_i}{A\\,t_{\\text{col}}} \\]'}
               </div>
               <p>
-                Cabeza de 3 kg a 1 m/s que frena en 10 ms (5 mm): ≈ <span className="tag">10 g</span>, fuerza ≈{' '}
-                <span className="tag">300 N</span>.
+                Cabeza de 3 kg a 1 m/s contra una viga en 10 ms (5 mm): ≈ <span className="tag">10 g</span>,{' '}
+                <span className="tag">300 N</span>. Para reducir el daño: más {'\\(t_{\\text{col}}\\)'} (acolchado, flexionar
+                las rodillas, rodar) y más área {'\\(A\\)'}.
               </p>
             </div>
           </div>
           <div className="card">
             <div className="card-hdr">
-              <span className="icon">🦴</span> Cuándo se fractura el hueso
+              <span className="icon">🦴</span> Saltar de 1 m con la pierna rígida
             </div>
             <div className="card-body">
               <p>
-                {"Saltar de 1 m y caer con la planta del pie: \\(\\Delta x \\approx 1\\ \\text{cm}\\) → ≈ "}<span className="tag">100 g</span>{", fuerza ≈ \\(7 \\times 10^4\\ \\text{N}\\). La tibia soporta ≈ 230 N/mm² — <strong>por encima</strong> de la resistencia última del hueso (170 MPa) → fractura."}
+                {'\\(v_i = \\sqrt{2gh} \\approx 4{,}5\\ \\text{m/s}\\)'}; el talón amortigua {'\\(\\Delta x = 1\\ \\text{cm}\\)'}:{' '}
+                {'\\(a = 100\\,g\\)'} y {'\\(F = 7\\times10^4\\ \\text{N}\\)'}. Sobre la tibia ({'\\(A \\approx 3\\ \\text{cm}^2\\)'}):
+                {' '}
+                {'\\(\\sigma = 230\\ \\text{N/mm}^2\\)'}, <strong>por encima</strong> de la tensión de compresión última del
+                hueso (UCS ≈ 170 MPa): fractura.
               </p>
             </div>
           </div>
           <div className="card">
             <div className="card-hdr">
-              <span className="icon">🧮</span> Supervivencia
+              <span className="icon">🧮</span> Índices de severidad
             </div>
             <div className="card-body">
+              <div className="eq-block">
+                {'\\[ \\text{GSI} = \\int \\left(\\frac{a_{\\text{decel}}}{g}\\right)^{2{,}5} dt = \\left(\\frac{\\Delta v}{g\\,t_{\\text{col}}}\\right)^{2{,}5} t_{\\text{col}} \\]'}
+              </div>
               <p>
-                {"La <strong>GSI</strong> (índice de severidad de Gadd) integra la aceleración: \\(\\text{GSI} = \\int (a/g)^{2.5}\\,dt\\). Valores ≈ "}<span className="tag">1000</span>{" son ~50 % fatales; la tolerancia humana va de 175 a 200 g."}
+                GSI ≈ 1000: 50 % de fatalidad; ≈ 400: conmoción leve. HIC = 1000 → 7 % de muerte; 1500 → 26 %. Cabeza a
+                50 mph frenada en 10 ms: GSI ≈ 7800 (inelástica) o 44 000 (elástica). Por encima de 175–200 g las colisiones
+                no son supervivibles (Fig. 3.61).
               </p>
             </div>
           </div>
@@ -70,68 +99,30 @@ export default function Slide16({ engine }: { engine: Engine }) {
             <div className="a-hdr">
               <span>✍️</span> Apunte de cátedra
             </div>
-            <div className="a-text" id="info-text-16">
-              La distancia de frenado es la única variable que controlamos: los airbags y cascos <em>aumentan Δx</em> y
-              bajan G. En el canvas, duplica Δx y observa cómo cae la desaceleración a la mitad.
+            <div className="a-text">
+              En placajes de fútbol americano, ≈ 98 g en 15 ms causaron conmoción y ≈ 60 g no (umbrales GSI ≈ 300, HIC ≈
+              250). Duplique Δx en el lienzo: la desaceleración cae a la mitad — eso hacen cascos y bolsas de aire.
             </div>
           </div>
         </div>
         <div className="sim-col">
           <div className="sim-area">
-            <Sim id="sim-collision" className="sim" />
+            <Sim id="sim-collision" className="sim" label="Objeto que frena sobre una distancia y factor G" />
             <div className="prof-controls">
-              <span className="badge">G = v²/2gΔx</span>
-              <button onClick={() => setColPreset('head')}>🧠 Cabeza</button>
-              <button onClick={() => setColPreset('jump')}>🦘 Salto 1 m</button>
-              <button onClick={() => setColPreset('car')}>🚗 Coche</button>
-              <label>
-                v{' '}
-                <input
-                  type="range"
-                  id="co_v"
-                  min="1"
-                  max="20"
-                  step="0.01"
-                  defaultValue={params.co_v}
-                  onChange={(e) => {
-                    engine.setParam('co_v', parseFloat(e.target.value));
-                    engine.requestDraw();
-                  }}
-                />
-              </label>
-              <label>
-                Δx{' '}
-                <input
-                  type="range"
-                  id="co_dx"
-                  min="0.001"
-                  max="0.5"
-                  step="0.001"
-                  defaultValue={params.co_dx}
-                  onChange={(e) => {
-                    engine.setParam('co_dx', parseFloat(e.target.value));
-                    engine.requestDraw();
-                  }}
-                />
-              </label>
-              <label>
-                m{' '}
-                <input
-                  type="range"
-                  id="co_m"
-                  min="1"
-                  max="90"
-                  step="1"
-                  defaultValue={params.co_m}
-                  onChange={(e) => {
-                    engine.setParam('co_m', parseFloat(e.target.value));
-                    engine.requestDraw();
-                  }}
-                />
-              </label>
-              <span className="readout" id="co_out">
-                G = 98 g
-              </span>
+              <span className="badge">{'\\(G = v^2/(2g\\,\\Delta x)\\)'}</span>
+              <button type="button" onClick={() => setPreset('head')}>
+                🧠 Cabeza 1 m/s
+              </button>
+              <button type="button" onClick={() => setPreset('jump')}>
+                🦘 Salto 1 m
+              </button>
+              <button type="button" onClick={() => setPreset('crash')}>
+                🚗 Cabeza 50 mph
+              </button>
+              {slider('co_v', 'v', 0.5, 25, 0.01, 'Rapidez inicial en m/s')}
+              {slider('co_dx', 'Δx', 0.001, 0.3, 0.0005, 'Distancia de frenado en metros')}
+              {slider('co_m', 'm', 1, 90, 1, 'Masa que frena en kg')}
+              <span className="readout" id="co_out" aria-live="polite" />
             </div>
           </div>
         </div>

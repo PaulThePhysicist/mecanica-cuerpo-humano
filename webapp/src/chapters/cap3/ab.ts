@@ -10,22 +10,37 @@ export interface DrawCtx {
   t: number;
 }
 
+/**
+ * Paleta de los lienzos 2D. Los valores son espejo de los tokens de `:root`
+ * (`src/index.css` + tokens `--c3-*` de `cap3.css`); `refreshPalette()` los
+ * relee con `getComputedStyle` una vez por repintado, de modo que un cambio de
+ * paleta en CSS llega a los lienzos sin tocar este archivo. Los literales de
+ * abajo solo son el respaldo si el CSS aún no está aplicado.
+ */
 export const PAL = {
   paper: '#f5f0e4',
+  paper2: '#eee7d6',
+  paper3: '#e8dfc9',
   card: '#fbf8f0',
   ink: '#232c36',
   ink2: '#43505c',
   ink3: '#6b7885',
   line: '#cfc3a9',
+  lineSoft: '#e2d9c4',
   bone: '#cfc4ae',
+  boneMid: '#d9d2bd',
   boneEdge: '#b6a67f',
   boneDark: '#9b8a64',
+  boneDeep: '#8a7a56',
+  club: '#c7b27a',
   muscle: '#c14b4b',
   muscleEdge: '#a92a1e',
   tendon: '#e8d8c8',
+  tendonEdge: '#c8b49a',
   skin: '#e9c49f',
   skinEdge: '#d9a77c',
   teal: '#0d6e64',
+  tealDeep: '#0a5a52',
   tealLight: '#3aa89c',
   amber: '#9a5b00',
   blood: '#a92a1e',
@@ -34,6 +49,70 @@ export const PAL = {
   sagittal: '#5d4fa8',
 };
 
+const TOKEN_OF: Record<keyof typeof PAL, string> = {
+  paper: '--paper',
+  paper2: '--paper-2',
+  paper3: '--paper-3',
+  card: '--card',
+  ink: '--ink',
+  ink2: '--ink-2',
+  ink3: '--ink-3',
+  line: '--line',
+  lineSoft: '--line-soft',
+  bone: '--c3-bone',
+  boneMid: '--c3-bone-mid',
+  boneEdge: '--bone',
+  boneDark: '--c3-bone-dark',
+  boneDeep: '--c3-bone-deep',
+  club: '--c3-club',
+  muscle: '--c3-muscle',
+  muscleEdge: '--blood',
+  tendon: '--c3-tendon',
+  tendonEdge: '--c3-tendon-edge',
+  skin: '--c3-skin',
+  skinEdge: '--c3-skin-edge',
+  teal: '--teal',
+  tealDeep: '--teal-deep',
+  tealLight: '--c3-teal-light',
+  amber: '--amber',
+  blood: '--blood',
+  good: '--coronal',
+  warn: '--transverse',
+  sagittal: '--sagittal',
+};
+
+/** Pila tipográfica de los rótulos de lienzo (espejo de `--sans`). */
+export let FONT_SANS = "Karla, system-ui, sans-serif";
+
+/** Relee los tokens de `:root`. Barato: un `getComputedStyle` por repintado. */
+export function refreshPalette(): void {
+  if (typeof document === 'undefined') return;
+  const cs = getComputedStyle(document.documentElement);
+  (Object.keys(TOKEN_OF) as (keyof typeof PAL)[]).forEach((k) => {
+    const v = cs.getPropertyValue(TOKEN_OF[k]).trim();
+    if (v) PAL[k] = v;
+  });
+  const f = cs.getPropertyValue('--sans').trim();
+  if (f) FONT_SANS = f;
+}
+
+/** `alpha('#0d6e64', .2)` → `rgba(13,110,100,0.2)`. Acepta #rgb/#rrggbb. */
+export function alpha(color: string, a: number): string {
+  const h = color.trim().replace('#', '');
+  if (!/^[0-9a-f]{3}([0-9a-f]{3})?$/i.test(h)) return color;
+  const full = h.length === 3 ? h.split('').map((c) => c + c).join('') : h;
+  const n = parseInt(full, 16);
+  return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
+}
+
+/** Piso tipográfico del lienzo: ningún rótulo por debajo de 12 px (proyector). */
+export const MIN_FONT_PX = 12;
+
+/** `ctx.font` con el piso de 12 px aplicado. */
+export function font(size: number, weight = '400'): string {
+  return `${weight} ${Math.max(MIN_FONT_PX, size)}px ${FONT_SANS}`;
+}
+
 export function setup(ctx: CanvasRenderingContext2D, w: number, h: number, dpr: number = 1): void {
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.clearRect(0, 0, w, h);
@@ -41,10 +120,15 @@ export function setup(ctx: CanvasRenderingContext2D, w: number, h: number, dpr: 
   ctx.lineJoin = 'round';
 }
 
+/**
+ * Número en formato es-ES con exactamente `d` decimales y coma decimal. Antes
+ * se recortaban ceros con `/\.?0+$/`, que también se comía ceros enteros
+ * (fmt(10, 0) → «1», fmt(570, 0) → «57») y ocultaba la precisión de cifras del
+ * libro como «0,80 s» o «10,0 m/s» (AUDITORIA_CAP3).
+ */
 export function fmt(x: number, d: number = 1): string {
-  let s = Number(x).toFixed(d).replace(/\.?0+$/, '').replace('.', ',');
-  if (s === '' || s === '-') s = '0';
-  return s;
+  const s = Number(x).toFixed(d);
+  return (/^-0(\.0*)?$/.test(s) ? s.slice(1) : s).replace('.', ',');
 }
 
 export function espan(x: number, d: number = 0): string {
@@ -68,7 +152,7 @@ export function text(
   o?: { weight?: string; size?: number; color?: string; align?: CanvasTextAlign; base?: CanvasTextBaseline }
 ): void {
   o = o || {};
-  ctx.font = (o.weight ? o.weight + ' ' : '') + (o.size ? o.size + 'px ' : '13px ') + 'Karla, sans-serif';
+  ctx.font = font(o.size || 13, o.weight || '400');
   ctx.fillStyle = o.color || PAL.ink;
   ctx.textAlign = o.align || 'center';
   ctx.textBaseline = o.base || 'middle';
@@ -156,7 +240,7 @@ export function joint(
   o = o || {};
   ctx.beginPath();
   ctx.arc(x, y, r, 0, Math.PI * 2);
-  ctx.fillStyle = o.fill || '#f5f0e4';
+  ctx.fillStyle = o.fill || PAL.paper;
   ctx.fill();
   ctx.lineWidth = o.lw || 2.2;
   ctx.strokeStyle = o.color || PAL.teal;
@@ -215,7 +299,7 @@ export function tendon(
   ctx.fillStyle = o.fill || PAL.tendon;
   ctx.fill();
   ctx.lineWidth = 1;
-  ctx.strokeStyle = o.edge || '#c8b49a';
+  ctx.strokeStyle = o.edge || PAL.tendonEdge;
   ctx.stroke();
 }
 

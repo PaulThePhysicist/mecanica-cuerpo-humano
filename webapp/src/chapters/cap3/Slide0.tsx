@@ -1,5 +1,5 @@
-import React from 'react';
 import type { Engine } from './useEngine';
+import { MODULES } from './sims';
 
 export default function Slide0({ engine, onBack }: { engine: Engine; onBack?: () => void }) {
   return (
@@ -9,50 +9,24 @@ export default function Slide0({ engine, onBack }: { engine: Engine; onBack?: ()
         El <span className="vol">Movimiento</span>
       </h1>
       <p className="subtitle">
-        Del reposo al movimiento: caminar, correr, saltar, lanzar, golpear, chocar y volar. Aplicamos la cinemática, la
-        energía, la elasticidad y las colisiones — y vemos que cada destreza tiene su física (y su número) dentro del cuerpo
-        humano.
+        Del reposo al movimiento: estar de pie, caminar, correr, saltar, lanzar, golpear, chocar y volar. Para cada
+        destreza seguimos su cinemática, las fuerzas que la causan, los músculos que las aportan y su energética — y vemos
+        que cada una tiene su física (y su número) dentro del cuerpo humano.
       </p>
       <div className="rule" />
-      <div className="module-preview" id="modulePreview">
-        <span className="mpill" onClick={() => engine.goModule(1)}>
-          <span className="ico">🧍</span> Bipedestación
-        </span>
-        <span className="mpill" onClick={() => engine.goModule(2)}>
-          <span className="ico">🚶</span> Marcha
-        </span>
-        <span className="mpill" onClick={() => engine.goModule(3)}>
-          <span className="ico">🏃</span> Carrera
-        </span>
-        <span className="mpill" onClick={() => engine.goModule(4)}>
-          <span className="ico">🦘</span> Salto
-        </span>
-        <span className="mpill" onClick={() => engine.goModule(5)}>
-          <span className="ico">⚾</span> Lanzar
-        </span>
-        <span className="mpill" onClick={() => engine.goModule(6)}>
-          <span className="ico">🏌️</span> Bateo
-        </span>
-        <span className="mpill" onClick={() => engine.goModule(7)}>
-          <span className="ico">💥</span> Colisiones
-        </span>
-        <span className="mpill" onClick={() => engine.goModule(8)}>
-          <span className="ico">🎾</span> Vuelo
-        </span>
+      <div className="module-preview">
+        {MODULES.filter((m) => m.id !== 0).map((m) => (
+          <button key={m.id} type="button" className="mpill" onClick={() => engine.goModule(m.id)}>
+            <span className="ico" aria-hidden="true">
+              {m.ico}
+            </span>{' '}
+            {m.name}
+          </button>
+        ))}
       </div>
-      <div style={{ display: 'flex', gap: '0.8rem', justifyContent: 'center', marginTop: '1.9rem', flexWrap: 'wrap' }}>
+      <div className="cover-actions">
         {onBack && (
-          <button
-            type="button"
-            className="start-btn"
-            onClick={onBack}
-            style={{
-              background: 'var(--card, #fbf8f0)',
-              color: 'var(--ink-2, #43505c)',
-              borderColor: 'var(--line, #cfc3a9)',
-              boxShadow: '0 1px 3px rgba(35,44,54,0.08)',
-            }}
-          >
+          <button type="button" className="start-btn start-btn--ghost" onClick={onBack}>
             ← Volver al Índice
           </button>
         )}
@@ -60,7 +34,7 @@ export default function Slide0({ engine, onBack }: { engine: Engine; onBack?: ()
           Comenzar la cátedra →
         </button>
       </div>
-      <p className="book-ref">Physics of the Human Body — Irving P. Herman · Springer (2016)</p>
+      <p className="book-ref">Physics of the Human Body — Irving P. Herman · Springer (2016) · Cap. 3</p>
     </div>
   );
 }

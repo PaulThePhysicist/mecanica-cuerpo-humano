@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { MODULES, TOTAL, DEFAULT_PARAMS, DEFAULT_FLAGS, redrawSlide } from './sims';
+import { MODULES, TOTAL, DEFAULT_PARAMS, DEFAULT_FLAGS, redrawSlide, isAnimating, stepSlide } from './sims';
 import type { SimParams, SimFlags } from './sims';
+import { useHarmonicClock } from '../cap1/three/useHarmonicClock';
 
 export const EngineContext = React.createContext<Engine | null>(null);
 
@@ -12,11 +13,13 @@ export interface Engine {
   goModule: (m: number) => void;
   paramsRef: React.MutableRefObject<SimParams>;
   flagsRef: React.MutableRefObject<SimFlags>;
-  clockRef: React.MutableRefObject<number>;
+  /** Cambia un parámetro continuo (slider). No re-renderiza React; repinta con `requestDraw`. */
   setParam: <K extends keyof SimParams>(k: K, v: SimParams[K]) => void;
+  /** Cambia un flag discreto (modo, ▶/⏸). Re-renderiza para que los botones reflejen el estado. */
   setFlag: <K extends keyof SimFlags>(k: K, v: SimFlags[K]) => void;
+  /** Repinta una vez el lienzo de la diapositiva activa. */
   requestDraw: () => void;
-  moduleOf: (i: number) => typeof MODULES[number];
+  moduleOf: (i: number) => (typeof MODULES)[number];
 }
 
 const moduleOf = (i: number) => {
@@ -24,95 +27,90 @@ const moduleOf = (i: number) => {
   return MODULES[0];
 };
 
+/** La lectura (`.readout`) la escribe solo el motor — la diapositiva la deja vacía. */
+const out = (id: string, text: string) => {
+  const el = document.getElementById(id);
+  if (el && el.textContent !== text) el.textContent = text;
+};
+
+/** Sliders cuyo valor avanza una animación: se sincronizan por id. */
+const ANIMATED_SLIDERS: Partial<Record<number, keyof SimParams>> = { 3: 'gait_t', 12: 'ph_t' };
+
+/**
+ * Motor del Cap. 3 — repintado BAJO DEMANDA.
+ *
+ * Antes había un `requestAnimationFrame` perpetuo que llamaba a `redrawSlide()`
+ * a 60 fps aunque la diapositiva estuviera quieta (AUDITORIA_CAP3 T-01). Ahora:
+ *   · sliders, cambio de tamaño, carga de fuentes y navegación → `requestDraw()`
+ *     (un solo repintado);
+ *   · solo si la diapositiva visible tiene una animación activa (`isAnimating`)
+ *     corre `useHarmonicClock` (un rAF, dt ≥ 0 acotado a 0,1 s), que se detiene
+ *     al pausar, al terminar la animación o al cambiar de diapositiva.
+ */
 export function useEngine(): Engine {
   const [activeSlide, setActiveSlide] = useState(0);
+  const [, setVersion] = useState(0);
   const current = useRef(0);
-  const tRef = useRef(0);
-  const lastRef = useRef(performance.now());
   const paramsRef = useRef<SimParams>({ ...DEFAULT_PARAMS });
   const flagsRef = useRef<SimFlags>({ ...DEFAULT_FLAGS });
+
+  const bump = useCallback(() => setVersion((v) => v + 1), []);
+
+  const requestDraw = useCallback(() => {
+    redrawSlide(current.current, paramsRef.current, flagsRef.current, out);
+  }, []);
 
   const setParam = useCallback(<K extends keyof SimParams>(k: K, v: SimParams[K]) => {
     paramsRef.current = { ...paramsRef.current, [k]: v };
   }, []);
 
-  const setFlag = useCallback(<K extends keyof SimFlags>(k: K, v: SimFlags[K]) => {
-    flagsRef.current = { ...flagsRef.current, [k]: v };
-  }, []);
+  const setFlag = useCallback(
+    <K extends keyof SimFlags>(k: K, v: SimFlags[K]) => {
+      flagsRef.current = { ...flagsRef.current, [k]: v };
+      bump();
+    },
+    [bump],
+  );
 
   const go = useCallback((n: number) => {
-    if (n === undefined || isNaN(n)) return;
-    n = Math.max(0, Math.min(TOTAL - 1, n));
-    current.current = n;
-    setActiveSlide(n);
-  }, []);
-
-  const next = useCallback(() => {
-    current.current = Math.min(TOTAL - 1, current.current + 1);
+    if (n === undefined || Number.isNaN(n)) return;
+    current.current = Math.max(0, Math.min(TOTAL - 1, n));
     setActiveSlide(current.current);
   }, []);
+  const next = useCallback(() => go(current.current + 1), [go]);
+  const prev = useCallback(() => go(current.current - 1), [go]);
+  const goModule = useCallback(
+    (m: number) => {
+      const mod = MODULES.find((x) => x.id === m);
+      if (mod) go(mod.slides[0]);
+    },
+    [go],
+  );
 
-  const prev = useCallback(() => {
-    current.current = Math.max(0, current.current - 1);
-    setActiveSlide(current.current);
-  }, []);
-
-  const goModule = useCallback((m: number) => {
-    const mod = MODULES.find((x) => x.id === m);
-    if (mod) {
-      current.current = mod.slides[0];
-      setActiveSlide(current.current);
+  // Reloj de animación: solo existe mientras hay algo que animar en la diapositiva visible.
+  const playing = isAnimating(activeSlide, flagsRef.current);
+  useHarmonicClock({ playing }, (_t, dt) => {
+    const slide = current.current;
+    const finished = stepSlide(slide, dt, paramsRef.current, flagsRef.current);
+    const key = ANIMATED_SLIDERS[slide];
+    if (key) {
+      const el = document.getElementById(key) as HTMLInputElement | null;
+      if (el) el.value = String(paramsRef.current[key]);
     }
-  }, []);
+    requestDraw();
+    if (finished) bump();
+  });
 
-  const out: (id: string, text: string) => void = (id, text) => {
-    const elem = document.getElementById(id);
-    if (elem) elem.textContent = text;
-  };
-
-  const requestDraw = useCallback(() => {
-    redrawSlide(current.current, tRef.current, paramsRef.current, flagsRef.current, out);
-  }, []);
-
+  // Repintado puntual ante cambios de tamaño de ventana y carga de fuentes.
   useEffect(() => {
-    let raf = 0;
-    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-
-    const loop = (now: number) => {
-      const dt = Math.min(0.05, (now - lastRef.current) / 1000);
-      lastRef.current = now;
-      if (!reduce) tRef.current += dt;
-
-      // Actualizaciones de tiempo para simulaciones continuas
-      if (current.current === 3 && flagsRef.current.gaitPlaying) {
-        paramsRef.current.gait_t = ((paramsRef.current.gait_t || 0) + dt * 22) % 100;
-        const slider = document.getElementById('gait_t') as HTMLInputElement | null;
-        if (slider) slider.value = String(paramsRef.current.gait_t);
-      }
-      if (current.current === 7 && flagsRef.current.pogoPlaying) {
-        flagsRef.current.pogoPhase = (flagsRef.current.pogoPhase || 0) + dt;
-      }
-      if (current.current === 12 && flagsRef.current.phPlaying) {
-        paramsRef.current.ph_t = Math.min(0.8, (paramsRef.current.ph_t || 0) + dt * 0.35);
-        if (paramsRef.current.ph_t >= 0.8) flagsRef.current.phPlaying = false;
-        const slider = document.getElementById('ph_t') as HTMLInputElement | null;
-        if (slider) slider.value = String(paramsRef.current.ph_t);
-      }
-
-      redrawSlide(current.current, tRef.current, paramsRef.current, flagsRef.current, out);
-      raf = requestAnimationFrame(loop);
-    };
-    raf = requestAnimationFrame(loop);
-
-    const onResize = () => redrawSlide(current.current, tRef.current, paramsRef.current, flagsRef.current, out);
-    window.addEventListener('resize', onResize);
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(onResize);
-
+    window.addEventListener('resize', requestDraw);
+    let alive = true;
+    document.fonts?.ready.then(() => alive && requestDraw());
     return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener('resize', onResize);
+      alive = false;
+      window.removeEventListener('resize', requestDraw);
     };
-  }, []);
+  }, [requestDraw]);
 
   return {
     activeSlide,
@@ -122,7 +120,6 @@ export function useEngine(): Engine {
     goModule,
     paramsRef,
     flagsRef,
-    clockRef: tRef,
     setParam,
     setFlag,
     requestDraw,
