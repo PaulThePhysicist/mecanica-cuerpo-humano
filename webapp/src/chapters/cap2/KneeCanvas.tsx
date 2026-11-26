@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { C, ca } from './palette';
+import { C } from './palette';
 import { Line } from '@react-three/drei';
 import * as THREE from 'three';
 import { KNEE, kneeStatics } from './staticsModels';

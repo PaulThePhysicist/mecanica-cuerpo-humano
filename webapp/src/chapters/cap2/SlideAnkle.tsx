@@ -1,5 +1,5 @@
 import React, { Suspense, useState } from 'react';
-import { C, ca } from './palette';
+import { C } from './palette';
 import { fx } from './ab';
 import AnkleCanvas from './AnkleCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';

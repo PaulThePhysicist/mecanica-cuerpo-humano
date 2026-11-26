@@ -1,5 +1,5 @@
 import React, { useState, Suspense } from 'react';
-import { C, ca } from './palette';
+import { C } from './palette';
 import { fx } from './ab';
 import NewtonCanvas from './NewtonCanvas';
 import type { FocusForce } from './NewtonCanvas';

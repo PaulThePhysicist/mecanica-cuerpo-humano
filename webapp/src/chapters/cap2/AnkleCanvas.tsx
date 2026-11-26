@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { C, ca } from './palette';
+import { C } from './palette';
 import { fx } from './ab';
 import { Line } from '@react-three/drei';
 import * as THREE from 'three';

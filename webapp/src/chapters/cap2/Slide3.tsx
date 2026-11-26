@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { C, ca } from './palette';
+import { C } from './palette';
 import LeverCanvas from './LeverCanvas';
 import LeverAnatomyCanvas from './LeverAnatomyCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';

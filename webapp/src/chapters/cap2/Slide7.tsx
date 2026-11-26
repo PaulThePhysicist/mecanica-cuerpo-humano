@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { C, ca } from './palette';
+import { C } from './palette';
 import HipCanvas from './HipCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
@@ -27,8 +27,6 @@ export default function Slide7({
   const hip = hipStatics(totalWeightN, { abductorFraction: trendelenburg ? 0.25 : 1 });
   const fAbductorN = hip.M;
   const rJointN = hip.R;
-  const rJointKgf = rJointN / G;
-  const fAbductorKgf = fAbductorN / G;
 
   const handleReset = () => {
     setBodyMassKg(90);

@@ -1,5 +1,5 @@
 import React, { Suspense, useState } from 'react';
-import { C, ca } from './palette';
+import { C } from './palette';
 import KneeCanvas from './KneeCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { C, ca } from './palette';
+import { C } from './palette';
 import { fx } from './ab';
 import JointTractionCanvas from './JointTractionCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';

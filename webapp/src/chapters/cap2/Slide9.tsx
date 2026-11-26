@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { C, ca } from './palette';
+import { C } from './palette';
 import SpineCanvas from './SpineCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
@@ -37,9 +37,7 @@ export default function Slide9({
   const WbN = bodyMassKg * G;
   const back = backStatics(thetaDeg, WbN, handLoadKg * G);
   const fErectorN = back.M;
-  const fErectorKgf = fErectorN / G;
   const rCompN = back.R;
-  const rCompKgf = rCompN / G;
   const rShearN = back.shear;
 
   const handleReset = () => {

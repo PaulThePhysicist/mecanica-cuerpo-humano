@@ -1,5 +1,5 @@
 import React from 'react';
-import { C, ca } from './palette';
+import { C } from './palette';
 
 /**
  * Botón ▶ Animar / ⏸ Pausar de los slides de cap2. Mismo aspecto y sitio que
