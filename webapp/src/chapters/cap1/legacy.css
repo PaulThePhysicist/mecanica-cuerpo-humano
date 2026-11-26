@@ -526,6 +526,7 @@
 .effect-list .cap-ref{font-family:var(--mono);font-size:.9em;color:var(--teal-deep);white-space:nowrap}
 /* Resumen (P6-37): cuatro tarjetas alineadas arriba, tres viñetas cada una. */
 .theory.summary-grid{display:grid;grid-template-columns:1fr 1fr;align-content:start;gap:.6rem;overflow-y:auto}
+.summary-card:focus-visible{outline:2px solid var(--teal);outline-offset:2px;border-color:var(--teal)}
 .summary-list{list-style:none;display:flex;flex-direction:column;gap:.35rem}
 .summary-list li{line-height:1.5}
 .summary-list b{color:var(--teal-deep);margin-right:.15rem}

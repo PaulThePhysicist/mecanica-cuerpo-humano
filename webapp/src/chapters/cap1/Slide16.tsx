@@ -60,7 +60,21 @@ export default function Slide16({ go, goModule, slideCount }: Slide16Props) {
       <div className="content-grid single-col">
         <div className="theory summary-grid">
           {PILLARS.map((p) => (
-            <div key={p.module} className="card summary-card" style={{ cursor: 'pointer' }} onClick={() => goModule?.(p.module)}>
+            <div
+              key={p.module}
+              className="card summary-card"
+              role="button"
+              tabIndex={0}
+              aria-label={`Repasar el módulo: ${p.title}`}
+              style={{ cursor: 'pointer' }}
+              onClick={() => goModule?.(p.module)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  goModule?.(p.module);
+                }
+              }}
+            >
               <div className="card-hdr">
                 <span className="icon">{p.icon}</span> {p.title}
               </div>
@@ -76,7 +90,7 @@ export default function Slide16({ go, goModule, slideCount }: Slide16Props) {
         </div>
         <div className="prof-controls" style={{ justifyContent: 'center' }}>
           <span>¿Puedes explicar los 4 pilares? Haz clic en cada tarjeta para repasar</span>
-          <button onClick={() => go?.(0)}>← Volver al inicio</button>
+          <button type="button" onClick={() => go?.(0)}>← Volver al inicio</button>
         </div>
       </div>
     </>
