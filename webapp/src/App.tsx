@@ -60,7 +60,7 @@ const CHAPTERS: ChapterMeta[] = [
     desc: 'Bipedestación, marcha humana, carrera, saltos, lanzamientos, bateo, colisiones y aerodinámica balística.',
     icon: '🏃',
     badgeColor: '#0d6e64',
-    available: false,
+    available: true,
   },
   {
     id: 4,
