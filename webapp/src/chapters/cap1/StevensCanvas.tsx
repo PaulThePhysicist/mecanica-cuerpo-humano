@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { fmt } from './format';
-import { SERIES_COLORS } from './colorTokens';
+import { SERIES_COLORS, INK, BLOOD } from './colorTokens';
 import { CFX } from './sims';
 
 interface StevensCanvasProps {
@@ -24,6 +24,8 @@ const SENSATIONS: Record<string, SensationInfo> = {
   sonoridad: { id: 'sonoridad', name: 'Sonoridad (monoaural)', emoji: '🔊', n: 0.54, color: SERIES_COLORS[1], unit: 'Nivel sonoro (dB)', desc: 'Compresión logarítmica coclear' },
   olor: { id: 'olor', name: 'Olor (café)', emoji: '👃', n: 0.55, color: SERIES_COLORS[2], unit: 'Concentración (ppm)', desc: 'Saturación de quimiorreceptores' },
   vibracion: { id: 'vibracion', name: 'Vibración (250 Hz, en el dedo)', emoji: '📳', n: 0.60, color: SERIES_COLORS[3], unit: 'Amplitud 250 Hz (μm)', desc: 'Corpúsculos de Pacini/Meissner' },
+  gusto: { id: 'gusto', name: 'Gusto (sal)', emoji: '🧂', n: 1.30, color: INK, unit: 'Concentración (mol/L)', desc: 'Quimiorreceptores gustativos' },
+  temperatura: { id: 'temperatura', name: 'Temperatura (calor, en el brazo)', emoji: '🌡️', n: 1.60, color: BLOOD, unit: 'Temperatura sobre la piel (°C)', desc: 'Termorreceptores de calor' },
   presion: { id: 'presion', name: 'Presión en la palma', emoji: '✋', n: 1.10, color: SERIES_COLORS[4], unit: 'Fuerza aplicada (N)', desc: 'Detección proporcional de agarre' },
   pesadez: { id: 'pesadez', name: 'Pesadez (Levantar pesos)', emoji: '🏋️', n: 1.45, color: SERIES_COLORS[5], unit: 'Masa levantada (kg)', desc: 'Fatiga neuromuscular progresiva' },
   descarga: { id: 'descarga', name: 'Descarga eléctrica (60 Hz)', emoji: '⚡', n: 3.50, color: SERIES_COLORS[6], unit: 'Corriente 60 Hz (mA)', desc: 'Alarma nociceptiva superlineal extrema' },

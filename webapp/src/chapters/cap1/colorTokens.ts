@@ -47,3 +47,16 @@ export const BODY_SEGMENT_SHADES = {
   pantorrilla: '#084740',
   pie: '#073e38',
 } as const;
+
+/**
+ * Espejo de --ink, --ink-2, --ink-3, --blood, --teal y --teal-deep para
+ * fillStyle/strokeStyle de lienzos 2D. P6-36 usa INK y BLOOD como series 8 y 9
+ * de D4 (gusto y temperatura): son tokens existentes de `:root`, no colores
+ * nuevos; --series-1..7 solo da siete tonos categóricos.
+ */
+export const INK = '#232c36';
+export const INK_2 = '#43505c';
+export const INK_3 = '#6b7885';
+export const BLOOD = '#a92a1e';
+export const TEAL = '#0d6e64';
+export const TEAL_DEEP = '#0a5a52';

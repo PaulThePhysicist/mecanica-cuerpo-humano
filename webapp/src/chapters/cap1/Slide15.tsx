@@ -25,6 +25,8 @@ interface SensationDetail {
   name: string;
   n: number;
   type: 'sub' | 'lin' | 'super';
+  /** P6-36 · resto de exponentes de la fila en la Tabla 1.15 (texto literal). */
+  others: string;
   desc: string;
 }
 
@@ -34,6 +36,7 @@ const STEVENS_SENSATIONS: Record<string, SensationDetail> = {
     name: 'Brillo visual',
     n: 0.33,
     type: 'sub',
+    others: '0,5 (fuente puntual, ojo adaptado a la oscuridad)',
     desc: '<b>Brillo ($n = 0{,}33$ · Sublineal):</b> La visión comprime el enorme rango dinámico de la luz ambiental. Duplicar el exceso sobre el umbral del flujo lumínico ($S - S_0$) solo produce una sensación $1{,}26\\times$ mayor ($2^{0{,}33}$).',
   },
   sonoridad: {
@@ -41,6 +44,7 @@ const STEVENS_SENSATIONS: Record<string, SensationDetail> = {
     name: 'Sonoridad (monoaural)',
     n: 0.54,
     type: 'sub',
+    others: '0,60 (binaural)',
     desc: '<b>Sonoridad ($n = 0{,}54$ · Sublineal):</b> El oído humano abarca 12 órdenes de magnitud de intensidad sonora (de $10^{-12}\\text{ W/m}^2$ al umbral de dolor).',
   },
   olor: {
@@ -48,6 +52,7 @@ const STEVENS_SENSATIONS: Record<string, SensationDetail> = {
     name: 'Olor (café)',
     n: 0.55,
     type: 'sub',
+    others: '0,60 (heptano)',
     desc: '<b>Olor ($n = 0{,}55$ · Sublineal):</b> Los quimiorreceptores olfatorios saturan rápidamente ante concentraciones altas.',
   },
   vibracion: {
@@ -55,13 +60,31 @@ const STEVENS_SENSATIONS: Record<string, SensationDetail> = {
     name: 'Vibración (250 Hz, en el dedo)',
     n: 0.60,
     type: 'sub',
+    others: '0,95 (60 Hz)',
     desc: '<b>Vibración ($n = 0{,}60$ · Sublineal):</b> Mecanorreceptores de Pacini y Meissner adaptados a microvibraciones.',
+  },
+  gusto: {
+    id: 'gusto',
+    name: 'Gusto (sal)',
+    n: 1.30,
+    type: 'super',
+    others: '0,8 (sacarina) · 1,3 (sacarosa)',
+    desc: '<b>Gusto ($n = 1{,}3$ para la sal · Superlineal):</b> Con sacarosa el exponente también es 1,3; con sacarina baja a 0,8. Gusto y olfato tienen una base esencialmente química y biológica.',
+  },
+  temperatura: {
+    id: 'temperatura',
+    name: 'Temperatura (calor, en el brazo)',
+    n: 1.60,
+    type: 'super',
+    others: '1,0 (frío)',
+    desc: '<b>Temperatura ($n = 1{,}6$ para el calor · Superlineal):</b> Medida en el brazo; para el frío el exponente es 1,0. Es una de las percepciones del tacto que se estudian en el Cap. 2.',
   },
   presion: {
     id: 'presion',
     name: 'Presión en la palma',
     n: 1.10,
     type: 'super',
+    others: '—',
     desc: '<b>Presión en la palma ($n = 1{,}10$ · Cuasilineal):</b> Respuesta prácticamente proporcional a la fuerza aplicada para una manipulación precisa de objetos.',
   },
   pesadez: {
@@ -69,6 +92,7 @@ const STEVENS_SENSATIONS: Record<string, SensationDetail> = {
     name: 'Pesadez (Levantar pesos)',
     n: 1.45,
     type: 'super',
+    others: '—',
     desc: '<b>Pesadez ($n = 1{,}45$ · Superlineal):</b> La sensación subjetiva de carga crece más rápido que la masa física levantada por fatiga neuromuscular progresiva ($2^{1{,}45} \\approx 2{,}73\\times$).',
   },
   descarga: {
@@ -76,6 +100,7 @@ const STEVENS_SENSATIONS: Record<string, SensationDetail> = {
     name: 'Descarga eléctrica (60 Hz)',
     n: 3.50,
     type: 'super',
+    others: '—',
     desc: '<b>Descarga eléctrica ($n = 3{,}50$ · Extremadamente superlineal):</b> Duplicar el exceso sobre el umbral de la corriente ($S - S_0$) produce una sensación de dolor $\\mathbf{11{,}31\\times}$ más intensa ($2^{3{,}5}$). Alarma fisiológica extrema.',
   },
 };
@@ -112,7 +137,7 @@ export default function Slide15({ slideCount }: { slideCount?: string }) {
   };
 
   const nType = n < 0.95 ? 'Sublineal (n < 1)' : (n > 1.05 ? 'Superlineal (n > 1)' : 'Lineal (n = 1)');
-  const nColor = n < 0.95 ? '#c0681e' : (n > 1.05 ? '#b02318' : '#0d6e64');
+  const nColor = n < 0.95 ? 'var(--amber)' : (n > 1.05 ? 'var(--blood)' : 'var(--teal)');
 
   return (
     <>
@@ -139,12 +164,12 @@ export default function Slide15({ slideCount }: { slideCount?: string }) {
           </div>
           <div className="card">
             <div className="card-hdr">
-              <span className="icon">📋</span> Exponentes sensoriales n (Tabla 1.15)
+              <span className="icon">📋</span> Exponentes sensoriales n (Tabla 1.15 completa)
             </div>
             <div className="card-body">
               <table className="interactive-table">
                 <tbody>
-                  <tr><th>Modalidad Sensorial</th><th>Exponente n</th><th>Duplicar (S − S₀)</th></tr>
+                  <tr><th>Modalidad sensorial</th><th>Exponente <span className="nt">n</span></th><th>Otros valores</th><th>Duplicar <span className="nt">(S − S₀)</span></th></tr>
                   {Object.values(STEVENS_SENSATIONS).map((s) => {
                     const isSel = selectedSensation === s.id;
                     const mult = fmt(Math.pow(2, s.n), 2);
@@ -162,10 +187,11 @@ export default function Slide15({ slideCount }: { slideCount?: string }) {
                         }}
                       >
                         <td><b>{s.name}</b></td>
-                        <td style={{ fontFamily: 'var(--mono)', color: s.n > 1 ? '#b02318' : '#0d6e64' }}>
-                          n = {fmt(s.n, 2)}
+                        <td style={{ fontFamily: 'var(--mono)', color: s.n > 1 ? 'var(--blood)' : 'var(--teal)' }}>
+                          {fmt(s.n, 2)}
                         </td>
-                        <td style={{ fontFamily: 'var(--mono)', color: s.n > 1 ? '#b02318' : 'var(--teal-deep)' }}>
+                        <td style={{ fontSize: '.62rem', color: 'var(--ink-3)' }}>{s.others}</td>
+                        <td style={{ fontFamily: 'var(--mono)', color: s.n > 1 ? 'var(--blood)' : 'var(--teal-deep)' }}>
                           ×{mult}
                         </td>
                       </tr>
@@ -216,7 +242,7 @@ export default function Slide15({ slideCount }: { slideCount?: string }) {
                     }}
                   >
                     <span style={{ fontSize: '0.62rem', fontWeight: 600, color: 'var(--ink)' }}>{s.name.split('(')[0].trim()}</span>
-                    <span style={{ fontSize: '0.58rem', fontFamily: 'JetBrains Mono, monospace', color: s.n > 1 ? '#b02318' : '#0d6e64', fontWeight: 'bold' }}>
+                    <span style={{ fontSize: '0.58rem', fontFamily: 'var(--mono)', color: s.n > 1 ? 'var(--blood)' : 'var(--teal)', fontWeight: 'bold' }}>
                       n = {fmt(s.n, 2)}
                     </span>
                   </div>
