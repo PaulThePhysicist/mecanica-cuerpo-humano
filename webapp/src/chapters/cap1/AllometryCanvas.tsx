@@ -317,7 +317,7 @@ export default function AllometryCanvas({
       ctx.restore();
 
       // ─── 6. Puntos Vivos de los Animales con Iconos y Latido ───
-      ANIMALS.forEach((a) => {
+      ANIMALS.forEach((a, idx) => {
         const v = calcYVal(a.mass);
         const ax = xFromMass(a.mass);
         const ay = yFromVal(v);
@@ -351,13 +351,28 @@ export default function AllometryCanvas({
         ctx.stroke();
         ctx.restore();
 
-        // Etiqueta del animal
+        // Etiqueta del animal. V6-08: alterna a un lado y otro de la recta
+        // (uno encima, el siguiente debajo) y siempre en la diagonal libre
+        // —arriba a la izquierda / abajo a la derecha si la recta sube, al
+        // revés si baja—, así ni «Perro» queda bajo «Humano» ni la recta
+        // tacha «Conejo».
         ctx.save();
         ctx.font = isHuman ? `bold ${scaled(12)}px Karla, system-ui, sans-serif` : `${scaled(11)}px Karla, system-ui, sans-serif`;
         ctx.fillStyle = isHover ? '#b02318' : (isHuman ? '#0d6e64' : '#232c36');
-        ctx.textAlign = a.mass < 1 ? 'left' : (a.mass > 10000 ? 'right' : 'center');
-        const offsetY = a.mass < 1 ? -12 : (a.mass > 1000 ? -14 : -12);
-        ctx.fillText(`${a.emoji} ${a.name}`, ax, ay + offsetY);
+        const label = `${a.emoji} ${a.name}`;
+        const labelW = ctx.measureText(label).width;
+        let above = idx % 2 === 0;
+        const rising = activeCurve.alpha >= 0;
+        let toLeft = above === rising;
+        // En los bordes se cambia de lado y, con él, de arriba/abajo, para
+        // seguir en la diagonal libre de la recta.
+        if (toLeft && ax - 9 - labelW < pad.left + 2) toLeft = false;
+        if (!toLeft && ax + 9 + labelW > pad.left + plotW - 2) toLeft = true;
+        above = toLeft === rising;
+        ctx.textAlign = toLeft ? 'right' : 'left';
+        const labelX = toLeft ? ax - 9 : ax + 9;
+        const offsetY = above ? -9 : 17;
+        ctx.fillText(label, labelX, ay + offsetY);
 
         // Valor calculado para el animal. -11px no bastaba de separación con
         // el nombre (bold 12px): a esa distancia las cajas de línea llegaban
@@ -366,7 +381,7 @@ export default function AllometryCanvas({
           ctx.font = `bold ${scaled(10.5)}px JetBrains Mono, monospace`;
           ctx.fillStyle = activeCurve.color;
           const valStr = v >= 1000 ? fmt(v, 0) : (v < 0.1 ? fmt(v, 3) : fmt(v, 1));
-          ctx.fillText(`${valStr} ${activeCurve.unit}`, ax, ay + (offsetY < 0 ? offsetY - 15 : 16));
+          ctx.fillText(`${valStr} ${activeCurve.unit}`, labelX, ay + (above ? offsetY - 15 : offsetY + 15));
         }
         ctx.restore();
       });
@@ -393,11 +408,13 @@ export default function AllometryCanvas({
       const massLabel = activeMass >= 1000
         ? fmt(activeMass / 1000, 1) + ' t'
         : (Number.isInteger(activeMass) ? activeMass : fmt(activeMass, activeMass < 0.1 ? 3 : 1)) + ' kg';
-      const chipText = `${activeCurve.id}: ${fmt(curV, 2)} ${activeCurve.unit} · ${massLabel}`;
+      const SHORT: Record<string, string> = { BMR: 'TMB', area: 'Área', HR: 'FC', brain: 'Cerebro', life: 'Vida', muscle: 'Músculo' };
+      const chipText = `${SHORT[activeCurve.id] ?? activeCurve.name}: ${fmt(curV, 2)} ${activeCurve.unit} · ${massLabel}`;
+      const showOsc = activeCurve.id === 'HR';
       ctx.font = `bold ${scaled(11)}px JetBrains Mono, monospace`;
       const tw = ctx.measureText(chipText).width;
       // Zona inferior central, libre de las etiquetas de animales y del osciloscopio.
-      const chipX = Math.min(W - pad.right - 140 - tw - 16, Math.max(pad.left + 10, pad.left + plotW / 2 - tw / 2));
+      const chipX = Math.min(W - pad.right - (showOsc ? 140 : 0) - tw - 16, Math.max(pad.left + 10, pad.left + plotW / 2 - tw / 2));
       const chipY = pad.top + plotH - 24;
 
       ctx.fillStyle = 'rgba(251, 248, 240, 0.98)';
@@ -414,91 +431,98 @@ export default function AllometryCanvas({
       ctx.fillText(chipText, chipX, chipY + 1);
       ctx.restore();
 
-      // ─── 8. Mini-Panel de Osciloscopio Comparativo (Latido Ratón vs Elefante) ───
-      const oscW = 140;
-      // Reservamos una banda superior para las leyendas; así nunca pisan la onda.
-      const oscH = 58;
-      const oscX = W - oscW - pad.right;
-      const oscY = pad.top + plotH - oscH - 6;
-      const miniByParam: { left: string; right: string; leftColor: string; rightColor: string } = {
-        BMR: { left: 'Baja', right: 'Alta', leftColor: '#00ffaa', rightColor: '#ffd166' },
-        area: { left: 'Pequeña', right: 'Grande', leftColor: '#55d6be', rightColor: '#72a7ff' },
-        HR: { left: 'Ratón', right: 'Elefante', leftColor: '#00ffaa', rightColor: '#d480ff' },
-        brain: { left: 'Menor', right: 'Mayor', leftColor: '#8cf0ff', rightColor: '#c88cff' },
-        life: { left: 'Corta', right: 'Larga', leftColor: '#a7f36b', rightColor: '#ffd166' },
-        muscle: { left: 'Menor', right: 'Mayor', leftColor: '#ffb36b', rightColor: '#ff6f61' },
-      }[activeCurve.id] || { left: 'Menor', right: 'Mayor', leftColor: '#00ffaa', rightColor: '#d480ff' };
+      // V6-08: el recuadro comparativo solo tiene sentido con la frecuencia
+      // cardíaca (latido del ratón frente al del elefante); con las demás
+      // curvas decía «Baja escala / Alta escala» sin contenido propio.
+      if (showOsc) {
+        // ─── 8. Mini-Panel de Osciloscopio Comparativo (Latido Ratón vs Elefante) ───
+        const oscW = 140;
+        // Reservamos una banda superior para las leyendas; así nunca pisan la onda.
+        const oscH = 58;
+        const oscX = W - oscW - pad.right;
+        // Arriba a la derecha: con la FC (recta descendente) es la esquina libre;
+        // abajo tapaba el rótulo de la ballena.
+        const oscY = pad.top + 22;
+        const miniByParam: { left: string; right: string; leftColor: string; rightColor: string } = {
+          BMR: { left: 'Baja', right: 'Alta', leftColor: '#00ffaa', rightColor: '#ffd166' },
+          area: { left: 'Pequeña', right: 'Grande', leftColor: '#55d6be', rightColor: '#72a7ff' },
+          HR: { left: 'Ratón', right: 'Elefante', leftColor: '#00ffaa', rightColor: '#d480ff' },
+          brain: { left: 'Menor', right: 'Mayor', leftColor: '#8cf0ff', rightColor: '#c88cff' },
+          life: { left: 'Corta', right: 'Larga', leftColor: '#a7f36b', rightColor: '#ffd166' },
+          muscle: { left: 'Menor', right: 'Mayor', leftColor: '#ffb36b', rightColor: '#ff6f61' },
+        }[activeCurve.id] || { left: 'Menor', right: 'Mayor', leftColor: '#00ffaa', rightColor: '#d480ff' };
 
-      ctx.save();
-      // Rótulo propio: sin él, la caja se leía «flotando» sin explicar qué
-      // comparan sus dos ondas (V2-04).
-      ctx.fillStyle = '#43505c';
-      ctx.font = `${scaled(8)}px Karla, system-ui, sans-serif`;
-      ctx.textAlign = 'left';
-      ctx.fillText('Comparativa animada', oscX, oscY - 4);
-      ctx.fillStyle = 'rgba(24, 32, 40, 0.92)';
-      ctx.fillRect(oscX, oscY, oscW, oscH);
-      ctx.strokeStyle = 'rgba(13, 110, 100, 0.6)';
-      ctx.lineWidth = 1;
-      ctx.strokeRect(oscX, oscY, oscW, oscH);
+        ctx.save();
+        // Rótulo propio: sin él, la caja se leía «flotando» sin explicar qué
+        // comparan sus dos ondas (V2-04).
+        ctx.fillStyle = '#43505c';
+        ctx.font = `${scaled(8)}px Karla, system-ui, sans-serif`;
+        ctx.textAlign = 'left';
+        ctx.fillText('Comparativa animada', oscX, oscY - 4);
+        ctx.fillStyle = 'rgba(24, 32, 40, 0.92)';
+        ctx.fillRect(oscX, oscY, oscW, oscH);
+        ctx.strokeStyle = 'rgba(13, 110, 100, 0.6)';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(oscX, oscY, oscW, oscH);
 
-      // Rejilla de osciloscopio verde
-      ctx.strokeStyle = 'rgba(13, 180, 140, 0.15)';
-      ctx.lineWidth = 0.5;
-      ctx.beginPath();
-      ctx.moveTo(oscX, oscY + oscH / 2);
-      ctx.lineTo(oscX + oscW, oscY + oscH / 2);
-      ctx.moveTo(oscX + oscW / 2, oscY);
-      ctx.lineTo(oscX + oscW / 2, oscY + oscH);
-      ctx.stroke();
+        // Rejilla de osciloscopio verde
+        ctx.strokeStyle = 'rgba(13, 180, 140, 0.15)';
+        ctx.lineWidth = 0.5;
+        ctx.beginPath();
+        ctx.moveTo(oscX, oscY + oscH / 2);
+        ctx.lineTo(oscX + oscW, oscY + oscH / 2);
+        ctx.moveTo(oscX + oscW / 2, oscY);
+        ctx.lineTo(oscX + oscW / 2, oscY + oscH);
+        ctx.stroke();
 
-      const waveTop = oscY + 25;
-      const waveH = oscH - 29;
+        const waveTop = oscY + 25;
+        const waveH = oscH - 29;
 
-      const wave = (phase: number, side: 'left' | 'right') => {
-        if (activeCurve.id === 'HR') return Math.sin(phase) > 0.8 ? Math.sin(phase * 4) * 14 : Math.sin(phase) * 2;
-        if (activeCurve.id === 'brain') return Math.sin(phase * 2.4) * 5 + Math.sin(phase * 7) * 3;
-        if (activeCurve.id === 'muscle') return Math.abs(Math.sin(phase)) * 11;
-        if (activeCurve.id === 'life') return Math.sin(phase) * 5 + Math.sin(phase * 0.35) * 4;
-        return Math.sin(phase * (side === 'left' ? 1.5 : 0.8)) * 5;
-      };
+        const wave = (phase: number, side: 'left' | 'right') => {
+          if (activeCurve.id === 'HR') return Math.sin(phase) > 0.8 ? Math.sin(phase * 4) * 14 : Math.sin(phase) * 2;
+          if (activeCurve.id === 'brain') return Math.sin(phase * 2.4) * 5 + Math.sin(phase * 7) * 3;
+          if (activeCurve.id === 'muscle') return Math.abs(Math.sin(phase)) * 11;
+          if (activeCurve.id === 'life') return Math.sin(phase) * 5 + Math.sin(phase * 0.35) * 4;
+          return Math.sin(phase * (side === 'left' ? 1.5 : 0.8)) * 5;
+        };
 
-      // Animación comparativa específica del parámetro seleccionado.
-      ctx.strokeStyle = miniByParam.leftColor;
-      ctx.lineWidth = 1.2;
-      ctx.beginPath();
-      for (let ox = 0; ox < oscW / 2 - 4; ox++) {
-        const phase = t * 10 + ox * 0.4;
-        const oy = waveTop + waveH / 2 - wave(phase, 'left') * 0.55;
-        if (ox === 0) ctx.moveTo(oscX + 4 + ox, oy);
-        else ctx.lineTo(oscX + 4 + ox, oy);
+        // Animación comparativa específica del parámetro seleccionado.
+        ctx.strokeStyle = miniByParam.leftColor;
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        for (let ox = 0; ox < oscW / 2 - 4; ox++) {
+          const phase = t * 10 + ox * 0.4;
+          const oy = waveTop + waveH / 2 - wave(phase, 'left') * 0.55;
+          if (ox === 0) ctx.moveTo(oscX + 4 + ox, oy);
+          else ctx.lineTo(oscX + 4 + ox, oy);
+        }
+        ctx.stroke();
+
+        ctx.strokeStyle = miniByParam.rightColor;
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        for (let ox = 0; ox < oscW / 2 - 8; ox++) {
+          const phase = t * 0.5 + ox * 0.08;
+          const oy = waveTop + waveH / 2 - wave(phase, 'right') * 0.55;
+          if (ox === 0) ctx.moveTo(oscX + oscW / 2 + 4 + ox, oy);
+          else ctx.lineTo(oscX + oscW / 2 + 4 + ox, oy);
+        }
+        ctx.stroke();
+
+        ctx.fillStyle = miniByParam.leftColor;
+        ctx.font = `bold ${scaled(8.5)}px JetBrains Mono, monospace`;
+        ctx.textAlign = 'center';
+        ctx.fillText(miniByParam.left, oscX + oscW * 0.25, oscY + 10);
+        ctx.font = `${scaled(8)}px JetBrains Mono, monospace`;
+        ctx.fillText(activeCurve.id === 'HR' ? '600 lpm' : 'escala', oscX + oscW * 0.25, oscY + 20);
+
+        ctx.fillStyle = miniByParam.rightColor;
+        ctx.font = `bold ${scaled(8.5)}px JetBrains Mono, monospace`;
+        ctx.fillText(miniByParam.right, oscX + oscW * 0.75, oscY + 10);
+        ctx.font = `${scaled(8)}px JetBrains Mono, monospace`;
+        ctx.fillText(activeCurve.id === 'HR' ? '28 lpm' : 'escala', oscX + oscW * 0.75, oscY + 20);
+        ctx.restore();
       }
-      ctx.stroke();
-
-      ctx.strokeStyle = miniByParam.rightColor;
-      ctx.lineWidth = 1.4;
-      ctx.beginPath();
-      for (let ox = 0; ox < oscW / 2 - 8; ox++) {
-        const phase = t * 0.5 + ox * 0.08;
-        const oy = waveTop + waveH / 2 - wave(phase, 'right') * 0.55;
-        if (ox === 0) ctx.moveTo(oscX + oscW / 2 + 4 + ox, oy);
-        else ctx.lineTo(oscX + oscW / 2 + 4 + ox, oy);
-      }
-      ctx.stroke();
-
-      ctx.fillStyle = miniByParam.leftColor;
-      ctx.font = `bold ${scaled(8.5)}px JetBrains Mono, monospace`;
-      ctx.textAlign = 'center';
-      ctx.fillText(miniByParam.left, oscX + oscW * 0.25, oscY + 10);
-      ctx.font = `${scaled(8)}px JetBrains Mono, monospace`;
-      ctx.fillText(activeCurve.id === 'HR' ? '600 lpm' : 'escala', oscX + oscW * 0.25, oscY + 20);
-
-      ctx.fillStyle = miniByParam.rightColor;
-      ctx.font = `bold ${scaled(8.5)}px JetBrains Mono, monospace`;
-      ctx.fillText(miniByParam.right, oscX + oscW * 0.75, oscY + 10);
-      ctx.font = `${scaled(8)}px JetBrains Mono, monospace`;
-      ctx.fillText(activeCurve.id === 'HR' ? '28 lpm' : 'escala', oscX + oscW * 0.75, oscY + 20);
-      ctx.restore();
 
       // ─── 9. Título e Indicadores Inferiores ───
       // Keep the responsive header inside the canvas; long parameter descriptions
