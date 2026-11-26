@@ -19,7 +19,7 @@ import {
 function tricepsSolve(pushLoadKg: number, insertCm: number) {
   const g = 9.81;
   const wPushN = pushLoadKg * g;
-  const dHandM = 0.35;
+  const dHandM = 0.36; // d_W = 0,2 H (libro); d_M del tríceps: valor ilustrativo
   const dM = insertCm / 100;
   const mechanicalRatio = dHandM / dM;
   const fTricepsN = wPushN * mechanicalRatio;
@@ -164,11 +164,11 @@ function RealArmTricepsScene({
   // ── Física del Tríceps (Palanca de 1ª Clase) — fuente única ──
   const { wPushN, mechanicalRatio, fTricepsN } = tricepsSolve(pushLoadKg, insertCm);
   const rJointN = fTricepsN + wPushN;
-  const lFt = `F_t = ${fTricepsN.toFixed(0)} N`;
+  const lFt = `M = ${fTricepsN.toFixed(0)} N`;
   const sFt = `${mechanicalRatio.toFixed(1)}× W`;
   const lW = `W = ${wPushN.toFixed(0)} N`;
   const sW = `${pushLoadKg} kg`;
-  const lRj = `R_j = ${rJointN.toFixed(0)} N`;
+  const lRj = `R = ${rJointN.toFixed(0)} N`;
 
   // Abultamiento muscular y activación EMG proporcional a Ft
   const tricepsBulge = Math.min(1.45, 0.96 + (fTricepsN / 450) * 0.38);
@@ -331,7 +331,7 @@ function RealArmTricepsScene({
           start={[0, 0, 0]}
           end={[-0.040, -0.350, 0.045]}
           color="#d97706"
-          label="D = 35,0 cm"
+          label="dW = 36 cm"
         />
 
         {/* Vector de Tracción del Tríceps Ft en el Pico del Olécranon */}
@@ -436,7 +436,7 @@ export default function TricepsCanvas({
       <CalloutRail
         store={callouts}
         side="left"
-        note={`Palanca de 1ª clase: brazos ${insertCm.toFixed(1)} cm vs 35 cm → el tríceps tira ${mechanicalRatio.toFixed(1)}× la carga; la reacción troclear es aditiva.`}
+        note={`Palanca de 1ª clase: brazos ${insertCm.toFixed(1)} cm vs 36 cm (ilustrativo) → el tríceps tira ${mechanicalRatio.toFixed(1)}× la carga; la reacción troclear es aditiva.`}
       />
 
       {/* Selector de Vistas de Cámara en Esquina Superior Izquierda */}

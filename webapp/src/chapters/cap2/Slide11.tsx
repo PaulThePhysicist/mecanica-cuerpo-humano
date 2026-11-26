@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import JawCanvas from './JawCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
+import KatexHtml from './KatexHtml';
 import type { Engine } from './useEngine';
 
 interface JawPreset {
@@ -151,7 +152,7 @@ export default function Slide11({
           <div className="apuntes">
             <div className="a-hdr"><span>✍️</span> Apunte de cátedra</div>
             <div className="a-text" id="info-text-11">
-              <span dangerouslySetInnerHTML={{ __html: curPreset.desc }} />
+              <KatexHtml html={curPreset.desc} />
             </div>
           </div>
         </div>

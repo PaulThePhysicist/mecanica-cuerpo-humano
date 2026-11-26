@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import DiscPressureCanvas from './DiscPressureCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
+import KatexHtml from './KatexHtml';
 import type { Engine } from './useEngine';
 
 interface PostureDetail {
@@ -161,7 +162,7 @@ export default function Slide10({
           <div className="apuntes">
             <div className="a-hdr"><span>✍️</span> Apunte de cátedra</div>
             <div className="a-text" id="info-text-10">
-              <span dangerouslySetInnerHTML={{ __html: curDetail.desc }} />
+              <KatexHtml html={curDetail.desc} />
             </div>
           </div>
         </div>

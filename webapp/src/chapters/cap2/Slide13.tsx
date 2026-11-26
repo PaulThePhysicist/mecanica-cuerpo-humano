@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import BodySegmentsCanvas from './BodySegmentsCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
+import KatexHtml from './KatexHtml';
 import type { Engine } from './useEngine';
 
 interface PostureOpt {
@@ -111,7 +112,7 @@ export default function Slide13({
           <div className="apuntes">
             <div className="a-hdr"><span>✍️</span> Apunte de cátedra</div>
             <div className="a-text" id="info-text-13">
-              <span dangerouslySetInnerHTML={{ __html: curOpt.desc }} />
+              <KatexHtml html={curOpt.desc} />
             </div>
           </div>
         </div>

@@ -14,6 +14,7 @@ import {
   CalloutSource,
   useCalloutStore,
 } from '../cap1/three/Callouts';
+import { G, FOREARM, flexorStatics, FLEXOR_BOOK_LOAD_KG } from './staticsModels';
 
 interface MultiMuscleCanvasProps {
   handLoadKg?: number;       // Carga en mano (1 a 20 kg, default: 7)
@@ -201,6 +202,16 @@ function BrachioradialisAnatomicalBand({
 }
 
 // ── Escena 3D Multi-Músculo Real con Modelos GLB ──
+/** Fuerzas de los flexores para una carga en la mano (libro: W_F = 15 N a 13 cm, W_W a 36 cm). */
+function flexorLoads(handLoadKg: number, activeMuscleCount: 1 | 3) {
+  const wHandN = handLoadKg * G;
+  const tauNcm = wHandN * FOREARM.dW + FOREARM.WF * FOREARM.dF;
+  const f = flexorStatics(tauNcm, activeMuscleCount === 1);
+  // Músculos verticales y antebrazo horizontal: R = ΣM_i − W_W − W_F.
+  const rJointN = Math.max(0, f.total - wHandN - FOREARM.WF);
+  return { tauNcm, fBicepsN: f.biceps, fBrachialisN: f.brachialis, fBrachioradialisN: f.brachioradialis, total: f.total, k: f.k, rJointN };
+}
+
 function MultiMuscleScene({
   handLoadKg,
   activeMuscleCount,
@@ -211,41 +222,9 @@ function MultiMuscleScene({
   const { nodes: boneNodes } = useGLTF('/assets/cap1/human_body.glb') as any;
   const { nodes: muscleNodes } = useGLTF('/assets/cap1/human_muscles_arm.glb') as any;
 
-  // ── Biomecánica y Torque Neto ──
-  const g = 9.81;
-  const wHandN = handLoadKg * g;
-  const wForearmN = 1.5 * g; // Peso medio de antebrazo y mano (~1.5 kg)
-  const dForearmM = 0.14;
-  const dHandM = 0.35;
-
-  const totalTauNm = wHandN * dHandM + wForearmN * dForearmM;
-
-  let fBrachialisN = 0;
-  let fBicepsN = 0;
-  let fBrachioradialisN = 0;
-
-  if (activeMuscleCount === 1) {
-    // Modo aislado: el bíceps asume el 100% de la carga de flexión
-    fBicepsN = totalTauNm / (0.040 * Math.sin((80 * Math.PI) / 180));
-    fBrachialisN = 0;
-    fBrachioradialisN = 0;
-  } else {
-    // Modo sinérgico cooperativo (45% Braquial, 40% Bíceps, 15% Braquiorradial)
-    const tauBrachialis = totalTauNm * 0.45;
-    const tauBiceps = totalTauNm * 0.40;
-    const tauBrachioradialis = totalTauNm * 0.15;
-
-    fBrachialisN = tauBrachialis / (0.025 * Math.sin((85 * Math.PI) / 180));
-    fBicepsN = tauBiceps / (0.040 * Math.sin((80 * Math.PI) / 180));
-    fBrachioradialisN = tauBrachioradialis / (0.250 * Math.sin((15 * Math.PI) / 180));
-  }
-
-  // Reacción articular neta
-  const verticalMuscleForce =
-    fBrachialisN * Math.sin((85 * Math.PI) / 180) +
-    fBicepsN * Math.sin((80 * Math.PI) / 180) +
-    fBrachioradialisN * Math.sin((15 * Math.PI) / 180);
-  const rJointN = Math.max(0, verticalMuscleForce - (wHandN + wForearmN));
+  // ── Caso 4 del libro (Tabla 2.1, Ecs. 2.21–2.24): M_i = k A_i, θ = 90° ──
+  const { fBrachialisN, fBicepsN, fBrachioradialisN, rJointN } = flexorLoads(handLoadKg, activeMuscleCount);
+  const wHandN = handLoadKg * G;
 
   // Deformación volumétrica y EMG dinámico
   const bicepsBulge =
@@ -323,11 +302,11 @@ function MultiMuscleScene({
   const rjLen = Math.min(0.105, Math.max(0.030, rJointN * 0.00014));
 
   const isolated = activeMuscleCount === 1;
-  const lBraq = `Braq = ${fBrachialisN.toFixed(0)} N`;
-  const lBic = `Bíc${isolated ? ' ⚠' : ''} = ${fBicepsN.toFixed(0)} N`;
-  const lBrad = `Brad = ${fBrachioradialisN.toFixed(0)} N`;
+  const lBraq = `M₂ braquial = ${fBrachialisN.toFixed(0)} N`;
+  const lBic = `M₁ bíceps = ${fBicepsN.toFixed(0)} N`;
+  const lBrad = `M₃ braquiorr. = ${fBrachioradialisN.toFixed(0)} N`;
   const lW = `W = ${wHandN.toFixed(0)} N`;
-  const lRj = `R_j = ${rJointN.toFixed(0)} N`;
+  const lRj = `R = ${rJointN.toFixed(0)} N`;
 
   return (
     <group position={[-0.05, 0.05, 0]} scale={ARM_SCALE}>
@@ -471,7 +450,7 @@ useGLTF.preload('/assets/cap1/human_muscles_arm.glb');
 
 export default function MultiMuscleCanvas({
   showLabels = false,
-  handLoadKg = 7,
+  handLoadKg = FLEXOR_BOOK_LOAD_KG,
   activeMuscleCount = 3,
 }: MultiMuscleCanvasProps) {
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
@@ -479,34 +458,18 @@ export default function MultiMuscleCanvas({
   const [cameraView, setCameraView] = useState<'default' | 'lateral' | 'anterior' | 'top'>('default');
   const [showTelemetry, setShowTelemetry] = useState(false);
 
-  const g = 9.81;
-  const wHandN = handLoadKg * g;
-  const wForearmN = 1.5 * g;
-  const totalTauNm = wHandN * 0.35 + wForearmN * 0.14;
-
-  let fBrachN = 0;
-  let fBicN = 0;
-  let fBradN = 0;
-
-  if (activeMuscleCount === 1) {
-    fBicN = totalTauNm / (0.040 * Math.sin((80 * Math.PI) / 180));
-  } else {
-    fBrachN = (totalTauNm * 0.45) / (0.025 * Math.sin((85 * Math.PI) / 180));
-    fBicN = (totalTauNm * 0.40) / (0.040 * Math.sin((80 * Math.PI) / 180));
-    fBradN = (totalTauNm * 0.15) / (0.250 * Math.sin((15 * Math.PI) / 180));
-  }
-
-  const totalMuscleForceN = fBrachN + fBicN + fBradN;
-  const verticalMuscleForce =
-    fBrachN * Math.sin((85 * Math.PI) / 180) +
-    fBicN * Math.sin((80 * Math.PI) / 180) +
-    fBradN * Math.sin((15 * Math.PI) / 180);
-  const rJointN = Math.max(0, verticalMuscleForce - (wHandN + wForearmN));
+  const fl = flexorLoads(handLoadKg, activeMuscleCount);
+  const fBrachN = fl.fBrachialisN;
+  const fBicN = fl.fBicepsN;
+  const fBradN = fl.fBrachioradialisN;
+  const totalMuscleForceN = fl.total;
+  const rJointN = fl.rJointN;
+  const totalTauNm = fl.tauNcm / 100;
 
   const railNote =
     activeMuscleCount === 3
-      ? 'Tres flexores reparten el torque: menos tensión por músculo y menos compresión articular.'
-      : 'Bíceps aislado: asume el 100 % del torque → tensión y compresión máximas.';
+      ? 'Tres flexores con la misma k: la suma (≈ 746 N en el libro) supera al bíceps solo (≈ 696 N) porque el braquial tiene un brazo corto.'
+      : 'Bíceps solo (d = 4,6 cm): asume todo el torque de la carga.';
 
   const setView = (view: 'default' | 'lateral' | 'anterior' | 'top') => {
     setCameraView(view);
@@ -691,13 +654,13 @@ export default function MultiMuscleCanvas({
                 fontWeight: 800,
               }}
             >
-              BÍCEPS 100%
+              BÍCEPS 100 %
             </div>
           ) : (
             <>
               <div
                 style={{
-                  width: '45%',
+                  width: '42%',
                   background: '#2e8b57',
                   borderRight: '1px solid #fff',
                   display: 'flex',
@@ -707,13 +670,13 @@ export default function MultiMuscleCanvas({
                   fontSize: '0.48rem',
                   fontWeight: 800,
                 }}
-                title="Braquial 45%"
+                title="Braquial 42 %"
               >
-                45%
+                42 %
               </div>
               <div
                 style={{
-                  width: '40%',
+                  width: '38%',
                   background: '#dc2626',
                   borderRight: '1px solid #fff',
                   display: 'flex',
@@ -723,13 +686,13 @@ export default function MultiMuscleCanvas({
                   fontSize: '0.48rem',
                   fontWeight: 800,
                 }}
-                title="Bíceps 40%"
+                title="Bíceps 38 %"
               >
-                40%
+                38 %
               </div>
               <div
                 style={{
-                  width: '15%',
+                  width: '20%',
                   background: '#d97706',
                   display: 'flex',
                   alignItems: 'center',
@@ -738,9 +701,9 @@ export default function MultiMuscleCanvas({
                   fontSize: '0.48rem',
                   fontWeight: 800,
                 }}
-                title="Braquiorradial 15%"
+                title="Braquiorradial 20 %"
               >
-                15%
+                20 %
               </div>
             </>
           )}
@@ -752,7 +715,7 @@ export default function MultiMuscleCanvas({
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: '#2e8b57' }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
               <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: activeMuscleCount === 3 ? '#2e8b57' : '#94a3b8' }} />
-              Braquial (d = 2,5 cm):
+              Braquial (d = 3,4 cm · 7,0 cm²):
             </span>
             <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>
               {activeMuscleCount === 3 ? `${fBrachN.toFixed(0)} N (${(fBrachN / 9.81).toFixed(1)} kgf)` : '0 N (Inactivo)'}
@@ -763,7 +726,7 @@ export default function MultiMuscleCanvas({
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: '#dc2626' }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
               <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#dc2626' }} />
-              Bíceps (d = 4,0 cm):
+              Bíceps (d = 4,6 cm · 4,6 cm²):
             </span>
             <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>
               {fBicN.toFixed(0)} N ({(fBicN / 9.81).toFixed(1)} kgf)
@@ -774,7 +737,7 @@ export default function MultiMuscleCanvas({
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: '#d97706' }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
               <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: activeMuscleCount === 3 ? '#d97706' : '#94a3b8' }} />
-              Braquiorradial (d = 25 cm):
+              Braquiorradial (d = 7,5 cm · 1,5 cm²):
             </span>
             <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>
               {activeMuscleCount === 3 ? `${fBradN.toFixed(0)} N (${(fBradN / 9.81).toFixed(1)} kgf)` : '0 N (Inactivo)'}

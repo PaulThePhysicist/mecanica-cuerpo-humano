@@ -15,14 +15,15 @@ import {
   CalloutSource,
   useCalloutStore,
 } from '../cap1/three/Callouts';
+import { G, FOREARM } from './staticsModels';
 
 /** Estática del codo en flexión (fuente única: escena + panel de lecturas). */
 function elbowSolve(handLoadKg: number, insertCm: number, elbowAngleDeg: number) {
-  const g = 9.81;
-  const wForearmN = 1.5 * g;
+  const g = G;
+  const wForearmN = FOREARM.WF; // 15 N (libro, Caso 2)
   const wHandN = handLoadKg * g;
   const flexRad = (elbowAngleDeg * Math.PI) / 180;
-  const tauResNm = (wForearmN * 0.14 + wHandN * 0.35) * Math.sin(flexRad);
+  const tauResNm = (wForearmN * FOREARM.dF / 100 + wHandN * FOREARM.dW / 100) * Math.sin(flexRad);
   const dM = insertCm / 100;
   const fMuscN = tauResNm / (dM * Math.max(0.2, Math.sin(flexRad)));
   const rJointN = Math.max(0, fMuscN - (wForearmN + wHandN));
@@ -152,11 +153,11 @@ function RealArmBicepsScene({
 
   // Física del codo (fuente única)
   const { wHandN, fMuscN, fMuscKgf, rJointN } = elbowSolve(handLoadKg, insertCm, elbowAngleDeg);
-  const lFm = `F_m = ${fMuscN.toFixed(0)} N`;
+  const lFm = `M = ${fMuscN.toFixed(0)} N`;
   const sFm = `${fMuscKgf.toFixed(1)} kgf`;
   const lW = `W = ${wHandN.toFixed(0)} N`;
   const sW = `${handLoadKg} kg`;
-  const lRj = `R_j = ${rJointN.toFixed(0)} N`;
+  const lRj = `R = ${rJointN.toFixed(0)} N`;
 
   // Ángulo de rotación del antebrazo en Three.js
   const angleRad = ((180 - elbowAngleDeg) * Math.PI) / 180;
@@ -357,7 +358,7 @@ export default function BicepsCanvas({
       <CalloutRail
         store={callouts}
         side="left"
-        note="Palanca de 3ª clase: el bíceps sacrifica fuerza (d ≈ 4 cm) por velocidad y rango de la mano (D ≈ 35 cm)."
+        note="Palanca de 3ª clase: con el bíceps a 4 cm y la mano a 36 cm, M = 9 W en la mano + 3,25 W del antebrazo."
       />
     </div>
     </CalloutProvider>

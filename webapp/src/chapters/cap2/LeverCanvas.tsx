@@ -1,3 +1,4 @@
+import { fmt } from './ab';
 import React, { useRef, useEffect, useState } from 'react';
 import { readCap2Tokens, tokenRgba } from './designTokens';
 import CanvasReserveState from './CanvasReserveState';
@@ -44,7 +45,7 @@ const LEVER_DATA: Record<number, LeverInfo> = {
     vmDesc: 'Desventaja de fuerza (VM < 1), pero gran amplificación de velocidad y rango distal.',
     color: '#b02318',
     bp: 4,
-    br: 35,
+    br: 36,
   },
 };
 
@@ -271,7 +272,7 @@ export default function LeverCanvas({
 
         ctx.font = `bold ${7 * uiScale}px JetBrains Mono, monospace`;
         ctx.textAlign = 'right';
-        ctx.fillText(`F_nuca = ${fMuscNewtons.toFixed(0)} N`, muscX - 3, muscY + 16);
+        ctx.fillText(`M (nuca) = ${fMuscNewtons.toFixed(0)} N`, muscX - 3, muscY + 16);
 
       } else if (leverClass === 2) {
         // ── CLASE 2: Tobillo y Pie en Flexión Plantar (Metatarsos / Gemelos) ──
@@ -402,7 +403,7 @@ export default function LeverCanvas({
         ctx.fillStyle = '#2e8b57';
         ctx.font = `bold ${7 * uiScale}px JetBrains Mono, monospace`;
         ctx.textAlign = 'right';
-        ctx.fillText(`F_aq = ${fMuscNewtons.toFixed(0)} N`, achillesX - 6, achillesY - 14);
+        ctx.fillText(`M (Aquiles) = ${fMuscNewtons.toFixed(0)} N`, achillesX - 6, achillesY - 14);
 
       } else {
         // ── CLASE 3: Flexión de Codo (Bíceps) ──
@@ -495,7 +496,7 @@ export default function LeverCanvas({
         ctx.fillStyle = '#b02318';
         ctx.font = `bold ${7 * uiScale}px JetBrains Mono, monospace`;
         ctx.textAlign = 'left';
-        ctx.fillText(`F_bic = ${fMuscNewtons.toFixed(0)} N`, bInsertX + 5, bInsertY - 14);
+        ctx.fillText(`M (bíceps) = ${fMuscNewtons.toFixed(0)} N`, bInsertX + 5, bInsertY - 14);
 
         // Vector Carga W en la mano (hacia abajo)
         ctx.strokeStyle = '#d97706';
@@ -705,10 +706,10 @@ export default function LeverCanvas({
       ctx.fillStyle = curColor;
       ctx.font = `bold ${7.5 * uiScale}px JetBrains Mono, monospace`;
       ctx.textAlign = 'center';
-      ctx.fillText(`F_m = ${fMuscNewtons.toFixed(0)} N`, muscleX, badgeY + 8);
+      ctx.fillText(`M = ${fMuscNewtons.toFixed(0)} N`, muscleX, badgeY + 8);
       ctx.font = `${6.5 * uiScale}px Karla, system-ui, sans-serif`;
       ctx.fillStyle = tokenRgba(T.ink3, 0.95);
-      ctx.fillText(`(${(fMuscNewtons / 9.81).toFixed(1)} kgf)`, muscleX, badgeY + 15);
+      ctx.fillText(`(${fmt(1 / vm, 2)} W)`, muscleX, badgeY + 15);
       ctx.restore();
 
       // Cotas de Brazos de Palanca (bp y br)
@@ -730,7 +731,7 @@ export default function LeverCanvas({
       ctx.fillStyle = curColor;
       ctx.font = `bold ${7 * uiScale}px JetBrains Mono, monospace`;
       ctx.textAlign = 'center';
-      ctx.fillText(`bp = ${bp} cm`, (fulcrumX + muscleX) / 2, barY - 19);
+      ctx.fillText(`dM = ${bp} cm`, (fulcrumX + muscleX) / 2, barY - 19);
 
       // Cota br
       ctx.strokeStyle = '#d97706';
@@ -747,7 +748,7 @@ export default function LeverCanvas({
       ctx.setLineDash([]);
 
       ctx.fillStyle = '#d97706';
-      ctx.fillText(`br = ${br} cm`, (fulcrumX + loadX) / 2, barY - 32);
+      ctx.fillText(`dW = ${br} cm`, (fulcrumX + loadX) / 2, barY - 32);
       ctx.restore();
 
       // ─── 5. Panel Medidor de Ventaja Mecánica (Derecha) ───
@@ -805,10 +806,10 @@ export default function LeverCanvas({
 
       ctx.font = `${7 * uiScale}px Karla, system-ui, sans-serif`;
       ctx.fillStyle = T.ink2;
-      ctx.fillText(`Fm/W = ${(1 / vm).toFixed(1)} ×`, cardX + cardW / 2, cardY + 95);
-      ctx.fillText(`bp ${bp} cm · br ${br} cm`, cardX + cardW / 2, cardY + 108);
+      ctx.fillText(`M/W = ${fmt(1 / vm, 2)}`, cardX + cardW / 2, cardY + 95);
+      ctx.fillText(`dM ${bp} cm · dW ${br} cm`, cardX + cardW / 2, cardY + 108);
       ctx.fillText(vm < 1.0 ? '⚡ Más velocidad distal' : '💪 Ahorro de fuerza', cardX + cardW / 2, cardY + 121);
-      ctx.fillText(`Fm ${fMuscNewtons.toFixed(0)} N · ${(fMuscNewtons / 9.81).toFixed(1)} kgf`, cardX + cardW / 2, cardY + 136);
+      ctx.fillText(`M ${fMuscNewtons.toFixed(0)} N`, cardX + cardW / 2, cardY + 136);
       ctx.restore();
       }
 

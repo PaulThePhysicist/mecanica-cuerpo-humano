@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import BiomechSummaryCanvas from './BiomechSummaryCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
+import KatexHtml from './KatexHtml';
 import type { Engine } from './useEngine';
 
 interface NodeButton {
@@ -164,7 +165,7 @@ export default function Slide18({
           <div className="apuntes">
             <div className="a-hdr"><span>✍️</span> Cátedra de Biomecánica</div>
             <div className="a-text" id="info-text-18">
-              <span dangerouslySetInnerHTML={{ __html: curNode.desc }} />
+              <KatexHtml html={curNode.desc} />
             </div>
           </div>
         </div>

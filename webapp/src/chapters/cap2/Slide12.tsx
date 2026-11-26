@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import JointTractionCanvas from './JointTractionCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
+import KatexHtml from './KatexHtml';
 import type { Engine } from './useEngine';
 
 interface TractionPreset {
@@ -133,7 +134,7 @@ export default function Slide12({
           <div className="apuntes">
             <div className="a-hdr"><span>✍️</span> Apunte de cátedra</div>
             <div className="a-text" id="info-text-12">
-              <span dangerouslySetInnerHTML={{ __html: curPreset.desc }} />
+              <KatexHtml html={curPreset.desc} />
             </div>
           </div>
         </div>

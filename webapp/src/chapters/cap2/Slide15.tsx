@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import MechanoreceptorsCanvas from './MechanoreceptorsCanvas';
 import HudPanel from './HudPanel';
+import KatexHtml from './KatexHtml';
 import type { Engine } from './useEngine';
 
 interface ReceptorOpt {
@@ -182,7 +183,7 @@ export default function Slide15({
           <div className="apuntes">
             <div className="a-hdr"><span>✍️</span> Apunte de cátedra</div>
             <div className="a-text" id="info-text-15">
-              <span dangerouslySetInnerHTML={{ __html: curRec.desc }} />
+              <KatexHtml html={curRec.desc} />
             </div>
           </div>
         </div>

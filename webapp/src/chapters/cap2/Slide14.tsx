@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import ForcePlateCanvas from './ForcePlateCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
+import KatexHtml from './KatexHtml';
 import { AnimateButton } from './AnimateButton';
 import { useHarmonicClock } from '../cap1/three/useHarmonicClock';
 import type { Engine } from './useEngine';
@@ -128,7 +129,7 @@ export default function Slide14({
           <div className="apuntes">
             <div className="a-hdr"><span>✍️</span> Apunte de cátedra</div>
             <div className="a-text" id="info-text-14">
-              <span dangerouslySetInnerHTML={{ __html: curPhase.desc }} />
+              <KatexHtml html={curPhase.desc} />
             </div>
           </div>
         </div>
