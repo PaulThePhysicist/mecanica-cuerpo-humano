@@ -1,86 +1,80 @@
-import React from 'react';
 import type { Engine } from './useEngine';
 import Sim from './Sim';
+import SlideHeader from './SlideHeader';
 
 export default function Slide13({ engine }: { engine: Engine }) {
   const params = engine.paramsRef.current;
 
   return (
     <div className="slide active" data-slide="13" data-module="5">
-      <div className="module-header">
-        <span className="mnum">3.8</span>
-        <span className="mtitle">Potencia del lanzamiento</span>
-        <span className="msub">P = τΩ: cuánta potencia genera el brazo</span>
-        <span className="mslide-count">13 / 19</span>
-      </div>
+      <SlideHeader index={13} num="3.6.2" title="Potencia generada durante un lanzamiento" sub="P = τΩ, incluso para un lanzamiento lento" />
       <div className="content-grid">
         <div className="theory">
           <div className="card active">
             <div className="card-hdr">
-              <span className="icon">⚡</span> Potencia rotacional
+              <span className="icon">⚡</span> Del movimiento lineal al rotacional
             </div>
             <div className="card-body">
-              <p>La potencia de un movimiento rotatorio es el producto del torque por la velocidad angular:</p>
               <div className="eq-block">
-                {"\\[ P = \\tau\\,\\Omega \\]"}
+                {'\\[ W = F\\,\\Delta x,\\ \\ P = F v \\qquad\\longleftrightarrow\\qquad W = \\tau\\,\\Delta\\theta,\\ \\ P = \\tau\\,\\Omega \\]'}
               </div>
               <p>
-                {"Para el caso <strong>c</strong> del lanzamiento: \\(\\tau = 36{,}45\\ \\text{N·m}\\), \\(\\Omega_{\\text{prom}} = 15{,}7\\ \\text{rad/s}\\):"}
+                Son la misma ley: con {'\\(\\tau = rF\\)'} y {'\\(v = \\Omega r\\)'}, {'\\(\\tau\\Omega = Fv\\)'}. Para
+                varias articulaciones, {'\\(P = \\sum_k \\tau_k \\Omega_k\\)'}.
               </p>
-              <div className="eq-block">
-                {"\\[ P_{\\text{prom}} = 36{,}45 \\times 15{,}7 \\approx 570\\ \\text{W} = 0{,}76\\ \\text{hp} \\]"}
-              </div>
             </div>
           </div>
           <div className="card">
             <div className="card-hdr">
-              <span className="icon">🚀</span> El pico de potencia
+              <span className="icon">🚀</span> Caso c (bíceps de 3 in, 25 mph)
             </div>
             <div className="card-body">
-              <p>{"Con la velocidad angular máxima \\(\\Omega_{\\max} = 31{,}4\\ \\text{rad/s}\\):"}</p>
+              <p>
+                {'\\(\\tau = 3645\\ \\text{N}\\cdot\\text{cm} = 36{,}45\\ \\text{N}\\cdot\\text{m}\\)'} constante; {'\\(\\Delta\\theta = \\pi/2\\)'} en{' '}
+                {'\\(0{,}10\\ \\text{s}\\)'}: {'\\(\\Omega_{\\text{prom}} = 15{,}7\\ \\text{rad/s}\\)'}, y Ω crece lineal hasta{' '}
+                {'\\(\\Omega_{\\max} = 31{,}4\\ \\text{rad/s}\\)'}.
+              </p>
               <div className="eq-block">
-                {"\\[ P_{\\max} = 36{,}45 \\times 31{,}4 \\approx 1140\\ \\text{W} = 1{,}5\\ \\text{hp} \\]"}
+                {'\\[ P_{\\text{prom}} = 36{,}45 \\times 15{,}7 \\approx 570\\ \\text{W} = 0{,}76\\ \\text{hp} \\]'}
               </div>
-              <p>En general el lanzamiento suma las potencias de cada segmento:</p>
               <div className="eq-block">
-                {"\\[ P = \\sum_k \\tau_k \\Omega_k \\]"}
+                {'\\[ P_{\\max} = 36{,}45 \\times 31{,}4 \\approx 1140\\ \\text{W} = 1{,}5\\ \\text{hp} \\]'}
               </div>
+              <p>Con el bíceps de 2 in: 178 W de media y 356 W de máximo.</p>
             </div>
           </div>
           <div className="apuntes">
             <div className="a-hdr">
               <span>✍️</span> Apunte de cátedra
             </div>
-            <div className="a-text" id="info-text-13">
-              Un caballo de fuerza por un brazo humano: la potencia instantánea de un lanzamiento rivaliza con la de una
-              aspiradora. Comparación del libro: pitcher (pelota de 0,146 kg, 90–100 mph) vs quarterback (pelota de 0,42 kg,
-              50–60 mph).
+            <div className="a-text">
+              Un caballo de vapor y medio en un lanzamiento lento de un solo segmento. Comparación del libro: un lanzador de
+              grandes ligas lanza a 90–100 mph una pelota de 0,14 kg; un mariscal de campo, a 50–60 mph un balón de 0,42 kg —
+              el objeto más pesado ralentiza la rotación del codo.
             </div>
           </div>
         </div>
         <div className="sim-col">
           <div className="sim-area">
-            <Sim id="sim-power" className="sim" />
+            <Sim id="sim-power" className="sim" label="Antebrazo, velocidad angular y potencia instantánea" />
             <div className="prof-controls">
-              <span className="badge">P = τΩ</span>
+              <span className="badge">{'\\(P = \\tau\\Omega\\)'}</span>
               <label>
-                Ω{' '}
+                Ω
                 <input
                   type="range"
-                  id="pw_om"
-                  min="5"
+                  min="0"
                   max="35"
                   step="0.1"
                   defaultValue={params.pw_om}
+                  aria-label="Velocidad angular Ω en rad/s"
                   onChange={(e) => {
                     engine.setParam('pw_om', parseFloat(e.target.value));
                     engine.requestDraw();
                   }}
                 />
               </label>
-              <span className="readout" id="pw_out">
-                P = 570 W
-              </span>
+              <span className="readout" id="pw_out" aria-live="polite" />
             </div>
           </div>
         </div>

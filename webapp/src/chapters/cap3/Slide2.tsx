@@ -1,94 +1,83 @@
-import React, { useState } from 'react';
 import type { Engine } from './useEngine';
 import Sim from './Sim';
+import SlideHeader from './SlideHeader';
 
 export default function Slide2({ engine }: { engine: Engine }) {
   const params = engine.paramsRef.current;
-  const flags = engine.flagsRef.current;
-  const [mode, setMode] = useState<'stand' | 'walk'>(flags.presionMode);
-
-  const togglePresion = () => {
-    const next = mode === 'stand' ? 'walk' : 'stand';
-    setMode(next);
-    engine.setFlag('presionMode', next);
-    engine.requestDraw();
-  };
+  const mode = engine.flagsRef.current.presionMode;
 
   return (
     <div className="slide active" data-slide="2" data-module="1">
-      <div className="module-header">
-        <span className="mnum">3.2</span>
-        <span className="mtitle">La presión bajo los pies</span>
-        <span className="msub">Repartir el peso sobre una superficie pequeña</span>
-        <span className="mslide-count">2 / 19</span>
-      </div>
+      <SlideHeader index={2} num="3.2.2" title="Fuerzas sobre los pies" sub="Repartir el peso sobre una superficie pequeña" />
       <div className="content-grid">
         <div className="theory">
           <div className="card active">
             <div className="card-hdr">
-              <span className="icon">🦶</span> Presión = fuerza entre área
+              <span className="icon">🦶</span> De pie: presión = fuerza / área
             </div>
             <div className="card-body">
-              <p>El peso corporal se reparte sobre la huella de ambos pies. La presión media vale:</p>
-              <div className="eq-block">
-                {"\\[ P = \\frac{W_b}{A} \\]"}
-              </div>
+              <div className="eq-block">{'\\[ P = \\frac{W_b}{A} = \\frac{700\\ \\text{N}}{350\\ \\text{cm}^2} \\approx 2\\ \\text{N/cm}^2 \\]'}</div>
               <p>
-                Para una persona típica de pie, la presión media es de <span className="tag">≈ 2 N/cm²</span> — pero en el
-                talón y en la base de los dedos concentra <span className="tag">≈ 10 N/cm²</span>.
+                Una persona de {'\\(700\\ \\text{N}\\)'} (160 lb) carga {'\\(350\\ \\text{N}\\)'} en cada pie. Pero el pie
+                no apoya entero: casi todo el contacto ocurre en la <strong>almohadilla</strong> y el <strong>talón</strong>,
+                donde la presión sube a ≈ {'\\(10\\ \\text{N/cm}^2\\)'}.
               </p>
             </div>
           </div>
           <div className="card">
             <div className="card-hdr">
-              <span className="icon">🚶</span> Al caminar la presión se dispara
+              <span className="icon">🚶</span> Al caminar la presión se multiplica
             </div>
             <div className="card-body">
               <p>
-                En el ciclo de la marcha, <strong>un solo pie</strong> soporta el peso, con fuerzas que llegan a{' '}
-                <span className="tag">≈ 1400 N</span> (casi el doble del peso) sobre un área de contacto de ≈ 23 cm²:
+                Un solo pie soporta el cuerpo (×2) y las fuerzas de frenado y propulsión pueden duplicar la normal (×2):
+                la fuerza máxima llega a ≈ {'\\(1400\\ \\text{N}\\)'} por pie, es decir ≈ {'\\(40\\ \\text{N/cm}^2\\)'}.
+                Como el pie rara vez está plano, el área es aún menor y el <strong>pico</strong> alcanza ≈{' '}
+                {'\\(60\\ \\text{N/cm}^2\\)'} — treinta veces la media de pie quieto. Al correr es mayor todavía.
               </p>
-              <div className="eq-block">
-                {"\\[ P \\approx \\frac{1400\\ \\text{N}}{23\\ \\text{cm}^2} \\approx 60\\ \\text{N/cm}^2 \\]"}
-              </div>
-              <p>Treinta veces la presión media de pie quieto.</p>
             </div>
           </div>
           <div className="apuntes">
             <div className="a-hdr">
               <span>✍️</span> Apunte de cátedra
             </div>
-            <div className="a-text" id="info-text-2">
-              Analogía en clase: caminar sobre nieve con raquetas reparte el peso sobre un área mayor. La presión (no la
-              fuerza) es lo que deforma el suelo — y lo que daña el tejido en pacientes encamados.
+            <div className="a-text">
+              Cadena para dictar: 2 → 10 → 40 → 60 N/cm². Estas curvas se miden de rutina con plantillas de presión (la
+              Fig. 3.19 del libro muestra un registro). Lo que daña el tejido —úlceras por presión en pacientes encamados—
+              es la presión, no la fuerza.
             </div>
           </div>
         </div>
         <div className="sim-col">
           <div className="sim-area">
-            <Sim id="sim-presion" className="sim" />
+            <Sim id="sim-presion" className="sim" label="Huella plantar y escala de presiones" />
             <div className="prof-controls">
-              <span className="badge">P = W / A</span>
+              <span className="badge">{'\\(P = W/A\\)'}</span>
               <label>
-                masa{' '}
+                masa
                 <input
                   type="range"
-                  id="pr_mass"
                   min="40"
                   max="120"
                   defaultValue={params.pr_mass}
+                  aria-label="Masa corporal en kg"
                   onChange={(e) => {
                     engine.setParam('pr_mass', parseFloat(e.target.value));
                     engine.requestDraw();
                   }}
                 />
               </label>
-              <button id="pr_mode" onClick={togglePresion}>
+              <button
+                type="button"
+                aria-pressed={mode === 'walk'}
+                onClick={() => {
+                  engine.setFlag('presionMode', mode === 'stand' ? 'walk' : 'stand');
+                  engine.requestDraw();
+                }}
+              >
                 {mode === 'stand' ? 'De pie' : 'Caminando'}
               </button>
-              <span className="readout" id="pr_out">
-                2 N/cm²
-              </span>
+              <span className="readout" id="pr_out" aria-live="polite" />
             </div>
           </div>
         </div>

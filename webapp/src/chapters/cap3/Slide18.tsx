@@ -1,48 +1,44 @@
-import React, { useState } from 'react';
 import type { Engine } from './useEngine';
 import Sim from './Sim';
+import SlideHeader from './SlideHeader';
+
+const FLOW: [number, string][] = [
+  [1, 'Estabilidad'],
+  [2, 'Marcha'],
+  [3, 'Carrera'],
+  [4, 'Salto'],
+  [5, 'Lanzar'],
+  [6, 'Bateo'],
+  [7, 'Colisiones'],
+  [8, 'Vuelo'],
+];
 
 export default function Slide18({ engine }: { engine: Engine }) {
   const params = engine.paramsRef.current;
   const flags = engine.flagsRef.current;
-  const [air, setAir] = useState(flags.air);
-  const [mag, setMag] = useState(flags.mag);
-
-  const toggleAir = () => {
-    const next = !air;
-    setAir(next);
-    engine.setFlag('air', next);
-    engine.requestDraw();
-  };
-
-  const toggleMag = () => {
-    const next = !mag;
-    setMag(next);
-    engine.setFlag('mag', next);
-    engine.requestDraw();
-  };
 
   return (
     <div className="slide active" data-slide="18" data-module="8">
-      <div className="module-header">
-        <span className="mnum">3.12</span>
-        <span className="mtitle">El vuelo de la pelota</span>
-        <span className="msub">Resistencia del aire, giro y el resumen del capítulo</span>
-        <span className="mslide-count">18 / 19</span>
-      </div>
+      <SlideHeader index={18} num="3.12 · 3.13" title="El vuelo de la pelota" sub="Arrastre, efecto Magnus y resumen del capítulo" />
       <div className="content-grid">
         <div className="theory">
           <div className="card active">
             <div className="card-hdr">
-              <span className="icon">🎈</span> El arrastre del aire
+              <span className="icon">🎈</span> El arrastre: «el gran igualador»
             </div>
             <div className="card-body">
-              <p>El aire frena a la pelota con una fuerza proporcional al cuadrado de la rapidez:</p>
+              <p>
+                En régimen turbulento {'\\(F_{\\text{arrastre}} = \\tfrac12 C_D A \\rho v^2\\)'}, con{' '}
+                {'\\(C_D \\simeq 0{,}45\\)'} para esferas lisas ({'\\(Re \\sim 10^3\\text{–}2\\times10^5\\)'}):
+              </p>
               <div className="eq-block">
-                {"\\[ m\\,\\frac{dv_z}{dt} = -mg - \\tfrac{1}{2} C_D A \\rho\\,v\\,v_z \\]"}
+                {'\\[ m\\frac{dv_x}{dt} = -\\tfrac12 C_D A\\rho\\,v\\,v_x, \\qquad m\\frac{dv_z}{dt} = -mg - \\tfrac12 C_D A\\rho\\,v\\,v_z \\]'}
               </div>
               <p>
-                {"Para esferas lisas \\(C_D \\approx 0{,}45\\). El ángulo óptimo baja de "}<span className="tag">45°</span>{" (vacío) a ≈ "}<span className="tag">35–40°</span>{" en el aire. Regla del libro: el alcance con aire ≈ \\(\\tfrac{3}{2} v_0 - 105\\) (pies)."}
+                El alcance máximo pasa de <span className="tag">45°</span> en el vacío a ≈ <span className="tag">35–40°</span>{' '}
+                en el aire, y la trayectoria se vuelve asimétrica. En el vacío el alcance crece como {'\\(v_0^2\\)'}; con
+                arrastre, cada m/s extra rinde mucho menos. Regla empírica para la pelota de <strong>golf</strong>: vuelo
+                (yd) ≈ {'\\(\\tfrac32 v_0 - 105\\)'} con {'\\(v_0\\)'} en ft/s.
               </p>
             </div>
           </div>
@@ -52,45 +48,34 @@ export default function Slide18({ engine }: { engine: Engine }) {
             </div>
             <div className="card-body">
               <p>
-                Una pelota con <strong>efecto retrógrado</strong> (backspin) se curva hacia arriba (sustentación); con{' '}
-                <strong>efecto superior</strong> (topspin), cae. Las pelotas de golf con hoyuelos reducen el arrastre y
-                giran 50–130 rev/s → vuelan más lejos y más rectas.
+                Con <strong>backspin</strong> la fuerza de Magnus empuja hacia arriba (sustentación) y la pelota vuela más
+                lejos; con <strong>topspin</strong>, hacia abajo y cae antes. Los hoyuelos de la pelota de golf bajan el{' '}
+                {'\\(Re\\)'} crítico (menor {'\\(C_D\\)'}) y aumentan la sustentación.
               </p>
             </div>
           </div>
           <div className="card">
             <div className="card-hdr">
-              <span className="icon">🧭</span> Resumen del capítulo
+              <span className="icon">🧭</span> Resumen del capítulo (§3.13)
             </div>
             <div className="card-body">
+              <p>
+                Cinemática, dinámica y energética, más estabilidad y acción muscular: modelos simples que se refinan, y
+                colisiones que explican el deporte y el daño en un choque.
+              </p>
               <div className="concept-flow">
-                <span className="step done" onClick={() => engine.goModule(1)}>
-                  Estabilidad
-                </span>
-                <span className="arrow">→</span>
-                <span className="step done" onClick={() => engine.goModule(2)}>
-                  Marcha
-                </span>
-                <span className="arrow">→</span>
-                <span className="step done" onClick={() => engine.goModule(3)}>
-                  Carrera
-                </span>
-                <span className="arrow">→</span>
-                <span className="step done" onClick={() => engine.goModule(4)}>
-                  Salto
-                </span>
-                <span className="arrow">→</span>
-                <span className="step done" onClick={() => engine.goModule(5)}>
-                  Lanzar
-                </span>
-                <span className="arrow">→</span>
-                <span className="step done" onClick={() => engine.goModule(7)}>
-                  Colisiones
-                </span>
-                <span className="arrow">→</span>
-                <span className="step done" onClick={() => engine.goModule(8)}>
-                  Vuelo
-                </span>
+                {FLOW.map(([mod, label], i) => (
+                  <span key={mod} className="concept-flow__item">
+                    {i > 0 && (
+                      <span className="arrow" aria-hidden="true">
+                        →
+                      </span>
+                    )}
+                    <button type="button" className="step done" onClick={() => engine.goModule(mod)}>
+                      {label}
+                    </button>
+                  </span>
+                ))}
               </div>
             </div>
           </div>
@@ -98,26 +83,26 @@ export default function Slide18({ engine }: { engine: Engine }) {
             <div className="a-hdr">
               <span>✍️</span> Apunte de cátedra
             </div>
-            <div className="a-text" id="info-text-18">
-              Cierre: activa/desactiva el arrastre en el canvas — la diferencia de alcance es la "dama de los juegos". La
-              misma física del péndulo (slide 5) reaparece en cada destreza del capítulo.
+            <div className="a-text">
+              Alterne «Con aire / Vacío»: lanzar más fuerte ayuda mucho menos de lo que predice la parábola. Un balón de
+              fútbol a 30 m/s supera el Re crítico y vuela ≈ 60 m en vez de ≈ 40 m.
             </div>
           </div>
         </div>
         <div className="sim-col">
           <div className="sim-area">
-            <Sim id="sim-flight" className="sim" />
+            <Sim id="sim-flight" className="sim" label="Trayectorias de una pelota de béisbol en el vacío y con arrastre" />
             <div className="prof-controls">
               <span className="badge">Proyectil</span>
               <label>
-                v₀{' '}
+                {'\\(v_0\\)'}
                 <input
                   type="range"
-                  id="fl_v"
                   min="8"
-                  max="30"
+                  max="45"
                   step="0.5"
                   defaultValue={params.fl_v}
+                  aria-label="Rapidez inicial en m/s"
                   onChange={(e) => {
                     engine.setParam('fl_v', parseFloat(e.target.value));
                     engine.requestDraw();
@@ -125,28 +110,41 @@ export default function Slide18({ engine }: { engine: Engine }) {
                 />
               </label>
               <label>
-                θ{' '}
+                θ
                 <input
                   type="range"
-                  id="fl_theta"
                   min="10"
                   max="70"
                   defaultValue={params.fl_theta}
+                  aria-label="Ángulo de lanzamiento en grados"
                   onChange={(e) => {
                     engine.setParam('fl_theta', parseFloat(e.target.value));
                     engine.requestDraw();
                   }}
                 />
               </label>
-              <button id="fl_air" onClick={toggleAir}>
-                {air ? 'Con aire' : 'Vacío'}
+              <button
+                type="button"
+                aria-pressed={flags.air}
+                onClick={() => {
+                  engine.setFlag('air', !flags.air);
+                  engine.requestDraw();
+                }}
+              >
+                {flags.air ? 'Con aire' : 'Vacío'}
               </button>
-              <button id="fl_mag" onClick={toggleMag}>
-                {mag ? 'Magnus: on' : 'Magnus: off'}
+              <button
+                type="button"
+                aria-pressed={flags.mag}
+                disabled={!flags.air}
+                onClick={() => {
+                  engine.setFlag('mag', !flags.mag);
+                  engine.requestDraw();
+                }}
+              >
+                {flags.mag ? 'Backspin: sí' : 'Backspin: no'}
               </button>
-              <span className="readout" id="fl_out">
-                D = 33 m
-              </span>
+              <span className="readout" id="fl_out" aria-live="polite" />
             </div>
           </div>
         </div>

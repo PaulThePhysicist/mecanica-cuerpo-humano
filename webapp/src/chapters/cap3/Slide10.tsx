@@ -1,67 +1,66 @@
-import React from 'react';
 import type { Engine } from './useEngine';
 import Sim from './Sim';
+import SlideHeader from './SlideHeader';
 
 export default function Slide10({ engine }: { engine: Engine }) {
   const params = engine.paramsRef.current;
 
   return (
     <div className="slide active" data-slide="10" data-module="4">
-      <div className="module-header">
-        <span className="mnum">3.7</span>
-        <span className="mtitle">Pértiga, altura y longitud</span>
-        <span className="msub">Convertir velocidad horizontal en altura</span>
-        <span className="mslide-count">10 / 19</span>
-      </div>
+      <SlideHeader index={10} num="3.5.2–3.5.3" title="Pértiga, altura y longitud" sub="Convertir la carrera en altura o en distancia" />
       <div className="content-grid">
         <div className="theory">
           <div className="card active">
             <div className="card-hdr">
-              <span className="icon">🎽</span> El salto con pértiga
+              <span className="icon">🎽</span> Salto con pértiga: KE → elástica → PE
             </div>
             <div className="card-body">
-              <p>{"La velocidad horizontal \\(v_{Hi}\\) se convierte en energía cinética y luego en altura sobre la barra:"}</p>
-              <div className="eq-block">
-                {"\\[ h_{\\text{barra}} = h_{CM} - h_{\\min} + \\frac{v_{Hi}^2}{2g} \\]"}
-              </div>
               <p>
-                {"Con \\(v_{Hi} = 9{,}5\\ \\text{m/s}\\) el modelo da \\(h_{\\text{barra}} \\approx 5{,}4\\ \\text{m}\\) — muy cerca del récord mundial (6,16 m). La pértiga almacena energía elástica y la devuelve en el vuelo."}
+                La energía cinética horizontal se guarda en la pértiga y vuelve como energía potencial. Si la conversión es
+                total, con el CM a {'\\(h_{\\text{CM}} \\approx 0{,}9\\ \\text{m}\\)'} en carrera y un margen{' '}
+                {'\\(h_{\\min} \\approx 0{,}1\\ \\text{m}\\)'} sobre el listón:
+              </p>
+              <div className="eq-block">{'\\[ h_{\\text{bar}} = h_{\\text{CM}} - h_{\\min} + \\frac{v_{H,i}^2}{2g} \\]'}</div>
+              <p>
+                Con {'\\(v_{H,i} = 9{,}5\\ \\text{m/s}\\)'}: {'\\(h_{\\text{bar}} = 5{,}4\\ \\text{m}\\)'}. El récord (6,16 m,
+                2014) lo supera porque el saltador se empuja con los brazos desde la pértiga ya vertical. Despegue a
+                13–15° de la vertical; hay una rigidez de pértiga óptima.
               </p>
             </div>
           </div>
           <div className="card">
             <div className="card-hdr">
-              <span className="icon">🏃</span> Altura vs longitud
+              <span className="icon">🏃</span> Altura vs longitud (modelo de rodilla, Fig. 3.43)
             </div>
             <div className="card-body">
               <table className="data-mini">
                 <thead>
                   <tr>
                     <th>Salto</th>
-                    <th>Ángulo</th>
-                    <th>Rapidez</th>
+                    <th>Pierna al plantar</th>
+                    <th>Aproximación</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td>
-                      <b>Alto</b> (Fosbury)
+                      <b>Altura</b> (Fosbury)
                     </td>
                     <td>45–50°</td>
                     <td>≈ 7 m/s</td>
                   </tr>
                   <tr>
                     <td>
-                      <b>Largo</b>
+                      <b>Longitud</b>
                     </td>
-                    <td>60–70°</td>
-                    <td>≈ 11 m/s</td>
+                    <td>60–70° (más pronunciado)</td>
+                    <td>lo más rápido posible, ≈ 11 m/s</td>
                   </tr>
                 </tbody>
               </table>
               <p>
-                En el salto de altura importa convertir <em>algo</em> de velocidad en altura; en el salto de longitud
-                importa <strong>maximizar la rapidez</strong> y despegar en un ángulo menor para cubrir distancia.
+                En altura, aproximaciones más rápidas que ≈ 7 m/s dan <em>menos</em> elevación {'\\(H_2\\)'}; en longitud,
+                más rapidez siempre ayuda.
               </p>
             </div>
           </div>
@@ -69,35 +68,33 @@ export default function Slide10({ engine }: { engine: Engine }) {
             <div className="a-hdr">
               <span>✍️</span> Apunte de cátedra
             </div>
-            <div className="a-text" id="info-text-10">
-              La pértiga es el ejemplo favorito de conservación de la energía: KE → elástica → PE. El canvas muestra cómo
-              crece h con v_Hi y por qué el récord supera el modelo simple (la pértiga aporta más).
+            <div className="a-text">
+              Velocistas de clase mundial llegan a 10,4 m/s sin pértiga: con v = 10,4 m/s el modelo daría ≈ 6,3 m. En el
+              Fosbury flop el CM puede pasar por debajo del listón (Fig. 3.41).
             </div>
           </div>
         </div>
         <div className="sim-col">
           <div className="sim-area">
-            <Sim id="sim-vault" className="sim" />
+            <Sim id="sim-vault" className="sim" label="Altura del listón frente a la rapidez de carrera" />
             <div className="prof-controls">
-              <span className="badge">h = v²/2g</span>
+              <span className="badge">{'\\(\\tfrac12 m v^2 = m g\\,\\Delta h\\)'}</span>
               <label>
-                v{' '}
+                {'\\(v_{H,i}\\)'}
                 <input
                   type="range"
-                  id="va_v"
                   min="5"
                   max="11"
                   step="0.1"
                   defaultValue={params.va_v}
+                  aria-label="Rapidez horizontal inicial en m/s"
                   onChange={(e) => {
                     engine.setParam('va_v', parseFloat(e.target.value));
                     engine.requestDraw();
                   }}
                 />
               </label>
-              <span className="readout" id="va_out">
-                h = 5,4 m
-              </span>
+              <span className="readout" id="va_out" aria-live="polite" />
             </div>
           </div>
         </div>

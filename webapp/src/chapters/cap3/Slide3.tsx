@@ -1,46 +1,48 @@
-import React, { useState } from 'react';
 import type { Engine } from './useEngine';
 import Sim from './Sim';
+import SlideHeader from './SlideHeader';
 
 export default function Slide3({ engine }: { engine: Engine }) {
   const params = engine.paramsRef.current;
-  const flags = engine.flagsRef.current;
-  const [playing, setPlaying] = useState(flags.gaitPlaying);
-
-  const toggleGait = () => {
-    const next = !playing;
-    setPlaying(next);
-    engine.setFlag('gaitPlaying', next);
-  };
+  const playing = engine.flagsRef.current.gaitPlaying;
 
   return (
     <div className="slide active" data-slide="3" data-module="2">
-      <div className="module-header">
-        <span className="mnum">3.3</span>
-        <span className="mtitle">El ciclo de la marcha</span>
-        <span className="msub">Apoyo 60–65 % · balanceo 35–40 %</span>
-        <span className="mslide-count">3 / 19</span>
-      </div>
+      <SlideHeader index={3} num="3.3.1 · 3.4.1" title="El ciclo de la marcha" sub="Apoyo 60–65 % · oscilación 35–40 %" />
       <div className="content-grid">
         <div className="theory">
           <div className="card active">
             <div className="card-hdr">
-              <span className="icon">🦵</span> Las fases de un paso
+              <span className="icon">🦵</span> Las fases de un ciclo
             </div>
             <div className="card-body">
-              <p>El ciclo de la marcha tiene dos grandes fases por pierna:</p>
+              <p>
+                Del <strong>golpe de pie</strong> (FS, golpe de talón) al <strong>despegue de los dedos</strong> (TO) va la
+                fase de <span className="highlight">apoyo</span>: carga, apoyo medio, apoyo terminal y preoscilación. De TO
+                al siguiente FS, la de <span className="highlight">oscilación</span>: inicial, media y terminal.
+              </p>
               <div className="row">
                 <span className="pill">
                   <b>Apoyo</b> · 60–65 %
                 </span>
                 <span className="pill">
-                  <b>Balanceo</b> · 35–40 %
+                  <b>Oscilación</b> · 35–40 %
                 </span>
               </div>
               <p>
-                En el <span className="highlight">apoyo</span> el pie toca el suelo (talón → dedos) y el cuerpo avanza sobre
-                él; en el <span className="highlight">balanceo</span> el pie despega y avanza. Hay <strong>doble apoyo</strong>{' '}
-                (~12 % del ciclo) cuando ambos pies están en el suelo.
+                Hay <strong>doble apoyo</strong> en el primer y el último ≈ 10 % del apoyo (justo tras FS y justo antes de
+                TO); al caminar, ambos pies nunca están en el aire a la vez.
+              </p>
+            </div>
+          </div>
+          <div className="card">
+            <div className="card-hdr">
+              <span className="icon">📈</span> Ángulos sagitales (Fig. 3.11)
+            </div>
+            <div className="card-body">
+              <p>
+                Cadera: ≈ 30° de flexión al contacto, extiende hasta ≈ 10° y vuelve a flexionarse a ≈ 35°. Rodilla: ≈ 5° al
+                contacto, 20° en apoyo medio, 40° en preoscilación y 60–70° de flexión en la oscilación media.
               </p>
             </div>
           </div>
@@ -50,9 +52,10 @@ export default function Slide3({ engine }: { engine: Engine }) {
             </div>
             <div className="card-body">
               <p>
-                En la <strong>carrera</strong> el porcentaje de apoyo baja a ≈ <span className="tag">40 %</span> y el de
-                balanceo sube a ≈ <span className="tag">60 %</span> — y aparece una <strong>fase de vuelo</strong> en la que
-                ningún pie toca el suelo.
+                Al correr el apoyo ocupa el primer ≈ <span className="tag">40 %</span> del ciclo y el pie está fuera del
+                suelo el ≈ <span className="tag">60 %</span> restante: flota 15 %, oscila 30 % y vuelve a flotar 15 %. Aparece
+                una <strong>fase de vuelo</strong> sin ningún pie en el suelo — la diferencia que descalificó a Jane Saville
+                en la marcha atlética de Sídney 2000.
               </p>
             </div>
           </div>
@@ -60,37 +63,36 @@ export default function Slide3({ engine }: { engine: Engine }) {
             <div className="a-hdr">
               <span>✍️</span> Apunte de cátedra
             </div>
-            <div className="a-text" id="info-text-3">
-              En el canvas: mueve el ciclo y observa cómo cambia la fracción de apoyo. La doble gráfica talón-dedos ilustra
-              que el apoyo empieza en el talón y termina en los dedos.
+            <div className="a-text">
+              En el lienzo, avance el ciclo: la etiqueta «DOBLE APOYO» se enciende dos veces por ciclo, al principio y al
+              final del apoyo de cada pierna (≈ 6 % del ciclo cada vez con 62 % de apoyo).
             </div>
           </div>
         </div>
         <div className="sim-col">
           <div className="sim-area">
-            <Sim id="sim-gait" className="sim" />
+            <Sim id="sim-gait" className="sim" label="Piernas en el ciclo de marcha y barras de apoyo y oscilación" />
             <div className="prof-controls">
               <span className="badge">Ciclo</span>
               <label>
-                t{' '}
+                t
                 <input
                   type="range"
                   id="gait_t"
                   min="0"
-                  max="100"
+                  max="99"
                   defaultValue={params.gait_t}
+                  aria-label="Instante del ciclo en %"
                   onChange={(e) => {
                     engine.setParam('gait_t', parseFloat(e.target.value));
                     engine.requestDraw();
                   }}
                 />
               </label>
-              <button id="gait_play" onClick={toggleGait}>
-                {playing ? '⏸' : '▶'}
+              <button type="button" aria-pressed={playing} aria-label={playing ? 'Pausar' : 'Reproducir'} onClick={() => engine.setFlag('gaitPlaying', !playing)}>
+                {playing ? '⏸ Pausa' : '▶ Animar'}
               </button>
-              <span className="readout" id="gait_out">
-                Apoyo 62 %
-              </span>
+              <span className="readout" id="gait_out" aria-live="polite" />
             </div>
           </div>
         </div>

@@ -1,61 +1,79 @@
-import React from 'react';
+import { useState } from 'react';
 import type { Engine } from './useEngine';
 import Sim from './Sim';
 import StabScene3D from './StabScene3D';
+import SlideHeader from './SlideHeader';
+import { stabModel } from './sims';
 
 export default function Slide1({ engine }: { engine: Engine }) {
   const params = engine.paramsRef.current;
+  const cm = engine.flagsRef.current.stabCM;
+  const [theta, setTheta] = useState(params.stab_theta);
+  const [H, setH] = useState(params.stab_H);
+  const uni = stabModel(1, 0.5);
+  const real = stabModel(1, 0.58);
+  const fmt = (x: number) => x.toFixed(1).replace('.', ',');
 
   return (
     <div className="slide active" data-slide="1" data-module="1">
-      <div className="module-header">
-        <span className="mnum">3.2</span>
-        <span className="mtitle">Bipedestación y estabilidad</span>
-        <span className="msub">El centro de masa cae dentro de la base de sustentación</span>
-        <span className="mslide-count">1 / 19</span>
-      </div>
+      <SlideHeader index={1} num="3.2.1" title="Bipedestación y estabilidad" sub="La línea de gravedad debe caer dentro de la base de sustentación" />
       <div className="content-grid">
         <div className="theory">
           <div className="card active">
             <div className="card-hdr">
-              <span className="icon">🧍</span> Estabilidad: caer es dejar la base
+              <span className="icon">🧍</span> Estabilidad general: caer es salir de la base
             </div>
             <div className="card-body">
               <p>
-                El cuerpo de pie es estable mientras la <strong>vertical que pasa por el centro de masa</strong> atraviese
-                la <strong>base de sustentación</strong> — el polígono que forman los pies. Si esa vertical cae fuera, el
-                peso crea un torque que nos voltea.
+                Un cuerpo rígido de pie es estable mientras la <strong>línea de gravedad</strong> —la vertical que pasa por
+                el centro de masa— atraviese la <strong>base de sustentación</strong>, el área que delimitan los pies. Si
+                sale de ella, los torques de los pies ya no se cancelan y el cuerpo vuelca.
               </p>
               <p>
-                Para el modelo de una sola línea, el pie mide ≈ <span className="tag">0,152 H</span> y el centro de masa
-                está ≈ <span className="tag">0,55 H</span> sobre el piso.
-              </p>
-            </div>
-          </div>
-          <div className="card">
-            <div className="card-hdr">
-              <span className="icon">📐</span> El ángulo máximo de inclinación
-            </div>
-            <div className="card-body">
-              <p>La máxima inclinación sin perder el equilibrio sale de un triángulo rectángulo:</p>
-              <div className="eq-block">
-                {"\\[ \\tan\\theta_{\\max} = \\frac{d_{\\text{pie}}}{h_{\\text{CM}}} \\]"}
-              </div>
-              <p>
-                {"Con \\(d_{\\text{pie}} \\approx 0,152 H\\) y \\(h_{\\text{CM}} \\approx 0,55 H\\):"} <strong>adelante ≈ 11,7°</strong>,
-                pero <strong>atrás ≈ 3,9°</strong> (el talón sobresale mucho menos que los dedos).
+                Modelo del Problema 3.1: una persona «unidimensional» de altura {'\\(H\\)'} y masa uniforme (CM a{' '}
+                {'\\(0{,}50\\,H\\)'}) apoyada al 25 % desde el talón sobre pies de {'\\(0{,}152\\,H\\)'}: el talón queda{' '}
+                {'\\(0{,}038\\,H\\)'} detrás y los dedos {'\\(0{,}114\\,H\\)'} delante.
               </p>
             </div>
           </div>
           <div className="card">
             <div className="card-hdr">
-              <span className="icon">🪨</span> No estamos perfectamente quietos
+              <span className="icon">📐</span> Ángulo máximo de inclinación
+            </div>
+            <div className="card-body">
+              <div className="eq-block">{'\\[ \\tan\\theta_{\\max} = \\frac{d_{\\text{borde}}}{h_{\\text{CM}}} \\]'}</div>
+              <table className="data-mini">
+                <thead>
+                  <tr>
+                    <th>Centro de masa</th>
+                    <th>Adelante</th>
+                    <th>Atrás</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{'\\(0{,}50\\,H\\)'} · Prob. 3.1</td>
+                    <td>{fmt(uni.aF)}°</td>
+                    <td>{fmt(uni.aB)}°</td>
+                  </tr>
+                  <tr>
+                    <td>{'\\(0{,}58\\,H\\)'} · real, Fig. 3.8</td>
+                    <td>{fmt(real.aF)}°</td>
+                    <td>{fmt(real.aB)}°</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p>Hacia atrás casi no hay margen: el talón sobresale tres veces menos que los dedos.</p>
+            </div>
+          </div>
+          <div className="card">
+            <div className="card-hdr">
+              <span className="icon">🛡️</span> Cómo ganamos estabilidad
             </div>
             <div className="card-body">
               <p>
-                La postura erguida es una <strong>oscilación perpetua</strong>: el centro de masa se mece sobre la base y
-                los músculos del tobillo lo corrigen sin que lo notemos. Una base más amplia (pies separados) permite
-                inclinarse más antes de caer.
+                Bajar el CM, ampliar la base en la dirección de la fuerza (boxeador), llevar la línea de gravedad hacia el
+                borde que recibe el empuje (contra el viento), ganar masa, alinear segmentos y aumentar la fricción.
               </p>
             </div>
           </div>
@@ -63,60 +81,74 @@ export default function Slide1({ engine }: { engine: Engine }) {
             <div className="a-hdr">
               <span>✍️</span> Apunte de cátedra
             </div>
-            <div className="a-text" id="info-text-1">
-              El problema 3.1 del libro usa exactamente este modelo de una sola línea: pie de 0,152·H y CM a 0,55·H. Pídeles
-              que comparen el ángulo de caída hacia adelante y hacia atrás — el número <em>incómodo</em> es que casi no
-              podemos inclinarnos hacia atrás.
+            <div className="a-text">
+              Embarazo: sin compensación el CM avanzaría ≈ 3,2 cm; la lordosis lumbar pasa de ≈ 32° a ≈ 50° gracias al
+              disco extra en cuña (L3–L5). ¿Por qué la «barriga cervecera» acaba en dolor de espalda?
             </div>
           </div>
         </div>
         <div className="sim-col">
-          <div className="sim-area cap3-stability-area" data-stage="anatomy" style={{ position: 'relative' }}>
-            <StabScene3D onReady={() => engine.requestDraw()} />
-            <Sim id="sim-stab" className="sim" label="Proyección 2D del centro de masa y la base de sustentación" />
-            <div className="stage-hud" aria-hidden="true">
-              <span className="stage-kicker">ESTABILIDAD</span>
-              <span className="stage-value">modelo 3D + proyección 2D</span>
-            </div>
+          <div className="sim-area cap3-stability-area" data-stage="anatomy">
+            <StabScene3D theta={theta} H={H} onView={engine.requestDraw} />
+            <Sim id="sim-stab" className="sim" label="Proyección del centro de masa sobre la base de sustentación" />
             <div className="stage-legend" aria-hidden="true">
-              <span><i className="legend-dot legend-dot--cm" /> CM</span>
-              <span><i className="legend-dot legend-dot--base" /> base</span>
-              <span><i className="legend-dot legend-dot--torque" /> torque</span>
+              <span>
+                <i className="legend-dot legend-dot--cm" /> CM
+              </span>
+              <span>
+                <i className="legend-dot legend-dot--base" /> base
+              </span>
+              <span>
+                <i className="legend-dot legend-dot--torque" /> vuelco
+              </span>
             </div>
             <div className="prof-controls">
-              <span className="badge">θ = arctan(d / h)</span>
+              <span className="badge">{'\\(\\theta_{\\max}=\\arctan(d/h)\\)'}</span>
               <label>
-                θ{' '}
+                θ
                 <input
                   type="range"
-                  id="stab_theta"
                   min="-20"
                   max="20"
+                  step="0.5"
                   defaultValue={params.stab_theta}
+                  aria-label="Inclinación θ en grados"
                   onChange={(e) => {
-                    engine.setParam('stab_theta', parseFloat(e.target.value));
+                    const v = parseFloat(e.target.value);
+                    setTheta(v);
+                    engine.setParam('stab_theta', v);
                     engine.requestDraw();
                   }}
                 />
               </label>
               <label>
-                H{' '}
+                H
                 <input
                   type="range"
-                  id="stab_H"
                   min="1.4"
                   max="2.1"
                   step="0.01"
                   defaultValue={params.stab_H}
+                  aria-label="Estatura H en metros"
                   onChange={(e) => {
-                    engine.setParam('stab_H', parseFloat(e.target.value));
+                    const v = parseFloat(e.target.value);
+                    setH(v);
+                    engine.setParam('stab_H', v);
                     engine.requestDraw();
                   }}
                 />
               </label>
-              <span className="readout" id="stab_out">
-                0°
-              </span>
+              <button
+                type="button"
+                aria-pressed={cm === 0.58}
+                onClick={() => {
+                  engine.setFlag('stabCM', cm === 0.5 ? 0.58 : 0.5);
+                  engine.requestDraw();
+                }}
+              >
+                CM {cm === 0.5 ? '0,50 H' : '0,58 H'}
+              </button>
+              <span className="readout" id="stab_out" aria-live="polite" />
             </div>
           </div>
         </div>

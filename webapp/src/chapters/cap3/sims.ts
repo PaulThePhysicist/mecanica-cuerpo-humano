@@ -1,9 +1,21 @@
 // ═══════════════════════════════════════════════════════════════════════════
 //  Capítulo 3 · Motor de simulaciones 2D y cálculos físicos (TypeScript)
-//  "El Movimiento" — Física del Cuerpo Humano (I. P. Herman)
+//  "Movimiento" — Física del Cuerpo Humano (I. P. Herman)
+//
+//  Cada `draw*` es una función pura de (parámetros, flags) → pintura del
+//  lienzo + texto de la lectura. No hay reloj global: las animaciones avanzan
+//  sus propias fases en `stepSlide()` y solo mientras `isAnimating()` es
+//  verdadero para la diapositiva visible (ver useEngine.ts).
+//
+//  Todas las cifras citan el `.tex` (Capitulos/Capitulo_3/Capitulo_3.tex):
+//  ver la matriz de cobertura en webapp/AUDITORIA_CAP3.md.
 // ═══════════════════════════════════════════════════════════════════════════
 
 import * as AB from './ab';
+
+const { PAL } = AB;
+const G_EARTH = 9.8;
+const MPH = 1 / 0.44704; // m/s → mph (1 mph = 0,44704 m/s)
 
 export interface ModuleDef {
   id: number;
@@ -15,15 +27,15 @@ export interface ModuleDef {
 export const TOTAL = 19;
 
 export const MODULES: ModuleDef[] = [
-  { id: 0, name: 'Inicio',          slides: [0],        ico: '🏠' },
-  { id: 1, name: 'Bipedestación',   slides: [1, 2],     ico: '🧍' },
-  { id: 2, name: 'Marcha',          slides: [3, 4, 5],  ico: '🚶' },
-  { id: 3, name: 'Carrera',         slides: [6, 7, 8],  ico: '🏃' },
-  { id: 4, name: 'Salto',           slides: [9, 10],    ico: '🦘' },
-  { id: 5, name: 'Lanzar',          slides: [11, 12, 13], ico: '⚾' },
-  { id: 6, name: 'Bateo',           slides: [14, 15],   ico: '🏌️' },
-  { id: 7, name: 'Colisiones',      slides: [16, 17],   ico: '💥' },
-  { id: 8, name: 'Vuelo · Resumen', slides: [18],       ico: '🎾' },
+  { id: 0, name: 'Inicio', slides: [0], ico: '🏠' },
+  { id: 1, name: 'Bipedestación', slides: [1, 2], ico: '🧍' },
+  { id: 2, name: 'Marcha', slides: [3, 4, 5], ico: '🚶' },
+  { id: 3, name: 'Carrera', slides: [6, 7, 8], ico: '🏃' },
+  { id: 4, name: 'Salto', slides: [9, 10], ico: '🦘' },
+  { id: 5, name: 'Lanzar', slides: [11, 12, 13], ico: '⚾' },
+  { id: 6, name: 'Bateo', slides: [14, 15], ico: '🏌️' },
+  { id: 7, name: 'Colisiones', slides: [16, 17], ico: '💥' },
+  { id: 8, name: 'Vuelo · Resumen', slides: [18], ico: '🎾' },
 ];
 
 export interface SimParams {
@@ -34,10 +46,10 @@ export interface SimParams {
   fr_mu: number;
   pe_H: number;
   pe_planet: 'earth' | 'moon' | 'mars';
-  po_k: number;
   sp_F: number;
   sp_m: number;
   jp_mass: number;
+  jp_N: number;
   jp_s: number;
   va_v: number;
   th_case: 'a' | 'b' | 'c' | 'd';
@@ -60,65 +72,146 @@ export const DEFAULT_PARAMS: SimParams = {
   fr_mu: 0.17,
   pe_H: 1.8,
   pe_planet: 'earth',
-  po_k: 20,
   sp_F: 560,
   sp_m: 70,
-  jp_mass: 64,
+  jp_mass: 63.5, // 140 lb (§3.5.1)
+  jp_N: 1334, // ⟨N⟩ = 300 lb
   jp_s: 0.43,
   va_v: 9.5,
   th_case: 'c',
-  ph_t: 0.5,
+  ph_t: 0.64,
   pw_om: 15.7,
   ba_w: 38.5,
-  co_v: 4.4,
+  co_v: 4.43,
   co_dx: 0.01,
-  co_m: 3,
+  co_m: 70,
   bx_v: 30,
-  fl_v: 18,
+  fl_v: 40, // ≈ 90 mph, pelota bateada
   fl_theta: 40,
 };
 
 export interface SimFlags {
+  /** Altura del CM como fracción de H: 0,50 (Prob. 3.1, masa uniforme) o 0,58 (Fig. 3.8). */
+  stabCM: 0.5 | 0.58;
   presionMode: 'stand' | 'walk';
   gaitPlaying: boolean;
+  pePlaying: boolean;
+  pePhase: number;
   energyMode: 'walk' | 'run';
   pogoPlaying: boolean;
+  pogoPhase: number;
+  pogoTrack: boolean;
   jumpMode: 'cm' | 'sq';
+  throwPlaying: boolean;
+  throwPhase: number;
   phPlaying: boolean;
+  golfPlaying: boolean;
+  golfPhase: number;
   wrist: boolean;
   glove: boolean;
   air: boolean;
   mag: boolean;
-  golfPhase: number;
-  pogoPhase: number;
-  throwPhase: number;
-  pwVis: number;
-  pwT: number;
 }
 
 export const DEFAULT_FLAGS: SimFlags = {
+  stabCM: 0.5,
   presionMode: 'stand',
   gaitPlaying: false,
+  pePlaying: false,
+  pePhase: 0,
   energyMode: 'walk',
   pogoPlaying: false,
+  pogoPhase: 0,
+  pogoTrack: false,
   jumpMode: 'cm',
+  throwPlaying: false,
+  throwPhase: 0,
   phPlaying: false,
+  golfPlaying: false,
+  golfPhase: 0.25,
   wrist: true,
   glove: true,
   air: true,
   mag: false,
-  golfPhase: 0,
-  pogoPhase: 0,
-  throwPhase: 0,
-  pwVis: 15.7,
-  pwT: 0,
 };
 
 export type OutFn = (id: string, text: string) => void;
 
+/* ─── Animación bajo demanda ─────────────────────────────────────────────── */
+
+/** ¿La diapositiva `slide` tiene una animación en curso? Solo entonces corre el reloj. */
+export function isAnimating(slide: number, f: SimFlags): boolean {
+  switch (slide) {
+    case 3:
+      return f.gaitPlaying;
+    case 5:
+      return f.pePlaying;
+    case 7:
+      return f.pogoPlaying;
+    case 11:
+      return f.throwPlaying;
+    case 12:
+      return f.phPlaying;
+    case 14:
+      return f.golfPlaying;
+    default:
+      return false;
+  }
+}
+
+/** Duración del lanzamiento del caso `k` (t_final = (π/α)^½, §3.6). */
+export const THROW_ALPHA = { a: 81.7, b: 115.5, c: 308, d: 346 } as const;
+export const throwTime = (k: keyof typeof THROW_ALPHA) => Math.sqrt(Math.PI / THROW_ALPHA[k]);
+/** Cámara lenta del lanzamiento (el real dura 0,1–0,2 s). */
+export const THROW_SLOWMO = 12;
+export const PHASES_END = 0.8;
+
+/**
+ * Avanza `dt` segundos (dt ≥ 0, ya acotado por useHarmonicClock) la animación
+ * de la diapositiva. Devuelve `true` si la animación terminó sola (para que el
+ * motor actualice los botones ▶/⏸).
+ */
+export function stepSlide(slide: number, dt: number, p: SimParams, f: SimFlags): boolean {
+  const d = Math.max(0, dt);
+  switch (slide) {
+    case 3:
+      p.gait_t = (p.gait_t + d * 22) % 100;
+      return false;
+    case 5:
+      f.pePhase += d;
+      return false;
+    case 7:
+      f.pogoPhase += d * 0.8;
+      return false;
+    case 11: {
+      const tf = throwTime(p.th_case) * THROW_SLOWMO;
+      f.throwPhase = Math.min(tf, f.throwPhase + d);
+      if (f.throwPhase >= tf) {
+        f.throwPlaying = false;
+        return true;
+      }
+      return false;
+    }
+    case 12:
+      p.ph_t = Math.min(PHASES_END, p.ph_t + d * 0.16);
+      if (p.ph_t >= PHASES_END) {
+        f.phPlaying = false;
+        return true;
+      }
+      return false;
+    case 14:
+      f.golfPhase += d * 0.35;
+      return false;
+    default:
+      return false;
+  }
+}
+
+/* ─── Utilidades de lienzo ───────────────────────────────────────────────── */
+
 function getCanvas(id: string): { cv: HTMLCanvasElement; ctx: CanvasRenderingContext2D; w: number; h: number } | null {
   const cv = document.getElementById(id) as HTMLCanvasElement | null;
-  if (!cv || !cv.clientWidth || !cv.clientHeight) return null;
+  if (!cv || cv.clientWidth < 8 || cv.clientHeight < 8) return null;
   const w = cv.clientWidth;
   const h = cv.clientHeight;
   const ctx = cv.getContext('2d');
@@ -128,185 +221,191 @@ function getCanvas(id: string): { cv: HTMLCanvasElement; ctx: CanvasRenderingCon
   return { cv, ctx, w, h };
 }
 
-/* ── S1 · Estabilidad y bipedestación ── */
-export function drawStab(p: SimParams, _flags: SimFlags, out?: OutFn): void {
+function ground(ctx: CanvasRenderingContext2D, x0: number, x1: number, y: number, color = PAL.line, lw = 2.5) {
+  ctx.strokeStyle = color;
+  ctx.lineWidth = lw;
+  ctx.beginPath();
+  ctx.moveTo(x0, y);
+  ctx.lineTo(x1, y);
+  ctx.stroke();
+}
+
+function polyline(ctx: CanvasRenderingContext2D, pts: [number, number][]) {
+  ctx.beginPath();
+  pts.forEach(([x, y], i) => {
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+}
+
+/** Barra horizontal de progreso con borde. */
+function bar(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, frac: number, color: string) {
+  ctx.fillStyle = AB.alpha(PAL.ink3, 0.16);
+  ctx.fillRect(x, y, w, h);
+  ctx.fillStyle = color;
+  ctx.fillRect(x, y, w * Math.max(0, Math.min(1, frac)), h);
+  ctx.strokeStyle = PAL.line;
+  ctx.lineWidth = 1;
+  ctx.strokeRect(x, y, w, h);
+}
+
+function head(ctx: CanvasRenderingContext2D, x: number, y: number, r: number) {
+  ctx.fillStyle = PAL.skin;
+  ctx.strokeStyle = PAL.skinEdge;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   S1 · Estabilidad (§3.2.1, Prob. 3.1, Fig. 3.8)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+export type Projector = (x: number, y: number, z: number) => { x: number; y: number };
+let stabProjector: Projector | null = null;
+/** La escena 3D registra aquí su proyección mundo→pantalla (o `null` al desmontarse). */
+export function setStabProjector(fn: Projector | null): void {
+  stabProjector = fn;
+}
+
+/** Geometría del modelo de una línea del Prob. 3.1 (en metros). */
+export function stabModel(H: number, cmFrac: number) {
+  const foot = 0.152 * H;
+  const dB = 0.25 * foot; // talón detrás del apoyo
+  const dF = 0.75 * foot; // dedos delante
+  const hCM = cmFrac * H;
+  const aF = (Math.atan(dF / hCM) * 180) / Math.PI;
+  const aB = (Math.atan(dB / hCM) * 180) / Math.PI;
+  return { foot, dB, dF, hCM, aF, aB };
+}
+
+export function drawStab(p: SimParams, f: SimFlags, out?: OutFn): void {
   const c = getCanvas('sim-stab');
   if (!c) return;
   const { ctx, w, h } = c;
-  const H = p.stab_H || 1.8;
-  const theta = p.stab_theta || 0;
-  const yg = h * 0.86;
-  const Hpx = Math.min(h * 0.62, w * 0.5);
-  const hCM = Hpx * 0.55;
-  const dF = Hpx * 0.114, dB = Hpx * 0.0375;
-  const cx = w / 2;
-  const heel = cx - dB, toe = cx + dF;
+  const H = p.stab_H;
+  const theta = p.stab_theta;
+  const { dB, dF, hCM, aF, aB } = stabModel(H, f.stabCM);
   const th = (theta * Math.PI) / 180;
-  const cxm = cx + hCM * Math.sin(th);
-  const cym = yg - hCM * Math.cos(th);
-  const stable = cxm >= heel && cxm <= toe;
-  const aF = (Math.atan(dF / hCM) * 180) / Math.PI, aB = (Math.atan(dB / hCM) * 180) / Math.PI;
+  const cmX = hCM * Math.sin(th);
+  const cmY = hCM * Math.cos(th);
+  const stable = cmX >= -dB && cmX <= dF;
 
-  const is3D = window.__stab3d && window.__stab3d.ready;
+  // Proyección: escena 3D (si está lista) o esquema 2D de una línea.
+  const proj = stabProjector;
+  const yg = h * 0.84;
+  const k = Math.min((h * 0.62) / H, (w * 0.5) / H);
+  const P = (x: number, y: number) => (proj ? proj(x, y, 0) : { x: w / 2 + x * k, y: yg - y * k });
 
-  let dxH = heel, dxT = toe, dxCm = cxm, dyCm = cym;
-  let dyH = yg, dyT = yg;
-  let dyFloor = yg, dxFloor = cxm;
-  let pxLeft = heel, pxRight = toe;
-
-  if (is3D && window.__stab3d) {
-    window.__stab3d.update({ theta, H, stable, hCM, cx, cxm, cym, yg, heel, toe, hpx: Hpx, dB, dF });
-    ctx.clearRect(0, 0, w, h);
-    const getPos = window.__stab3d.getScreenPos;
-    if (getPos) {
-      const k = 1.9 / Hpx;
-      const ux = (cxm - cx) * k;
-      const uy = (yg - cym) * k;
-
-      const pAnkle = getPos(0, 0, 0);
-      const pCM = getPos(ux, uy, 0);
-      const pFloor = getPos(ux, 0, 0);
-      const pHeel = getPos(-dB * k, 0, 0);
-      const pToe = getPos(dF * k, 0, 0);
-
-      dyH = pAnkle.y;
-      dxCm = pCM.x; dyCm = pCM.y;
-      dxFloor = pFloor.x; dyFloor = pFloor.y;
-      dxH = pHeel.x; dyH = pHeel.y;
-      dxT = pToe.x; dyT = pToe.y;
-
-      pxLeft = Math.min(dxH, dxT);
-      pxRight = Math.max(dxH, dxT);
-    }
-  }
-
-  // Suelo 2D si no está en 3D
-  if (!is3D) {
-    const grd = ctx.createLinearGradient(0, yg, 0, yg + h * 0.14);
-    grd.addColorStop(0, 'rgba(35,44,54,.16)');
-    grd.addColorStop(1, 'rgba(35,44,54,0)');
-    ctx.fillStyle = grd;
-    ctx.fillRect(w * 0.04, yg, w * 0.92, h * 0.14);
-    ctx.strokeStyle = AB.PAL.ink;
-    ctx.lineWidth = 2.4;
+  if (!proj) {
+    ground(ctx, w * 0.04, w * 0.96, yg, PAL.ink, 2.4);
+    // Modelo «unidimensional» del Prob. 3.1: una línea rígida de altura H.
+    const top = P(H * Math.sin(th), H * Math.cos(th));
+    const base = P(0, 0);
+    ctx.strokeStyle = AB.alpha(PAL.ink3, 0.55);
+    ctx.lineWidth = 6;
     ctx.beginPath();
-    ctx.moveTo(w * 0.04, yg);
-    ctx.lineTo(w * 0.96, yg);
+    ctx.moveTo(base.x, base.y);
+    ctx.lineTo(top.x, top.y);
     ctx.stroke();
+    head(ctx, top.x, top.y - 10, 10);
   }
 
-  // Base de sustentación
+  // Base de sustentación (pie de 0,152 H, apoyo al 25 % desde el talón).
+  const pH = P(-dB, 0);
+  const pT = P(dF, 0);
+  ctx.strokeStyle = PAL.amber;
+  ctx.lineWidth = 4;
   ctx.beginPath();
-  ctx.moveTo(dxH, dyH);
-  ctx.lineTo(dxT, dyT);
-  ctx.strokeStyle = 'rgba(13,110,100,.5)';
-  ctx.lineWidth = 3;
+  ctx.moveTo(pH.x, pH.y);
+  ctx.lineTo(pT.x, pT.y);
   ctx.stroke();
-  AB.text(ctx, 'talón', dxH, dyH + 13, { size: 9, color: AB.PAL.ink3, align: 'center' });
-  AB.text(ctx, 'dedos', dxT, dyT + 13, { size: 9, color: AB.PAL.ink3, align: 'center' });
+  AB.text(ctx, 'talón', pH.x - 6, pH.y + 16, { size: 12, color: PAL.ink2, align: 'right' });
+  AB.text(ctx, 'dedos', pT.x + 6, pT.y + 16, { size: 12, color: PAL.ink2, align: 'left' });
 
-  // Pie 2D
-  if (!is3D) {
-    const sh = ctx.createRadialGradient(cx, yg, 2, cx, yg, (toe - heel) * 0.95);
-    sh.addColorStop(0, 'rgba(35,44,54,.22)');
-    sh.addColorStop(1, 'rgba(35,44,54,0)');
-    ctx.save();
-    ctx.translate(cx, yg);
-    ctx.scale(1, 0.3);
-    ctx.fillStyle = sh;
-    ctx.beginPath();
-    ctx.arc(0, 0, (toe - heel) * 0.95, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-
-    // dibujar pie anatómico
-    const L = toe - heel;
-    ctx.save();
-    ctx.fillStyle = AB.PAL.skin;
-    ctx.strokeStyle = AB.PAL.skinEdge;
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.moveTo(heel, yg - 1);
-    ctx.quadraticCurveTo(heel - 3, yg - 9, heel + L * 0.18, yg - 11);
-    ctx.quadraticCurveTo(heel + L * 0.5, yg - 13, cx, yg - 12);
-    ctx.quadraticCurveTo(toe - L * 0.25, yg - 12, toe - 3, yg - 9);
-    ctx.quadraticCurveTo(toe + 3, yg - 4, toe, yg - 1);
-    ctx.lineTo(toe, yg);
-    ctx.lineTo(heel, yg);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-    ctx.restore();
-  }
-
-  // Ángulos máximos
-  AB.text(ctx, 'máx. adelante ' + AB.fmt(aF, 1) + '°', pxRight + 4, Math.max(dyH, dyT) - 12, { size: 9, align: 'left', color: AB.PAL.teal });
-  AB.text(ctx, 'máx. atrás ' + AB.fmt(aB, 1) + '°', pxLeft - 4, Math.max(dyH, dyT) - 12, { size: 9, align: 'right', color: AB.PAL.teal });
-
-  // Línea de gravedad + centro de masa
-  const col = stable ? AB.PAL.teal : AB.PAL.blood;
+  // Línea de gravedad + CM
+  const col = stable ? PAL.teal : PAL.blood;
+  const pCM = P(cmX, cmY);
+  const pFl = P(cmX, 0);
   ctx.strokeStyle = col;
   ctx.setLineDash([5, 4]);
-  ctx.lineWidth = 1.8;
+  ctx.lineWidth = 2;
   ctx.beginPath();
-  ctx.moveTo(dxCm, dyCm);
-  ctx.lineTo(dxFloor, dyFloor);
+  ctx.moveTo(pCM.x, pCM.y);
+  ctx.lineTo(pFl.x, pFl.y);
   ctx.stroke();
   ctx.setLineDash([]);
   ctx.fillStyle = col;
   ctx.beginPath();
-  ctx.arc(dxCm, dyCm, 5.5, 0, Math.PI * 2);
+  ctx.arc(pCM.x, pCM.y, 6, 0, Math.PI * 2);
   ctx.fill();
-  ctx.strokeStyle = AB.PAL.card;
-  ctx.lineWidth = 1.6;
-  ctx.beginPath();
-  ctx.arc(dxCm, dyCm, 5.5, 0, Math.PI * 2);
+  ctx.strokeStyle = PAL.card;
+  ctx.lineWidth = 1.8;
   ctx.stroke();
-  AB.text(ctx, 'CM', dxCm, dyCm - 13, { size: 10, weight: '700', color: col });
+  AB.text(ctx, 'CM', pCM.x + 12, pCM.y - 12, { size: 13, weight: '700', color: col, align: 'left' });
 
-  // Reacción / torque de vuelco
   if (stable) {
-    AB.triangle(ctx, dxFloor, dyFloor - 5, 8, { color: AB.PAL.teal });
-    AB.arrow(ctx, dxFloor, dyFloor - 46, dxFloor, dyFloor - 7, { color: AB.PAL.teal, width: 2.4, head: 7 });
-    AB.text(ctx, 'R = P', dxFloor, dyFloor - 54, { size: 9, weight: '700', color: AB.PAL.teal });
+    AB.arrow(ctx, pFl.x, pFl.y - 48, pFl.x, pFl.y - 8, { color: PAL.teal, width: 2.4, head: 8 });
   } else {
-    AB.triangle(ctx, dxFloor, dyFloor - 5, 8, { color: AB.PAL.blood });
-    const pivX = cxm < heel ? dxH : dxT;
-    const pivY = cxm < heel ? dyH : dyT;
-    const dir = cxm < heel ? -1 : 1;
-    const rr = 0.16 * Hpx, cyy = pivY - rr;
+    // Torque de vuelco alrededor del borde que quedó dentro.
+    const front = cmX > dF;
+    const piv = front ? pT : pH;
+    const dir = front ? 1 : -1;
+    const rr = 34;
     ctx.strokeStyle = col;
     ctx.lineWidth = 3;
-    ctx.lineCap = 'round';
-    const start = dir > 0 ? Math.PI * 1.15 : Math.PI * -0.15;
-    const end = dir > 0 ? Math.PI * 1.95 : Math.PI * 0.65;
+    const a0 = front ? Math.PI * 1.15 : -Math.PI * 0.15;
+    const a1 = front ? Math.PI * 1.85 : -Math.PI * 0.85;
     ctx.beginPath();
-    ctx.arc(pivX, cyy, rr, start, end, dir <= 0);
+    ctx.arc(piv.x, piv.y - rr, rr, a0, a1, !front);
     ctx.stroke();
-    const ex = pivX + rr * Math.cos(end), ey = cyy + rr * Math.sin(end);
-    const tx = -Math.sin(end), ty = Math.cos(end), nx = -ty, ny = tx;
-    const ax = ex - 12 * tx, ay = ey - 12 * ty;
-    ctx.fillStyle = col;
-    ctx.beginPath();
-    ctx.moveTo(ex, ey);
-    ctx.lineTo(ax + 6 * nx, ay + 6 * ny);
-    ctx.lineTo(ax - 6 * nx, ay - 6 * ny);
-    ctx.closePath();
-    ctx.fill();
-
-    AB.text(ctx, '¡pierde el equilibrio!', dxCm, dyCm - 22, { size: 11, weight: '700', color: AB.PAL.blood, align: cxm < heel ? 'right' : 'left' });
-    AB.text(ctx, 'τ de vuelco', pivX + dir * 34, pivY - 34, { size: 9, weight: '700', color: AB.PAL.blood, align: cxm < heel ? 'right' : 'left' });
+    const ex = piv.x + rr * Math.cos(a1);
+    const ey = piv.y - rr + rr * Math.sin(a1);
+    AB.triangle(ctx, ex, ey, 9, { color: col });
+    AB.text(ctx, '¡pierde el equilibrio!', pCM.x + dir * 12, pCM.y - 34, {
+      size: 13,
+      weight: '700',
+      color: PAL.blood,
+      align: front ? 'left' : 'right',
+    });
   }
 
-  const resText = AB.fmt(theta, 1) + '° · ' + (stable ? 'estable ✓' : '¡se cae! ✗');
-  if (out) out('stab_out', resText);
+  // Ángulos límite (arriba a la izquierda, fuera del cuerpo).
+  const ly = proj ? 64 : 22;
+  AB.text(ctx, `adelante máx. ${AB.fmt(aF, 1)}°`, 12, ly, { size: 12, align: 'left', color: PAL.teal, weight: '700' });
+  AB.text(ctx, `atrás máx. ${AB.fmt(aB, 1)}°`, 12, ly + 18, { size: 12, align: 'left', color: PAL.teal, weight: '700' });
+  AB.text(ctx, `CM a ${AB.fmt(f.stabCM, 2)} H`, 12, ly + 36, { size: 12, align: 'left', color: PAL.ink2 });
+
+  out?.(
+    'stab_out',
+    `θ = ${AB.fmt(theta, 1)}° · límites +${AB.fmt(aF, 1)}° / −${AB.fmt(aB, 1)}° · ${stable ? 'estable ✓' : '¡se cae! ✗'}`,
+  );
 }
 
-/* ── S2 · Presión bajo los pies ── */
-function sole(ctx: CanvasRenderingContext2D, x: number, y: number, len: number, P: number) {
-  const c = P < 8 ? AB.PAL.teal : P < 25 ? AB.PAL.amber : AB.PAL.blood;
-  ctx.fillStyle = 'rgba(13,110,100,.07)';
-  ctx.strokeStyle = AB.PAL.line;
+/* ══════════════════════════════════════════════════════════════════════════
+   S2 · Presión bajo los pies (§3.2.2)
+   700 N → 2 N/cm² (350 cm²) · almohadilla y talón 10 N/cm² (≈70 cm²)
+   marcha: 1400 N por pie → ≈40 N/cm² · pico ≈60 N/cm² (menor área)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+export function pressures(m: number) {
+  const W = m * G_EARTH;
+  return {
+    W,
+    avg: W / 350,
+    pads: W / 70,
+    footForce: 2 * W,
+    walk: (2 * W) / 35,
+    peak: ((2 * W) / 35) * 1.5,
+  };
+}
+
+function sole(ctx: CanvasRenderingContext2D, x: number, y: number, len: number, color: string, peakHeel: boolean) {
+  ctx.fillStyle = AB.alpha(PAL.teal, 0.06);
+  ctx.strokeStyle = PAL.line;
   ctx.lineWidth = 1.5;
   ctx.beginPath();
   ctx.moveTo(x - len * 0.17, y - len * 0.5);
@@ -317,1124 +416,1229 @@ function sole(ctx: CanvasRenderingContext2D, x: number, y: number, len: number, 
   ctx.closePath();
   ctx.fill();
   ctx.stroke();
-
-  function heat(hx: number, hy: number, hr: number) {
+  const heat = (hx: number, hy: number, hr: number) => {
     const g = ctx.createRadialGradient(hx, hy, 2, hx, hy, hr);
-    g.addColorStop(0, c);
-    g.addColorStop(1, 'rgba(13,110,100,0)');
+    g.addColorStop(0, color);
+    g.addColorStop(1, AB.alpha(PAL.paper, 0));
     ctx.fillStyle = g;
     ctx.beginPath();
     ctx.arc(hx, hy, hr, 0, Math.PI * 2);
     ctx.fill();
-  }
-  heat(x, y - len * 0.34, len * 0.21);
-  heat(x, y + len * 0.28, len * 0.21);
+  };
+  heat(x, y - len * 0.34, len * (peakHeel ? 0.16 : 0.21)); // almohadilla
+  heat(x, y + len * 0.28, len * 0.21); // talón
 }
 
-export function drawPresion(p: SimParams, flags: SimFlags, out?: OutFn): void {
+export function drawPresion(p: SimParams, f: SimFlags, out?: OutFn): void {
   const c = getCanvas('sim-presion');
   if (!c) return;
   const { ctx, w, h } = c;
-  const m = p.pr_mass || 70;
-  const W = m * 9.8;
-  const mode = flags.presionMode || 'stand';
-  const Pavg = 2 * (m / 70), Pheel = 10 * (m / 70), Pgait = (2 * W) / 23;
-  const P = mode === 'stand' ? Pavg : Pgait;
-  const feet = mode === 'stand' ? 2 : 1;
-  const flen = Math.min(w * 0.32, h * 0.4);
-  const fy = h * 0.52;
-  const x0 = w / 2 - (feet === 2 ? flen * 0.62 : flen * 0.42);
+  const P = pressures(p.pr_mass);
+  const walk = f.presionMode === 'walk';
+  const shown = walk ? P.peak : P.pads;
+  const pmax = 70;
+  const colorOf = (v: number) => (v < 15 ? PAL.teal : v < 45 ? PAL.amber : PAL.blood);
+  const feet = walk ? 1 : 2;
+  const flen = Math.min(w * 0.3, h * 0.42);
+  const fy = h * 0.46;
+  const x0 = w / 2 - (feet === 2 ? flen * 0.62 : 0);
+  for (let i = 0; i < feet; i++) sole(ctx, x0 + i * flen * 1.24, fy, flen, colorOf(shown), walk);
 
-  for (let i = 0; i < feet; i++) {
-    const fx = x0 + i * flen * 1.24;
-    sole(ctx, fx, fy, flen, P);
-    if (mode === 'walk' && i === 0) {
-      AB.arrow(ctx, fx, fy + flen * 0.46, fx - flen * 0.5, fy + flen * 0.46, { color: AB.PAL.blood, width: 3.5 });
-      AB.text(ctx, 'reacción del suelo', fx - flen * 0.28, fy + flen * 0.6, { size: 9, color: AB.PAL.blood });
-    }
-  }
+  AB.text(ctx, walk ? 'Marcha · un pie soporta ≈ 2 W' : 'De pie · dos pies, W repartido', w / 2, h * 0.07, {
+    size: 14,
+    weight: '700',
+    color: PAL.teal,
+  });
 
-  const gx = w * 0.16, gw = w * 0.68, gy = h * 0.88;
+  // Escala 0–70 N/cm² con las cuatro anclas del libro.
+  const gx = w * 0.1;
+  const gw = w * 0.8;
+  const gy = h * 0.82;
   const grad = ctx.createLinearGradient(gx, 0, gx + gw, 0);
-  grad.addColorStop(0, AB.PAL.teal);
-  grad.addColorStop(0.5, AB.PAL.amber);
-  grad.addColorStop(1, AB.PAL.blood);
+  grad.addColorStop(0, PAL.teal);
+  grad.addColorStop(0.5, PAL.amber);
+  grad.addColorStop(1, PAL.blood);
   ctx.fillStyle = grad;
-  ctx.fillRect(gx, gy, gw, 8);
-  ctx.strokeStyle = AB.PAL.line;
+  ctx.fillRect(gx, gy, gw, 9);
+  ctx.strokeStyle = PAL.line;
   ctx.lineWidth = 1;
-  ctx.strokeRect(gx, gy, gw, 8);
-  AB.text(ctx, '2 N/cm²', gx, gy + 16, { size: 8, color: AB.PAL.ink3, align: 'left' });
-  AB.text(ctx, '60 N/cm²', gx + gw, gy + 16, { size: 8, color: AB.PAL.ink3, align: 'right' });
-  AB.text(ctx, mode === 'stand' ? 'De pie · ambos pies' : 'Caminando · un pie', w / 2, h * 0.2, { size: 11, weight: '700', color: AB.PAL.teal });
+  ctx.strokeRect(gx, gy, gw, 9);
+  const X = (v: number) => gx + (gw * v) / pmax;
+  const anchors: [number, string][] = [
+    [P.avg, 'media'],
+    [P.pads, 'talón'],
+    [P.walk, 'marcha'],
+    [P.peak, 'pico'],
+  ];
+  anchors.forEach(([v, lab], i) => {
+    const x = X(v);
+    ctx.strokeStyle = PAL.ink2;
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(x, gy - 4);
+    ctx.lineTo(x, gy + 13);
+    ctx.stroke();
+    AB.text(ctx, `${lab} ${AB.fmt(v, 0)}`, x, gy + (i % 2 ? 40 : 24), { size: 12, color: PAL.ink2 });
+  });
+  AB.text(ctx, 'N/cm²', gx + gw, gy - 12, { size: 12, color: PAL.ink3, align: 'right' });
+  AB.triangle(ctx, X(shown), gy - 10, 11, { color: colorOf(shown) });
 
-  const res = mode === 'stand'
-    ? 'P media = ' + AB.fmt(Pavg, 1) + ' · talón = ' + AB.fmt(Pheel, 1) + ' N/cm²'
-    : 'P de apoyo = ' + AB.fmt(Pgait, 1) + ' N/cm²';
-  if (out) out('pr_out', res);
+  out?.(
+    'pr_out',
+    walk
+      ? `F ≈ ${AB.espan(Math.round(P.footForce / 10) * 10)} N/pie → ${AB.fmt(P.walk, 0)} N/cm² · pico ≈ ${AB.fmt(P.peak, 0)} N/cm²`
+      : `media ${AB.fmt(P.avg, 1)} N/cm² · almohadilla y talón ≈ ${AB.fmt(P.pads, 0)} N/cm²`,
+  );
 }
 
-/* ── S3 · Ciclo de la marcha ── */
-export function drawGait(p: SimParams, _flags: SimFlags, out?: OutFn): void {
+/* ══════════════════════════════════════════════════════════════════════════
+   S3 · Ciclo de la marcha (§3.3.1, §3.4.1)
+   apoyo 60–65 % (aquí 62 %), doble apoyo = primer y último ≈10 % del apoyo
+   ══════════════════════════════════════════════════════════════════════════ */
+
+const STANCE = 62;
+
+export function drawGait(p: SimParams, _f: SimFlags, out?: OutFn): void {
   const c = getCanvas('sim-gait');
   if (!c) return;
   const { ctx, w, h } = c;
-  const t = p.gait_t || 0;
-  const yg = h * 0.82, cx = w / 2;
-  const leg = Math.min(h * 0.42, w * 0.3);
+  const t = p.gait_t;
+  const yg = h * 0.6;
+  const cx = w / 2;
+  const leg = Math.min(h * 0.36, w * 0.3);
   const stride = leg * 0.9;
   const hipY = yg - leg;
-  const stance = 62, lift = leg * 0.22;
+  const lift = leg * 0.22;
 
-  ctx.strokeStyle = AB.PAL.line;
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(w * 0.05, yg);
-  ctx.lineTo(w * 0.95, yg);
-  ctx.stroke();
+  ground(ctx, w * 0.05, w * 0.95, yg);
+  const phases = [t % 100, (t + 50) % 100];
+  const inStance = phases.map((ph) => ph < STANCE);
 
-  for (let i = 0; i < 2; i++) {
-    const ph = (t + i * 50) % 100;
-    const hipX = cx + Math.sin((t / 100) * Math.PI * 2 + i * Math.PI) * stride * 0.22;
-    const isStance = ph < stance;
+  phases.forEach((ph, i) => {
+    const hipX = cx;
+    const isStance = inStance[i];
     let footX: number, footY: number, kneeX: number, kneeY: number;
     if (isStance) {
-      const pRatio = ph / stance;
-      footX = hipX - stride * 0.28 + pRatio * stride * 0.56;
+      const r = ph / STANCE;
+      footX = hipX + stride * 0.3 - r * stride * 0.6;
       footY = yg;
-      kneeX = (hipX + footX) / 2 + (yg - hipY) * 0.07;
-      kneeY = (hipY + yg) / 2 + (0.06 + 0.14 * Math.sin(Math.PI * pRatio)) * leg;
+      kneeX = (hipX + footX) / 2 + leg * 0.05;
+      kneeY = (hipY + yg) / 2 + 0.04 * leg * Math.sin(Math.PI * r);
     } else {
-      const pRatio = (ph - stance) / (100 - stance);
-      footX = hipX - stride * 0.5 + pRatio * stride * 1.05;
-      footY = yg - Math.sin(pRatio * Math.PI) * lift - 4;
-      kneeX = (hipX + footX) / 2 + (yg - hipY) * 0.12;
-      kneeY = (hipY + footY) / 2 - 0.22 * leg * Math.sin(pRatio * Math.PI);
+      const r = (ph - STANCE) / (100 - STANCE);
+      footX = hipX - stride * 0.3 + r * stride * 0.6;
+      footY = yg - Math.sin(r * Math.PI) * lift - 4;
+      kneeX = (hipX + footX) / 2 + leg * 0.16 * Math.sin(r * Math.PI) + leg * 0.04;
+      kneeY = (hipY + footY) / 2 - 0.08 * leg * Math.sin(r * Math.PI);
     }
-    const col = isStance ? AB.PAL.teal : AB.PAL.amber;
-    AB.bone(ctx, hipX, hipY, kneeX, kneeY, { width: 9, edge: '#9b8a64', fill: isStance ? '#d9d2bd' : '#e8dfc9', joint: false });
-    AB.bone(ctx, kneeX, kneeY, footX, footY, { width: 8, edge: '#9b8a64', fill: isStance ? '#cfc4ae' : '#e8dfc9', joint: false });
-    AB.joint(ctx, hipX, hipY, 4.5, { color: AB.PAL.ink3, fill: AB.PAL.card });
-    AB.joint(ctx, kneeX, kneeY, 3.5, { color: col, fill: AB.PAL.card });
-    if (isStance) AB.foot(ctx, footX, yg, 0, { len: 30, h: 13, fill: '#d9a77c' });
-    else AB.foot(ctx, footX, footY + 8, 0.25, { len: 28, h: 12, fill: '#e9c49f' });
-    AB.text(ctx, isStance ? 'Apoyo' : 'Balanceo', hipX, hipY - 14, { size: 9, weight: '700', color: col });
-  }
+    const col = isStance ? PAL.teal : PAL.amber;
+    AB.bone(ctx, hipX, hipY, kneeX, kneeY, { width: 9, edge: PAL.boneDark, fill: isStance ? PAL.boneMid : PAL.paper3, joint: false });
+    AB.bone(ctx, kneeX, kneeY, footX, footY, { width: 8, edge: PAL.boneDark, fill: isStance ? PAL.bone : PAL.paper3, joint: false });
+    AB.joint(ctx, kneeX, kneeY, 4, { color: col, fill: PAL.card });
+    AB.foot(ctx, footX, isStance ? yg - 2 : footY + 6, isStance ? 0 : 0.25, { len: 30, h: 13, fill: isStance ? PAL.skinEdge : PAL.skin });
+  });
+  AB.joint(ctx, cx, hipY, 5, { color: PAL.ink3, fill: PAL.card });
+  const double = inStance[0] && inStance[1];
+  AB.text(ctx, double ? 'DOBLE APOYO' : inStance[0] ? 'apoyo: pierna 1' : 'apoyo: pierna 2', cx, hipY - 22, {
+    size: 13,
+    weight: '700',
+    color: double ? PAL.sagittal : PAL.teal,
+  });
 
-  const barW = w * 0.4, barX = cx - barW / 2, barY = yg + 24;
-  AB.text(ctx, 'P1', barX - 10, barY + 4, { size: 8, color: AB.PAL.ink3, align: 'right' });
-  AB.text(ctx, 'P2', barX - 10, barY + 18, { size: 8, color: AB.PAL.ink3, align: 'right' });
-  for (let i = 0; i < 2; i++) {
-    const ph = (t + i * 50) % 100;
-    ctx.fillStyle = 'rgba(107,120,133,.18)';
-    ctx.fillRect(barX, barY + i * 14, barW, 9);
-    ctx.fillStyle = ph < stance ? AB.PAL.teal : AB.PAL.amber;
-    ctx.fillRect(barX, barY + i * 14, barW * (ph < stance ? stance / 100 : (100 - stance) / 100), 9);
-    ctx.strokeStyle = AB.PAL.line;
+  // Barras de ciclo 0–100 % por pierna, con apoyo/balanceo y cursor.
+  const bx = w * 0.16;
+  const bw = w * 0.72;
+  const by = yg + 30;
+  [0, 1].forEach((i) => {
+    const y = by + i * 26;
+    const off = i === 0 ? 0 : 50;
+    ctx.fillStyle = AB.alpha(PAL.amber, 0.55);
+    ctx.fillRect(bx, y, bw, 12);
+    ctx.fillStyle = PAL.teal;
+    const s0 = (100 - off) % 100; // inicio del apoyo en el eje de tiempo
+    const segs = s0 + STANCE <= 100 ? [[s0, s0 + STANCE]] : [[s0, 100], [0, s0 + STANCE - 100]];
+    segs.forEach(([a, b]) => ctx.fillRect(bx + (bw * a) / 100, y, (bw * (b - a)) / 100, 12));
+    ctx.strokeStyle = PAL.line;
     ctx.lineWidth = 1;
-    ctx.strokeRect(barX, barY + i * 14, barW, 9);
-  }
-  AB.text(ctx, 'apoyo 62 %', barX + barW * 0.31, barY - 3, { size: 8, color: AB.PAL.teal });
-  AB.text(ctx, 'balanceo 38 %', barX + barW * 0.75, barY - 3, { size: 8, color: AB.PAL.amber });
+    ctx.strokeRect(bx, y, bw, 12);
+    AB.text(ctx, `P${i + 1}`, bx - 8, y + 6, { size: 12, color: PAL.ink2, align: 'right' });
+  });
+  const tx = bx + (bw * t) / 100;
+  ctx.strokeStyle = PAL.ink;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(tx, by - 6);
+  ctx.lineTo(tx, by + 44);
+  ctx.stroke();
+  AB.text(ctx, 'apoyo 62 %', bx, by + 62, { size: 12, color: PAL.teal, align: 'left', weight: '700' });
+  AB.text(ctx, 'balanceo 38 %', bx + bw, by + 62, { size: 12, color: PAL.amber, align: 'right', weight: '700' });
 
-  if (out) out('gait_out', 't = ' + AB.fmt(t, 0) + ' % · Apoyo 62 % · Balanceo 38 %');
+  out?.('gait_out', `t = ${AB.fmt(t, 0)} % del ciclo · ${double ? 'doble apoyo' : 'apoyo simple'}`);
 }
 
-/* ── S4 · Fricción de la marcha ── */
-export function drawFriccion(p: SimParams, _flags: SimFlags, out?: OutFn): void {
+/* ══════════════════════════════════════════════════════════════════════════
+   S4 · Fricción (§3.3.3, Tabla 3.5, Fig. 3.17)
+   μ_s > 0,15 para caminar; ≈0,17 requerido a 3 mph
+   ══════════════════════════════════════════════════════════════════════════ */
+
+export const MU_MIN = 0.15;
+export const MU_3MPH = 0.17;
+
+export function drawFriccion(p: SimParams, _f: SimFlags, out?: OutFn): void {
   const c = getCanvas('sim-friccion');
   if (!c) return;
   const { ctx, w, h } = c;
-  const mu = p.fr_mu || 0.17;
-  const ok = mu >= 0.15;
-  const yg = h * 0.66;
+  const mu = p.fr_mu;
+  const level = mu >= MU_3MPH ? 2 : mu >= MU_MIN ? 1 : 0;
+  const col = level === 2 ? PAL.good : level === 1 ? PAL.amber : PAL.blood;
+  const yg = h * 0.5;
 
-  ctx.strokeStyle = AB.PAL.line;
-  ctx.lineWidth = 2.5;
-  ctx.beginPath();
-  ctx.moveTo(w * 0.05, yg);
-  ctx.lineTo(w * 0.95, yg);
-  ctx.stroke();
+  ground(ctx, w * 0.05, w * 0.95, yg);
+  const fx = w / 2;
+  AB.foot(ctx, fx, yg - 4, 0, { len: 64, h: 22 });
+  // El pie empuja el suelo hacia atrás (gris); el suelo empuja al pie hacia adelante (fricción).
+  AB.arrow(ctx, fx - 10, yg + 8, fx - 120, yg + 8, { color: PAL.ink3, width: 3 });
+  AB.text(ctx, 'pie → suelo', fx - 66, yg + 24, { size: 12, color: PAL.ink3 });
+  AB.arrow(ctx, fx + 10, yg - 30, fx + 10 + 40 + 220 * Math.min(mu, 0.4), yg - 30, { color: col, width: 4 });
+  AB.text(ctx, 'fricción ≤ μₛ·N (suelo → pie)', fx + 14, yg - 50, {
+    size: 12,
+    color: col,
+    align: 'left',
+    weight: '700',
+  });
+  AB.text(ctx, level === 2 ? '¡camina a 3 mph! ✓' : level === 1 ? 'solo paso lento' : '¡resbala! ✗', w / 2, h * 0.12, {
+    size: 18,
+    weight: '700',
+    color: col,
+  });
 
-  const fx = w / 2, fy = yg;
-  AB.foot(ctx, fx, fy, 0, { len: 64, h: 22, fill: '#e9c49f' });
-  AB.arrow(ctx, fx - 6, fy - 2, fx - 6 - 140, fy - 2, { color: ok ? AB.PAL.teal : AB.PAL.blood, width: 4 });
-  AB.text(ctx, 'el pie empuja ←', fx - 80, fy - 30, { size: 9, color: AB.PAL.ink3 });
-  AB.text(ctx, ok ? 'F fricción (reacción)' : 'sin fricción suficiente', fx - 150, fy - 46, { size: 9, align: 'left', color: ok ? AB.PAL.teal : AB.PAL.blood });
+  // Escala de μ con anclas de la Tabla 3.5 y la Fig. 3.17.
+  const gx = w * 0.08;
+  const gw = w * 0.84;
+  const gy = h * 0.8;
+  const X = (m: number) => gx + gw * (m / 0.4);
+  ground(ctx, gx, gx + gw, gy, PAL.line, 2);
+  ctx.fillStyle = AB.alpha(PAL.teal, 0.14);
+  ctx.fillRect(X(MU_MIN), gy - 6, gx + gw - X(MU_MIN), 12);
+  const marks: [number, string, number][] = [
+    [0.02, 'hielo cin. 0,02', 1],
+    [0.1, 'hielo 0,1', 0],
+    [MU_MIN, 'mín. 0,15', 1],
+    [MU_3MPH, '3 mph 0,17', 0],
+  ];
+  marks.forEach(([m, lab, row]) => {
+    ctx.strokeStyle = PAL.ink3;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(X(m), gy - 8);
+    ctx.lineTo(X(m), gy + 10);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    AB.text(ctx, lab, X(m), gy + (row ? 36 : 20), { size: 12, color: PAL.ink2 });
+  });
+  const mx = X(Math.min(mu, 0.4));
+  AB.triangle(ctx, mx, gy - 14, 11, { color: col });
+  AB.text(ctx, `μ = ${AB.fmt(mu, 2)}`, mx, gy - 30, { size: 13, weight: '700', color: col });
 
-  const gx = w * 0.12, gw = w * 0.76, gy = h * 0.85;
-  ctx.strokeStyle = AB.PAL.line;
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(gx, gy);
-  ctx.lineTo(gx + gw, gy);
-  ctx.stroke();
-  const xt = gx + gw * (0.15 / 0.4);
-  ctx.fillStyle = 'rgba(13,110,100,.14)';
-  ctx.fillRect(xt, gy - 6, gx + gw - xt, 12);
-  ctx.strokeStyle = AB.PAL.teal;
-  ctx.setLineDash([3, 3]);
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(xt, gy - 9);
-  ctx.lineTo(xt, gy + 9);
-  ctx.stroke();
-  ctx.setLineDash([]);
-  AB.text(ctx, 'mín. 0,15', xt, gy + 16, { size: 8, color: AB.PAL.teal });
-  const mx = gx + gw * (mu / 0.4);
-  ctx.fillStyle = ok ? AB.PAL.teal : AB.PAL.blood;
-  ctx.beginPath();
-  ctx.moveTo(mx, gy - 9);
-  ctx.lineTo(mx - 5, gy - 17);
-  ctx.lineTo(mx + 5, gy - 17);
-  ctx.closePath();
-  ctx.fill();
-  AB.text(ctx, 'μ = ' + AB.fmt(mu, 2), mx, gy - 26, { size: 10, weight: '700', color: ok ? AB.PAL.teal : AB.PAL.blood });
-  AB.text(ctx, ok ? '¡camina! ✓' : '¡resbala! ✗', w / 2, h * 0.22, { size: 17, weight: '700', color: ok ? AB.PAL.good : AB.PAL.blood });
-
-  if (out) out('fr_out', 'μ = ' + AB.fmt(mu, 2) + ' ' + (ok ? '✓ camina' : '✗ resbala'));
+  out?.('fr_out', `μ = ${AB.fmt(mu, 2)} · requerido 0,15 (mín.) / 0,17 (3 mph) · ${level === 2 ? '✓' : level === 1 ? '≈' : '✗'}`);
 }
 
-/* ── S5 · Pierna como péndulo ── */
-export function drawPendulo(p: SimParams, clock: number, _flags: SimFlags, out?: OutFn): void {
+/* ══════════════════════════════════════════════════════════════════════════
+   S5 · Pierna como péndulo (§3.3.5–§3.3.7)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+export const PLANET_G = { earth: G_EARTH, moon: 0.17 * G_EARTH, mars: 0.4 * G_EARTH } as const;
+
+export function pendulum(H: number, g: number) {
+  // El libro redondea L = 0,53 H a 0,95 m y usa d/I = 0,421/0,256 (≈ 0,61 L).
+  const L = Math.round(0.53 * H * 100) / 100;
+  const R = 0.5 * H; // 0,9 m para H = 1,8 m (§3.3.7)
+  return {
+    L,
+    simple: Math.PI * Math.sqrt(L / g),
+    rod: Math.PI * Math.sqrt((2 * L) / (3 * g)),
+    twoSeg: Math.PI * Math.sqrt(((0.256 / 0.421) * L) / g),
+    vmax: Math.sqrt(g * R),
+  };
+}
+
+export function drawPendulo(p: SimParams, f: SimFlags, out?: OutFn): void {
   const c = getCanvas('sim-pendulo');
   if (!c) return;
   const { ctx, w, h } = c;
-  const H = p.pe_H || 1.8;
-  const planet = p.pe_planet || 'earth';
-  const g = planet === 'moon' ? 1.62 : planet === 'mars' ? 3.71 : 9.81;
-  const L = 0.53 * H;
-  const Thalf = Math.PI * Math.sqrt(L / g);
-  const w0 = Math.sqrt(g / L);
-  const A = Math.PI / 4;
-  const time = clock;
-  const ang = A * Math.cos(w0 * time);
-  const px = w * 0.5, py = h * 0.2;
-  const Lpx = Math.min(h * 0.58, w * 0.42);
-  const ax = px + Lpx * Math.sin(ang), ay = py + Lpx * Math.cos(ang);
-
-  ctx.strokeStyle = 'rgba(107,120,133,.4)';
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  for (let k = -60; k <= 60; k += 4) {
-    const r = (k * Math.PI) / 180;
-    ctx.lineTo(px + Lpx * Math.sin(r), py + Lpx * Math.cos(r));
-  }
-  ctx.stroke();
-  AB.dashed(ctx, px, py, px, py + Lpx, { color: AB.PAL.ink3 });
-  AB.text(ctx, '0°', px + 12, py + Lpx, { size: 9, color: AB.PAL.ink3, align: 'left' });
-
-  const deg = (ang * 180) / Math.PI;
-  ctx.strokeStyle = AB.PAL.teal;
-  ctx.lineWidth = 1.6;
-  ctx.beginPath();
-  ctx.arc(px, py, 26, -Math.PI / 2, -Math.PI / 2 + ang, ang < 0);
-  ctx.stroke();
-  AB.text(ctx, AB.fmt(deg, 0) + '°', px, py - 12, { size: 10, weight: '700', color: AB.PAL.teal });
-
-  AB.bone(ctx, px, py, ax, ay, { width: 11, edge: '#9b8a64', fill: '#cfc4ae', joint: false });
-  AB.joint(ctx, px, py, 6, { color: AB.PAL.teal });
-  AB.joint(ctx, ax, ay, 4.5, { color: AB.PAL.amber });
-  AB.foot(ctx, ax, ay, 0, { len: 34, h: 13, fill: '#d9a77c' });
-  AB.text(ctx, 'L = ' + AB.fmt(L, 2) + ' m', px + Lpx * 0.44, py - 16, { size: 9, color: AB.PAL.ink2 });
-
-  if (out) out('pe_out', 'T½ = ' + AB.fmt(Thalf, 2) + ' s · v_max = ' + AB.fmt(Math.sqrt(g * L), 1) + ' m/s');
-}
-
-/* ── S6 · Energética caminar vs correr ── */
-export function drawEnergy(_p: SimParams, flags: SimFlags, out?: OutFn): void {
-  const c = getCanvas('sim-energy');
-  if (!c) return;
-  const { ctx, w, h } = c;
-  const run = flags.energyMode === 'run';
-  const x0 = w * 0.08, x1 = w * 0.92, y0 = h * 0.16, y1 = h * 0.72;
-  const A = 0.3, K0 = 1.0;
-  function toXY(t: number, v: number): [number, number] {
-    return [x0 + t * (x1 - x0), y1 - (v / 2.4) * (y1 - y0)];
-  }
-
-  ctx.strokeStyle = AB.PAL.line;
-  ctx.lineWidth = 1.5;
-  ctx.strokeRect(x0, y0, x1 - x0, y1 - y0);
-  for (let g = 0; g <= 2; g += 0.5) {
-    const [, py] = toXY(0, g / 2.4);
-    ctx.strokeStyle = 'rgba(107,120,133,.25)';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(x0, py);
-    ctx.lineTo(x1, py);
-    ctx.stroke();
-    AB.text(ctx, AB.fmt(g, 0), x0 - 6, py, { size: 8, color: AB.PAL.ink3, align: 'right' });
-  }
-  AB.text(ctx, '1 ciclo', w / 2, y1 + 14, { size: 9, color: AB.PAL.ink3 });
-
-  const curves: Record<string, (t: number) => number> = {
-    PE: run ? (t) => K0 + A * Math.cos(2 * Math.PI * t) : (t) => K0 + A * Math.cos(2 * Math.PI * t),
-    KEH: run ? (t) => K0 + A * Math.cos(2 * Math.PI * t) : (t) => K0 - A * 0.9 * Math.cos(2 * Math.PI * t),
-    KEV: (t) => 0.1 + 0.03 * Math.cos(4 * Math.PI * t),
-    TOT: run
-      ? (t) => K0 + A * Math.cos(2 * Math.PI * t) + K0 + A * Math.cos(2 * Math.PI * t) + 0.1
-      : (t) => K0 + A * Math.cos(2 * Math.PI * t) + K0 - A * 0.9 * Math.cos(2 * Math.PI * t) + 0.1,
-  };
-  const colors: Record<string, string> = { PE: AB.PAL.sagittal, KEH: AB.PAL.teal, KEV: AB.PAL.amber, TOT: AB.PAL.blood };
-  const labels: Record<string, string> = { PE: 'PE (potencial)', KEH: 'KE horizontal', KEV: 'KE vertical', TOT: 'E total' };
-
-  for (const key in curves) {
-    ctx.strokeStyle = colors[key];
-    ctx.lineWidth = key === 'TOT' ? 3 : 2;
-    ctx.beginPath();
-    for (let i = 0; i <= 120; i++) {
-      const t = i / 120;
-      const [px, py] = toXY(t, curves[key](t));
-      i ? ctx.lineTo(px, py) : ctx.moveTo(px, py);
-    }
-    ctx.stroke();
-  }
-
-  let lx = x0;
-  for (const key in curves) {
-    ctx.fillStyle = colors[key];
-    ctx.fillRect(lx, y0 - 16, 10, 4);
-    AB.text(ctx, labels[key], lx + 14, y0 - 15, { size: 8, color: AB.PAL.ink2, align: 'left' });
-    lx += key === 'KEH' ? 100 : key === 'PE' ? 86 : key === 'KEV' ? 88 : 70;
-  }
-
-  AB.text(
-    ctx,
-    run ? 'EN FASE → E total oscila' : 'FUERA DE FASE → E total ≈ constante',
-    w / 2,
-    h * 0.88,
-    { size: 12, weight: '700', color: run ? AB.PAL.amber : AB.PAL.good }
-  );
-
-  if (out) out('en_out', run ? 'En fase ✗ · E total ondula' : 'Fuera de fase ✓ · E total ≈ constante');
-}
-
-/* ── S7 · Pogo stick ── */
-export function drawPogo(p: SimParams, flags: SimFlags, out?: OutFn): void {
-  const c = getCanvas('sim-pogo');
-  if (!c) return;
-  const { ctx, w, h } = c;
-  const k = p.po_k || 20;
-  const ph = flags.pogoPhase || 0;
-  const yg = h * 0.88;
+  const g = PLANET_G[p.pe_planet];
+  const M = pendulum(p.pe_H, g);
+  const w0 = Math.PI / M.rod; // ω de la varilla uniforme
+  const A = 0.4;
+  const ang = A * Math.cos(w0 * f.pePhase);
   const px = w * 0.3;
-  const s = k > 0 ? Math.max(0, Math.cos(ph * 2 * Math.PI)) * (h * 0.12) : 0;
+  const py = h * 0.12;
+  const Lpx = Math.min(h * 0.62, w * 0.4);
+  const ax = px + Lpx * Math.sin(ang);
+  const ay = py + Lpx * Math.cos(ang);
 
-  ctx.strokeStyle = AB.PAL.line;
-  ctx.lineWidth = 2.5;
+  ctx.strokeStyle = AB.alpha(PAL.ink3, 0.4);
+  ctx.lineWidth = 1.5;
   ctx.beginPath();
-  ctx.moveTo(w * 0.05, yg);
-  ctx.lineTo(w * 0.95, yg);
+  ctx.arc(px, py, Lpx, Math.PI / 2 - A - 0.05, Math.PI / 2 + A + 0.05);
   ctx.stroke();
+  AB.dashed(ctx, px, py, px, py + Lpx, { color: PAL.ink3 });
+  AB.bone(ctx, px, py, ax, ay, { width: 12, edge: PAL.boneDark, fill: PAL.bone, joint: false });
+  AB.joint(ctx, px, py, 6, { color: PAL.teal });
+  AB.foot(ctx, ax, ay, 0, { len: 34, h: 13, fill: PAL.skinEdge });
+  AB.text(ctx, 'cadera', px, py - 14, { size: 12, color: PAL.ink2 });
+  AB.text(ctx, `L = 0,53 H = ${AB.fmt(M.L, 2)} m`, px, py + Lpx + 34, { size: 12, color: PAL.ink2 });
 
-  const springTop = yg - h * 0.3 + s;
-  const coils = 5;
-  ctx.strokeStyle = 'rgba(154,91,0,.9)';
-  ctx.lineWidth = 2.5;
-  ctx.beginPath();
-  for (let i = 0; i <= coils * 2; i++) {
-    const xx = px + (i % 2 ? 10 : -10);
-    const yy = springTop + (yg - 8 - springTop) * (i / (coils * 2));
-    i ? ctx.lineTo(xx, yy) : ctx.moveTo(xx, yy);
-  }
-  ctx.stroke();
-
-  ctx.fillStyle = AB.PAL.ink3;
-  ctx.fillRect(px - 24, yg - 8, 48, 8);
-
-  const cy = springTop - h * 0.2;
-  ctx.strokeStyle = AB.PAL.skinEdge;
-  ctx.lineWidth = 11;
-  ctx.beginPath();
-  ctx.moveTo(px, springTop);
-  ctx.lineTo(px, cy);
-  ctx.stroke();
-  ctx.fillStyle = AB.PAL.skin;
-  ctx.strokeStyle = AB.PAL.skinEdge;
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.arc(px, cy - h * 0.09, h * 0.055, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.stroke();
-
-  const eKE = (1 - Math.max(0, Math.cos(ph * 2 * Math.PI))) * 100;
-  const eEE = s > 0 ? (s / (h * 0.12)) * 100 : 0;
-  const barX = w * 0.58, barW = w * 0.34;
-  function eBar(yy: number, frac: number, col: string, lab: string, val: string) {
-    ctx.fillStyle = 'rgba(107,120,133,.18)';
-    ctx.fillRect(barX, yy, barW, 12);
-    ctx.fillStyle = col;
-    ctx.fillRect(barX, yy, barW * frac, 12);
-    ctx.strokeStyle = AB.PAL.line;
-    ctx.lineWidth = 1;
-    ctx.strokeRect(barX, yy, barW, 12);
-    AB.text(ctx, lab + ' ' + val, barX, yy - 4, { size: 8, color: AB.PAL.ink2, align: 'left' });
-  }
-  eBar(h * 0.16, eKE / 100, AB.PAL.teal, 'KE cinética', AB.fmt(eKE, 0) + ' J');
-  eBar(h * 0.3, eEE / 100, AB.PAL.amber, 'EE elástica', AB.fmt(eEE, 0) + ' J');
-  eBar(h * 0.44, 0.93, AB.PAL.good, 'Aquiles · recuperable', '35 J → 93 %');
-  eBar(h * 0.56, 0.8, AB.PAL.good, 'Arco · recuperable', '17 J → 80 %');
-  eBar(h * 0.68, 0.12, AB.PAL.teal, 'Pista · devuelve', '12 J → +2 %');
-  AB.text(ctx, 'KE + EE ≈ constante durante el contacto', w / 2, h * 0.94, { size: 9, color: AB.PAL.teal });
-
-  if (out) out('po_out', 'EE 35 J (93 % vuelve) · arco 17 J (80 %)');
-}
-
-/* ── S8 · Sprint ── */
-export function drawSprint(p: SimParams, _flags: SimFlags, out?: OutFn): void {
-  const c = getCanvas('sim-sprint');
-  if (!c) return;
-  const { ctx, w, h } = c;
-  const F = p.sp_F || 560, mb = p.sp_m || 70;
-  const mLeg = 0.161 * mb, L = 1.0;
-  const v = Math.sqrt((2 * F * L) / mLeg);
-  const vmph = v * 2.237;
-  const yg = h * 0.78;
-
-  ctx.strokeStyle = AB.PAL.line;
-  ctx.lineWidth = 2.5;
-  ctx.beginPath();
-  ctx.moveTo(w * 0.05, yg);
-  ctx.lineTo(w * 0.95, yg);
-  ctx.stroke();
-  ctx.fillStyle = AB.PAL.ink3;
-  ctx.fillRect(w * 0.62, yg - 18, 26, 18);
-  ctx.fillRect(w * 0.7, yg - 10, 20, 10);
-
-  const ax = w * 0.55;
-  ctx.save();
-  ctx.translate(ax, yg);
-  ctx.rotate(-0.35);
-  ctx.strokeStyle = AB.PAL.skinEdge;
-  ctx.lineWidth = 11;
-  ctx.beginPath();
-  ctx.moveTo(0, 0);
-  ctx.lineTo(0, -h * 0.5);
-  ctx.stroke();
-  ctx.lineWidth = 14;
-  ctx.beginPath();
-  ctx.moveTo(0, -h * 0.5);
-  ctx.lineTo(0, -h * 0.72);
-  ctx.stroke();
-  ctx.fillStyle = AB.PAL.skin;
-  ctx.strokeStyle = AB.PAL.skinEdge;
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.arc(0, -h * 0.78, h * 0.05, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.stroke();
-  ctx.restore();
-
-  AB.arrow(ctx, ax - 6, yg - 12, ax - 6 - w * 0.22, yg - 12, { color: AB.PAL.blood, width: 5 });
-  AB.text(ctx, 'F = ' + AB.fmt(F, 0) + ' N', ax - w * 0.14, yg - 34, { size: 10, weight: '700', color: AB.PAL.blood });
-
-  const gx = w * 0.12, gw = w * 0.76, gy = h * 0.9;
-  ctx.fillStyle = 'rgba(107,120,133,.18)';
-  ctx.fillRect(gx, gy, gw, 12);
-  ctx.fillStyle = AB.PAL.teal;
-  ctx.fillRect(gx, gy, gw * Math.min(1, v / 14), 12);
-  ctx.strokeStyle = AB.PAL.line;
-  ctx.lineWidth = 1;
-  ctx.strokeRect(gx, gy, gw, 12);
-  const boltX = gx + gw * (10.4 / 14);
-  ctx.strokeStyle = AB.PAL.amber;
+  // Comparación de los tres modelos con el paso real (≈0,60 s, marcha lenta).
+  const gx = w * 0.58;
+  const gw = w * 0.36;
+  const tmax = Math.max(1.2, M.simple * 1.1, 0.7);
+  const rows: [string, number, string][] = [
+    ['bola-hilo', M.simple, PAL.ink3],
+    ['varilla', M.rod, PAL.teal],
+    ['2 segmentos', M.twoSeg, PAL.sagittal],
+  ];
+  AB.text(ctx, 'T½ (s)', gx, h * 0.1, { size: 13, weight: '700', color: PAL.ink, align: 'left' });
+  rows.forEach(([lab, v, col], i) => {
+    const y = h * 0.18 + i * 46;
+    AB.text(ctx, `${lab}: ${AB.fmt(v, 2)} s`, gx, y, { size: 12, color: PAL.ink2, align: 'left' });
+    bar(ctx, gx, y + 10, gw, 12, v / tmax, col);
+  });
+  const xr = gx + (gw * 0.6) / tmax;
+  ctx.strokeStyle = PAL.blood;
   ctx.setLineDash([4, 3]);
   ctx.lineWidth = 1.5;
   ctx.beginPath();
-  ctx.moveTo(boltX, gy - 6);
-  ctx.lineTo(boltX, gy + 18);
+  ctx.moveTo(xr, h * 0.18 + 4);
+  ctx.lineTo(xr, h * 0.18 + 2 * 46 + 26);
   ctx.stroke();
   ctx.setLineDash([]);
-  AB.text(ctx, 'Bolt ≈ 10,4 m/s', boltX, gy - 10, { size: 8, color: AB.PAL.amber });
+  AB.text(ctx, 'real ≈ 0,60 s', xr, h * 0.18 + 2 * 46 + 40, { size: 12, color: PAL.blood, weight: '700' });
+  AB.text(ctx, `vₘₐₓ = √(gR) = ${AB.fmt(M.vmax, 1)} m/s`, gx, h * 0.78, { size: 13, weight: '700', color: PAL.amber, align: 'left' });
+  AB.text(ctx, `R = ${AB.fmt(0.5 * p.pe_H, 2)} m`, gx, h * 0.78 + 20, { size: 12, color: PAL.ink2, align: 'left' });
 
-  if (out) out('sp_out', 'v = ' + AB.fmt(v, 1) + ' m/s (' + AB.fmt(vmph, 1) + ' mph)');
+  out?.('pe_out', `T½ = ${AB.fmt(M.simple, 2)} / ${AB.fmt(M.rod, 2)} / ${AB.fmt(M.twoSeg, 2)} s · vₘₐₓ = ${AB.fmt(M.vmax, 1)} m/s`);
 }
 
-/* ── S9 · Salto vertical ── */
-export function drawJump(p: SimParams, flags: SimFlags, out?: OutFn): void {
+/* ══════════════════════════════════════════════════════════════════════════
+   S6 · Energética: caminar (fuera de fase) vs correr (en fase)  §3.3.4, §3.4.3
+   ══════════════════════════════════════════════════════════════════════════ */
+
+export function drawEnergy(_p: SimParams, f: SimFlags, out?: OutFn): void {
+  const c = getCanvas('sim-energy');
+  if (!c) return;
+  const { ctx, w, h } = c;
+  const run = f.energyMode === 'run';
+  const x0 = w * 0.08;
+  const x1 = w * 0.96;
+  const y0 = h * 0.2;
+  const y1 = h * 0.74;
+  const toXY = (t: number, v: number): [number, number] => [x0 + t * (x1 - x0), y1 - (v / 2.6) * (y1 - y0)];
+  const A = 0.3;
+  const cos = (t: number) => Math.cos(2 * Math.PI * t);
+  // PE + KE_V frente a KE_H (Fig. 3.20 / 3.32), en unidades relativas.
+  const curves: { key: string; fn: (t: number) => number; color: string; label: string; lw: number }[] = [
+    { key: 'pe', fn: (t) => 1 + A * cos(t), color: PAL.sagittal, label: 'PE + KEᵥ', lw: 2 },
+    { key: 'keh', fn: run ? (t) => 1 + A * cos(t) - 0.02 : (t) => 1 - 0.9 * A * cos(t), color: PAL.teal, label: 'KEₕ', lw: 2 },
+    {
+      key: 'tot',
+      fn: run ? (t) => (2 + 2 * A * cos(t)) * 0.62 + 0.2 : (t) => (2 + 0.1 * A * cos(t)) * 0.62 + 0.2,
+      color: PAL.blood,
+      label: 'E total (escala ×0,6)',
+      lw: 3,
+    },
+  ];
+
+  ctx.strokeStyle = PAL.line;
+  ctx.lineWidth = 1.5;
+  ctx.strokeRect(x0, y0, x1 - x0, y1 - y0);
+  curves.forEach((cv) => {
+    ctx.strokeStyle = cv.color;
+    ctx.lineWidth = cv.lw;
+    const pts: [number, number][] = [];
+    for (let i = 0; i <= 120; i++) pts.push(toXY(i / 120, cv.fn(i / 120)));
+    polyline(ctx, pts);
+  });
+  // Leyenda medida (sin solapes al subir el piso tipográfico).
+  ctx.font = AB.font(12);
+  let lx = x0;
+  curves.forEach((cv) => {
+    ctx.fillStyle = cv.color;
+    ctx.fillRect(lx, y0 - 22, 14, 4);
+    AB.text(ctx, cv.label, lx + 18, y0 - 20, { size: 12, color: PAL.ink2, align: 'left' });
+    ctx.font = AB.font(12);
+    lx += 18 + ctx.measureText(cv.label).width + 16;
+  });
+  AB.text(ctx, 'un paso (golpe de talón → siguiente)', (x0 + x1) / 2, y1 + 16, { size: 12, color: PAL.ink3 });
+  AB.text(ctx, run ? 'EN FASE → la E total oscila' : 'FUERA DE FASE → E total ≈ constante', w / 2, h * 0.88, {
+    size: 14,
+    weight: '700',
+    color: run ? PAL.amber : PAL.good,
+  });
+
+  out?.('en_out', run ? 'En fase · recuperación ≈ 5 % (Fig. 3.26)' : 'Fuera de fase · recuperación ≈ 70 % (Fig. 3.26)');
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   S7 · Pogo stick / pelota que rebota (§3.4.3–§3.4.4, Tabla 3.11)
+   100 J de KE por pisada: Aquiles 35 J (93 %), arco 17 J (80 %); pista +12 J
+   ══════════════════════════════════════════════════════════════════════════ */
+
+export function pogoBudget(track: boolean) {
+  const achilles = 35 * 0.93;
+  const arch = 17 * 0.8;
+  const trackJ = track ? 12 : 0;
+  return { achilles, arch, trackJ, total: achilles + arch + trackJ, muscles: Math.max(0, 100 - achilles - arch - trackJ) };
+}
+
+export function drawPogo(_p: SimParams, f: SimFlags, out?: OutFn): void {
+  const c = getCanvas('sim-pogo');
+  if (!c) return;
+  const { ctx, w, h } = c;
+  const ph = f.pogoPhase;
+  const yg = h * 0.88;
+  const px = w * 0.2;
+  const contact = Math.max(0, Math.cos(ph * 2 * Math.PI)); // 0 en vuelo, 1 compresión máx.
+  const s = contact * h * 0.1;
+  const air = (1 - contact) * h * 0.12 * Math.abs(Math.sin(ph * Math.PI));
+
+  ground(ctx, w * 0.04, w * 0.42, yg, f.pogoTrack ? PAL.teal : PAL.line, f.pogoTrack ? 4 : 2.5);
+  const footY = yg - air;
+  const springTop = footY - h * 0.28 + s;
+  ctx.strokeStyle = PAL.amber;
+  ctx.lineWidth = 2.5;
+  const pts: [number, number][] = [];
+  for (let i = 0; i <= 10; i++) pts.push([px + (i % 2 ? 10 : -10), springTop + (footY - 8 - springTop) * (i / 10)]);
+  polyline(ctx, pts);
+  ctx.fillStyle = PAL.ink3;
+  ctx.fillRect(px - 22, footY - 8, 44, 8);
+  ctx.strokeStyle = PAL.skinEdge;
+  ctx.lineWidth = 11;
+  ctx.beginPath();
+  ctx.moveTo(px, springTop);
+  ctx.lineTo(px, springTop - h * 0.2);
+  ctx.stroke();
+  head(ctx, px, springTop - h * 0.27, h * 0.05);
+
+  // Reparto KE ↔ EE durante el ciclo (fracciones; TE = KE + PE + EE constante).
+  const bx = w * 0.48;
+  const bw = w * 0.46;
+  AB.text(ctx, 'durante el contacto', bx, h * 0.06, { size: 12, color: PAL.ink3, align: 'left' });
+  AB.text(ctx, 'KE + PE', bx, h * 0.13, { size: 12, color: PAL.ink2, align: 'left' });
+  bar(ctx, bx, h * 0.15, bw, 12, 1 - contact, PAL.teal);
+  AB.text(ctx, 'EE elástica', bx, h * 0.24, { size: 12, color: PAL.ink2, align: 'left' });
+  bar(ctx, bx, h * 0.26, bw, 12, contact, PAL.amber);
+
+  // Balance por pisada a 4,5 m/s (maratón): 100 J de KE.
+  const B = pogoBudget(f.pogoTrack);
+  const rows: [string, number, string][] = [
+    ['Aquiles 35 J × 93 %', B.achilles, PAL.good],
+    ['arco 17 J × 80 %', B.arch, PAL.good],
+    ['pista sintonizada', B.trackJ, PAL.teal],
+    ['músculos aportan', B.muscles, PAL.blood],
+  ];
+  AB.text(ctx, '100 J de KE perdidos por pisada', bx, h * 0.38, { size: 13, weight: '700', color: PAL.ink, align: 'left' });
+  rows.forEach(([lab, v, col], i) => {
+    const y = h * 0.46 + i * 40;
+    AB.text(ctx, `${lab}: ${AB.fmt(v, 1)} J`, bx, y, { size: 12, color: PAL.ink2, align: 'left' });
+    bar(ctx, bx, y + 9, bw, 10, v / 100, col);
+  });
+
+  out?.('po_out', `recuperable ≈ ${AB.fmt(B.total, 0)} J de 100 J${f.pogoTrack ? ' (+12 J pista)' : ''}`);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   S8 · Aceleración hasta el sprint (§3.4.3, ec. 3.38–3.47)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+export function sprint(F: number, mb: number, L = 1.0) {
+  const mLeg = 0.161 * mb;
+  const x = (mb - 2 * mLeg) / (mb - mLeg);
+  const vFinal = Math.sqrt((2 * F * L) / mLeg);
+  const vn = (n: number) => vFinal * Math.sqrt(1 - Math.pow(x, n));
+  return { mLeg, x, vFinal, vn };
+}
+
+export function drawSprint(p: SimParams, _f: SimFlags, out?: OutFn): void {
+  const c = getCanvas('sim-sprint');
+  if (!c) return;
+  const { ctx, w, h } = c;
+  const S = sprint(p.sp_F, p.sp_m);
+  const N = 10;
+  const x0 = w * 0.12;
+  const x1 = w * 0.95;
+  const y0 = h * 0.14;
+  const y1 = h * 0.78;
+  const vTop = 14;
+  const Y = (v: number) => y1 - (v / vTop) * (y1 - y0);
+
+  ctx.strokeStyle = PAL.line;
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(x0, y0);
+  ctx.lineTo(x0, y1);
+  ctx.lineTo(x1, y1);
+  ctx.stroke();
+  [0, 5, 10].forEach((v) => AB.text(ctx, `${v}`, x0 - 8, Y(v), { size: 12, color: PAL.ink3, align: 'right' }));
+  AB.text(ctx, 'v (m/s)', x0, y0 - 14, { size: 12, color: PAL.ink3, align: 'left' });
+
+  const bw = ((x1 - x0) / N) * 0.62;
+  for (let n = 1; n <= N; n++) {
+    const xc = x0 + ((n - 0.5) * (x1 - x0)) / N;
+    const v = S.vn(n);
+    ctx.fillStyle = AB.alpha(PAL.teal, 0.25 + (0.6 * n) / N);
+    ctx.fillRect(xc - bw / 2, Y(v), bw, y1 - Y(v));
+    AB.text(ctx, `${n}`, xc, y1 + 14, { size: 12, color: PAL.ink3 });
+  }
+  AB.text(ctx, 'zancada n', x1, y1 + 32, { size: 12, color: PAL.ink3, align: 'right' });
+
+  const line = (v: number, col: string, lab: string, dy: number) => {
+    ctx.strokeStyle = col;
+    ctx.setLineDash([5, 4]);
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(x0, Y(v));
+    ctx.lineTo(x1, Y(v));
+    ctx.stroke();
+    ctx.setLineDash([]);
+    AB.text(ctx, lab, x1, Y(v) + dy, { size: 12, color: col, align: 'right', weight: '700' });
+  };
+  const above = S.vFinal > 10.4;
+  line(Math.min(S.vFinal, vTop), PAL.blood, `v final = ${AB.fmt(S.vFinal, 1)} m/s`, above ? -10 : 16);
+  line(10.4, PAL.amber, 'clase mundial 10,4 m/s', above ? 16 : -10);
+
+  out?.('sp_out', `v final = ${AB.fmt(S.vFinal, 1)} m/s (${AB.fmt(S.vFinal * MPH, 1)} mph) · v₁ = ${AB.fmt(S.vn(1), 1)} m/s`);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   S9 · Salto vertical (§3.5.1, ec. 3.48–3.60)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+export function jump(m: number, N: number, s: number) {
+  const W = m * G_EARTH;
+  const net = N - W;
+  if (net <= 0) return { W, H: 0, vTO: 0, tau: Infinity, ok: false };
+  const H = (net * s) / W;
+  const tau = Math.sqrt((2 * (W / net) * s) / G_EARTH);
+  return { W, H, vTO: (2 * s) / tau, tau, ok: true };
+}
+
+export function drawJump(p: SimParams, f: SimFlags, out?: OutFn): void {
   const c = getCanvas('sim-jump');
   if (!c) return;
   const { ctx, w, h } = c;
-  const m = p.jp_mass || 64, s = p.jp_s || 0.43;
-  const W = m * 9.8;
-  const N = 1342 * (m / 64);
-  const net = N - W, a = net / m;
-  const vTO = Math.sqrt(Math.max(0, 2 * a * s));
-  const H = (vTO * vTO) / (2 * 9.8);
-  const tau = vTO / a;
-  const cm = flags.jumpMode === 'cm';
+  const J = jump(p.jp_mass, p.jp_N, p.jp_s);
+  const cm = f.jumpMode === 'cm';
+  const x0 = w * 0.1;
+  const x1 = w * 0.62;
+  const y0 = h * 0.14;
+  const y1 = h * 0.7;
+  const Nmax = Math.max(p.jp_N * 1.5, J.W * 1.6);
+  const Y = (v: number) => y1 - (v / Nmax) * (y1 - y0);
 
-  const x0 = w * 0.08, x1 = w * 0.92, y0 = h * 0.14, y1 = h * 0.66;
-  ctx.strokeStyle = AB.PAL.line;
+  ctx.strokeStyle = PAL.line;
   ctx.lineWidth = 1.5;
   ctx.strokeRect(x0, y0, x1 - x0, y1 - y0);
-  const Nmax = Math.max(N * 1.25, W * 1.3);
-  function fy(Nv: number) {
-    return y1 - (Nv / Nmax) * (y1 - y0);
-  }
+  AB.dashed(ctx, x0, Y(J.W), x1, Y(J.W), { color: PAL.ink3 });
+  AB.text(ctx, `W = ${AB.fmt(J.W, 0)} N`, x0 + 6, Y(J.W) + 12, { size: 12, color: PAL.ink3, align: 'left' });
+  AB.dashed(ctx, x0, Y(p.jp_N), x1, Y(p.jp_N), { color: PAL.amber });
+  AB.text(ctx, `⟨N⟩ = ${AB.espan(p.jp_N)} N`, x1 - 6, Y(p.jp_N) - 12, { size: 12, color: PAL.amber, align: 'right' });
 
-  AB.dashed(ctx, x0, fy(W), x1, fy(W), { color: AB.PAL.ink3 });
-  AB.text(ctx, 'W = ' + AB.fmt(W, 0) + ' N', x0 + 6, fy(W) + 10, { size: 8, color: AB.PAL.ink3, align: 'left' });
-  ctx.strokeStyle = AB.PAL.teal;
-  ctx.lineWidth = 2.5;
-  ctx.beginPath();
-  const steps = 60;
-  for (let i = 0; i <= steps; i++) {
-    const t = i / steps, px = x0 + t * (x1 - x0);
+  // N(t) esquemático: contramovimiento cae bajo W y luego supera ⟨N⟩ (más trabajo).
+  ctx.strokeStyle = PAL.teal;
+  ctx.lineWidth = 2.6;
+  const pts: [number, number][] = [];
+  for (let i = 0; i <= 80; i++) {
+    const t = i / 80;
     let Nt: number;
     if (cm) {
-      if (t < 0.25) Nt = W * 0.85;
-      else if (t < 0.75) Nt = N + (Nmax - N) * 0.15 * ((t - 0.25) / 0.5);
-      else Nt = N;
-    } else {
-      Nt = t < 0.5 ? W + ((N - W) * t) / 0.5 : N;
-    }
-    const py = fy(Nt);
-    i ? ctx.lineTo(px, py) : ctx.moveTo(px, py);
+      if (t < 0.25) Nt = J.W * (1 - 0.6 * Math.sin((t / 0.25) * Math.PI));
+      else if (t < 0.92) Nt = J.W + (p.jp_N * 1.32 - J.W) * Math.sin(((t - 0.25) / 0.67) * Math.PI * 0.95);
+      else Nt = J.W * 0.4 * (1 - (t - 0.92) / 0.08);
+    } else if (t < 0.92) Nt = J.W + (p.jp_N * 1.15 - J.W) * Math.sin((t / 0.92) * Math.PI * 0.95);
+    else Nt = J.W * 0.4 * (1 - (t - 0.92) / 0.08);
+    pts.push([x0 + t * (x1 - x0), Y(Math.max(0, Nt))]);
   }
-  ctx.stroke();
-  AB.text(ctx, 'N(t) fuerza sobre el suelo', (x0 + x1) / 2, y0 - 8, { size: 9, color: AB.PAL.teal });
-  AB.text(ctx, cm ? 'contramovimiento' : 'sentadilla', x1, y1 + 14, { size: 8, color: AB.PAL.ink3, align: 'right' });
+  polyline(ctx, pts);
+  AB.text(ctx, 'N(t) del suelo', (x0 + x1) / 2, y0 - 14, { size: 12, color: PAL.teal, weight: '700' });
+  AB.text(ctx, cm ? 'contramovimiento' : 'desde cuclillas', x1, y1 + 16, { size: 12, color: PAL.ink3, align: 'right' });
+  AB.text(ctx, 'despegue →', x1, y1 + 34, { size: 12, color: PAL.ink3, align: 'right' });
 
-  const jx = w * 0.5, jy = y1 + 34;
-  ctx.strokeStyle = AB.PAL.skinEdge;
-  ctx.lineWidth = 9;
+  // Altura del salto a escala (1,05 m → 1,05 m + H).
+  const gx = w * 0.82;
+  const yg = h * 0.86;
+  const scale = (h * 0.62) / 2;
+  ground(ctx, w * 0.7, w * 0.96, yg);
+  const yTO = yg - 1.05 * scale;
+  const yTop = yg - (1.05 + J.H) * scale;
+  AB.dashed(ctx, gx - 30, yTO, gx + 30, yTO, { color: PAL.ink3 });
+  AB.text(ctx, 'CM 1,05 m', gx - 34, yTO, { size: 12, color: PAL.ink3, align: 'right' });
+  ctx.fillStyle = PAL.good;
   ctx.beginPath();
-  ctx.moveTo(jx, jy);
-  ctx.lineTo(jx, jy - h * 0.22);
-  ctx.stroke();
-  ctx.lineWidth = 12;
-  ctx.beginPath();
-  ctx.moveTo(jx, jy - h * 0.22);
-  ctx.lineTo(jx, jy - h * 0.34);
-  ctx.stroke();
-  ctx.fillStyle = AB.PAL.skin;
-  ctx.strokeStyle = AB.PAL.skinEdge;
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.arc(jx, jy - h * 0.38, h * 0.035, 0, Math.PI * 2);
+  ctx.arc(gx, yTop, 7, 0, Math.PI * 2);
   ctx.fill();
-  ctx.stroke();
-  AB.text(ctx, 'H = ' + AB.fmt(H, 2) + ' m', jx + 26, jy - h * 0.34, { size: 10, weight: '700', color: AB.PAL.good, align: 'left' });
+  AB.arrow(ctx, gx + 16, yTO, gx + 16, yTop + 6, { color: PAL.good, width: 2.4 });
+  AB.text(ctx, `H = ${AB.fmt(J.H, 2)} m`, gx + 22, (yTO + yTop) / 2, { size: 13, weight: '700', color: PAL.good, align: 'left' });
 
-  if (out) out('jp_out', 'H = ' + AB.fmt(H, 2) + ' m · τ = ' + AB.fmt(tau, 2) + ' s · v_TO = ' + AB.fmt(vTO, 1) + ' m/s');
+  out?.(
+    'jp_out',
+    J.ok
+      ? `H = ${AB.fmt(J.H, 2)} m · v despegue = ${AB.fmt(J.vTO, 1)} m/s · τ = ${AB.fmt(J.tau, 2)} s`
+      : '⟨N⟩ ≤ W: no hay despegue',
+  );
 }
 
-/* ── S10 · Pértiga ── */
-export function drawVault(p: SimParams, _flags: SimFlags, out?: OutFn): void {
+/* ══════════════════════════════════════════════════════════════════════════
+   S10 · Salto con pértiga (§3.5.2, ec. 3.61–3.62)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+export const vaultHeight = (v: number) => 0.9 - 0.1 + (v * v) / (2 * G_EARTH);
+
+export function drawVault(p: SimParams, _f: SimFlags, out?: OutFn): void {
   const c = getCanvas('sim-vault');
   if (!c) return;
   const { ctx, w, h } = c;
-  const vHi = p.va_v || 9.5;
-  const hBar = 0.8 + (vHi * vHi) / (2 * 9.8);
-  const yg = h * 0.86, top = h * 0.1;
+  const v = p.va_v;
+  const hBar = vaultHeight(v);
+  const yg = h * 0.86;
+  const top = h * 0.1;
   const scale = (yg - top) / 7;
+  const ax = w * 0.12;
 
-  ctx.strokeStyle = AB.PAL.line;
+  ctx.strokeStyle = PAL.line;
   ctx.lineWidth = 1.5;
   ctx.beginPath();
-  ctx.moveTo(w * 0.1, top);
-  ctx.lineTo(w * 0.1, yg);
+  ctx.moveTo(ax, top);
+  ctx.lineTo(ax, yg);
   ctx.stroke();
   for (let m = 0; m <= 7; m++) {
     const y = yg - m * scale;
-    ctx.strokeStyle = AB.PAL.line;
-    ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(w * 0.1, y);
-    ctx.lineTo(w * 0.14, y);
+    ctx.moveTo(ax, y);
+    ctx.lineTo(ax + 6, y);
     ctx.stroke();
-    AB.text(ctx, m + ' m', w * 0.08, y, { size: 8, color: AB.PAL.ink3, align: 'right' });
+    AB.text(ctx, `${m} m`, ax - 6, y, { size: 12, color: PAL.ink3, align: 'right' });
   }
+  ground(ctx, ax, w * 0.96, yg);
+
+  const rec = yg - 6.16 * scale;
+  AB.dashed(ctx, ax + 8, rec, w * 0.94, rec, { color: PAL.amber });
+  AB.text(ctx, 'récord 6,16 m (2014)', w * 0.94, rec - 12, { size: 12, color: PAL.amber, align: 'right' });
 
   const by = yg - hBar * scale;
-  ctx.strokeStyle = AB.PAL.blood;
+  ctx.strokeStyle = PAL.blood;
   ctx.lineWidth = 3;
   ctx.beginPath();
-  ctx.moveTo(w * 0.16, by);
+  ctx.moveTo(w * 0.56, by);
   ctx.lineTo(w * 0.9, by);
   ctx.stroke();
-  AB.text(ctx, 'h = ' + AB.fmt(hBar, 1) + ' m', w * 0.9, by - 6, { size: 10, weight: '700', color: AB.PAL.blood, align: 'right' });
+  AB.text(ctx, `listón ${AB.fmt(hBar, 2)} m`, w * 0.9, by + 16, { size: 13, weight: '700', color: PAL.blood, align: 'right' });
 
-  ctx.strokeStyle = AB.PAL.teal;
+  // Trayectoria del CM: carrera a 0,9 m → franqueo a h_listón + 0,1 m.
+  ctx.strokeStyle = PAL.teal;
   ctx.lineWidth = 2.5;
   ctx.setLineDash([6, 4]);
-  ctx.beginPath();
-  for (let i = 0; i <= 40; i++) {
-    const t = i / 40;
-    const px = w * 0.2 + t * (w * 0.7);
-    const y = yg - (0.8 + (vHi * vHi) / (2 * 9.8)) * scale * Math.sin(t * Math.PI * 0.85);
-    i ? ctx.lineTo(px, y) : ctx.moveTo(px, y);
+  const pts: [number, number][] = [];
+  for (let i = 0; i <= 50; i++) {
+    const t = i / 50;
+    const x = ax + 20 + t * (w * 0.78);
+    const u = Math.max(0, Math.min(1, (t - 0.3) / 0.6));
+    const hh = 0.9 + (hBar + 0.1 - 0.9) * Math.sin(u * Math.PI * 0.5);
+    pts.push([x, yg - hh * scale]);
   }
-  ctx.stroke();
+  polyline(ctx, pts);
   ctx.setLineDash([]);
-  AB.text(ctx, 'récord 6,16 m', w * 0.5, by - scale * 0.76, { size: 8, color: AB.PAL.ink3 });
 
-  const bx = w * 0.18;
-  AB.text(ctx, 'energía del salto', bx, h * 0.05, { size: 9, color: AB.PAL.ink2, align: 'left' });
-  ctx.fillStyle = AB.PAL.teal;
-  ctx.fillRect(bx, h * 0.08, w * 0.26, 10);
-  AB.text(ctx, 'KE ½mv²', bx + 6, h * 0.115, { size: 8, color: AB.PAL.ink2, align: 'left' });
-  ctx.fillStyle = AB.PAL.amber;
-  ctx.fillRect(bx, h * 0.135, w * 0.26 * (hBar / 7), 10);
-  AB.text(ctx, 'PE mgh', bx + 6, h * 0.17, { size: 8, color: AB.PAL.ink2, align: 'left' });
+  // Energía: KE inicial = PE ganada.
+  const bx = ax + 20;
+  AB.text(ctx, `½ m v² → m g Δh · Δh = ${AB.fmt((v * v) / (2 * G_EARTH), 2)} m`, bx, yg + 22, { size: 12, color: PAL.ink2, align: 'left' });
 
-  if (out) out('va_out', 'h_bar = ' + AB.fmt(hBar, 1) + ' m');
+  out?.('va_out', `h listón = ${AB.fmt(hBar, 2)} m (CM en carrera 0,9 m · margen 0,1 m)`);
 }
 
-/* ── S11 · Lanzar: modelo de un segmento ── */
-export function drawThrow(p: SimParams, flags: SimFlags, out?: OutFn): void {
+/* ══════════════════════════════════════════════════════════════════════════
+   S11 · Lanzar: modelo de un segmento (§3.6, ec. 3.67–3.85)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+export const THROW_L = 0.36;
+export const THROW_I = (1 / 3) * 2 * THROW_L * THROW_L + 0.146 * THROW_L * THROW_L;
+
+export function drawThrow(p: SimParams, f: SimFlags, out?: OutFn): void {
   const c = getCanvas('sim-throw');
   if (!c) return;
   const { ctx, w, h } = c;
-  const CASES = { a: 81.7, b: 115.5, c: 308, d: 346 };
-  const key = p.th_case || 'c';
-  const alpha = CASES[key];
-  const L = 0.36, mF = 2, mB = 0.146;
-  const I = (1 / 3) * mF * L * L + mB * L * L;
-  const tf = Math.sqrt(Math.PI / alpha);
-  const vB = L * Math.sqrt(Math.PI * alpha);
+  const key = p.th_case;
+  const alpha = THROW_ALPHA[key];
+  const tf = throwTime(key);
+  const vB = THROW_L * Math.sqrt(Math.PI * alpha);
+  const t = Math.min(tf, f.throwPhase / THROW_SLOWMO);
+  // θ(t) = 3π/4 − α t²/2  (ec. 3.83), de 135° a 45°.
+  const theta = (3 * Math.PI) / 4 - (alpha * t * t) / 2;
 
-  const phase = flags.throwPhase || 0;
-  const pr = Math.min(1, phase / tf);
-  const smooth = 1 - Math.pow(1 - pr, 2);
-
-  const ex = w * 0.44, ey = h * 0.6;
-  const Lpx = Math.min(h * 0.5, w * 0.34);
-  AB.bone(ctx, ex, ey - Lpx * 0.5, ex, ey, { width: 13, edge: '#9b8a64', fill: '#d9d2bd', joint: false });
-  AB.joint(ctx, ex, ey - Lpx * 0.5, 6, { color: AB.PAL.ink3 });
-  AB.text(ctx, 'brazo superior', ex - 8, ey - Lpx * 0.55, { size: 8, color: AB.PAL.ink3 });
-
-  const theta = ((135 - 90 * smooth) * Math.PI) / 180;
-  const hx = ex + Lpx * Math.sin(theta), hy = ey + Lpx * Math.cos(theta);
-  AB.bone(ctx, ex, ey, hx, hy, { width: 12, edge: '#9b8a64', fill: '#cfc4ae', joint: false });
-  AB.joint(ctx, ex, ey, 6.5, { color: AB.PAL.teal });
-  AB.text(ctx, 'codo', ex, ey + 16, { size: 9, color: AB.PAL.ink3 });
-
-  AB.muscle(ctx, ex - 16, ey - Lpx * 0.42, ex + 8 + 10 * Math.sin(theta), ey + Lpx * 0.28, { w0: 11, w1: 7, bow: 9, fill: AB.PAL.muscle });
-
+  const ex = w * 0.62;
+  const ey = h * 0.62;
+  const Lpx = Math.min(h * 0.42, w * 0.3);
+  AB.bone(ctx, ex, ey - Lpx * 0.8, ex, ey, { width: 13, edge: PAL.boneDark, fill: PAL.boneMid, joint: false });
+  AB.joint(ctx, ex, ey - Lpx * 0.8, 6, { color: PAL.ink3 });
+  AB.text(ctx, 'húmero (fijo)', ex + 14, ey - Lpx * 0.72, { size: 12, color: PAL.ink3, align: 'left' });
+  // θ medido desde el húmero (hacia arriba): antebrazo en dirección (sin θ, cos θ) con y hacia arriba.
+  const hx = ex + Lpx * Math.sin(theta);
+  const hy = ey - Lpx * Math.cos(theta);
+  // Bíceps: del extremo proximal del húmero a la inserción (d_M ≈ 4 cm de 36 → 0,11 L).
+  AB.muscle(ctx, ex - 8, ey - Lpx * 0.72, ex + 0.12 * Lpx * Math.sin(theta) - 4, ey - 0.12 * Lpx * Math.cos(theta), {
+    w0: 7,
+    w1: 4,
+    bow: -7,
+    fill: PAL.muscle,
+  });
+  AB.bone(ctx, ex, ey, hx, hy, { width: 12, edge: PAL.boneDark, fill: PAL.bone, joint: false });
+  AB.joint(ctx, ex, ey, 6.5, { color: PAL.teal });
+  AB.text(ctx, 'codo', ex - 12, ey + 14, { size: 12, color: PAL.ink3, align: 'right' });
   ctx.beginPath();
-  ctx.arc(hx, hy, 7, 0, Math.PI * 2);
-  ctx.fillStyle = AB.PAL.skin;
-  ctx.strokeStyle = AB.PAL.skinEdge;
-  ctx.lineWidth = 1.5;
+  ctx.arc(hx, hy, 8, 0, Math.PI * 2);
+  ctx.fillStyle = PAL.card;
+  ctx.strokeStyle = PAL.blood;
+  ctx.lineWidth = 2;
   ctx.fill();
   ctx.stroke();
+  // Arco recorrido 135° → 45°.
+  ctx.strokeStyle = AB.alpha(PAL.teal, 0.5);
+  ctx.setLineDash([3, 4]);
+  ctx.lineWidth = 1.5;
   ctx.beginPath();
-  ctx.arc(hx, hy, 3.2, 0, Math.PI * 2);
-  ctx.fillStyle = AB.PAL.muscle;
-  ctx.fill();
+  ctx.arc(ex, ey, Lpx, -Math.PI / 2 + Math.PI / 4, -Math.PI / 2 + (3 * Math.PI) / 4);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  AB.text(ctx, `θ = ${AB.fmt((theta * 180) / Math.PI, 0)}°`, ex + Lpx * 0.5, ey + 28, { size: 13, weight: '700', color: PAL.teal });
 
-  AB.dashed(ctx, hx, hy, hx + w * 0.28, hy - 10, { color: AB.PAL.amber });
-  AB.text(ctx, 'v_B', hx + w * 0.3, hy - 16, { size: 11, weight: '700', color: AB.PAL.amber, align: 'left' });
-
-  AB.arrow(ctx, ex, ey, ex + 56, ey - 18, { color: AB.PAL.teal, width: 3 });
-  AB.text(ctx, 'τ = Iα', ex + 64, ey - 26, { size: 10, weight: '700', color: AB.PAL.teal, align: 'left' });
-
-  const ty = h * 0.1;
-  AB.text(ctx, 'α = ' + AB.fmt(alpha, 0) + ' s⁻² · I = ' + AB.fmt(I, 3) + ' kg·m²', w / 2, ty - 6, { size: 9, color: AB.PAL.teal });
-  const bw = w * 0.26, bx = w * 0.1, bh = 15;
-  ctx.strokeStyle = AB.PAL.line;
-  ctx.lineWidth = 1;
-  (Object.keys(CASES) as (keyof typeof CASES)[]).forEach((k, idx) => {
-    const yy = ty + idx * (bh + 6);
-    const v = L * Math.sqrt(Math.PI * CASES[k]);
-    const isActive = k === key;
-    ctx.fillStyle = isActive ? 'rgba(13,110,100,.14)' : 'rgba(251,248,240,.6)';
-    ctx.fillRect(bx, yy, bw, bh);
-    ctx.strokeRect(bx, yy, bw, bh);
-    ctx.fillStyle = isActive ? AB.PAL.teal : AB.PAL.ink2;
-    ctx.font = '600 10px Karla, sans-serif';
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(' caso ' + k, bx + 5, yy + bh / 2);
-    ctx.textAlign = 'right';
-    ctx.fillText(AB.fmt(v, 1) + ' m/s', bx + bw - 5, yy + bh / 2);
-    if (isActive) AB.triangle(ctx, bx + bw + 14, yy + bh / 2, 6, { color: AB.PAL.teal });
+  // Tabla de los cuatro casos (§3.6): v = L(πα)^½.
+  const labels: Record<string, string> = {
+    a: 'a · 2 in, ⟨sin θ⟩ 0,707',
+    b: 'b · 2 in, ⟨sin θ⟩ 1',
+    c: 'c · 3 in, ⟨sin θ⟩ 1',
+    d: 'd · 3 in, sin gravedad',
+  };
+  const bx = w * 0.04;
+  const bw = w * 0.4;
+  const bh = 22;
+  AB.text(ctx, 'caso · v (m/s)', bx, h * 0.07, { size: 12, color: PAL.ink3, align: 'left' });
+  (Object.keys(THROW_ALPHA) as (keyof typeof THROW_ALPHA)[]).forEach((k, i) => {
+    const y = h * 0.11 + i * (bh + 6);
+    const v = THROW_L * Math.sqrt(Math.PI * THROW_ALPHA[k]);
+    const on = k === key;
+    ctx.fillStyle = on ? AB.alpha(PAL.teal, 0.16) : AB.alpha(PAL.card, 0.7);
+    ctx.fillRect(bx, y, bw, bh);
+    ctx.strokeStyle = PAL.line;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(bx, y, bw, bh);
+    AB.text(ctx, labels[k], bx + 6, y + bh / 2, { size: 12, color: on ? PAL.tealDeep : PAL.ink2, align: 'left', weight: on ? '700' : '400' });
+    AB.text(ctx, AB.fmt(v, v < 10 ? 2 : 1), bx + bw - 6, y + bh / 2, { size: 12, color: on ? PAL.tealDeep : PAL.ink2, align: 'right', weight: '700' });
   });
-  ctx.textAlign = 'center';
+  AB.text(ctx, `I = ${AB.fmt(THROW_I, 3)} kg·m² · t final = ${AB.fmt(tf, 3)} s`, bx, h * 0.11 + 4 * (bh + 6) + 10, {
+    size: 12,
+    color: PAL.ink2,
+    align: 'left',
+  });
+  if (f.throwPlaying || f.throwPhase > 0) {
+    AB.text(ctx, `t = ${AB.fmt(t * 1000, 0)} ms (cámara lenta ×${THROW_SLOWMO})`, bx, h * 0.11 + 4 * (bh + 6) + 30, {
+      size: 12,
+      color: PAL.amber,
+      align: 'left',
+    });
+  }
 
-  if (out) out('th_out', 'α = ' + AB.fmt(alpha, 0) + ' s⁻² · t = ' + AB.fmt(tf, 2) + ' s · v_B = ' + AB.fmt(vB, 1) + ' m/s (' + AB.fmt(vB * 2.237, 1) + ' mph)');
+  out?.('th_out', `α = ${AB.fmt(alpha, alpha < 200 ? 1 : 0)} s⁻² · v = ${AB.fmt(vB, 2)} m/s (${AB.fmt(vB * MPH, 1)} mph)`);
 }
 
-/* ── S12 · Seis fases del pitcheo ── */
-export function drawPhases(p: SimParams, _flags: SimFlags, out?: OutFn): void {
+/* ══════════════════════════════════════════════════════════════════════════
+   S12 · Seis fases del pitcheo (§3.6, Fig. 3.49)
+   pie al suelo ≈0,50 s · suelta ≈0,64 s · 10 + 45 + 45 ≈ 100 mph
+   ══════════════════════════════════════════════════════════════════════════ */
+
+const PITCH_PHASES: [string, number, number][] = [
+  ['Preparación', 0, 0.1],
+  ['Zancada', 0.1, 0.5],
+  ['Armado del brazo', 0.5, 0.56],
+  ['Aceleración del brazo', 0.56, 0.64],
+  ['Desaceleración del brazo', 0.64, 0.7],
+  ['Seguimiento', 0.7, PHASES_END],
+];
+
+export function pitchSpeed(t: number) {
+  const ramp = (a: number, b: number) => Math.max(0, Math.min(1, (t - a) / (b - a)));
+  const legs = 10 * ramp(0.1, 0.5);
+  const shoulder = 45 * ramp(0.5, 0.64);
+  const elbow = 45 * ramp(0.56, 0.64);
+  return { legs, shoulder, elbow, total: legs + shoulder + elbow };
+}
+
+export function drawPhases(p: SimParams, _f: SimFlags, out?: OutFn): void {
   const c = getCanvas('sim-phases');
   if (!c) return;
   const { ctx, w, h } = c;
-  const t = p.ph_t || 0.5;
-  const phases: [string, number, number][] = [
-    ['Balance', 0, 0.1],
-    ['Zancada', 0.1, 0.5],
-    ['Armado', 0.5, 0.55],
-    ['Aceleración', 0.55, 0.64],
-    ['Desacel.', 0.64, 0.7],
-    ['Seguim.', 0.7, 0.8],
-  ];
-  const y = h * 0.3, x0 = w * 0.08, x1 = w * 0.92;
-  const xS = x0 + (x1 - x0) * (t / 0.8);
-
-  phases.forEach((ph, idx) => {
-    const a = x0 + (x1 - x0) * (ph[1] / 0.8), b = x0 + (x1 - x0) * (ph[2] / 0.8);
-    const on = t >= ph[1] && t <= ph[2];
-    ctx.fillStyle = on ? AB.PAL.teal : 'rgba(107,120,133,.22)';
-    ctx.fillRect(a, y, b - a, 16);
-    ctx.strokeStyle = AB.PAL.line;
+  const t = p.ph_t;
+  const x0 = w * 0.06;
+  const x1 = w * 0.94;
+  const y = h * 0.2;
+  const X = (tt: number) => x0 + (x1 - x0) * (tt / PHASES_END);
+  let active = PITCH_PHASES[PITCH_PHASES.length - 1][0];
+  PITCH_PHASES.forEach(([name, a, b], i) => {
+    const on = t >= a && (t < b || (i === PITCH_PHASES.length - 1 && t <= b));
+    if (on) active = `${i + 1} · ${name}`;
+    ctx.fillStyle = on ? PAL.teal : AB.alpha(PAL.ink3, 0.2);
+    ctx.fillRect(X(a), y, X(b) - X(a), 22);
+    ctx.strokeStyle = PAL.line;
     ctx.lineWidth = 1;
-    ctx.strokeRect(a, y, b - a, 16);
-    AB.text(ctx, idx + 1 + '·' + ph[0], (a + b) / 2, y + 28, { size: 8, color: on ? AB.PAL.teal : AB.PAL.ink3 });
+    ctx.strokeRect(X(a), y, X(b) - X(a), 22);
+    if (X(b) - X(a) > 16) AB.text(ctx, `${i + 1}`, (X(a) + X(b)) / 2, y + 11, { size: 12, weight: '700', color: on ? PAL.card : PAL.ink2 });
   });
-
-  const mk = (tt: number, lab: string) => {
-    const mx = x0 + (x1 - x0) * (tt / 0.8);
-    ctx.strokeStyle = AB.PAL.blood;
+  AB.text(ctx, active, w / 2, h * 0.08, { size: 15, weight: '700', color: PAL.tealDeep });
+  const mark = (tt: number, lab: string, align: CanvasTextAlign) => {
+    ctx.strokeStyle = PAL.blood;
     ctx.setLineDash([3, 3]);
-    ctx.lineWidth = 1.2;
+    ctx.lineWidth = 1.4;
     ctx.beginPath();
-    ctx.moveTo(mx, y - 8);
-    ctx.lineTo(mx, y + 22);
+    ctx.moveTo(X(tt), y - 6);
+    ctx.lineTo(X(tt), y + 36);
     ctx.stroke();
     ctx.setLineDash([]);
-    AB.text(ctx, lab, mx, y + 44, { size: 8, color: AB.PAL.blood });
+    AB.text(ctx, lab, X(tt), y + 48, { size: 12, color: PAL.blood, align });
   };
-  mk(0.5, 'pie al suelo 0,50 s');
-  mk(0.64, 'suelta 0,64 s');
+  mark(0.5, 'pie al suelo 0,50 s', 'right');
+  mark(0.64, 'suelta 0,64 s', 'left');
+  AB.triangle(ctx, X(t), y - 10, 11, { color: PAL.amber });
+  AB.text(ctx, 't = 0: punto de equilibrio · límites intermedios esquemáticos', x0, y + 70, { size: 12, color: PAL.ink3, align: 'left' });
 
-  ctx.fillStyle = AB.PAL.amber;
-  ctx.beginPath();
-  ctx.moveTo(xS, y - 8);
-  ctx.lineTo(xS - 5, y - 17);
-  ctx.lineTo(xS + 5, y - 17);
-  ctx.closePath();
-  ctx.fill();
-
-  const vy = h * 0.6;
-  AB.text(ctx, 'velocidades que se suman (mph)', w / 2, vy - 24, { size: 9, color: AB.PAL.ink2 });
+  const V = pitchSpeed(t);
+  const vy = h * 0.56;
   const segs: [string, number, number][] = [
-    ['piernas', 10, 0.3],
-    ['hombro', 45, 0.45],
-    ['codo', 45, 0.55],
+    ['piernas y tronco', V.legs, 10],
+    ['hombro', V.shoulder, 45],
+    ['codo', V.elbow, 45],
   ];
-  let cum = 0;
-  segs.forEach((sg, idx) => {
-    const [name, add, start] = sg;
-    const vv = t >= start ? add : 0;
-    cum += vv;
-    const yb = vy + idx * 27;
-    ctx.fillStyle = 'rgba(107,120,133,.18)';
-    ctx.fillRect(x0, yb, x1 - x0, 16);
-    ctx.fillStyle = AB.PAL.teal;
-    ctx.fillRect(x0, yb, (x1 - x0) * (vv / 100), 16);
-    ctx.strokeStyle = AB.PAL.line;
-    ctx.lineWidth = 1;
-    ctx.strokeRect(x0, yb, x1 - x0, 16);
-    AB.text(ctx, name + '  +' + add + ' mph', x0 + 6, yb + 8, { size: 9, color: t >= start ? AB.PAL.teal : AB.PAL.ink3, align: 'left' });
+  segs.forEach(([name, v, max], i) => {
+    const yb = vy + i * 30;
+    bar(ctx, x0 + w * 0.3, yb, (x1 - x0 - w * 0.3) * (max / 50), 16, v / max, PAL.teal);
+    AB.text(ctx, `${name} +${AB.fmt(v, 0)} mph`, x0 + w * 0.3 - 8, yb + 8, { size: 12, color: PAL.ink2, align: 'right' });
   });
-  AB.text(ctx, '≈ ' + Math.round(cum) + ' mph', x0, vy + segs.length * 27 + 16, { size: 15, weight: '700', color: AB.PAL.blood, align: 'left' });
+  AB.text(ctx, `≈ ${AB.fmt(V.total, 0)} mph`, x0, vy + 3 * 30 + 14, { size: 18, weight: '700', color: PAL.blood, align: 'left' });
 
-  if (out) out('ph_out', 't = ' + AB.fmt(t, 2) + ' s · v ≈ ' + Math.round(cum) + ' mph');
+  out?.('ph_out', `t = ${AB.fmt(t, 2)} s · v ≈ ${AB.fmt(V.total, 0)} mph`);
 }
 
-/* ── S13 · Potencia del lanzamiento ── */
-export function drawPower(p: SimParams, clock: number, flags: SimFlags, out?: OutFn): void {
+/* ══════════════════════════════════════════════════════════════════════════
+   S13 · Potencia del lanzamiento (§3.6.2, ec. 3.89–3.93)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+export const THROW_TAU = 36.45; // N·m (3645 N·cm, caso c)
+
+export function drawPower(p: SimParams, _f: SimFlags, out?: OutFn): void {
   const c = getCanvas('sim-power');
   if (!c) return;
   const { ctx, w, h } = c;
-  const target = p.pw_om || 15.7;
-  const dt = clock ? Math.min(0.06, (clock - (flags.pwT || clock))) : 0.03;
-  flags.pwT = clock;
-  flags.pwVis = AB.damp(flags.pwVis ?? target, target, 5, dt);
-  const Om = flags.pwVis, tau = 36.45;
-  const P = tau * Om, Pr = Math.round(P / 10) * 10;
+  const Om = p.pw_om;
+  const P = THROW_TAU * Om;
 
-  const ex = w * 0.3, ey = h * 0.56;
-  const Lpx = Math.min(h * 0.4, w * 0.3);
+  const ex = w * 0.24;
+  const ey = h * 0.6;
+  const Lpx = Math.min(h * 0.38, w * 0.26);
   const th = Math.PI / 2 - (Om / 31.4) * (Math.PI / 3);
-  const hx = ex + Lpx * Math.sin(th), hy = ey - Lpx * Math.cos(th);
-  AB.bone(ctx, ex - 6, ey - Lpx * 0.6, ex - 6, ey, { width: 13, edge: '#9b8a64', fill: '#d9d2bd', joint: false });
-  AB.bone(ctx, ex, ey, hx, hy, { width: 12, edge: '#9b8a64', fill: '#cfc4ae', joint: false });
-  AB.joint(ctx, ex, ey, 6.5, { color: AB.PAL.teal });
+  const hx = ex + Lpx * Math.sin(th);
+  const hy = ey - Lpx * Math.cos(th);
+  AB.bone(ctx, ex - 6, ey - Lpx * 0.6, ex - 6, ey, { width: 13, edge: PAL.boneDark, fill: PAL.boneMid, joint: false });
+  AB.bone(ctx, ex, ey, hx, hy, { width: 12, edge: PAL.boneDark, fill: PAL.bone, joint: false });
+  AB.joint(ctx, ex, ey, 6.5, { color: PAL.teal });
   AB.muscle(ctx, ex - 16, ey - Lpx * 0.5, ex + 6, ey + Lpx * 0.22, { w0: 10, w1: 6, bow: 7 });
-  ctx.beginPath();
-  ctx.arc(hx, hy, 7, 0, Math.PI * 2);
-  ctx.fillStyle = AB.PAL.skin;
-  ctx.strokeStyle = AB.PAL.skinEdge;
-  ctx.lineWidth = 1.5;
-  ctx.fill();
-  ctx.stroke();
-  AB.text(ctx, 'τ = ' + AB.fmt(tau, 2) + ' N·m', ex, ey - Lpx * 0.72, { size: 9, color: AB.PAL.teal });
-  AB.text(ctx, 'Ω = ' + AB.fmt(Om, 1) + ' rad/s', ex, ey + Lpx * 0.42, { size: 9, color: AB.PAL.teal });
+  AB.text(ctx, `τ = ${AB.fmt(THROW_TAU, 2)} N·m`, ex, ey - Lpx * 0.78, { size: 12, color: PAL.teal });
+  AB.text(ctx, `Ω = ${AB.fmt(Om, 1)} rad/s`, ex, ey + Lpx * 0.45, { size: 12, color: PAL.teal });
 
-  const gx = w * 0.56, gw = w * 0.36, gy = h * 0.12, gh = h * 0.6;
-  ctx.strokeStyle = AB.PAL.line;
+  const gx = w * 0.56;
+  const gw = w * 0.2;
+  const gy = h * 0.12;
+  const gh = h * 0.68;
+  const Pmax = 1300;
+  ctx.fillStyle = AB.alpha(PAL.ink3, 0.12);
+  ctx.fillRect(gx, gy, gw, gh);
+  ctx.strokeStyle = PAL.line;
   ctx.lineWidth = 1.5;
   ctx.strokeRect(gx, gy, gw, gh);
-  ctx.fillStyle = 'rgba(107,120,133,.12)';
-  ctx.fillRect(gx, gy, gw, gh);
-  const fillH = Math.min(1, P / 1200) * gh;
-  ctx.fillStyle = AB.PAL.blood;
+  const fillH = Math.min(1, P / Pmax) * gh;
+  ctx.fillStyle = PAL.blood;
   ctx.fillRect(gx, gy + gh - fillH, gw, fillH);
   const mark = (val: number, lab: string) => {
-    const my = gy + gh - (val / 1200) * gh;
-    ctx.strokeStyle = AB.PAL.amber;
+    const my = gy + gh - (val / Pmax) * gh;
+    ctx.strokeStyle = PAL.amber;
     ctx.setLineDash([3, 3]);
-    ctx.lineWidth = 1.2;
+    ctx.lineWidth = 1.4;
     ctx.beginPath();
-    ctx.moveTo(gx, my);
-    ctx.lineTo(gx + gw, my);
+    ctx.moveTo(gx - 4, my);
+    ctx.lineTo(gx + gw + 4, my);
     ctx.stroke();
     ctx.setLineDash([]);
-    AB.text(ctx, lab, gx + gw + 2, my, { size: 8, color: AB.PAL.amber, align: 'left' });
+    AB.text(ctx, lab, gx + gw + 8, my, { size: 12, color: PAL.amber, align: 'left' });
   };
-  mark(570, '570 W (prom)');
-  mark(1140, '1140 W (max)');
-  AB.text(ctx, 'W', gx - 4, gy + 6, { size: 8, color: AB.PAL.ink3, align: 'right' });
-  AB.text(ctx, '1200', gx - 4, gy + gh, { size: 8, color: AB.PAL.ink3, align: 'right' });
+  mark(570, '570 W prom.');
+  mark(1140, '1140 W máx.');
+  mark(356, '356 W (2 in)');
+  AB.text(ctx, 'P = τΩ', gx + gw / 2, gy - 12, { size: 13, weight: '700', color: PAL.ink2 });
 
-  if (out) out('pw_out', 'P = ' + AB.fmt(Pr, 0) + ' W · ' + AB.fmt(Pr / 746, 2) + ' hp');
+  // El libro redondea a decenas: 36,45 × 15,7 = 572 → «≈ 570 W».
+  out?.('pw_out', `P ≈ ${AB.espan(Math.round(P / 10) * 10)} W = ${AB.fmt(P / 746, 2)} hp`);
 }
 
-/* ── S14 · Golpe de golf: péndulo doble ── */
-export function drawGolf(_p: SimParams, flags: SimFlags, out?: OutFn): void {
+/* ══════════════════════════════════════════════════════════════════════════
+   S14 · Golf: péndulo doble (§3.7, Fig. 3.53)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+export function drawGolf(_p: SimParams, f: SimFlags, out?: OutFn): void {
   const c = getCanvas('sim-golf');
   if (!c) return;
   const { ctx, w, h } = c;
-  const wrist = flags.wrist;
+  const wrist = f.wrist;
   const frac = wrist ? 2 / 3 : 1 / 4;
-  const phase = flags.golfPhase || 0;
-  const shx = w * 0.5, shy = h * 0.32;
-  const L1 = Math.min(h * 0.24, w * 0.18), L2 = Math.min(h * 0.4, w * 0.3);
-  const th1 = (38 * Math.sin(phase * 2 * Math.PI) * Math.PI) / 180;
-  const th2 = wrist ? th1 * 2.3 : th1;
-  const ex = shx + L1 * Math.sin(th1), ey = shy + L1 * Math.cos(th1);
-  const hx = ex + L2 * Math.sin(th2), hy = ey + L2 * Math.cos(th2);
+  const ph = f.golfPhase;
+  const shx = w * 0.3;
+  const shy = h * 0.32;
+  const L1 = Math.min(h * 0.2, w * 0.15);
+  const L2 = Math.min(h * 0.3, w * 0.24);
+  const s = Math.sin(ph * 2 * Math.PI);
+  const th1 = (70 * s * Math.PI) / 180;
+  // Muñeca «armada» en los extremos y liberada en el impacto (abajo, s = 0).
+  const cock = wrist ? (Math.PI / 2) * Math.pow(Math.abs(s), 1.5) : 0;
+  const th2 = th1 + Math.sign(s) * cock;
+  const bx = shx + L1 * Math.sin(th1);
+  const by = shy + L1 * Math.cos(th1);
+  const cx = bx + L2 * Math.sin(th2);
+  const cy = by + L2 * Math.cos(th2);
 
-  ctx.strokeStyle = AB.PAL.skinEdge;
+  ctx.strokeStyle = PAL.skinEdge;
   ctx.lineWidth = 12;
   ctx.beginPath();
   ctx.moveTo(shx, shy);
-  ctx.lineTo(shx, shy - h * 0.15);
+  ctx.lineTo(shx, shy - h * 0.1);
   ctx.stroke();
-  ctx.fillStyle = AB.PAL.skin;
-  ctx.strokeStyle = AB.PAL.skinEdge;
-  ctx.lineWidth = 2;
+  head(ctx, shx, shy - h * 0.15, h * 0.035);
+  AB.bone(ctx, shx, shy, bx, by, { width: 9, edge: PAL.boneDark, fill: PAL.boneMid, joint: false });
+  ctx.strokeStyle = PAL.club;
+  ctx.lineWidth = 4;
   ctx.beginPath();
-  ctx.arc(shx, shy - h * 0.19, h * 0.035, 0, Math.PI * 2);
-  ctx.fill();
+  ctx.moveTo(bx, by);
+  ctx.lineTo(cx, cy);
   ctx.stroke();
-
-  AB.bone(ctx, shx, shy, ex, ey, { width: 9, edge: '#9b8a64', fill: '#d9d2bd', joint: false });
-  AB.bone(ctx, ex, ey, hx, hy, { width: 7, edge: '#9b8a64', fill: '#c7b27a', joint: false });
-  AB.joint(ctx, ex, ey, 5, { color: wrist ? AB.PAL.teal : AB.PAL.ink3 });
-  AB.text(ctx, 'muñeca', ex, ey - 14, { size: 8, color: AB.PAL.ink3 });
-  ctx.fillStyle = AB.PAL.ink;
+  AB.joint(ctx, shx, shy, 5, { color: PAL.ink3 });
+  AB.joint(ctx, bx, by, 5, { color: wrist ? PAL.teal : PAL.ink3 });
+  ctx.fillStyle = PAL.ink;
   ctx.beginPath();
-  ctx.arc(hx, hy, 7, 0, Math.PI * 2);
+  ctx.arc(cx, cy, 7, 0, Math.PI * 2);
   ctx.fill();
+  AB.text(ctx, 'A', shx - 12, shy, { size: 13, weight: '700', color: PAL.ink2, align: 'right' });
+  AB.text(ctx, 'B', bx + 10, by - 6, { size: 13, weight: '700', color: PAL.teal, align: 'left' });
+  AB.text(ctx, 'C', cx + 10, cy, { size: 13, weight: '700', color: PAL.ink, align: 'left' });
 
-  const gx = w * 0.16, gw = w * 0.68, gy = h * 0.8;
-  ctx.fillStyle = 'rgba(107,120,133,.18)';
-  ctx.fillRect(gx, gy, gw, 15);
-  ctx.fillStyle = wrist ? AB.PAL.teal : AB.PAL.amber;
-  ctx.fillRect(gx, gy, gw * frac, 15);
-  ctx.strokeStyle = AB.PAL.line;
-  ctx.lineWidth = 1;
-  ctx.strokeRect(gx, gy, gw, 15);
-  AB.text(ctx, 'energía que llega a la cabeza del palo', gx, gy - 6, { size: 9, color: AB.PAL.ink2, align: 'left' });
-  AB.text(ctx, wrist ? '⅔ (con quiebre)' : '¼ (muñecas rígidas)', gx + gw, gy - 6, { size: 9, weight: '700', color: wrist ? AB.PAL.teal : AB.PAL.amber, align: 'right' });
-  AB.text(ctx, 'potencia del swing ≈ 2,5 kW', w / 2, h * 0.95, { size: 9, color: AB.PAL.ink3 });
+  const gx = w * 0.6;
+  const gw = w * 0.34;
+  AB.text(ctx, 'energía a la cabeza del palo', gx, h * 0.12, { size: 12, color: PAL.ink2, align: 'left' });
+  bar(ctx, gx, h * 0.15, gw, 16, frac, wrist ? PAL.teal : PAL.amber);
+  AB.text(ctx, wrist ? '⅔ con quiebre de muñeca' : '¼ con muñecas rígidas', gx, h * 0.15 + 32, {
+    size: 13,
+    weight: '700',
+    color: wrist ? PAL.teal : PAL.amber,
+    align: 'left',
+  });
+  AB.text(ctx, 'potencia del swing ≈ 2,5 kW', gx, h * 0.42, { size: 13, weight: '700', color: PAL.ink, align: 'left' });
+  const parts: [string, number][] = [
+    ['cabeza del palo', 1.3],
+    ['mango del palo', 0.5],
+    ['manos y brazos', 0.7],
+  ];
+  parts.forEach(([lab, kw], i) => {
+    const y = h * 0.5 + i * 38;
+    AB.text(ctx, `${lab} ${AB.fmt(kw, 1)} kW`, gx, y, { size: 12, color: PAL.ink2, align: 'left' });
+    bar(ctx, gx, y + 9, gw, 10, kw / 1.3, PAL.sagittal);
+  });
 
-  if (out) out('gf_out', wrist ? '⅔ a la cabeza (quiebre)' : '¼ a la cabeza (rígidas)');
+  out?.('gf_out', wrist ? '⅔ de la energía a la cabeza (quiebre)' : '¼ de la energía a la cabeza (rígidas)');
 }
 
-/* ── S15 · Bateo: masa óptima y punto dulce ── */
-export function drawBat(p: SimParams, _flags: SimFlags, out?: OutFn): void {
+/* ══════════════════════════════════════════════════════════════════════════
+   S15 · Bateo: masa óptima y punto dulce (§3.10.4, ec. 3.126–3.130)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+export const BAT = { Wp: 5.125, e: 0.55, vp: -80, A: 63, B: 0.39 };
+
+export function batSpeedOut(Wb: number) {
+  const vb = BAT.A - BAT.B * Wb;
+  return ((BAT.Wp - BAT.e * Wb) * BAT.vp + (Wb + BAT.e * Wb) * vb) / (BAT.Wp + Wb);
+}
+/** Ec. 3.129: W_bate,ideal = W_pelota[(1 + (A − v_p)/(B W_p))^½ − 1] = 38,5 oz. */
+export const BAT_IDEAL = BAT.Wp * (Math.sqrt(1 + (BAT.A - BAT.vp) / (BAT.B * BAT.Wp)) - 1);
+
+export function drawBat(p: SimParams, _f: SimFlags, out?: OutFn): void {
   const c = getCanvas('sim-bat');
   if (!c) return;
   const { ctx, w, h } = c;
-  const W = p.ba_w || 38.5;
-  const Wp = 5.125, e = 0.55, vp = 80;
-  const vPrime = (Ww: number) => {
-    const vb = 63 - 0.39 * Ww;
-    return ((Wp - e * Ww) * -vp + (1 + e) * Ww * vb) / (Wp + Ww);
-  };
-  const vv = vPrime(W);
-  let best = { W: 38.5, v: 0 };
-  for (let ww = 15; ww <= 70; ww += 0.5) {
-    const v2 = vPrime(ww);
-    if (v2 > best.v) best = { W: ww, v: v2 };
-  }
+  const W = p.ba_w;
+  const vv = batSpeedOut(W);
+  const best = batSpeedOut(BAT_IDEAL);
 
-  const yg = h * 0.62, bx = w * 0.1, bl = w * 0.48;
-  ctx.strokeStyle = AB.PAL.boneEdge;
-  ctx.lineWidth = 10;
-  ctx.beginPath();
-  ctx.moveTo(bx, yg);
-  ctx.lineTo(bx + bl, yg);
-  ctx.stroke();
-  ctx.strokeStyle = AB.PAL.bone;
-  ctx.lineWidth = 6;
-  ctx.beginPath();
-  ctx.moveTo(bx, yg);
-  ctx.lineTo(bx + bl, yg);
-  ctx.stroke();
-  ctx.strokeStyle = '#8a7a56';
-  ctx.lineWidth = 4;
-  ctx.beginPath();
-  ctx.moveTo(bx - 14, yg);
-  ctx.lineTo(bx, yg);
-  ctx.stroke();
-  const sx = bx + bl * (2 / 3);
-  ctx.fillStyle = AB.PAL.blood;
-  ctx.beginPath();
-  ctx.arc(sx, yg, 6, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.strokeStyle = AB.PAL.card;
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.arc(sx, yg, 6, 0, Math.PI * 2);
-  ctx.stroke();
-  AB.text(ctx, 'punto dulce', sx, yg - 22, { size: 9, weight: '700', color: AB.PAL.blood });
-  AB.text(ctx, '⅔ desde el mango', sx, yg + 20, { size: 8, color: AB.PAL.ink3 });
-
-  ctx.beginPath();
-  ctx.arc(sx + 12, yg - 16, 6, 0, Math.PI * 2);
-  ctx.fillStyle = AB.PAL.skin;
-  ctx.strokeStyle = AB.PAL.skinEdge;
-  ctx.lineWidth = 1.5;
-  ctx.fill();
-  ctx.stroke();
-  AB.arrow(ctx, sx + 12, yg - 16, sx + bl + 22, yg - 16, { color: AB.PAL.teal, width: 2.5 });
-
-  const px0 = w * 0.14, px1 = w * 0.94, py0 = h * 0.12, py1 = h * 0.4;
-  ctx.strokeStyle = AB.PAL.line;
+  const px0 = w * 0.12;
+  const px1 = w * 0.95;
+  const py0 = h * 0.1;
+  const py1 = h * 0.5;
+  const X = (ww: number) => px0 + (px1 - px0) * ((ww - 15) / 55);
+  const Y = (v: number) => py1 - ((v - 40) / 70) * (py1 - py0);
+  ctx.strokeStyle = PAL.line;
   ctx.lineWidth = 1.5;
   ctx.strokeRect(px0, py0, px1 - px0, py1 - py0);
-  const X = (ww: number) => px0 + (px1 - px0) * ((ww - 15) / 55);
-  const Y = (v: number) => py1 - (v / 120) * (py1 - py0);
-  ctx.strokeStyle = AB.PAL.teal;
+  [60, 80, 100].forEach((v) => AB.text(ctx, `${v}`, px0 - 6, Y(v), { size: 12, color: PAL.ink3, align: 'right' }));
+  AB.text(ctx, "v' pelota (mph)", px0 + 6, py0 + 12, { size: 12, color: PAL.ink3, align: 'left' });
+  ctx.strokeStyle = PAL.teal;
   ctx.lineWidth = 2.5;
+  const pts: [number, number][] = [];
+  for (let ww = 15; ww <= 70; ww += 0.5) pts.push([X(ww), Y(batSpeedOut(ww))]);
+  polyline(ctx, pts);
+  ctx.fillStyle = PAL.amber;
   ctx.beginPath();
-  for (let ww = 15; ww <= 70; ww += 0.5) {
-    const [x, y] = [X(ww), Y(vPrime(ww))];
-    ww === 15 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-  }
-  ctx.stroke();
-  ctx.fillStyle = AB.PAL.amber;
-  ctx.beginPath();
-  ctx.arc(X(best.W), Y(best.v), 5, 0, Math.PI * 2);
+  ctx.arc(X(BAT_IDEAL), Y(best), 5, 0, Math.PI * 2);
   ctx.fill();
-  AB.text(ctx, 'óptimo ' + AB.fmt(best.W, 1) + ' oz', X(best.W) + 8, Y(best.v), { size: 8, color: AB.PAL.amber, align: 'left' });
-  ctx.fillStyle = AB.PAL.blood;
+  AB.text(ctx, `óptimo ${AB.fmt(BAT_IDEAL, 1)} oz · ${AB.fmt(best, 1)} mph`, X(BAT_IDEAL), Y(best) - 14, { size: 12, color: PAL.amber, weight: '700' });
+  ctx.fillStyle = PAL.blood;
   ctx.beginPath();
   ctx.arc(X(W), Y(vv), 5, 0, Math.PI * 2);
   ctx.fill();
-  AB.text(ctx, 'W = ' + AB.fmt(W, 1) + ' oz', X(W), py1 + 12, { size: 8, color: AB.PAL.blood });
-  AB.text(ctx, "v' (mph)", px0, py0 - 10, { size: 8, color: AB.PAL.ink3, align: 'left' });
-  AB.text(ctx, '15 oz', px0, py1 + 12, { size: 8, color: AB.PAL.ink3, align: 'left' });
-  AB.text(ctx, '70 oz', px1, py1 + 12, { size: 8, color: AB.PAL.ink3, align: 'right' });
+  AB.text(ctx, `${AB.fmt(W, 1)} oz`, X(W), py1 + 14, { size: 12, color: PAL.blood, weight: '700' });
+  AB.text(ctx, '15 oz', px0, py1 + 14, { size: 12, color: PAL.ink3, align: 'left' });
+  AB.text(ctx, '70 oz', px1, py1 + 14, { size: 12, color: PAL.ink3, align: 'right' });
 
-  if (out) out('ba_out', "v' = " + AB.fmt(vv, 1) + ' mph · óptimo ' + AB.fmt(best.W, 1) + ' oz');
+  // Bate idealizado con el punto dulce a ⅔ desde el mango.
+  const yb = h * 0.78;
+  const bx = w * 0.12;
+  const bl = w * 0.6;
+  ctx.strokeStyle = PAL.boneDeep;
+  ctx.lineWidth = 6;
+  ctx.beginPath();
+  ctx.moveTo(bx - 16, yb);
+  ctx.lineTo(bx, yb);
+  ctx.stroke();
+  ctx.strokeStyle = PAL.boneEdge;
+  ctx.lineWidth = 12;
+  ctx.beginPath();
+  ctx.moveTo(bx, yb);
+  ctx.lineTo(bx + bl, yb);
+  ctx.stroke();
+  const sx = bx + bl * (2 / 3);
+  ctx.fillStyle = PAL.blood;
+  ctx.beginPath();
+  ctx.arc(sx, yb, 7, 0, Math.PI * 2);
+  ctx.fill();
+  AB.text(ctx, 'punto dulce (⅔ desde el mango)', sx, yb - 22, { size: 12, weight: '700', color: PAL.blood });
+  AB.text(ctx, 'mango', bx - 8, yb + 20, { size: 12, color: PAL.ink3, align: 'left' });
+  AB.text(ctx, `v bate = 63 − 0,39 W = ${AB.fmt(BAT.A - BAT.B * W, 1)} mph`, bx, h * 0.93, { size: 12, color: PAL.ink2, align: 'left' });
+
+  out?.('ba_out', `v' = ${AB.fmt(vv, 1)} mph · óptimo ${AB.fmt(BAT_IDEAL, 1)} oz → ${AB.fmt(best, 1)} mph`);
 }
 
-/* ── S16 · Colisiones ── */
-export function drawCollision(p: SimParams, _flags: SimFlags, out?: OutFn): void {
+/* ══════════════════════════════════════════════════════════════════════════
+   S16 · Colisiones (§3.10.1–§3.10.2, ec. 3.105, 3.113–3.116)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+export function collision(v: number, dx: number, m: number) {
+  const a = (v * v) / (2 * dx);
+  const G = a / G_EARTH;
+  const t = (2 * dx) / v;
+  const F = m * a;
+  return { a, G, t, F, GSI: Math.pow(G, 2.5) * t, sigmaMPa: F / 3e-4 / 1e6 };
+}
+
+export function drawCollision(p: SimParams, _f: SimFlags, out?: OutFn): void {
   const c = getCanvas('sim-collision');
   if (!c) return;
   const { ctx, w, h } = c;
-  const v = p.co_v || 4.4, dx = p.co_dx || 0.01, m = p.co_m || 3;
-  const a = (v * v) / (2 * dx), G = a / 9.8, F = m * a;
+  const C = collision(p.co_v, p.co_dx, p.co_m);
 
-  const yg = h * 0.72;
-  ctx.strokeStyle = AB.PAL.ink3;
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.moveTo(w * 0.08, yg);
-  ctx.lineTo(w * 0.56, yg);
-  ctx.stroke();
+  const yg = h * 0.66;
+  ground(ctx, w * 0.06, w * 0.5, yg, PAL.ink3, 1.5);
+  const dxpx = 6 + Math.max(0, Math.min(60, (Math.log10(p.co_dx) + 3) * 22));
+  ctx.fillStyle = AB.alpha(PAL.amber, 0.7);
+  ctx.fillRect(w * 0.14, yg - dxpx, 70, dxpx);
+  AB.text(ctx, `Δx = ${AB.fmt(p.co_dx * 1000, p.co_dx < 0.01 ? 1 : 0)} mm`, w * 0.14 + 76, yg - dxpx / 2, { size: 12, weight: '700', color: PAL.amber, align: 'left' });
+  const ox = w * 0.14 + 35;
+  const oy = yg - dxpx - 22;
+  head(ctx, ox, oy, 18);
+  AB.arrow(ctx, ox, oy - 66, ox, oy - 26, { color: PAL.teal, width: 3, head: 9 });
+  AB.text(ctx, `v = ${AB.fmt(p.co_v, 2)} m/s · m = ${AB.fmt(p.co_m, 0)} kg`, w * 0.06, h * 0.07, { size: 12, color: PAL.teal, align: 'left', weight: '700' });
+  AB.text(ctx, `t col = ${AB.fmt(C.t * 1000, 1)} ms · F = ${AB.espan(Math.round(C.F))} N`, w * 0.06, h * 0.07 + 20, { size: 12, color: PAL.ink2, align: 'left' });
+  AB.text(ctx, `GSI ≈ ${AB.espan(Math.round(C.GSI))} (1000 → 50 % fatal)`, w * 0.06, h * 0.07 + 40, { size: 12, color: PAL.ink2, align: 'left' });
+  const sigOk = C.sigmaMPa < 170;
+  AB.text(ctx, `tibia (A ≈ 3 cm²): σ = ${AB.fmt(C.sigmaMPa, 0)} MPa ${sigOk ? '< ' : '> '}UCS 170`, w * 0.06, yg + 22, {
+    size: 12,
+    color: sigOk ? PAL.ink2 : PAL.blood,
+    align: 'left',
+    weight: sigOk ? '400' : '700',
+  });
 
-  const dxpx = 5 + Math.max(0, Math.min(55, (Math.log10(dx) - Math.log10(0.001)) * 19));
-  ctx.fillStyle = AB.PAL.amber;
-  ctx.fillRect(w * 0.12, yg - dxpx, 52, dxpx);
-  AB.text(ctx, 'Δx', w * 0.12 + 6, yg - dxpx - 5, { size: 9, weight: '700', color: AB.PAL.amber, align: 'left' });
-
-  const ox = w * 0.24, oy = yg - dxpx - 30;
-  ctx.fillStyle = AB.PAL.skin;
-  ctx.strokeStyle = AB.PAL.skinEdge;
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.arc(ox, oy, 15, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.stroke();
-  AB.arrow(ctx, ox, oy - 22, ox, oy - 50, { color: AB.PAL.teal, width: 3, head: 9 });
-  AB.text(ctx, 'v = ' + AB.fmt(v, 1) + ' m/s', ox, oy - 60, { size: 9, color: AB.PAL.teal });
-  AB.text(ctx, 'm = ' + AB.fmt(m, 0) + ' kg', ox, oy + 28, { size: 9, color: AB.PAL.ink3 });
-
-  const gx = w * 0.66, gy = h * 0.12, gh = h * 0.62, gw = Math.max(w * 0.07, 44);
-  const z = (gv: number) => gy + gh * (1 - gv / 250);
-  ctx.fillStyle = 'rgba(45,125,79,.14)';
-  ctx.fillRect(gx, z(25), gw, gh * (25 / 250));
-  ctx.fillStyle = 'rgba(154,91,0,.14)';
-  ctx.fillRect(gx, z(80), gw, gh * ((80 - 25) / 250));
-  ctx.fillStyle = 'rgba(168,42,30,.18)';
-  ctx.fillRect(gx, z(175), gw, gh * ((175 - 80) / 250));
-  ctx.fillStyle = 'rgba(168,42,30,.4)';
-  ctx.fillRect(gx, z(250), gw, gh * ((250 - 175) / 250));
-  ctx.strokeStyle = AB.PAL.line;
+  // Barra de factor G con las anclas del libro.
+  const gx = w * 0.66;
+  const gy = h * 0.1;
+  const gh = h * 0.78;
+  const gw = Math.max(w * 0.07, 40);
+  const Gmax = 250;
+  const z = (gv: number) => gy + gh * (1 - Math.min(gv, Gmax) / Gmax);
+  ctx.fillStyle = AB.alpha(PAL.good, 0.16);
+  ctx.fillRect(gx, z(60), gw, z(0) - z(60));
+  ctx.fillStyle = AB.alpha(PAL.amber, 0.18);
+  ctx.fillRect(gx, z(175), gw, z(60) - z(175));
+  ctx.fillStyle = AB.alpha(PAL.blood, 0.32);
+  ctx.fillRect(gx, z(Gmax), gw, z(175) - z(Gmax));
+  ctx.strokeStyle = PAL.line;
   ctx.lineWidth = 1.5;
   ctx.strokeRect(gx, gy, gw, gh);
-  [25, 80, 175].forEach((gv) => {
-    ctx.strokeStyle = 'rgba(107,120,133,.5)';
+  const anchors: [number, string][] = [
+    [10, 'cabeza 1 m/s'],
+    [60, 'placaje sin lesión'],
+    [98, 'conmoción'],
+    [175, 'no supervivible'],
+  ];
+  anchors.forEach(([gv, lab]) => {
+    ctx.strokeStyle = AB.alpha(PAL.ink3, 0.6);
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(gx, z(gv));
-    ctx.lineTo(gx + gw, z(gv));
+    ctx.lineTo(gx + gw + 4, z(gv));
     ctx.stroke();
+    AB.text(ctx, `${gv} g ${lab}`, gx + gw + 8, z(gv), { size: 12, color: PAL.ink2, align: 'left' });
   });
-  const zlab = [
-    { g: 12.5, t: 'seguro', c: AB.PAL.good },
-    { g: 52.5, t: 'lesión', c: AB.PAL.amber },
-    { g: 127.5, t: 'fractura', c: AB.PAL.blood },
-    { g: 212.5, t: 'fatal', c: AB.PAL.blood },
-  ];
-  zlab.forEach((l) => {
-    AB.text(ctx, l.t, gx + gw / 2, z(l.g), { size: 8, weight: '700', color: l.c });
-  });
-  AB.text(ctx, 'Factor G', gx + gw / 2, gy - 10, { size: 9, weight: '700', color: AB.PAL.ink2 });
-
-  const gv = Math.min(G, 250), my = z(gv);
-  ctx.strokeStyle = AB.PAL.blood;
+  const my = z(C.G);
+  ctx.strokeStyle = PAL.blood;
   ctx.lineWidth = 3;
   ctx.beginPath();
-  ctx.moveTo(gx - 5, my);
-  ctx.lineTo(gx + gw + 5, my);
+  ctx.moveTo(gx - 6, my);
+  ctx.lineTo(gx + gw + 2, my);
   ctx.stroke();
-  AB.text(ctx, AB.fmt(gv, 0) + ' g', gx - 8, my, { size: 11, weight: '700', color: AB.PAL.blood, align: 'right' });
+  AB.text(ctx, `${AB.fmt(C.G, 0)} g${C.G > Gmax ? ' ↑' : ''}`, gx - 10, my, { size: 14, weight: '700', color: PAL.blood, align: 'right' });
 
-  if (out) out('co_out', 'G = ' + AB.fmt(gv, 0) + ' g · F = ' + AB.espan(Math.round(F)) + ' N');
+  out?.('co_out', `G = ${AB.fmt(C.G, 0)} g · F = ${AB.espan(Math.round(C.F))} N · GSI ≈ ${AB.espan(Math.round(C.GSI))}`);
 }
 
-/* ── S17 · Golpe de boxeo ── */
-export function drawBoxing(p: SimParams, flags: SimFlags, out?: OutFn): void {
+/* ══════════════════════════════════════════════════════════════════════════
+   S17 · Boxeo (§3.10.3, ec. 3.121–3.125)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+export function punch(vMph: number, glove: boolean) {
+  const vP = vMph / MPH;
+  const vf = (glove ? 0.236 : 0.382) * vP;
+  const dx = glove ? 0.01 : 0.001;
+  const a = (vf * vf) / (2 * dx);
+  const G = a / G_EARTH;
+  const t = (2 * dx) / vf;
+  return { vf, G, t, GSI: Math.pow(G, 2.5) * t };
+}
+
+export function drawBoxing(p: SimParams, f: SimFlags, out?: OutFn): void {
   const c = getCanvas('sim-boxing');
   if (!c) return;
   const { ctx, w, h } = c;
-  const vPmph = p.bx_v || 30;
-  const glove = flags.glove;
-  const vP = vPmph / 2.237;
-  const vf = glove ? 0.236 * vP : 0.382 * vP;
-  const dx = glove ? 0.01 : 0.001;
-  const a = (vf * vf) / (2 * dx), G = a / 9.8, tc = (2 * dx) / vf, GSI = Math.pow(G, 2.5) * tc;
-  const fy = h * 0.42, fx = w * 0.3;
+  const glove = f.glove;
+  const B = punch(p.bx_v, glove);
+  const fy = h * 0.36;
+  const fx = w * 0.4;
 
-  ctx.strokeStyle = AB.PAL.skinEdge;
+  ctx.strokeStyle = PAL.skinEdge;
   ctx.lineWidth = 10;
   ctx.beginPath();
   ctx.moveTo(w * 0.06, fy);
   ctx.lineTo(fx - 14, fy);
   ctx.stroke();
-
   if (glove) {
-    ctx.fillStyle = AB.PAL.muscle;
-    ctx.strokeStyle = AB.PAL.muscleEdge;
+    ctx.fillStyle = PAL.muscle;
+    ctx.strokeStyle = PAL.muscleEdge;
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.arc(fx, fy, 19, 0, Math.PI * 2);
+    ctx.arc(fx, fy, 20, 0, Math.PI * 2);
     ctx.fill();
     ctx.stroke();
-    AB.text(ctx, 'guante · Δx≈1 cm', fx, fy + 34, { size: 8, color: AB.PAL.muscleEdge });
   } else {
-    ctx.fillStyle = AB.PAL.skin;
-    ctx.strokeStyle = AB.PAL.skinEdge;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.arc(fx, fy, 12, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.arc(fx, fy, 5, 0, Math.PI * 2);
-    ctx.fillStyle = AB.PAL.ink;
-    ctx.fill();
-    AB.text(ctx, 'puño limpio · Δx≈1 mm', fx, fy + 30, { size: 8, color: AB.PAL.blood });
+    head(ctx, fx, fy, 12);
   }
-  AB.arrow(ctx, w * 0.1, fy, fx + (glove ? 24 : 16), fy, { color: AB.PAL.teal, width: 3.5, head: 9 });
-  AB.text(ctx, 'v = ' + AB.fmt(vPmph, 0) + ' mph', w * 0.12, fy - 20, { size: 9, color: AB.PAL.teal, align: 'left' });
+  AB.text(ctx, glove ? 'guante · Δx ≈ 1 cm · inelástica' : 'puño limpio · Δx ≈ 1 mm · elástica', w * 0.06, fy + 38, {
+    size: 12,
+    color: glove ? PAL.muscleEdge : PAL.blood,
+    align: 'left',
+    weight: '700',
+  });
+  AB.text(ctx, `v puño = ${AB.fmt(p.bx_v, 0)} mph`, w * 0.06, fy - 24, { size: 12, color: PAL.teal, align: 'left' });
 
-  const hx = w * 0.72, hy = h * 0.42;
-  ctx.fillStyle = AB.PAL.skin;
-  ctx.strokeStyle = AB.PAL.skinEdge;
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.arc(hx, hy, 30, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.stroke();
-  ctx.fillStyle = AB.PAL.ink;
-  ctx.beginPath();
-  ctx.arc(hx + 12, hy - 9, 3, 0, Math.PI * 2);
-  ctx.arc(hx + 12, hy + 6, 3, 0, Math.PI * 2);
-  ctx.fill();
-  AB.arrow(ctx, hx, hy - 38, hx, hy - 62, { color: AB.PAL.amber, width: 2.5, head: 8 });
-  AB.text(ctx, 'v_f = ' + AB.fmt(vf, 1) + ' m/s', hx, hy - 74, { size: 9, weight: '700', color: AB.PAL.amber });
+  const hx = w * 0.72;
+  head(ctx, hx, fy, 30);
+  AB.arrow(ctx, hx + 38, fy, hx + 38 + Math.min(90, B.vf * 12), fy, { color: PAL.amber, width: 3, head: 9 });
+  AB.text(ctx, `cabeza: ${AB.fmt(B.vf, 1)} m/s · ${AB.espan(Math.round(B.G))} g`, hx, fy - 46, { size: 12, weight: '700', color: PAL.amber });
 
-  const gy = h * 0.8, gx = w * 0.12, gw = w * 0.76;
-  ctx.strokeStyle = AB.PAL.line;
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(gx, gy);
-  ctx.lineTo(gx + gw, gy);
-  ctx.stroke();
-  ctx.fillStyle = 'rgba(45,125,79,.14)';
-  ctx.fillRect(gx, gy - 7, (gw * (Math.log10(1000) - 2)) / 3, 14);
-  ctx.fillStyle = 'rgba(168,42,30,.35)';
-  ctx.fillRect(gx + (gw * (Math.log10(1000) - 2)) / 3, gy - 7, gw * (1 - (Math.log10(1000) - 2) / 3), 14);
-  const pos = (val: number) => gx + (gw * (Math.log10(val) - 2)) / 3;
-  const tick = (val: number, lab: string) => {
+  // Escala logarítmica del GSI (10 a 100 000).
+  const gx = w * 0.08;
+  const gw = w * 0.84;
+  const gy = h * 0.76;
+  const pos = (val: number) => gx + (gw * (Math.log10(Math.max(10, val)) - 1)) / 4;
+  ctx.fillStyle = AB.alpha(PAL.good, 0.16);
+  ctx.fillRect(gx, gy - 7, pos(400) - gx, 14);
+  ctx.fillStyle = AB.alpha(PAL.amber, 0.2);
+  ctx.fillRect(pos(400), gy - 7, pos(1000) - pos(400), 14);
+  ctx.fillStyle = AB.alpha(PAL.blood, 0.35);
+  ctx.fillRect(pos(1000), gy - 7, gx + gw - pos(1000), 14);
+  ctx.strokeStyle = PAL.line;
+  ctx.lineWidth = 1;
+  ctx.strokeRect(gx, gy - 7, gw, 14);
+  const ticks: [number, string, number][] = [
+    [117, '117', 0],
+    [400, '400 conmoción leve', 1],
+    [1000, '1000: 50 % fatal', 0],
+    [25600, '25 600', 1],
+  ];
+  ticks.forEach(([val, lab, row]) => {
     const x = pos(val);
-    ctx.strokeStyle = AB.PAL.ink3;
-    ctx.lineWidth = 1;
+    ctx.strokeStyle = PAL.ink3;
     ctx.beginPath();
     ctx.moveTo(x, gy - 10);
     ctx.lineTo(x, gy + 10);
     ctx.stroke();
-    AB.text(ctx, lab, x, gy + 20, { size: 7, color: AB.PAL.ink3 });
-  };
-  tick(117, '117');
-  tick(593, '593');
-  tick(1000, '1000');
-  tick(25600, '25 600');
-  AB.text(ctx, '≈50 % fatal', pos(1000), gy - 20, { size: 7, color: AB.PAL.blood });
-  const tFrac = Math.max(0, Math.min(1, (Math.log10(GSI) - 2) / 3));
-  const mx = gx + gw * tFrac;
-  ctx.fillStyle = AB.PAL.blood;
-  ctx.beginPath();
-  ctx.moveTo(mx, gy - 8);
-  ctx.lineTo(mx - 5, gy - 15);
-  ctx.lineTo(mx + 5, gy - 15);
-  ctx.closePath();
-  ctx.fill();
-  AB.text(ctx, 'GSI = ' + AB.espan(Math.round(GSI)), mx, gy - 26, { size: 10, weight: '700', color: AB.PAL.blood });
-  AB.text(ctx, 'Índice GSI', gx + gw / 2, gy + 34, { size: 8, weight: '700', color: AB.PAL.ink2 });
+    AB.text(ctx, lab, x, gy + (row ? 40 : 22), { size: 12, color: PAL.ink2 });
+  });
+  const mx = pos(B.GSI);
+  AB.triangle(ctx, mx, gy - 16, 11, { color: PAL.blood });
+  AB.text(ctx, `GSI ≈ ${AB.espan(Math.round(B.GSI))}`, mx, gy - 32, { size: 14, weight: '700', color: PAL.blood });
 
-  if (out) out('bx_out', 'v_f = ' + AB.fmt(vf, 1) + ' m/s · G = ' + AB.fmt(G, 0) + ' g · GSI = ' + AB.espan(Math.round(GSI)));
+  out?.('bx_out', `v cabeza = ${AB.fmt(B.vf, 1)} m/s · ${AB.espan(Math.round(B.G))} g · GSI ≈ ${AB.espan(Math.round(B.GSI))}`);
 }
 
-/* ── S18 · Vuelo, arrastre y efecto Magnus ── */
+/* ══════════════════════════════════════════════════════════════════════════
+   S18 · Vuelo con arrastre y Magnus (§3.12, ec. 3.134–3.137)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/** Integración de Euler de una pelota de béisbol (m = 0,145 kg, r = 3,7 cm, C_D = 0,45). */
 export function flightSim(v0: number, thDeg: number, mag: boolean): { x: number; maxY: number; pts: [number, number][] } {
-  const m = 0.145, r = 0.037, A = Math.PI * r * r, rho = 1.2, CD = 0.45;
-  const k = (0.5 * CD * A * rho) / m, km = 0.008;
+  const m = 0.145;
+  const r = 0.037;
+  const A = Math.PI * r * r;
+  const rho = 1.2;
+  const CD = 0.45;
+  const k = (0.5 * CD * A * rho) / m;
+  const km = 0.008; // coeficiente de Magnus ilustrativo (no está en el texto)
   const thR = (thDeg * Math.PI) / 180;
-  let x = 0, y = 0, vx = v0 * Math.cos(thR), vy = v0 * Math.sin(thR);
-  const dt = 0.004, pts: [number, number][] = [];
+  let x = 0;
+  let y = 0;
+  let vx = v0 * Math.cos(thR);
+  let vy = v0 * Math.sin(thR);
+  const dt = 0.004;
+  const pts: [number, number][] = [];
   let maxY = 0;
   for (let i = 0; i < 4000; i++) {
     const v = Math.hypot(vx, vy);
-    const fd = k * v;
-    let ax = -fd * vx, ay = -9.8 - fd * vy;
+    let ax = -k * v * vx;
+    let ay = -G_EARTH - k * v * vy;
     if (mag && v > 0.01) {
-      const l = km * v * v, iq = 1 / v;
-      ax += -l * vy * iq;
-      ay += l * vx * iq;
+      const l = km * v * v;
+      ax += (-l * vy) / v;
+      ay += (l * vx) / v;
     }
     vx += ax * dt;
     vy += ay * dt;
@@ -1447,159 +1651,97 @@ export function flightSim(v0: number, thDeg: number, mag: boolean): { x: number;
   return { x, maxY, pts };
 }
 
-export function drawFlight(p: SimParams, flags: SimFlags, out?: OutFn): void {
+export function optimalAngle(v0: number): number {
+  let best = 0;
+  let opt = 45;
+  for (let a = 10; a <= 70; a += 1) {
+    const r = flightSim(v0, a, false).x;
+    if (r > best) {
+      best = r;
+      opt = a;
+    }
+  }
+  return opt;
+}
+
+export function drawFlight(p: SimParams, f: SimFlags, out?: OutFn): void {
   const c = getCanvas('sim-flight');
   if (!c) return;
   const { ctx, w, h } = c;
-  const v0 = p.fl_v || 18, th = p.fl_theta || 40;
-  const air = flags.air, mag = flags.mag;
+  const v0 = p.fl_v;
+  const th = p.fl_theta;
   const thR = (th * Math.PI) / 180;
-  const Rvac = (v0 * v0 * Math.sin(2 * thR)) / 9.8;
-  const Hvac = (v0 * v0 * Math.sin(thR) * Math.sin(thR)) / (2 * 9.8);
-  let fl: { x: number; maxY: number; pts: [number, number][] } | null = null;
-  if (air) fl = flightSim(v0, th, mag);
+  const Rvac = (v0 * v0 * Math.sin(2 * thR)) / G_EARTH;
+  const Hvac = (v0 * v0 * Math.sin(thR) ** 2) / (2 * G_EARTH);
+  const fl = f.air ? flightSim(v0, th, f.mag) : null;
   const Rmax = Math.max(Rvac, fl ? fl.x : 0, 1);
   const Hmax = Math.max(Hvac, fl ? fl.maxY : 0, 0.5);
-  const x0 = w * 0.1, y0 = h * 0.86, sx = (w * 0.8) / Rmax, sy = (h * 0.7) / Hmax;
-  const X = (xx: number) => x0 + xx * sx, Y = (yy: number) => y0 - yy * sy;
+  const x0 = w * 0.08;
+  const y0 = h * 0.8;
+  const sx = (w * 0.84) / Rmax;
+  const sy = (h * 0.58) / Hmax;
+  const X = (xx: number) => x0 + xx * sx;
+  const Y = (yy: number) => y0 - yy * sy;
 
-  ctx.strokeStyle = AB.PAL.ink3;
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.moveTo(x0, y0);
-  ctx.lineTo(w * 0.94, y0);
-  ctx.stroke();
-
-  const T = (2 * v0 * Math.sin(thR)) / 9.8;
-  ctx.strokeStyle = AB.PAL.tealLight;
+  ground(ctx, x0, w * 0.96, y0, PAL.ink3, 1.5);
+  const T = (2 * v0 * Math.sin(thR)) / G_EARTH;
+  ctx.strokeStyle = PAL.tealLight;
   ctx.lineWidth = 2;
   ctx.setLineDash([5, 4]);
-  ctx.beginPath();
+  const vac: [number, number][] = [];
   for (let i = 0; i <= 64; i++) {
-    const t = (T * i) / 64, xx = v0 * Math.cos(thR) * t, yy = v0 * Math.sin(thR) * t - 4.9 * t * t;
-    if (yy < 0) break;
-    i ? ctx.lineTo(X(xx), Y(yy)) : ctx.moveTo(X(xx), Y(yy));
+    const t = (T * i) / 64;
+    vac.push([X(v0 * Math.cos(thR) * t), Y(Math.max(0, v0 * Math.sin(thR) * t - 4.9 * t * t))]);
   }
-  ctx.stroke();
+  polyline(ctx, vac);
   ctx.setLineDash([]);
+  AB.text(ctx, `vacío ${AB.fmt(Rvac, 0)} m`, X(Rvac), y0 + 18, { size: 12, weight: '700', color: PAL.teal, align: 'right' });
 
   if (fl) {
-    ctx.strokeStyle = AB.PAL.blood;
-    ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    fl.pts.forEach(([xx, yy], i) => {
-      i ? ctx.lineTo(X(xx), Y(yy)) : ctx.moveTo(X(xx), Y(yy));
-    });
-    ctx.stroke();
-    ctx.strokeStyle = AB.PAL.blood;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(X(fl.x), y0);
-    ctx.lineTo(X(fl.x), y0 + 8);
-    ctx.stroke();
-    AB.text(ctx, AB.fmt(fl.x, 0) + ' m', X(fl.x), y0 + 22, { size: 9, weight: '700', color: AB.PAL.blood });
+    ctx.strokeStyle = PAL.blood;
+    ctx.lineWidth = 2.6;
+    polyline(
+      ctx,
+      fl.pts.map(([xx, yy]) => [X(xx), Y(Math.max(0, yy))] as [number, number]),
+    );
+    AB.text(ctx, `aire ${AB.fmt(fl.x, 0)} m`, X(fl.x), y0 + 36, { size: 12, weight: '700', color: PAL.blood, align: fl.x < Rvac * 0.5 ? 'left' : 'right' });
   }
 
-  ctx.strokeStyle = AB.PAL.teal;
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(X(Rvac), y0);
-  ctx.lineTo(X(Rvac), y0 + 8);
-  ctx.stroke();
-  AB.text(ctx, 'D₀ ' + AB.fmt(Rvac, 0) + ' m', X(Rvac), y0 + 22, { size: 9, weight: '700', color: AB.PAL.teal });
+  const ar = Math.min(w * 0.1, h * 0.14);
+  AB.arrow(ctx, x0, y0, x0 + ar * Math.cos(thR), y0 - ar * Math.sin(thR), { color: PAL.teal, width: 3 });
+  AB.text(ctx, `${th}°`, x0 + ar * Math.cos(thR) + 10, y0 - ar * Math.sin(thR), { size: 12, color: PAL.teal, align: 'left' });
+  const opt = optimalAngle(v0);
+  AB.text(ctx, `ángulo óptimo: 45° en vacío · ≈ ${opt}° con aire`, x0, h * 0.07, { size: 13, weight: '700', color: PAL.amber, align: 'left' });
+  if (f.mag) AB.text(ctx, 'Magnus (backspin) esquemático', x0, h * 0.07 + 20, { size: 12, color: PAL.ink3, align: 'left' });
 
-  const ar = Math.min(w * 0.12, h * 0.14);
-  ctx.strokeStyle = AB.PAL.teal;
-  ctx.lineWidth = 3;
-  ctx.beginPath();
-  ctx.moveTo(x0, y0);
-  ctx.lineTo(x0 + ar * Math.cos(thR), y0 - ar * Math.sin(thR));
-  ctx.stroke();
-  const axv = x0 + ar * Math.cos(thR), ayv = y0 - ar * Math.sin(thR), a2 = ar * 0.22;
-  ctx.fillStyle = AB.PAL.teal;
-  ctx.beginPath();
-  ctx.moveTo(axv, ayv);
-  ctx.lineTo(axv - a2 * Math.cos(thR - Math.PI / 6), ayv + a2 * Math.sin(thR - Math.PI / 6));
-  ctx.lineTo(axv - a2 * Math.cos(thR + Math.PI / 6), ayv + a2 * Math.sin(thR + Math.PI / 6));
-  ctx.closePath();
-  ctx.fill();
-  AB.text(ctx, th + '°', x0 + ar * Math.cos(thR) * 0.5, y0 - ar * Math.sin(thR) * 0.5 - 6, { size: 9, color: AB.PAL.teal });
-
-  let opt = 45;
-  if (air) {
-    let best = 0;
-    for (let a = 10; a <= 70; a += 1) {
-      const r = flightSim(v0, a, false).x;
-      if (r > best) {
-        best = r;
-        opt = a;
-      }
-    }
-  }
-  AB.text(ctx, 'θ óptimo (aire) ≈ ' + opt + '°', w * 0.1, h * 0.08, { size: 9, weight: '700', color: AB.PAL.amber, align: 'left' });
-
-  const D = air ? (fl ? fl.x : Rvac) : Rvac;
-  if (out) out('fl_out', air ? 'D = ' + AB.fmt(D, 0) + ' m · D₀ = ' + AB.fmt(Rvac, 0) + ' m' : 'D = ' + AB.fmt(Rvac, 0) + ' m');
+  out?.('fl_out', f.air && fl ? `D = ${AB.fmt(fl.x, 0)} m · vacío ${AB.fmt(Rvac, 0)} m · óptimo ≈ ${opt}°` : `D = ${AB.fmt(Rvac, 0)} m (vacío)`);
 }
 
-/* ── Orquestador global de redibujado ── */
-export function redrawSlide(slideIndex: number, clock: number, params: SimParams, flags: SimFlags, out?: OutFn): void {
-  switch (slideIndex) {
-    case 1:
-      drawStab(params, flags, out);
-      break;
-    case 2:
-      drawPresion(params, flags, out);
-      break;
-    case 3:
-      drawGait(params, flags, out);
-      break;
-    case 4:
-      drawFriccion(params, flags, out);
-      break;
-    case 5:
-      drawPendulo(params, clock, flags, out);
-      break;
-    case 6:
-      drawEnergy(params, flags, out);
-      break;
-    case 7:
-      drawPogo(params, flags, out);
-      break;
-    case 8:
-      drawSprint(params, flags, out);
-      break;
-    case 9:
-      drawJump(params, flags, out);
-      break;
-    case 10:
-      drawVault(params, flags, out);
-      break;
-    case 11:
-      drawThrow(params, flags, out);
-      break;
-    case 12:
-      drawPhases(params, flags, out);
-      break;
-    case 13:
-      drawPower(params, clock, flags, out);
-      break;
-    case 14:
-      drawGolf(params, flags, out);
-      break;
-    case 15:
-      drawBat(params, flags, out);
-      break;
-    case 16:
-      drawCollision(params, flags, out);
-      break;
-    case 17:
-      drawBoxing(params, flags, out);
-      break;
-    case 18:
-      drawFlight(params, flags, out);
-      break;
-    default:
-      break;
-  }
+/* ── Orquestador de redibujado ── */
+const DRAW: Partial<Record<number, (p: SimParams, f: SimFlags, out?: OutFn) => void>> = {
+  1: drawStab,
+  2: drawPresion,
+  3: drawGait,
+  4: drawFriccion,
+  5: drawPendulo,
+  6: drawEnergy,
+  7: drawPogo,
+  8: drawSprint,
+  9: drawJump,
+  10: drawVault,
+  11: drawThrow,
+  12: drawPhases,
+  13: drawPower,
+  14: drawGolf,
+  15: drawBat,
+  16: drawCollision,
+  17: drawBoxing,
+  18: drawFlight,
+};
+
+export function redrawSlide(slideIndex: number, params: SimParams, flags: SimFlags, out?: OutFn): void {
+  const fn = DRAW[slideIndex];
+  if (!fn) return;
+  AB.refreshPalette();
+  fn(params, flags, out);
 }

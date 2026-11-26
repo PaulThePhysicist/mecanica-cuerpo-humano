@@ -1,7 +1,7 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef } from 'react';
 import { useEngine, EngineContext } from './useEngine';
 import './cap3.css';
-import { MODULES, TOTAL, redrawSlide } from './sims';
+import { MODULES, TOTAL } from './sims';
 // @ts-ignore - katex auto-render no incluye tipos
 import renderMathInElement from 'katex/contrib/auto-render';
 
@@ -25,16 +25,6 @@ import Slide16 from './Slide16';
 import Slide17 from './Slide17';
 import Slide18 from './Slide18';
 
-function renderKatex() {
-  renderMathInElement(document.body, {
-    delimiters: [
-      { left: '\\(', right: '\\)', display: false },
-      { left: '\\[', right: '\\]', display: true },
-    ],
-    throwOnError: false,
-  });
-}
-
 const SLIDES: React.ComponentType<{ engine: ReturnType<typeof useEngine>; onBack?: () => void }>[] = [
   Slide0, Slide1, Slide2, Slide3, Slide4, Slide5, Slide6, Slide7, Slide8, Slide9,
   Slide10, Slide11, Slide12, Slide13, Slide14, Slide15, Slide16, Slide17, Slide18,
@@ -42,53 +32,29 @@ const SLIDES: React.ComponentType<{ engine: ReturnType<typeof useEngine>; onBack
 
 export default function Capitulo3({ onBack }: { onBack?: () => void }) {
   const engine = useEngine();
-  const { activeSlide, go, next, prev, goModule } = engine;
-  const [moduleTabsBuilt, setModuleTabsBuilt] = useState(false);
+  const { activeSlide, go, next, prev, goModule, requestDraw } = engine;
+  const mainRef = useRef<HTMLElement | null>(null);
 
-  useEffect(() => {
-    renderKatex();
-    const id = setTimeout(renderKatex, 400);
-    return () => clearTimeout(id);
-  }, [activeSlide]);
-
-  useEffect(() => {
-    if (moduleTabsBuilt) return;
-    const host = document.getElementById('moduleBar');
-    if (!host) return;
-    MODULES.forEach((m) => {
-      if (m.id === 0) return;
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'module-tab';
-      b.dataset.module = String(m.id);
-      b.innerHTML = `<span class="mod-badge">${m.id}</span>${m.ico} ${m.name}`;
-      b.addEventListener('click', () => goModule(m.id));
-      host.appendChild(b);
-    });
-    setModuleTabsBuilt(true);
-  }, [moduleTabsBuilt, goModule]);
-
-  useEffect(() => {
-    const mod = MODULES.find((m) => m.slides.includes(activeSlide));
-    document.querySelectorAll('.module-tab').forEach((tab) => {
-      const active = +(tab as HTMLElement).dataset.module! === (mod ? mod.id : 0);
-      tab.classList.toggle('active', active);
-      tab.setAttribute('aria-current', active ? 'page' : 'false');
-    });
-  }, [activeSlide]);
-
+  // KaTeX acotado a la diapositiva y antes de pintar: sin LaTeX crudo visible
+  // ni re-escaneo de todo <body> con setTimeout (AUDITORIA_CAP3 T-11).
   useLayoutEffect(() => {
-    const out = (id: string, text: string) => {
-      const el = document.getElementById(id);
-      if (el) el.textContent = text;
-    };
-    redrawSlide(activeSlide, engine.clockRef.current, engine.paramsRef.current, engine.flagsRef.current, out);
-  }, [activeSlide, engine]);
+    if (mainRef.current) {
+      renderMathInElement(mainRef.current, {
+        delimiters: [
+          { left: '\\(', right: '\\)', display: false },
+          { left: '\\[', right: '\\]', display: true },
+        ],
+        throwOnError: false,
+      });
+    }
+    requestDraw();
+  }, [activeSlide, requestDraw]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (/INPUT|SELECT|TEXTAREA/.test((e.target as HTMLElement)?.tagName)) return;
-      if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (/INPUT|SELECT|TEXTAREA/.test(tag)) return;
+      if (e.key === 'ArrowRight' || e.key === 'PageDown' || (e.key === ' ' && tag !== 'BUTTON')) {
         e.preventDefault();
         next();
       } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
@@ -111,41 +77,50 @@ export default function Capitulo3({ onBack }: { onBack?: () => void }) {
 
   return (
     <EngineContext.Provider value={engine}>
-      <div className="capitulo-root">
-        <nav className="module-bar" id="moduleBar">
+      <div className="capitulo-root cap3-root">
+        <nav className="module-bar" aria-label="Módulos del capítulo 3">
           <div className="brand-mark">
             <span className="treatise">El cuerpo humano · capítulo 3</span>
             <span className="book">Física del Cuerpo Humano — I. P. Herman</span>
           </div>
           {onBack && (
-            <button
-              type="button"
-              className="module-tab"
-              onClick={onBack}
-              title="Volver al índice general de capítulos"
-              style={{ marginRight: '0.4rem', borderRight: '1px solid var(--line)' }}
-            >
+            <button type="button" className="module-tab module-tab--back" onClick={onBack} title="Volver al índice general de capítulos">
               📚 Índice
             </button>
           )}
+          {MODULES.filter((m) => m.id !== 0).map((m) => {
+            const active = m.id === currentMod.id;
+            return (
+              <button
+                key={m.id}
+                type="button"
+                className={`module-tab${active ? ' active' : ''}`}
+                aria-current={active ? 'page' : undefined}
+                onClick={() => goModule(m.id)}
+              >
+                <span className="mod-badge">{m.id}</span>
+                {m.ico} {m.name}
+              </button>
+            );
+          })}
         </nav>
 
-        <main className="slides">
+        <main className="slides" ref={mainRef} key={activeSlide}>
           <ActiveSlideComponent engine={engine} onBack={onBack} />
         </main>
 
-        <nav className="nav-bar">
+        <nav className="nav-bar" aria-label="Navegación de diapositivas">
           <button type="button" className="nav-btn" onClick={prev} aria-label="Anterior" title="Diapositiva anterior (←)">
             ‹
           </button>
-          <div className="nav-dots" id="navDots">
+          <div className="nav-dots">
             {Array.from({ length: TOTAL }).map((_, i) => (
               <button
                 key={i}
                 type="button"
                 className={`nav-dot ${i === activeSlide ? 'active' : ''}`}
                 onClick={() => go(i)}
-                title={`Ir a diapositiva ${i + 1}`}
+                aria-current={i === activeSlide ? 'step' : undefined}
                 aria-label={`Ir a diapositiva ${i + 1}`}
               />
             ))}
@@ -153,12 +128,10 @@ export default function Capitulo3({ onBack }: { onBack?: () => void }) {
           <button type="button" className="nav-btn" onClick={next} aria-label="Siguiente" title="Diapositiva siguiente (→)">
             ›
           </button>
-          <span className="slide-counter" id="slideCounter">
+          <span className="slide-counter">
             {activeSlide + 1} / {TOTAL}
           </span>
-          <span className="nav-module-label" id="navModuleLabel">
-            {currentMod.name}
-          </span>
+          <span className="nav-module-label">{currentMod.name}</span>
         </nav>
       </div>
     </EngineContext.Provider>
