@@ -79,7 +79,7 @@ Leyenda: ✅ cubierto y fiel · 🟡 cubierto con errores (corregidos, ver F-nn)
 
 | Elemento | Diapositiva | Estado |
 |---|---|---|
-| §3.3.1 Apoyo 60–65 % / oscilación 35–40 %; doble apoyo en el primer y último ~10 % del apoyo; FS/TO; subfases | S3 | 🟡 F-04 (decía «doble apoyo ~12 % del ciclo») |
+| §3.3.1 Apoyo 60–65 % / oscilación 35–40 %; doble apoyo en el primer y último ~10 % del apoyo; FS/TO; subfases | S3 | 🟡 F-04 (precisión de redacción) |
 | Ángulos sagitales (cadera 30°→−10°→35°, rodilla 5°/20°/40°/60–70°, tobillo) Fig. 3.11 | S3 (apunte) | ➕ cifras de rodilla y cadera |
 | §3.3.2 Acción muscular (excéntrica/concéntrica por fase), Figs. 3.12–3.13 | — | ⬜ |
 | §3.3.3 Fricción: F_f = μ_s N, Tabla 3.5, cartílago μ_k 0,003–0,01, μ_s > 0,15 para caminar, 0,17 a 3 mph (Fig. 3.17) | S4 | 🟡 F-05/F-06/F-07 |
@@ -183,11 +183,11 @@ Leyenda: ✅ cubierto y fiel · 🟡 cubierto con errores (corregidos, ver F-nn)
 | ID | Diap. | Antes | Libro (`.tex`) | Corrección |
 |---|---|---|---|---|
 | F-00 | 5–17 | Encabezados `3.4`…`3.11` desfasados (péndulo en «3.4», energética «3.5», pogo «3.6», salto «3.7», lanzar «3.8», golf «3.9», bateo «3.10», colisiones «3.11») | Péndulo §3.3.5–3.3.7, carrera §3.4, salto §3.5, lanzar §3.6, golf §3.7, bateo §3.10.4, colisiones §3.10 | Numeración por subsección real; contador «n / 19» ahora coincide con la barra inferior |
-| F-01 | 1 | CM a 0,55 H → 11,7° / 3,9° | Prob. 3.1: masa uniforme → 0,50 H → **12,8° / 4,3°**; Fig. 3.8: real ≈ 0,58 H → 11,1° / 3,8° | Conmutador 0,50 H / 0,58 H en el lienzo y ambos resultados en la teoría |
+| F-01 | 1 | CM a 0,55 H → 11,7° / 3,9° | Prob. 3.1: masa uniforme → 0,50 H → **12,8° / 4,3°**; Fig. 3.8: real ≈ 0,58 H → 11,1° / 3,7° | Conmutador 0,50 H / 0,58 H en el lienzo y ambos resultados en la teoría |
 | F-02 | 5,7,8,12,13,16 | `<strong>`, `<span class="tag">` impresos como texto | — | Reescrito en JSX |
 | F-03 | 2 | 1400 N / 23 cm² ≈ 60 N/cm² | 1400 N → ≈ 40 N/cm²; pico ≈ 60 N/cm² por menor área | Cadena del libro (2 → 10 → 40 → 60 N/cm²); lienzo con ambos niveles |
-| F-04 | 3 | «doble apoyo ~12 % del ciclo» | primer y último ~10 % **del apoyo** | Corregido |
-| F-05 | 4 | «3 mph requiere μ_s ≥ 0,15; el zapato entrega 0,17» | μ_s > 0,15 en general; **0,17 es el requerido a 3 mph** (Fig. 3.17) | Corregido; umbral del lienzo depende de la rapidez (0,15 lento / 0,17 a 3 mph) |
+| F-04 | 3 | «doble apoyo ~12 % del ciclo» (numéricamente compatible: 2 × 10 % de 62 %) | el libro lo expresa como el primer y último ~10 % **del apoyo** | Redactado como en el libro; el lienzo marca «DOBLE APOYO» y las barras muestran el desfase del 50 % entre piernas |
+| F-05 | 4 | «3 mph requiere μ_s ≥ 0,15; el zapato entrega 0,17» | μ_s > 0,15 en general; **0,17 es el requerido a 3 mph** (Fig. 3.17) | Corregido; el lienzo distingue tres zonas: < 0,15 resbala · 0,15–0,17 solo paso lento · ≥ 0,17 camina a 3 mph |
 | F-06 | 4 | hielo μ ≈ 0,05 | Tabla 3.5: hielo/hielo 0,1 (0,02 cinético a 4 m/s) | Corregido |
 | F-07 | 4 | «umbral 0,15 de la tabla 3.5»; cartílago «10–30× menor» | el 0,15 sale del texto/Fig. 3.17; cartílago 0,003–0,01 (rodilla, Tabla 3.5: 0,005–0,02) | Corregido |
 | F-08 | 5 | «T½ = 0,98 s ¡cerca del tiempo real!» | real ≈ 0,60 s (lento); bola-hilo 0,98 «aceptable», varilla 0,80 «mucho mejor», 2 segmentos 0,76 | Corregido + cifra real en lienzo |
@@ -237,10 +237,55 @@ Leyenda: ✅ cubierto y fiel · 🟡 cubierto con errores (corregidos, ver F-nn)
 | T-12 | Slides | lecturas (`.readout`) con doble dueño (texto JSX + `textContent` del motor) | El motor es el único dueño (`aria-live="polite"`) |
 | T-13 | `sims.ts` | 7 avisos `no-unused-expressions` (`i ? lineTo : moveTo`) | `if/else` |
 | T-14 | `Slide0`, S18 | `<span onClick>` sin rol ni teclado | `<button type="button">` |
-| T-15 | 1280×720 | ver §4.3 | — |
+| T-15 | 1280×720 | pestañas de módulo desbordaban (Vuelo invisible); barra de controles tapaba el fondo del lienzo; 5 columnas de teoría con scroll oculto (hasta 90 px) | Sin la marca del libro ≤ 1440 px; controles bajo el lienzo; ritmo vertical ajustado y textos recortados — residuo ≤ 8 px |
+| T-16 | `ab.ts` | `fmt()` recortaba ceros **enteros** con `/\.?0+$/`: 10 → «1», 100 → «1», 570 → «57» (lecturas de presión, G, mph…) y ocultaba «0,80 s» / «10,0 m/s» | Decimales fijos con coma; sin recortes |
 
 ---
 
-## 4 · Estado de ejecución
+## 4 · Estado de ejecución — 2026-11-26
 
-(Se completa al cierre de la rama — ver sección final.)
+Commits en `feat/cap3-auditoria`: `23caadf` (esta matriz) y `b6b1775` (correcciones).
+Alcance respetado: solo `webapp/src/chapters/cap3/**` y este archivo; `App.tsx` intacto
+(Cap. 3 sigue con `available: false`, accesible con `?preview=3`).
+
+### 4.1 Verificación automática
+
+| Comprobación | Resultado |
+|---|---|
+| `npm ci` | ✅ |
+| `npx tsc -b` | ✅ 0 errores |
+| `npx oxlint src/chapters/cap3` | ✅ 0 avisos (antes: 7 `no-unused-expressions`) |
+| `npm run build` | ✅ (`Capitulo3` 115 kB / 33 kB gzip; el aviso de >500 kB es el chunk `three` compartido, preexistente) |
+| KaTeX: `.katex-error` en las 19 diapositivas | 0 (se halló y corrigió `\text{kg·cm}` → `\cdotp` en rojo) |
+| Texto visible con `\(`, `\[`, `x_y`, `^{` crudos | 0 |
+| rAF por segundo con la diapositiva quieta (portada, S1 con el 3D cargado, S3) | **0** (antes 60 permanentes) |
+| rAF animando (S3 ▶) / tras pausar / al terminar solas (S11, S12) | 60 / 0 / 0 |
+| Desborde vertical de `.theory` a 1280×720 | ≤ 8 px (S1), resto 0–3 px |
+| Errores de página (Playwright, 19 diapositivas + interacciones) | 0 |
+
+### 4.2 Lo que NO se hizo (y por qué)
+
+- **Brechas de alcance (§1, ⬜):** §3.1 (Tablas 3.1–3.4), §3.8, §3.9, §3.11 (aceleración
+  sostenida), rebote/rodadura de §3.12 y las 86 figuras del libro. Añadirlas exige
+  diapositivas nuevas (cambia `TOTAL` y los módulos); queda como propuesta: S19
+  «Aceleración sostenida» (tolerancias ±g_z, presión arterial a +5 g_z) y una
+  diapositiva de musculatura de la marcha con las Tablas 3.1–3.3.
+- **Modelo de Magnus** de S18: el coeficiente `km = 0,008` es ilustrativo (el libro no da uno
+  para béisbol); está rotulado «esquemático» en el lienzo.
+- **Límites intermedios de las seis fases** (S12): el libro solo fija 0, 0,50 y 0,64 s; el resto
+  se rotula como esquemático.
+- **Curvas de energía** (S6) y **N(t)** (S9) son cualitativas (formas de las Figs. 3.20/3.32/3.38),
+  no datos digitalizados.
+
+### 4.3 Diapositivas con foco especial en la inspección visual (Vercel Preview, `?preview=3`)
+
+| Prioridad | Diap. | Qué mirar |
+|---|---|---|
+| 🔴 | **S1 Estabilidad (3D)** | Encuadre del esqueleto de perfil en el proyector real (GPU real, no SwiftShader); que talón/dedos 2D caigan bajo el pie 3D al orbitar; que el pad «Controles 3D» expandido no tape los rótulos de ángulo; tiempo de carga del GLB. |
+| 🔴 | **S11 Lanzar** | Animación «▶ Lanzar» (cámara lenta ×12): forma del bíceps y del arco 135°→45°; tabla resaltada al cambiar de caso. |
+| 🟠 | S14 Golf | Pose del péndulo doble durante «▶ Swing» (es esquemática: brazos colgando ±70°, muñeca armada 90°). |
+| 🟠 | S9 Salto | Rótulos `W` y `⟨N⟩` cerca de la curva N(t) en el extremo izquierdo/derecho del gráfico. |
+| 🟠 | S8 Sprint | Rótulos «v final» y «clase mundial 10,4 m/s» al mover F por encima de ≈ 610 N (se cruzan las líneas). |
+| 🟡 | S16 Colisiones | Preset «Cabeza 50 mph»: G > 250 sale de escala (se marca «↑»); comprobar legibilidad. |
+| 🟡 | S1, S5, S18 | Teoría al límite de altura a 1280×720 (≤ 8 px de scroll): confirmar en el proyector. |
+| 🟡 | Todas | Piso de 12 px: los rótulos de lienzo crecieron (antes 7–11 px); revisar solapes residuales. |
