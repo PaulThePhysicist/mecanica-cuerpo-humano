@@ -248,7 +248,7 @@ export default function Slide10({ slideCount }: { slideCount?: string }) {
           </div>
           <div className="card">
             <div className="card-hdr">
-              <span className="icon">🫀</span> Órganos y célula (Tablas 1.11–1.12)
+              <span className="icon">🔬</span> Órganos y célula (Tablas 1.11–1.12)
             </div>
             <div className="card-body">
               <div className="card-tabs" role="tablist" aria-label="Tablas de órganos y célula">

@@ -4335,7 +4335,7 @@ function organPanel(ctx, x, y, w, h) {
 
   ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
   ctx.fillStyle = PAL.violet; ctx.font = 'bold 11.5px Karla, system-ui, sans-serif';
-  ctx.fillText('🫀 MASA ÓRGANOS', x + 9, y + 15);
+  ctx.fillText('MASA ÓRGANOS', x + 9, y + 15);
   ctx.fillStyle = PAL.ink2; ctx.font = '9.5px Karla, system-ui, sans-serif';
   ctx.textAlign = 'right'; ctx.fillText('gramos · Tabla 1.11', x + w - 9, y + 15);
 
