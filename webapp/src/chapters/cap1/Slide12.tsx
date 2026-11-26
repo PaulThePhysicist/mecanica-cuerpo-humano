@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import AllometryCanvas from './AllometryCanvas';
 import { fmt } from './format';
+import Tex from './Tex';
 // @ts-ignore - katex auto-render no incluye tipos
 import renderMathInElement from 'katex/contrib/auto-render';
 
@@ -8,6 +9,8 @@ interface AllometryDetail {
   id: string;
   name: string;
   alpha: number;
+  /** Coeficiente a de la Tabla 1.13, en TeX con coma decimal. */
+  a: string;
   unit: string;
   formula: string;
   desc: string;
@@ -18,6 +21,7 @@ const ALLO_INFO: Record<string, AllometryDetail> = {
     id: 'BMR',
     name: 'Tasa Metabólica Basal (Kleiber)',
     alpha: 0.75,
+    a: '4{,}1',
     unit: 'W',
     formula: 'BMR = 4{,}1 \\cdot m_b^{0{,}75}',
     desc: '<b>TMB (Ley de Kleiber · $\\alpha = 0{,}75$):</b> La tasa metabólica escala con la masa a la potencia $3/4$. Derivado de la geometría fractal de las redes de distribución vascular.',
@@ -26,6 +30,7 @@ const ALLO_INFO: Record<string, AllometryDetail> = {
     id: 'area',
     name: 'Área Superficial Corporal',
     alpha: 0.65,
+    a: '0{,}11',
     unit: 'm²',
     formula: 'A = 0{,}11 \\cdot m_b^{0{,}65}',
     desc: '<b>Área Superficial ($\\alpha = 0{,}65$):</b> Escala sublineal cercana a $2/3$, gobernando la disipación térmica radiativa y conductiva hacia el ambiente.',
@@ -34,14 +39,16 @@ const ALLO_INFO: Record<string, AllometryDetail> = {
     id: 'HR',
     name: 'Frecuencia Cardíaca',
     alpha: -0.25,
-    unit: 'Hz / lpm',
+    a: '4{,}02',
+    unit: 'Hz',
     formula: 'f_c = 4{,}02 \\cdot m_b^{-0{,}25}',
     desc: '<b>Frecuencia Cardíaca ($\\alpha = -0{,}25$):</b> Exponente negativo: los mamíferos pequeños tienen pulsos ultrarrápidos (ratón $\\sim 600\\text{ lpm}$), mientras el elefante late a $\\sim 28\\text{ lpm}$.',
   },
   brain: {
     id: 'brain',
-    name: 'Masa Cerebral',
+    name: 'Masa cerebral (hombre)',
     alpha: 0.66,
+    a: '0{,}085',
     unit: 'kg',
     formula: 'm_{\\text{cerebro}} = 0{,}085 \\cdot m_b^{0{,}66}',
     desc: '<b>Masa Cerebral ($\\alpha = 0{,}66$):</b> Alometría del sistema nervioso central entre mamíferos, con el ser humano como un punto atípico marcadamente por encima de la curva.',
@@ -50,6 +57,7 @@ const ALLO_INFO: Record<string, AllometryDetail> = {
     id: 'life',
     name: 'Tiempo de Vida / Longevidad',
     alpha: 0.20,
+    a: '11{,}89',
     unit: 'años',
     formula: 't_{\\text{vida}} = 11{,}89 \\cdot m_b^{0{,}20}',
     desc: '<b>Tiempo de Vida ($\\alpha = 0{,}20$):</b> Los animales de mayor masa viven más tiempo; el número total de latidos en la vida es casi constante ($\\sim 10^9$) entre casi todos los mamíferos.',
@@ -58,11 +66,26 @@ const ALLO_INFO: Record<string, AllometryDetail> = {
     id: 'muscle',
     name: 'Masa Muscular Esquelética',
     alpha: 1.0,
+    a: '0{,}45',
     unit: 'kg',
     formula: 'm_{\\text{musc}} = 0{,}45 \\cdot m_b^{1{,}0}',
     desc: '<b>Masa Muscular ($\\alpha = 1{,}0$):</b> Escalamiento <strong>isométrico puro</strong>: el músculo representa aproximadamente el $\\sim 40\\text{--}45\\%$ de la masa en todos los mamíferos.',
   },
 };
+
+/* P6-33 · Los 9 parámetros de la Tabla 1.13 sin curva en el gráfico
+   (.tex líneas 628–642), literales; `a` y α en TeX. */
+const TABLE_113_REST: [string, string, string][] = [
+  ['Masa cerebral en no primates, en kg', '0{,}01', '0{,}7'],
+  ['Frecuencia respiratoria, en Hz', '0{,}892', '-0{,}26'],
+  ['Costo energético de correr, en J/(m·kg)', '7', '-0{,}33'],
+  ['Costo energético de nadar, en J/(m·kg)', '0{,}6', '-0{,}33'],
+  ['Volumen pulmonar efectivo, en m²', '5{,}67 \\times 10^{-5}', '1{,}03'],
+  ['Masa cardíaca, en kg', '5{,}8 \\times 10^{-3}', '0{,}97'],
+  ['Masa esquelética (terrestre), en kg', '0{,}068', '1{,}08'],
+  ['Velocidad de vuelo, en m/s', '15', '0{,}167'],
+  ['Velocidad de caminata, en m/s', '0{,}5', '0{,}167'],
+];
 
 function renderD1Math() {
   const root = document.getElementById('d1-math-root');
@@ -139,7 +162,7 @@ export default function Slide12({ slideCount }: { slideCount?: string }) {
                 {'\\[ f = a\\, m_b^\\alpha \\qquad (\\alpha \\neq 1) \\]'}
               </div>
               <p style={{ fontSize: '.66rem', color: 'var(--ink-3)' }}>
-                <strong>Alométrica:</strong> «por una medida diferente» ($\alpha \neq 1$). <strong>Isométrica:</strong> «por la misma medida geométrica» ($\alpha = 1$).
+                <strong>Alométrica:</strong> «por una medida diferente» ($\alpha \neq 1$), como la altura frente a la masa corporal. <strong>Isométrica:</strong> «por la misma medida» ($\alpha = 1$), como la masa de la pierna frente a la masa corporal.
               </p>
             </div>
           </div>
@@ -177,22 +200,26 @@ export default function Slide12({ slideCount }: { slideCount?: string }) {
                         <br />
                         <span style={{ fontSize: '.55rem', color: 'var(--ink-3)' }}>Unidad: {item.unit}</span>
                       </div>
-                      <span
-                        style={{
-                          fontFamily: 'JetBrains Mono, monospace',
-                          fontWeight: 'bold',
-                          color: isSel ? 'var(--teal-deep)' : 'var(--ink-2)',
-                          fontSize: '.65rem',
-                        }}
-                      >
-                        α = {fmt(item.alpha, 2)}
+                      <span style={{ color: isSel ? 'var(--teal-deep)' : 'var(--ink-2)', whiteSpace: 'nowrap' }}>
+                        <Tex>{`a = ${item.a} \\quad \\alpha = ${fmt(item.alpha, item.alpha === 1 ? 1 : 2).replace(',', '{,}')}`}</Tex>
                       </span>
                     </div>
                   );
                 })}
               </div>
+              <p className="table-note" style={{ marginTop: '.45rem', marginBottom: '.2rem' }}>Resto de la Tabla 1.13 (sin curva en el gráfico)</p>
+              <table className="data-mini">
+                <tbody>
+                  <tr><th>Parámetro</th><th><span className="nt"><Tex>{'a'}</Tex></span></th><th><span className="nt"><Tex>{'\\alpha'}</Tex></span></th></tr>
+                  {TABLE_113_REST.map(([name, a, alpha]) => (
+                    <tr key={name}>
+                      <td>{name}</td><td><Tex>{a}</Tex></td><td><Tex>{alpha}</Tex></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
               <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '.3rem' }}>
-                Los exponentes rigen en 7 órdenes de magnitud para mamíferos y en relaciones antropométricas humanas.
+                Valen para muchas especies de un tipo (p. ej. mamíferos terrestres); algunas también dentro de una especie, como relaciones antropométricas.
               </p>
               <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '.1rem' }}>
                 Pasa el cursor o haz clic sobre cada parámetro para comparar su curva en el gráfico.
