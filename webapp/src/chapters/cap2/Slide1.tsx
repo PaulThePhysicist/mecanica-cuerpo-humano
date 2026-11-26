@@ -151,6 +151,9 @@ export default function Slide1({
               <div className="eq-block">
                 {'\\[ \\sum \\vec{\\tau} = 0 \\quad\\iff\\quad \\sum \\tau_x = 0, \\; \\sum \\tau_y = 0, \\; \\sum \\tau_z = 0 \\]'}
               </div>
+              <p style={{ fontSize: '.64rem', color: 'var(--ink-2)' }}>
+                {'Si no se anulan, cambian el movimiento lineal y el angular (Ecs. 2.6–2.7): $\\vec{F} = m\\vec{a} = d\\vec{p}/dt$ y $\\vec{\\tau} = I\\,d\\vec{\\Omega}/dt = d\\vec{L}/dt$. En estática ambos lados valen cero; el movimiento muy lento se trata igual (cuasiestática).'}
+              </p>
               <p style={{ fontSize: '.64rem', color: 'var(--ink-3)' }}>
                 Que la suma se anule <em>eje a eje</em> es lo que permite resolver el problema: cada fuerza se parte en sus proyecciones ortogonales y se suman por separado.
               </p>
@@ -159,7 +162,7 @@ export default function Slide1({
                 onClick={() => setShowComponents((v) => !v)}
                 title="Proyecta cada fuerza sobre los ejes en el visor 3D"
               >
-                <b>⊹ Descomponer en Fx y Fy</b>
+                <b>Descomponer en F<sub>x</sub> y F<sub>y</sub></b>
               </TheoryToggle>
               <TheoryCue>
                 Dibuja en el modelo la proyección de cada fuerza sobre los ejes. El equilibrio rige
@@ -170,7 +173,7 @@ export default function Slide1({
           </div>
           <div className="card">
             <div className="card-hdr">
-              <span className="icon">🦴</span> DCL Articular: El Hombro como Ejemplo
+              <span className="icon">🦴</span> DCL articular: el hombro como ejemplo
             </div>
             <div className="card-body">
               <p style={{ fontSize: '.66rem', color: 'var(--ink-2)' }}>
@@ -183,7 +186,7 @@ export default function Slide1({
                   accent="#0d6e64"
                   title="Aísla F₁ en el visor 3D"
                 >
-                  <b>F₁ (Músculo Deltoides):</b>&nbsp;Tensión activa que eleva y sostiene el húmero.
+                  <b>F₁ (deltoides):</b>&nbsp;tensión que abduce y sostiene el húmero.
                 </TheoryToggle>
                 <TheoryToggle
                   on={focusForce === 'F2'}
@@ -191,7 +194,7 @@ export default function Slide1({
                   accent="#d97706"
                   title="Aísla F₂ en el visor 3D"
                 >
-                  <b>F₂ (Gravedad / Carga):</b>&nbsp;Peso del miembro superior y objetos sostenidos.
+                  <b>F₂ (peso):</b>&nbsp;peso del brazo y de lo que sostiene la mano.
                 </TheoryToggle>
                 <TheoryToggle
                   on={focusForce === 'R'}
@@ -199,14 +202,14 @@ export default function Slide1({
                   accent="#b02318"
                   title="Aísla R en el visor 3D"
                 >
-                  <b>R (Reacción Glenoidea):</b>&nbsp;Compresión de la fosa glenoidea que evita la luxación.
+                  <b>R (reacción glenoidea):</b>&nbsp;fuerza de la cavidad glenoidea sobre la cabeza del húmero.
                 </TheoryToggle>
               </div>
               <TheoryCue>
                 Pincha una fuerza para aislarla en el modelo; vuelve a pincharla para ver las tres a
                 la vez. También puedes{' '}
                 <TheoryToggle on={showLabels} onClick={toggleLabels} title="Rotula las fuerzas sobre el modelo">
-                  <b>🏷️ rotularlas</b>
+                  <b>rotularlas</b>
                 </TheoryToggle>{' '}
                 o cambiar entre{' '}
                 <TheoryToggle
@@ -219,7 +222,7 @@ export default function Slide1({
                 y el hueso real: el DCL es precisamente esa abstracción.
               </TheoryCue>
               <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '.35rem' }}>
-                Si <b>ΣF ≠ 0</b>, la fuerza neta resultante <b>F_net = m·a</b> acelera el segmento o provoca inestabilidad / subluxación articular.
+                {'Sostener el brazo horizontal con un peso (Fig. 2.21): con parámetros razonables, la componente $x$ de la fuerza del deltoides es $\\approx 4$ veces la componente $y$, y por eso esa postura no es estable. La glenohumeral es poco profunda: gira $\\sim 249^\\circ$ en flexión/extensión, $\\sim 182^\\circ$ en abducción/aducción y $\\sim 131^\\circ$ en rotación (Tabla 1.10), a costa de luxarse con facilidad.'}
               </p>
             </div>
           </div>

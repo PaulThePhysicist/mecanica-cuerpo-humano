@@ -79,47 +79,47 @@ export default function Slide2({
       <div className="module-header">
         <span className="mnum">A2</span>
         <h2 className="mtitle">El torque vectorial</h2>
-        <span className="msub">{'$\\tau = \\vec{r} \\times \\vec{F}$ · Descomposición ortogonal y brazo de momento'}</span>
+        <span className="msub">{'$\\vec{\\tau} = \\vec{r} \\times \\vec{F}$ (Ecs. 2.3–2.5) · componentes normales y brazo de momento'}</span>
         <span className="mslide-count">2 / 2</span>
       </div>
       <div className="content-grid">
         <div className="theory">
           <div className="card active">
             <div className="card-hdr">
-              <span className="icon">🔄</span> Definición de torque o momento
+              <span className="icon">🔄</span> ¿Qué es un torque?
             </div>
             <div className="card-body">
               <p style={{ fontSize: '.7rem' }}>
-                {'Una fuerza $\\vec{F}$ aplicada a una distancia $\\vec{r}$ de un eje articular genera un '}<strong>torque</strong>{' (producto cruz vectorial):'}
+                {'Las fuerzas cambian el movimiento lineal; los torques, el angular. Una fuerza $\\vec{F}$ aplicada en el extremo de $\\vec{r}$ (desde el eje) produce el '}<strong>torque</strong>{' (Ec. 2.3):'}
               </p>
               <div className="eq-block">
                 {'\\[ \\vec{\\tau} = \\vec{r} \\times \\vec{F} \\]'}
               </div>
               <p style={{ fontSize: '.64rem' }}>
-                Su magnitud alrededor del eje perpendicular al plano es:
+                {'Con $\\theta$ el ángulo de $\\vec{r}$ a $\\vec{F}$, solo cuentan la componente de $\\vec{r}$ normal a $\\vec{F}$ ($r\'$) o la de $\\vec{F}$ normal a $\\vec{r}$ ($F\'$) (Fig. 2.3):'}
               </p>
               <div className="eq-block">
-                {'\\[ \\tau = r\\,F\\,\\sin\\theta = r_{\\perp}\\,F = r\\,F_{\\perp} \\]'}
+                {'\\[ \\tau_z = r\\,F\\,\\sin\\theta = r\'\\,F = r\\,F\' \\]'}
               </div>
               <p style={{ fontSize: '.62rem', color: 'var(--ink-3)' }}>
-                Fuerza hacia $+y$ a distancia $+r$ produce giro <strong>antihorario ($\tau &gt; 0$)</strong>. Fuerza hacia $-y$ produce giro <strong>horario ($\tau &lt; 0$)</strong>.
+                {'Para $0^\\circ < \\theta < 180^\\circ$ el torque es positivo (giro antihorario); para $180^\\circ < \\theta < 360^\\circ$, negativo (horario) (Fig. 2.2). El eje se elige con astucia para simplificar el problema. En el Cap. 4 estos torques se llamarán «momentos» al tratar la flexión de los objetos.'}
               </p>
             </div>
           </div>
           <div className="card">
             <div className="card-hdr">
-              <span className="icon">✂️</span> Desglose de componentes ortogonales
+              <span className="icon">✂️</span> Componentes normales (Fig. 2.3)
             </div>
             <div className="card-body">
               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '.64rem' }}>
                 <span className="pill">
-                  <b>{'F⊥ = F sinθ:'}</b> Componente tangencial útil (genera el 100% del torque angular).
+                  <b>{"F′ = F sen θ:"}</b> componente normal a r: genera todo el torque.
                 </span>
                 <span className="pill">
-                  <b>{'F∥ = F cosθ:'}</b> Componente radial que comprime o distrae la articulación (0 torque).
+                  <b>{'F∥ = F cos θ:'}</b> componente paralela a r: no da torque (comprime o separa la articulación).
                 </span>
                 <span className="pill">
-                  <b>{'r⊥ = r sinθ:'}</b> Brazo de palanca perpendicular a la línea de acción de la fuerza.
+                  <b>{"r′ = r sen θ:"}</b> brazo de momento, perpendicular a la línea de acción.
                 </span>
               </div>
               <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '.3rem' }}>
@@ -144,7 +144,7 @@ export default function Slide2({
           <div className="apuntes">
             <div className="a-hdr"><span>✍️</span> Apunte de cátedra</div>
             <div className="a-text" id="info-text-2">
-              {'En la anatomía humana, los tendones suelen insertarse con ángulos $\\theta$ pequeños (ej. bíceps a ~15° en extensión casi completa), lo que reduce la componente útil $F_\\perp$ a solo un ~26% de la fuerza total, disipando el resto en compresión articular protectora.'}
+              {"Si $\\vec{r}$ y $\\vec{F}$ son paralelos ($\\theta = 0^\\circ$) o antiparalelos ($180^\\circ$) el torque es nulo; con $\\theta = 90^\\circ$ es máximo, $rF$. Ejemplo ilustrativo: un tendón que tira a ~15° del hueso solo aprovecha $\\sin 15^\\circ \\approx 26\\,\\%$ de su fuerza; el resto comprime la articulación."}
             </div>
           </div>
         </div>

@@ -16,44 +16,44 @@ const NODE_BUTTONS: NodeButton[] = [
   {
     id: 'neck',
     label: 'Cuello',
-    badge: '1ª Clase',
-    desc: '<b>Cabeza y Cuello (Atlas C1 - Palanca 1ª Clase):</b> El fulcro está en los cóndilos occipitales. La musculatura posterior nucal ($F_m$) compensa el peso del cráneo ($W$) que cae por delante del eje, con una tensión muscular $F_m \\approx 2{,}4 \\times W$.',
+    badge: '1ª clase',
+    desc: '<b>Cabeza sobre la columna (1ª clase, Fig. 2.6a):</b> el peso de la cabeza se equilibra con la fuerza efectiva hacia abajo de los músculos de la nuca; el fulcro soporta $W + M$. El libro no da cifras: el cociente del visor ($M \\approx 2{,}4\\,W$) es ilustrativo.',
   },
   {
     id: 'jaw',
     label: 'ATM / Mandíbula',
-    badge: '2ª/3ª Clase',
-    desc: '<b>ATM y Mandíbula:</b> Palanca biomecánica con ventaja de fuerza en molares ($>600\\text{ N}$, cerca de la ATM) y velocidad/alcance en incisivos ($\\sim 200\\text{ N}$, alejados del fulcro).',
+    badge: '3ª clase',
+    desc: '<b>Mandíbula:</b> el masetero tiene una ventaja mecánica de $0{,}50$ en el incisivo y $0{,}76$ en el primer molar (temporal anterior $0{,}24$/$0{,}48$; posterior $0{,}37$/$0{,}72$). Todas $< 1$.',
   },
   {
     id: 'elbow',
     label: 'Codo / Bíceps',
-    badge: '3ª Clase',
-    desc: '<b>Codo y Bíceps (Palanca 3ª Clase):</b> La inserción a solo $4\\text{ cm}$ del eje exige una fuerza muscular $F_m \\approx 8{,}75 \\times W$, multiplicando casi por 9 la velocidad y amplitud distal de la mano.',
+    badge: '3ª clase',
+    desc: '<b>Antebrazo (3ª clase):</b> con el bíceps a $4\\text{ cm}$ y la mano a $36\\text{ cm}$, $M = 9\\,W_W + 3{,}25\\,W_F$: $950\\text{ N}$ para $100\\text{ N}$ en la mano. Con tres flexores (Tabla 2.1): $262 + 399 + 85 = 746\\text{ N}$.',
   },
   {
     id: 'spine',
     label: 'Columna L5-S1',
-    badge: 'Grúa Lumbar',
-    desc: '<b>Columna Lumbar L5-S1 (Grúa Invertida):</b> El brazo de palanca desfavorable $10:1$ de los erectores espinales genera compresiones discales masivas ($>3500\\text{ N}$, $P > 2{,}8\\text{ MPa}$) al inclinarse con peso.',
+    badge: 'Espalda',
+    desc: '<b>Espalda (Ec. 2.43):</b> a $\\theta = 30^\\circ$, $M = 2{,}5\\,W_b$ ($2200\\text{ N}$) y $R = 2{,}74\\,W_b$ ($2400\\text{ N}$) sobre la quinta lumbar; levantando $0{,}2\\,W_b$ más, $M = 3{,}74\\,W_b$ y $R = 4{,}07\\,W_b$ ($3600\\text{ N}$). Nunca doblar la espalda para levantar.',
   },
   {
     id: 'hip',
     label: 'Cadera / Bastón',
-    badge: '1ª Pélvica',
-    desc: '<b>Cadera y Apoyo Monopodal (Palanca 1ª Clase):</b> El glúteo medio tracciona con $F_{\\text{abd}} \\approx 2\\times W_b$, generando una fuerza articular acetabular de $2{,}7\\times$ el peso corporal total. Un bastón contralateral reduce esta carga en un $50\\%$.',
+    badge: 'Cadera',
+    desc: '<b>Cadera sobre una pierna:</b> $M = 1{,}57\\,W_b$ y $R = 2{,}37\\,W_b$ ($1400$ y $2100\\text{ N}$ para $90\\text{ kg}$). Con un bastón contralateral que soporta $W_b/6$: $M = 0{,}61\\,W_b$ y $R = 1{,}26\\,W_b$, casi la mitad.',
   },
   {
     id: 'ankle',
     label: 'Tobillo / Aquiles',
-    badge: '2ª Clase',
-    desc: '<b>Tobillo y Tendón de Aquiles (Palanca 2ª Clase):</b> Al pararse en puntillas, el tendón tira del calcáneo por detrás del punto de apoyo del suelo, logrando una verdadera ventaja de fuerza mecánica ($VM > 1{,}3$).',
+    badge: 'Puntillas',
+    desc: '<b>Tobillo de puntillas (Ecs. 2.39–2.40):</b> la normal del suelo, el Aquiles y la reacción en el astrágalo forman un sistema concurrente. Para $\\theta = 45^\\circ$ y $\\beta = 60^\\circ$: $M = 1{,}93\\,W_b$ y $R = 2{,}73\\,W_b$, ambas muy por encima del peso corporal.',
   },
   {
     id: 'foot',
     label: 'Pie / GRF',
-    badge: 'Plataforma',
-    desc: '<b>Plataforma de Marcha y Fuerzas de Reacción del Suelo (GRF):</b> El vector de impacto vertical alcanza $1{,}2\\times$ el peso corporal, mientras el mecanismo de Windlass en la fascia plantar almacena y libera energía elástica.',
+    badge: 'Complementario',
+    desc: '<b>Plataforma de fuerza (contenido complementario, no está en §2):</b> la fuerza vertical del suelo en la marcha llega a $\\sim 1{,}2\\,W_b$. El libro sí da la reacción en la rodilla durante la marcha: $\\sim 3\\text{--}4\\,W_b$.',
   },
 ];
 
@@ -76,19 +76,10 @@ export default function Slide18({
 
   const handleSelectNode = (node: 'neck' | 'jaw' | 'elbow' | 'spine' | 'hip' | 'ankle' | 'foot') => {
     setSelectedNode(node);
-    const detail = NODE_BUTTONS.find((b) => b.id === node);
-    const info = document.getElementById('info-text-18');
-    if (info && detail) {
-      info.innerHTML = detail.desc;
-    }
   };
 
   const handleReset = () => {
     setSelectedNode('elbow');
-    const info = document.getElementById('info-text-18');
-    if (info) {
-      info.innerHTML = NODE_BUTTONS[2].desc;
-    }
   };
 
   return (
@@ -96,7 +87,7 @@ export default function Slide18({
       <div className="module-header">
         <span className="mnum">H2</span>
         <h2 className="mtitle">Síntesis y mapa biomecánico integral</h2>
-        <span className="msub">Mapa interactivo de palancas anatómicas, momentos de fuerza y cargas articulares del cuerpo humano</span>
+        <span className="msub">§2.6 Resumen · mapa de palancas y cargas articulares con las cifras del capítulo</span>
         <span className="mslide-count">2 / 2</span>
       </div>
       <div className="content-grid">
@@ -109,19 +100,19 @@ export default function Slide18({
               <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '.62rem' }}>
                 <span className="pill has-marker">
                   <span className="pill-dot" style={{ background: '#0d8577' }} />
-                  <span><b>1. Estática Corpórea:</b> {'$\\Sigma \\vec{F} = 0$ y $\\Sigma \\vec{\\tau} = 0$ rigen todo el soporte postural.'}</span>
+                  <span><b>1. Palancas:</b> {'el equilibrio de fuerzas y torques ($\\Sigma \\vec{F} = 0$, $\\Sigma \\vec{\\tau} = 0$) a menudo se analiza como una palanca, como en el antebrazo.'}</span>
                 </span>
                 <span className="pill has-marker">
                   <span className="pill-dot" style={{ background: '#2563eb' }} />
-                  <span><b>2. Dominio de la 3ª Clase:</b> La mayoría de músculos sacrifican fuerza para maximizar la velocidad angular distal.</span>
+                  <span><b>2. Todo y parte:</b> el equilibrio de una parte del cuerpo se estudia con las fuerzas de gravedad, músculos y reacciones sobre el cuerpo entero y sobre esa parte por separado.</span>
                 </span>
                 <span className="pill has-marker">
                   <span className="pill-dot" style={{ background: '#b02318' }} />
-                  <span><b>3. Fuerzas Articulares Masivas:</b> {'La tensión muscular multiplica la compresión en cadera ($2{,}7\\times W$) y L5-S1 ($>3500\\text{ N}$).'}</span>
+                  <span><b>3. Fuerzas internas enormes:</b> {'las fuerzas musculares y de reacción superan el peso corporal: cadera $R \\approx 2{,}4\\,W_b$, quinta lumbar $R \\approx 2{,}7\\,W_b$ (y $4{,}1\\,W_b$ levantando $0{,}2\\,W_b$).'}</span>
                 </span>
                 <span className="pill has-marker">
                   <span className="pill-dot" style={{ background: '#d97706' }} />
-                  <span><b>4. Alivio Terapéutico:</b> Bastón contralateral ($-50\\%$) y levantamiento con rodillas flexionadas.</span>
+                  <span><b>4. Consecuencias:</b> {'por eso la cadera y la parte baja de la espalda dan problemas; un bastón contralateral casi divide por dos $R$ y se debe levantar peso con las piernas.'}</span>
                 </span>
               </div>
             </div>

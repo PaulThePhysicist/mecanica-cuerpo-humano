@@ -83,7 +83,7 @@ export default function Slide14({
       <div className="module-header">
         <span className="mnum">F2</span>
         <h2 className="mtitle">Plataforma de fuerza y marcha</h2>
-        <span className="msub">Fuerzas de reacción del suelo (GRF), centro de presiones (COP) y baropodometría</span>
+        <span className="msub">Contenido complementario (no está en §2) · fuerza de reacción del suelo y centro de presiones</span>
         <span className="mslide-count">2 / 2</span>
       </div>
       <div className="content-grid">
@@ -126,6 +126,9 @@ export default function Slide14({
               </p>
             </div>
           </div>
+          <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', margin: '0 .2rem .5rem' }}>
+            {'Del capítulo: la reacción en la rodilla durante la marcha es de $\\sim 3\\text{--}4\\,W_b$ (§2.3.5) y la cadera llega a $4{,}8\\text{--}5{,}5\\,W_b$ al caminar (Tabla 2.2). Las cifras de la plataforma de esta diapositiva son valores típicos ilustrativos; la marcha se estudia en el Cap. 3.'}
+          </p>
           <div className="apuntes">
             <div className="a-hdr"><span>✍️</span> Apunte de cátedra</div>
             <div className="a-text" id="info-text-14">

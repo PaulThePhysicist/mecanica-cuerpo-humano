@@ -42,7 +42,7 @@ export default function Slide17({
       <div className="module-header">
         <span className="mnum">H1</span>
         <h2 className="mtitle">Conversor de unidades biomecánicas</h2>
-        <span className="msub">Fuerza (N, kgf, lbf) · Torque (N·m, kgf·m, lbf·ft) · Presión y esfuerzo tisular (Pa, MPa, bar, mmHg)</span>
+        <span className="msub">§2.5 Unidades de fuerza y presión (Tablas 2.5–2.6) · N, lb, dina · Pa, MPa, atm, bar, mmHg, psi</span>
         <span className="mslide-count">1 / 2</span>
       </div>
       <div className="content-grid">
@@ -53,7 +53,7 @@ export default function Slide17({
             </div>
             <div className="card-body">
               <p style={{ fontSize: '.7rem' }}>
-                En la práctica clínica y biofísica conviven el Sistema Internacional (SI) y unidades técnicas tradicionales:
+                {'El trabajo técnico usa MKS-SI (newtons); gran parte del médico, en EE. UU., el sistema inglés (libras). Un kilogramo pesa $9{,}8\\text{ N}$ ($2{,}2\\text{ lb}$) por $F = mg$ (Ec. 2.47), con $g = 9{,}8\\text{ m/s}^2 = 980{,}7\\text{ cm/s}^2 = 32{,}2\\text{ ft/s}^2$. La masa inglesa es el slug (pesa $32{,}2\\text{ lb}$). «1 kg» usado como fuerza debe leerse $1\\text{ kg (fuerza)} = 9{,}8\\text{ N} \\approx 10\\text{ N}$.'}
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '.62rem', marginTop: '.25rem' }}>
                 <button
@@ -63,7 +63,7 @@ export default function Slide17({
                   style={{ borderLeft: '3px solid #0d8577', cursor: 'pointer' }}
                   onClick={() => handleSelectType('force')}
                 >
-                  <b>Fuerza:</b> {'$1\\text{ kgf} = 9{,}80665\\text{ N} \\approx 2{,}205\\text{ lbf} = 10^5\\text{ dyn}$.'}
+                  <b>Fuerza (Tabla 2.5):</b> {'$1\\text{ N} = 1\\text{ kg·m/s}^2 = 10^5\\text{ dinas} = 0{,}225\\text{ lb}$; $1\\text{ lb} = 4{,}45\\text{ N}$.'}
                 </button>
                 <button
                   type="button"
@@ -72,7 +72,7 @@ export default function Slide17({
                   style={{ borderLeft: '3px solid #2563eb', cursor: 'pointer' }}
                   onClick={() => handleSelectType('torque')}
                 >
-                  <b>Torque / Momento:</b> {'$1\\text{ kgf}\\cdot\\text{m} = 9{,}80665\\text{ N}\\cdot\\text{m} \\approx 7{,}233\\text{ lbf}\\cdot\\text{ft}$.'}
+                  <b>Torque:</b> {'$1\\text{ kgf}\\cdot\\text{m} = 9{,}8\\text{ N}\\cdot\\text{m} \\approx 7{,}23\\text{ lb}\\cdot\\text{ft}$ (fuerza × distancia).'}
                 </button>
                 <button
                   type="button"
@@ -81,18 +81,18 @@ export default function Slide17({
                   style={{ borderLeft: '3px solid #b02318', cursor: 'pointer' }}
                   onClick={() => handleSelectType('pressure')}
                 >
-                  <b>Presión y Tensión:</b> {'$1\\text{ MPa} = 10^6\\text{ Pa} = 10\\text{ bar} = 7500\\text{ mmHg} = 145\\text{ psi}$.'}
+                  <b>Presión (Tabla 2.6):</b> {'$1\\text{ MPa} = 1\\text{ N/mm}^2 = 145\\text{ psi} \\simeq 10\\text{ atm}$; $1\\text{ atm} = 1{,}013\\text{ bar} = 760\\text{ mmHg} = 1033\\text{ cmH}_2\\text{O}$; $1\\text{ mmHg} = 133\\text{ Pa}$.'}
                 </button>
               </div>
             </div>
           </div>
           <div className="card">
             <div className="card-hdr">
-              <span className="icon">📋</span> Escala de presiones en el cuerpo
+              <span className="icon">📋</span> Presión de una columna de líquido
             </div>
             <div className="card-body">
               <p style={{ fontSize: '.64rem', color: 'var(--ink-3)' }}>
-                {'Desde la presión arterial sistólica media ($\\sim 120\\text{ mmHg} = 16\\text{ kPa}$) hasta el esfuerzo compresivo intradiscal en L5-S1 ($> 2{,}8\\text{ MPa} = 28\\text{ bar}$), el cuerpo humano opera a través de más de 3 órdenes de magnitud de presión.'}
+                {'Presión = fuerza por unidad de área (un esfuerzo; la hidrostática es igual en todas direcciones). Una columna de densidad $\\rho$ y altura $h$ ejerce $P = \\rho g h$ (Ec. 2.48): por eso mmHg y cmH$_2$O son en realidad alturas ($\\rho_{\\text{Hg}} = 13{,}6$, $\\rho_{\\text{agua}} = 1{,}0$, $\\rho_{\\text{sangre}} = 1{,}06\\text{ g/cm}^3$). La presión arterial 120/80 son 120 y 80 mmHg manométricos (sobre la atmosférica). Coincidencia notable: $1\\text{ atm}$ difiere de $1\\text{ bar} = 10^5\\text{ Pa}$ en menos del 1 %.'}
               </p>
             </div>
           </div>

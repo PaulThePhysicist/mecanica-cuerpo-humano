@@ -71,11 +71,24 @@ export default function Slide13({
       <div className="module-header">
         <span className="mnum">F1</span>
         <h2 className="mtitle">Método de segmentos corporales</h2>
-        <span className="msub">Cálculo del centro de gravedad (CG) total y polígono de sustentación</span>
+        <span className="msub">§2.3.6 Modelado multisegmento · centro de masa por segmentos y base de apoyo</span>
         <span className="mslide-count">1 / 2</span>
       </div>
       <div className="content-grid">
         <div className="theory">
+          <div className="card">
+            <div className="card-hdr">
+              <span className="icon">📐</span> Modelado multisegmento (Figs. 2.48–2.49)
+            </div>
+            <div className="card-body">
+              <p style={{ fontSize: '.66rem' }}>
+                {'La pierna se modela con tres segmentos (muslo, pantorrilla y pie), cada uno con su masa $m$, su centro de masa y su momento de inercia $I$, unidos por tres articulaciones (cadera, rodilla, tobillo) que giran libremente. Se pueden analizar las fuerzas y torques sobre el conjunto o sobre cada segmento por separado (como en la cadera: cuerpo entero y luego la pierna).'}
+              </p>
+              <p style={{ fontSize: '.64rem', color: 'var(--ink-3)' }}>
+                {'En el diagrama de cuerpo libre de cada segmento, las reacciones en cada articulación son iguales y opuestas (Tercera Ley de Newton, p. ej. $\\vec{R}_2$ en la rodilla), igual que las fuerzas de cada músculo en su origen e inserción; el torque total en cada articulación aparece como un momento $M$ (Problema 2.38). El Cap. 3 lo aplica al movimiento.'}
+              </p>
+            </div>
+          </div>
           <div className="card active">
             <div className="card-hdr">
               <span className="icon">🎯</span> Teorema de Varignon y Baricentro

@@ -17,23 +17,24 @@ interface BioReference {
   zone: 'normal' | 'caution' | 'danger';
 }
 
+// Referencias con las cifras del propio Capítulo 2 (kgf y lbf calculados).
 const REFERENCES: Record<string, BioReference[]> = {
   force: [
-    { name: 'Mordida con incisivos', siValue: 200, unitSi: 'N', altValue: '20,4 kgf · 45 lbf', note: 'Corte fino con palanca de 3ª clase', zone: 'normal' },
-    { name: 'Tensión bíceps sosteniendo 5 kg', siValue: 450, unitSi: 'N', altValue: '45,9 kgf · 101 lbf', note: 'Desventaja de palanca (35/4 cm)', zone: 'normal' },
-    { name: 'Carga acetabular al caminar', siValue: 1800, unitSi: 'N', altValue: '183,5 kgf · 405 lbf', note: '~2,7× peso corporal en cadera', zone: 'caution' },
-    { name: 'Tensión tendón de Aquiles (salto)', siValue: 4500, unitSi: 'N', altValue: '458,7 kgf · 1011 lbf', note: 'Cerca del límite de rotura tendinosa', zone: 'danger' },
+    { name: 'Bíceps con 100 N en la mano', siValue: 950, unitSi: 'N', altValue: '96,9 kgf · 214 lbf', note: 'Caso 2 del antebrazo (libro: 210 lb)', zone: 'normal' },
+    { name: 'Abductores de la cadera (90 kg)', siValue: 1400, unitSi: 'N', altValue: '142,8 kgf · 315 lbf', note: 'Apoyo monopodal: M ≈ 1,6 Wb', zone: 'caution' },
+    { name: 'Reacción en la cadera (90 kg)', siValue: 2100, unitSi: 'N', altValue: '214,1 kgf · 472 lbf', note: 'R ≈ 2,4 Wb (libro: 470 lb)', zone: 'caution' },
+    { name: 'Erector, θ = 30° y 0,2 Wb extra', siValue: 3300, unitSi: 'N', altValue: '336,5 kgf · 742 lbf', note: 'M = 3,74 Wb (libro: 740 lb)', zone: 'danger' },
   ],
   torque: [
-    { name: 'Torque flexión de codo (sostén)', siValue: 25, unitSi: 'N·m', altValue: '2,55 kgf·m · 18,4 lbf·ft', note: 'Brazo a 90° con 7 kg en mano', zone: 'normal' },
-    { name: 'Torque abductor de cadera', siValue: 110, unitSi: 'N·m', altValue: '11,2 kgf·m · 81,1 lbf·ft', note: 'Glúteo medio en apoyo monopodal', zone: 'caution' },
-    { name: 'Torque lumbar L5-S1 (Inclinado)', siValue: 220, unitSi: 'N·m', altValue: '22,4 kgf·m · 162,3 lbf·ft', note: 'Tronco a 60° con 15 kg en manos', zone: 'danger' },
+    { name: 'Tres flexores del codo (Caso 4)', siValue: 32, unitSi: 'N·m', altValue: '3,26 kgf·m · 23,6 lbf·ft', note: 'Torque que da 262 + 399 + 85 N', zone: 'normal' },
+    { name: 'Carga del antebrazo (Caso 2)', siValue: 38, unitSi: 'N·m', altValue: '3,87 kgf·m · 28,0 lbf·ft', note: '100 N a 36 cm + 15 N a 13 cm', zone: 'normal' },
+    { name: 'Torque de los abductores (90 kg)', siValue: 91, unitSi: 'N·m', altValue: '9,24 kgf·m · 66,8 lbf·ft', note: '(10,8 − 0,5) cm × 880 N', zone: 'caution' },
   ],
   pressure: [
-    { name: 'Presión arterial sistólica', siValue: 16000, unitSi: 'Pa (16 kPa)', altValue: '120 mmHg · 0,16 bar · 2,3 psi', note: 'Presión hidrostática de eyección', zone: 'normal' },
-    { name: 'Presión discal L5-S1 de pie', siValue: 500000, unitSi: 'Pa (0,50 MPa)', altValue: '5,0 bar · 3750 mmHg · 72,5 psi', note: 'Compresión fisiológica homogénea', zone: 'normal' },
-    { name: 'Presión discal sentado encorvado', siValue: 1100000, unitSi: 'Pa (1,10 MPa)', altValue: '11,0 bar · 8250 mmHg · 159,5 psi', note: 'Sobrecarga postural por pérdida de lordosis', zone: 'caution' },
-    { name: 'Presión discal levantando peso', siValue: 2800000, unitSi: 'Pa (2,80 MPa)', altValue: '28,0 bar · 21000 mmHg · 406 psi', note: 'Zona crítica de rotura de anillo fibroso', zone: 'danger' },
+    { name: 'Presión arterial sistólica', siValue: 16000, unitSi: 'Pa (16 kPa)', altValue: '120 mmHg · 0,16 bar · 2,3 psi', note: 'Manométrica: sobre la atmosférica', zone: 'normal' },
+    { name: 'Presión atmosférica (nivel del mar)', siValue: 101300, unitSi: 'Pa (101,3 kPa)', altValue: '760 mmHg · 1,013 bar · 14,7 psi', note: '1 atm = 1033 cmH₂O', zone: 'normal' },
+    { name: 'Disco lumbar de pie (ilustrativo)', siValue: 500000, unitSi: 'Pa (0,50 MPa)', altValue: '5,0 bar · 3750 mmHg · 72,5 psi', note: 'Tabla 2.4: 100 %', zone: 'caution' },
+    { name: 'Levantar 20 kg sin doblar rodillas', siValue: 2300000, unitSi: 'Pa (2,30 MPa)', altValue: '23,0 bar · 17 250 mmHg · 334 psi', note: 'Tabla 2.4: 460 % (ilustrativo)', zone: 'danger' },
   ],
 };
 

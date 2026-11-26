@@ -90,7 +90,7 @@ export default function Slide12({
       <div className="module-header">
         <span className="mnum">E2</span>
         <h2 className="mtitle">Tracción articular y estática</h2>
-        <span className="msub">Aparatos de tracción cervical y descomposición ortogonal de fuerzas terapéuticas</span>
+        <span className="msub">Contenido complementario · descomposición de una fuerza de tracción (cf. Problema 2.14, tracción de Russell)</span>
         <span className="mslide-count">2 / 2</span>
       </div>
       <div className="content-grid">
@@ -131,6 +131,9 @@ export default function Slide12({
               </p>
             </div>
           </div>
+          <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', margin: '0 .2rem .5rem' }}>
+            El capítulo no trata la tracción cervical en el texto: es una aplicación de la descomposición de fuerzas de §2.1 (el libro propone la tracción de Russell en el Problema 2.14). Cargas, ángulos y aperturas de esta diapositiva son valores clínicos ilustrativos.
+          </p>
           <div className="apuntes">
             <div className="a-hdr"><span>✍️</span> Apunte de cátedra</div>
             <div className="a-text" id="info-text-12">

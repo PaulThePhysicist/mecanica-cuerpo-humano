@@ -61,7 +61,7 @@ export default function Slide16({
       <div className="module-header">
         <span className="mnum">G2</span>
         <h2 className="mtitle">Sensibilidad y umbrales táctiles</h2>
-        <span className="msub">Curvas psicofísicas de sintonía en "U" · Límite biofísico de la yema digital</span>
+        <span className="msub">Umbrales de vibración (complementario) · ley de Stevens del tacto (§2.4)</span>
         <span className="mslide-count">2 / 2</span>
       </div>
       <div className="content-grid">
@@ -125,6 +125,19 @@ export default function Slide16({
             <div className="card-body">
               <p style={{ fontSize: '.64rem', color: 'var(--ink-3)' }}>
                 {'Al deslizar la yema sobre una superficie, las asperezas nanométricas ($< 100\\text{ nm}$) excitan resonancias mecánicas en la piel a $200\\text{--}300\\text{ Hz}$, amplificadas por las laminillas de Pacini.'}
+              </p>
+            </div>
+          </div>
+          <div className="card">
+            <div className="card-hdr">
+              <span className="icon">📈</span> Lo que dice el capítulo
+            </div>
+            <div className="card-body">
+              <p style={{ fontSize: '.64rem' }}>
+                {'Según la Ley de Stevens (Ec. 1.6, Tabla 1.15), el estímulo percibido crece de forma ligeramente sublineal con la intensidad para la vibración, algo superlineal para la presión en la palma y la pesadez de los objetos levantados, lineal para el frío y superlineal para el calor.'}
+              </p>
+              <p style={{ fontSize: '.62rem', color: 'var(--ink-3)' }}>
+                El tacto se usa en el diagnóstico: palpación (manos del médico; Problema 7.14), percusión (golpecitos) y auscultación (escuchar, Cap. 10). Las curvas en «U» y los umbrales en µm de esta diapositiva son datos psicofísicos típicos que no están en el libro.
               </p>
             </div>
           </div>
