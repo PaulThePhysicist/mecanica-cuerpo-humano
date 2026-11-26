@@ -2802,12 +2802,12 @@ var CFX = (function () {
   /* ── Título de escena ── */
   function title(ctx, W, main, sub, color, xCenter, subColor) {
     ctx.save();
-    const isStandardHuman = typeof main === 'string' && (main.includes('Hombre Estándar') || main.includes('⚖ Sujeto'));
+    const isStandardHuman = typeof main === 'string' && (main.includes('Hombre Estándar') || main.includes('Sujeto ·'));
     const isSegmental = typeof main === 'string' && main.includes('Proporciones segmentarias');
     const isMobility = typeof main === 'string' && main.includes('Rango de movilidad');
     const isSomatotype = typeof main === 'string' && main.includes('Los tres somatotipos');
     const titleX = xCenter == null ? (isStandardHuman ? W * 0.31 : isSegmental ? W * 0.27 : W / 2) : xCenter;
-    const displayMain = isStandardHuman ? (main.includes('⚖ Sujeto') ? main : '⚖ Hombre Estándar · 70 kg') : isSegmental ? '📏 Proporciones' : main;
+    const displayMain = isStandardHuman ? (main.includes('Sujeto ·') ? main : 'Hombre Estándar · 70 kg') : isSegmental ? 'Proporciones' : main;
     const mainSize = isStandardHuman ? Math.max(15, Math.min(18, W * 0.033)) : isSegmental ? Math.max(14, Math.min(16, W * 0.029)) : isMobility || isSomatotype ? Math.max(16, Math.min(21, W * 0.038)) : 13;
     const subSize = isStandardHuman || isSegmental ? Math.max(11.5, Math.min(14, W * 0.024)) : isMobility || isSomatotype ? Math.max(12, Math.min(15, W * 0.027)) : 9.5;
     ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
@@ -3565,7 +3565,7 @@ export function drawBodyProportions(customMass?: number, customHeight?: number) 
   var floorY = Math.min(H * 0.905, H - panelOverlap(canvas) - 14);
   var He = floorY / 0.905; // alto «útil» equivalente para escalar la figura
   CFX.scene(ctx, W, H, { floor: true, floorY: floorY, spotX: W * 0.40, gridStep: 26 });
-  CFX.title(ctx, W, isRefBody ? '⚖ Hombre Estándar · 70 kg de referencia' : '⚖ Sujeto · ' + mass + ' kg', 'Tabla 1.5 · valores fisiológicos en reposo');
+  CFX.title(ctx, W, isRefBody ? 'Hombre Estándar · 70 kg de referencia' : 'Sujeto · ' + mass + ' kg', 'Tabla 1.5 · valores fisiológicos en reposo');
 
   /* ── Figura ── */
   var bodyH = He * 0.66 * (Href / 1.72);
@@ -3751,10 +3751,10 @@ function organWindow(ctx, cx, top, bodyH, geo, t, hr, rr) {
   // Deja un margen visible entre la etiqueta y el contorno del cuerpo.
   // En pantallas estrechas chip() puede limitar el extremo izquierdo sin romper el lienzo.
   var labelX = placeRight ? labelRight : cx - rw - 24;
-  CFX.chip(ctx, labelX, cyT - rh * 0.78, '♥ ' + hr + ' lpm', {
+  CFX.chip(ctx, labelX, cyT - rh * 0.78, hr + ' latidos/min', {
     color: PAL.blood, textColor: PAL.ink, size: Math.max(11, Math.min(14, sceneW * 0.024)), mono: true, align: 'right', link: [hx, hy], W: sceneW
   });
-  CFX.chip(ctx, labelX, cyT + rh * 0.42, '🫁 ' + rr + '/min', {
+  CFX.chip(ctx, labelX, cyT + rh * 0.42, rr + ' resp/min', {
     color: '#2b7d97', textColor: PAL.ink, size: Math.max(11, Math.min(14, sceneW * 0.024)), mono: true, align: 'right', link: [cx + rw * 0.52, cyT - rh * 0.18], W: sceneW
   });
 }
@@ -3886,7 +3886,7 @@ export function drawProportions(highlight?: string | null, customHeight?: number
   var floorY = Math.min(H * 0.905, H - panelOverlap(canvas) - 14);
   var He = floorY / 0.905;
   CFX.scene(ctx, W, H, { floor: true, floorY: floorY, spotX: W * 0.34 });
-  CFX.title(ctx, W, '📏 Proporciones segmentarias · L/H constante',
+  CFX.title(ctx, W, 'Proporciones segmentarias · L/H constante',
     'Tabla 1.6 · fracciones L/H');
 
   /* ── Figura acotada ── */
@@ -4104,7 +4104,7 @@ export function drawMobility(highlight) {
   var floorY = Math.min(H * 0.845, H - panelOverlap(canvas) - 14);
   var He = floorY / 0.845;
   CFX.scene(ctx, W, H, { floor: true, floorY: floorY, spotX: W * 0.33 });
-  CFX.title(ctx, W, '🏹 Rango de movilidad articular',
+  CFX.title(ctx, W, 'Rango de movilidad articular',
     'Tabla 1.10 · varones universitarios · grados medios');
 
   /* ── Figura de referencia con los ejes articulares ── */
@@ -4366,17 +4366,17 @@ window.drawMobility = drawMobility;
    ═══════════════════════════════════════════════════════════════════ */
 var C4_TYPES = {
   ecto: {
-    name: 'Ectomorfo', emoji: '🏃', color: '#0d6e64', build: 0.02, musc: 0.20, fat: 0.08,
+    name: 'Ectomorfo', color: '#0d6e64', build: 0.02, musc: 0.20, fat: 0.08,
     desc: 'Largo y delgado · huesos finos', shk: 0.94, hipk: 1.02,
     soma: [1.5, 2.0, 6.0], athletes: 'Maratonianos · saltadores · bailarines'
   },
   meso: {
-    name: 'Mesomorfo', emoji: '💪', color: '#c0681e', build: 0.50, musc: 0.92, fat: 0.16,
+    name: 'Mesomorfo', color: '#c0681e', build: 0.50, musc: 0.92, fat: 0.16,
     desc: 'Sólido y musculoso · hombros anchos', shk: 1.16, hipk: 0.96,
     soma: [2.0, 6.5, 1.5], athletes: 'Levantadores · boxeadores · luchadores'
   },
   endo: {
-    name: 'Endomorfo', emoji: '🍐', color: '#6d5fbf', build: 0.98, musc: 0.38, fat: 0.86,
+    name: 'Endomorfo', color: '#6d5fbf', build: 0.98, musc: 0.38, fat: 0.86,
     desc: 'Redondeado, en pera · huesos grandes', shk: 0.98, hipk: 1.22,
     soma: [6.5, 3.5, 1.0], athletes: 'Luchadores de sumo · lanzadores'
   }
@@ -4399,7 +4399,7 @@ export function drawSomatotype(type) {
 
   var floorY = H * 0.60;
   CFX.scene(ctx, W, H, { floor: true, floorY: floorY, spotX: W * 0.5 });
-  CFX.title(ctx, W, '🧬 Los tres somatotipos · Heath-Carter',
+  CFX.title(ctx, W, 'Los tres somatotipos · Heath-Carter',
     'Un continuo, no categorías absolutas');
 
   /* ── Tres figuras comparativas ── */
@@ -4456,7 +4456,7 @@ export function drawSomatotype(type) {
     ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
     ctx.fillStyle = on ? T.color : PAL.ink2;
     ctx.font = (on ? 'bold 17px' : '15px') + ' Karla, system-ui, sans-serif';
-    ctx.fillText(T.emoji + ' ' + T.name, cx, floorY + 14);
+    ctx.fillText(T.name, cx, floorY + 14);
     ctx.restore();
   });
 

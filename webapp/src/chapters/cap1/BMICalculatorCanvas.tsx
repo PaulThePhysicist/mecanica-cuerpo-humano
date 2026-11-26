@@ -287,7 +287,7 @@ export default function BMICalculatorCanvas({
 
       ctx.font = `${scaled(7.5)}px Karla, system-ui, sans-serif`;
       ctx.fillStyle = rho < 1.0 ? '#2e8b57' : '#b02318';
-      ctx.fillText(rho < 1.0 ? '🏊 Flota en agua' : '⚓ Se hunde en agua', tubeX + tubeW / 2, tubeY + tubeH + 26);
+      ctx.fillText(rho < 1.0 ? 'Flota en agua' : 'Se hunde en agua', tubeX + tubeW / 2, tubeY + tubeH + 26);
       ctx.restore();
 
       // ── 3.4 Barra Segmentada de Composición Corporal (Masa Magra vs Grasa) ──
