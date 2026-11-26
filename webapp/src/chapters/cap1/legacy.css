@@ -479,6 +479,9 @@
 .prof-controls label{display:flex;align-items:center;gap:.3rem;cursor:pointer;flex-shrink:0;font-size:.64rem}
 .prof-controls input[type="range"]{width:74px;accent-color:var(--teal);}
 .prof-controls input[type="checkbox"]{accent-color:var(--teal);}
+/* V6-05: los deslizadores y casillas fuera del panel (p. ej. «Pos.» de cada
+   plano en A2) salían en el azul nativo del navegador. */
+.cap1-presentation input[type="range"],.cap1-presentation input[type="checkbox"]{accent-color:var(--teal)}
 .prof-controls select{
   background:var(--card);color:var(--ink);border:1px solid var(--line);
   border-radius:6px;padding:.18rem .4rem;font-size:.64rem;cursor:pointer;
