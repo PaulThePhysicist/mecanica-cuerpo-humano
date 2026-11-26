@@ -4,6 +4,8 @@ import * as THREE from 'three';
 import { AnatomyStage } from './three/AnatomyStage';
 import { useAnatomyNodes } from './three/useAnatomyNodes';
 import { materials } from './three/materials';
+import { AnchoredLabelOverlay, Callout, CalloutProvider, CalloutSource, useCalloutStore } from './three/Callouts';
+import { BLOOD, INK_2 } from './colorTokens';
 
 export type AntagonistMode = 'eye' | 'arm';
 
@@ -187,11 +189,14 @@ function EyeModel({ gaze, selectedMuscle }: { gaze: { x: number; y: number }; se
         </mesh>
 
         {/* Iris y Pupila */}
-        <mesh position={[0, 0, R * 0.945]}>
+        {/* V6-04: iris y pupila justo por delante de la esclera (R·1,003 y
+            R·1,006). Antes quedaban dentro de la esfera (R·0,945): la esclera
+            tapaba el centro y la pupila se veía blanca. */}
+        <mesh position={[0, 0, R * 1.003]}>
           <circleGeometry args={[0.36, 36]} />
           <meshStandardMaterial color="#0d6e64" roughness={0.35} />
         </mesh>
-        <mesh position={[0, 0, R * 0.955]}>
+        <mesh position={[0, 0, R * 1.006]}>
           <circleGeometry args={[0.15, 36]} />
           <meshBasicMaterial color="#0b0e12" />
         </mesh>
@@ -210,8 +215,30 @@ function EyeModel({ gaze, selectedMuscle }: { gaze: { x: number; y: number }; se
       <ExtraocularMuscleBand origin={zinnApex} insertion={insRI} isActive={isRI} width={0.12} thickness={0.038} />
       <ExtraocularMuscleBand origin={zinnApex} insertion={insOS} via={trochlea} isActive={isOS} width={0.09} thickness={0.032} tendonFraction={0.45} />
       <ExtraocularMuscleBand origin={origOI} insertion={insOI} isActive={isOI} width={0.10} thickness={0.034} tendonFraction={0.25} />
+
+      {/* V6-04: rótulo corto por músculo, anclado fuera del globo (sobre el
+          vientre muscular) y pintado por AnchoredLabelOverlay. */}
+      {([
+        ['RL', beltPoint(zinnApex, insRL), isRL],
+        ['RM', beltPoint(zinnApex, insRM), isRM],
+        ['RS', beltPoint(zinnApex, insRS), isRS],
+        ['RI', beltPoint(zinnApex, insRI), isRI],
+        ['OS', [trochlea[0] - 0.12, trochlea[1] + 0.2, trochlea[2]], isOS],
+        ['OI', [origOI[0] - 0.1, origOI[1] - 0.2, origOI[2]], isOI],
+      ] as [string, [number, number, number], boolean][]).map(([name, pos, active]) => (
+        <Callout key={name} position={pos} label={name} color={active ? BLOOD : INK_2} priority={active ? 0 : 1} />
+      ))}
     </group>
   );
+}
+
+/** Punto del vientre de un recto (40 % del camino desde el anillo de Zinn),
+ *  separado radialmente del eje para que el rótulo no caiga sobre el globo. */
+function beltPoint(origin: [number, number, number], insertion: [number, number, number]): [number, number, number] {
+  const p = new THREE.Vector3(...origin).lerp(new THREE.Vector3(...insertion), 0.4);
+  const radial = new THREE.Vector3(p.x, p.y, 0);
+  if (radial.lengthSq() > 1e-6) p.add(radial.normalize().multiplyScalar(0.3));
+  return [p.x, p.y, p.z];
 }
 
 // ── 3. Modelo 3D del Brazo con Huesos y Músculos Auténticos de BodyParts3D ──
@@ -387,6 +414,7 @@ export default function AntagonistCanvas({
   resetSignal = 0,
   zoomSignal = null,
 }: AntagonistCanvasProps) {
+  const eyeLabels = useCalloutStore();
   const telemetry = (
     <div
       style={{
@@ -428,7 +456,10 @@ export default function AntagonistCanvas({
 
   return (
     <AnatomyStage
-      camera={{ position: mode === 'eye' ? [0.9, 0.45, 5.6] : [1.5, 0.35, 4.8], fov: 42 }}
+      // V6-04: el ojo se ve en tres cuartos (lateral y desde arriba) para que
+      // se vean los cuatro rectos, los dos oblicuos y la tróclea; de frente
+      // el globo tapaba todos los vientres musculares.
+      camera={{ position: mode === 'eye' ? [3.3, 2.9, 3.0] : [1.5, 0.35, 4.8], fov: 42 }}
       target={mode === 'eye' ? [0, 0, 0] : [0.1, 0.05, 0]}
       minDistance={1.5}
       maxDistance={20}
@@ -442,17 +473,20 @@ export default function AntagonistCanvas({
       resetSignal={resetSignal}
       zoomSignal={zoomSignal}
       fit
-      fitPadding={1.7}
+      fitPadding={mode === 'eye' ? 1.25 : 1.7}
       refit={mode}
-      overlay={telemetry}
+      overlay={<>{telemetry}{mode === 'eye' && <AnchoredLabelOverlay store={eyeLabels} />}</>}
     >
-      <Center position={[0, 0, 0]}>
-        {mode === 'eye' ? (
-          <EyeModel gaze={gaze} selectedMuscle={selectedMuscle} />
-        ) : (
-          <RealArmAntagonistModel flexion={armFlexion} />
-        )}
-      </Center>
+      <CalloutProvider store={eyeLabels} visible={mode === 'eye'}>
+        <Center position={[0, 0, 0]}>
+          {mode === 'eye' ? (
+            <EyeModel gaze={gaze} selectedMuscle={selectedMuscle} />
+          ) : (
+            <RealArmAntagonistModel flexion={armFlexion} />
+          )}
+        </Center>
+        <CalloutSource />
+      </CalloutProvider>
     </AnatomyStage>
   );
 }
