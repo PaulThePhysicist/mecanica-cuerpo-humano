@@ -25,7 +25,7 @@ export default function Slide0({ goModule, onBack }: { goModule?: (m: number) =>
           <span className="ico">📈</span> D · Escalamiento
         </button>
       </div>
-      <div style={{ display: 'flex', gap: '0.8rem', justifyContent: 'center', marginTop: '1.9rem', flexWrap: 'wrap' }}>
+      <div className="cover-actions">
         {onBack && (
           <button
             type="button"
