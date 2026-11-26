@@ -220,24 +220,36 @@ export default function StevensCanvas({
       // Leyenda de series: misma franja vacía a la izquierda del umbral S₀
       // (ninguna curva tiene valor ahí, P=0 hasta S₀) y mismo orden que la
       // tabla de la izquierda (Object.values conserva el orden de SENSATIONS).
+      // A6-04: ≥ 12 px, color pleno de cada serie y la activa en negrita,
+      // sobre un fondo claro para que las curvas de detrás no la ensucien.
       if (showAllCurves) {
         ctx.save();
-        ctx.font = `${scaled(8.5)}px Karla, system-ui, sans-serif`;
+        const legendSize = Math.max(12, scaled(9));
+        const rowH = legendSize + 3;
+        const list = Object.values(SENSATIONS);
+        ctx.font = `bold ${legendSize}px Karla, system-ui, sans-serif`;
+        const textW = Math.max(...list.map((sens) => ctx.measureText(sens.name).width));
+        const boxX = pad.left + 2;
+        const boxY = pad.top + 22;
+        ctx.fillStyle = 'rgba(251, 248, 240, 0.9)';
+        ctx.strokeStyle = 'rgba(207, 195, 169, 0.9)';
+        ctx.lineWidth = 1;
+        ctx.fillRect(boxX, boxY, textW + 28, list.length * rowH + 6);
+        ctx.strokeRect(boxX, boxY, textW + 28, list.length * rowH + 6);
         ctx.textAlign = 'left';
-        let legendY = pad.top + 24;
-        Object.values(SENSATIONS).forEach((sens) => {
+        let legendY = boxY + rowH;
+        list.forEach((sens) => {
           const isActive = sens.id === selectedSensation;
-          ctx.globalAlpha = isActive ? 1 : 0.55;
           ctx.strokeStyle = sens.color;
-          ctx.lineWidth = isActive ? 2.4 : 1.6;
+          ctx.lineWidth = isActive ? 3 : 2;
           ctx.beginPath();
-          ctx.moveTo(pad.left + 4, legendY - 3);
-          ctx.lineTo(pad.left + 16, legendY - 3);
+          ctx.moveTo(boxX + 5, legendY - legendSize / 3);
+          ctx.lineTo(boxX + 18, legendY - legendSize / 3);
           ctx.stroke();
-          ctx.fillStyle = isActive ? sens.color : '#43505c';
-          ctx.font = `${isActive ? 'bold ' : ''}${scaled(8.5)}px Karla, system-ui, sans-serif`;
-          ctx.fillText(sens.name, pad.left + 20, legendY);
-          legendY += 12;
+          ctx.fillStyle = sens.color;
+          ctx.font = `${isActive ? 'bold ' : ''}${legendSize}px Karla, system-ui, sans-serif`;
+          ctx.fillText(sens.name, boxX + 22, legendY);
+          legendY += rowH;
         });
         ctx.restore();
       }
@@ -256,8 +268,8 @@ export default function StevensCanvas({
           if (sens.id === selectedSensation) return; // Se dibuja después resaltada
           ctx.save();
           ctx.strokeStyle = sens.color;
-          ctx.lineWidth = 1.2;
-          ctx.globalAlpha = 0.35;
+          ctx.lineWidth = 1.4;
+          ctx.globalAlpha = 0.5;
           ctx.beginPath();
           for (let step = 0; step <= 80; step++) {
             const sVal = s0 + (step / 80) * (sMax - s0);
