@@ -524,6 +524,11 @@
 .effect-list li::before{content:"";position:absolute;left:0;top:.5em;width:.32rem;height:.32rem;border-radius:50%;background:var(--teal)}
 .effect-list b{color:var(--ink)}
 .effect-list .cap-ref{font-family:var(--mono);font-size:.9em;color:var(--teal-deep);white-space:nowrap}
+/* Resumen (P6-37): cuatro tarjetas alineadas arriba, tres viñetas cada una. */
+.theory.summary-grid{display:grid;grid-template-columns:1fr 1fr;align-content:start;gap:.6rem;overflow-y:auto}
+.summary-list{list-style:none;display:flex;flex-direction:column;gap:.35rem}
+.summary-list li{line-height:1.5}
+.summary-list b{color:var(--teal-deep);margin-right:.15rem}
 /* Filas que responden al clic (resaltan algo en el lienzo o el 3D). */
 .data-mini tr.row-link{cursor:pointer}
 
