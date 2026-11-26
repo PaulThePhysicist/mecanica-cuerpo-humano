@@ -275,6 +275,19 @@
 }
 .apuntes .a-text{color:#5d460f}
 .apuntes .a-text strong{color:#4a3709}
+/* A6-01: a 1280×720 la columna de teoría desborda y el apunte (último bloque)
+   quedaba fuera de pantalla, actualizándose sin que nadie lo viera. Se fija al
+   borde inferior de la columna con sticky: si la teoría cabe, queda en su
+   sitio; si no, flota sobre las tarjetas con fondo opaco y una sombra superior.
+   Tope de ~35 % del alto de la columna con scroll interno. Solo escritorio: en
+   móvil la diapositiva entera scrollea y el apunte sigue en su sitio. */
+@media(min-width:821px){
+  .cap1-presentation .theory > .apuntes{
+    position:sticky;bottom:0;z-index:4;
+    max-height:35%;overflow-y:auto;
+    box-shadow:0 -8px 14px -8px rgba(35,44,54,.28),inset 0 0 0 1px rgba(255,255,255,.4);
+  }
+}
 
 /* ─── PANEL DE SIMULACIÓN ─── */
 .sim-area{
