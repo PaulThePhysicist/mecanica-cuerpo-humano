@@ -4,6 +4,8 @@ import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
 import KatexHtml from './KatexHtml';
 import type { Engine } from './useEngine';
+import { JAW_MA } from './staticsModels';
+import { fx } from './ab';
 
 interface JawPreset {
   id: string;
@@ -17,35 +19,35 @@ interface JawPreset {
 const JAW_PRESETS: JawPreset[] = [
   {
     id: 'incisor_std',
-    name: 'Incisivos (Corte)',
+    name: 'Incisivo',
     mode: 'incisor',
     force: 450,
-    badge: 'CORTE FINO (0,67× Fm)',
-    desc: '<b>Mordida Incisiva ($d = 7{,}5\\text{ cm}$):</b> Palanca de 3ª clase ($d > d_m$). La fuerza de corte dental ($300\\text{ N}$) es inferior a la tensión muscular ($450\\text{ N}$), pero proporciona máxima velocidad angular y precisión de corte fino.',
+    badge: 'INCISIVO · VM 0,50',
+    desc: '<b>Mordida incisiva:</b> la ventaja mecánica del masetero es $0{,}50$: la fuerza sobre el alimento es la mitad de la del músculo. Para el temporal anterior es $0{,}24$ y para el posterior $0{,}37$ (hombres; algo menor en mujeres).',
   },
   {
     id: 'molar_std',
-    name: 'Molares (Trituración)',
+    name: 'Primer molar',
     mode: 'molar',
     force: 450,
-    badge: 'TRITURACIÓN (1,43× Fm)',
-    desc: '<b>Mordida Molar ($d = 3{,}5\\text{ cm}$):</b> Al situarse el alimento entre el fulcro (ATM) y la inserción del masetero ($d < d_m$), se genera una <strong>ventaja mecánica real de $1{,}43\\times$</strong>, alcanzando $643\\text{ N}$ ($65{,}5\\text{ kgf}$).',
+    badge: 'PRIMER MOLAR · VM 0,76',
+    desc: '<b>Mordida en el primer molar:</b> el alimento está más cerca de la ATM y la ventaja mecánica del masetero sube a $0{,}76$ (temporal anterior $0{,}48$, posterior $0{,}72$). Sigue siendo $< 1$: palanca de 3ª clase.',
   },
   {
     id: 'molar_max',
-    name: 'Molar Máxima (800 N)',
+    name: 'Molar, M = 800 N',
     mode: 'molar',
     force: 800,
-    badge: 'MÁXIMA POTENCIA (>1100 N)',
-    desc: '<b>Potencia Máxima Molar ($F_m = 800\\text{ N}$):</b> Reclutamiento conjunto de masetero y temporal. Produce una fuerza trituradora extrema de <strong>$1143\\text{ N}$ ($116{,}5\\text{ kgf}$)</strong> con alta absorción de carga condilar en la ATM.',
+    badge: 'MOLAR · M = 800 N',
+    desc: '<b>Masetero a 800 N en el primer molar (valor ilustrativo):</b> con VM = 0,76 la mordida es de unos $610\\text{ N}$. Estas fuerzas deben entenderse junto a las propiedades mecánicas de los alimentos (Cap. 4).',
   },
   {
     id: 'soft_bite',
-    name: 'Masticación Ligera (250 N)',
+    name: 'Masticación ligera',
     mode: 'incisor',
     force: 250,
-    badge: 'MASTICACIÓN LEVE',
-    desc: '<b>Masticación Habitual ($F_m = 250\\text{ N}$):</b> Rango fisiológico para deglución de alimentos blandos. Carga reducida tanto en los bordes incisales como en el menisco de la ATM.',
+    badge: 'MASTICACIÓN LIGERA',
+    desc: '<b>Masticación ligera (valor ilustrativo, M = 250 N):</b> para alimentos blandos. Una hipótesis del libro: con dietas blandas la mandíbula en crecimiento no recibe las tensiones de masticar y no crece tanto, y la ortodoncia sustituye esas fuerzas.',
   },
 ];
 
@@ -65,8 +67,9 @@ export default function Slide11({
   const [activePresetId, setActivePresetId] = useState<string>('incisor_std');
 
   const dMuscM = 0.050; // 5.0 cm inserción masetero respecto a ATM
-  const dBiteM = biteMode === 'incisor' ? 0.075 : 0.035; // 7.5 cm vs 3.5 cm
-  const mechAdv = dMuscM / dBiteM; // 0.667 vs 1.429
+  // Ventaja mecánica del masetero (libro): 0,50 incisivo y 0,76 primer molar.
+  const mechAdv = biteMode === 'incisor' ? JAW_MA.masseter.incisor : JAW_MA.masseter.molar;
+  const dBiteM = dMuscM / mechAdv; // 10 cm y 6,6 cm con el masetero a 5 cm (ilustrativo)
   const fBiteN = (muscleForceN * dMuscM) / dBiteM;
   const fBiteKgf = fBiteN / 9.81;
   const rAtmN = Math.abs(muscleForceN - fBiteN);
@@ -100,7 +103,7 @@ export default function Slide11({
       <div className="module-header">
         <span className="mnum">E1</span>
         <h2 className="mtitle">La mandíbula y la ATM</h2>
-        <span className="msub">Fuerzas de mordida en incisivos vs molares y carga en la articulación temporomandibular</span>
+        <span className="msub">Masetero y temporal sobre la ATM · ventajas mecánicas del libro y ortodoncia</span>
         <span className="mslide-count">1 / 2</span>
       </div>
       <div className="content-grid">
@@ -111,23 +114,25 @@ export default function Slide11({
             </div>
             <div className="card-body">
               <p style={{ fontSize: '.7rem' }}>
-                {'El músculo masetero se inserta a $d_m = 5{,}0\\text{ cm}$ de la ATM (fulcro). El equilibrio estático de momentos ($\\sum M_{\\text{ATM}} = 0$) determina la fuerza sobre el bolo alimenticio:'}
+                {'La mandíbula tiene un ángulo recto: cada rama sube a la ATM (bisagra con el temporal) y el cuerpo lleva los dientes, de modo que muchos dientes se tocan a la vez. A cada lado de la línea media hay ocho dientes: 2 incisivos, 1 canino, 2 bicúspides (premolares) y 3 molares (el último, la muela del juicio): «ICBM». Las cúspides: 1 el canino, 2 los bicúspides, 4 o 5 los molares.'}
               </p>
               <div className="eq-block">
-                {'\\[ F_{\\text{bite}}\\, d_{\\text{bite}} = F_m\\, d_m \\qquad\\Longrightarrow\\qquad F_{\\text{bite}} = F_m \\left(\\frac{d_m}{d_{\\text{bite}}}\\right) \\]'}
+                {'\\[ \\text{VM} = \\frac{F_{\\text{mordida}}}{M} = \\frac{d_M}{d_{\\text{diente}}} \\]'}
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '.62rem', marginTop: '.25rem' }}>
-                <span className="pill" style={{ background: biteMode === 'incisor' ? 'rgba(13, 110, 100, 0.12)' : 'var(--paper-2)', border: biteMode === 'incisor' ? '1px solid var(--teal)' : '1px solid var(--line)' }}>
-                  <b>Incisivos:</b> {'$d = 7{,}5\\text{ cm} \\implies F_{\\text{bite}} = \\frac{5{,}0}{7{,}5} F_m = \\mathbf{0{,}67\\, F_m}$ (Palanca de 3ª clase: corte fino y velocidad).'}
-                </span>
-                <span className="pill" style={{ background: biteMode === 'molar' ? 'rgba(13, 110, 100, 0.12)' : 'var(--paper-2)', border: biteMode === 'molar' ? '1px solid var(--teal)' : '1px solid var(--line)' }}>
-                  <b>Molares:</b> {'$d = 3{,}5\\text{ cm} \\implies F_{\\text{bite}} = \\frac{5{,}0}{3{,}5} F_m = \\mathbf{1{,}43\\, F_m}$ (Palanca multiplicadora: gran ventaja trituradora).'}
-                </span>
-              </div>
-            
+              <table className="data-mini">
+                <thead><tr><th>Ventaja mecánica</th><th>Incisivo</th><th>Primer molar</th></tr></thead>
+                <tbody>
+                  <tr><td>Masetero</td><td>0,50</td><td>0,76</td></tr>
+                  <tr><td>Temporal anterior</td><td>0,24</td><td>0,48</td></tr>
+                  <tr><td>Temporal posterior</td><td>0,37</td><td>0,72</td></tr>
+                </tbody>
+              </table>
+              <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '.25rem' }}>
+                Hombres; algo menores en mujeres (Problema 2.28). Todas son menores que 1: el visor usa la del masetero.
+              </p>
               <div style={{ marginTop: '.4rem' }}>
                 <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
-                  <b>🏷️ Rotular la ATM y las fuerzas</b>
+                  <b>Rotular la ATM y las fuerzas</b>
                 </TheoryToggle>
               </div>
               <TheoryCue>Señala el fulcro de la articulación temporomandibular y las fuerzas de la palanca masticatoria.</TheoryCue>
@@ -135,17 +140,14 @@ export default function Slide11({
           </div>
           <div className="card">
             <div className="card-hdr">
-              <span className="icon">⚡</span> Carga articular en la ATM
+              <span className="icon">⚡</span> Ortodoncia: el centro de resistencia
             </div>
             <div className="card-body">
-              <p style={{ fontSize: '.64rem', color: 'var(--ink-3)' }}>
-                {'El cóndilo mandibular y el disco articular (menisco bicóncavo) absorben la fuerza resultante de equilibrio vertical:'}
+              <p style={{ fontSize: '.64rem', color: 'var(--ink-2)' }}>
+                {'La ortodoncia mueve dientes con fuerzas aplicadas por alambres, brackets y elásticos. Como el diente no es un cuerpo libre (lo sujeta el periodonto), se usa su centro de resistencia: fuerzas y torques en la corona se diseñan para dar una fuerza lateral en ese punto sin torque (Figs. 2.31–2.33, arco de intrusión).'}
               </p>
-              <div className="eq-block">
-                {'\\[ R_{\\text{atm}} = |F_m - F_{\\text{bite}}| \\]'}
-              </div>
               <p style={{ fontSize: '.62rem', color: 'var(--ink-3)' }}>
-                {'En mordida molar, la compresión oclusal supera los $> 600\\text{ N}$ ($60\\text{ kgf}$), liberando parcialmente la carga condilar gracias a la interposición dental.'}
+                {'En el visor, la reacción en la ATM sale del equilibrio vertical, $R = M - F_{\\text{mordida}}$ (modelo simplificado con fuerzas paralelas).'}
               </p>
             </div>
           </div>
@@ -161,7 +163,7 @@ export default function Slide11({
           {/* Panel HUD Colapsable */}
           <HudPanel
             title="BIOMECÁNICA ATM"
-            badge={`F_bite = ${fBiteN.toFixed(0)} N (${fBiteKgf.toFixed(1)} kgf)`}
+            badge={`Mordida = ${fx(fBiteN)} N`}
             icon="🦷"
             footer="💡 Alterna entre incisivos y molares para ver la duplicación de fuerza trituradora"
           >
@@ -171,7 +173,7 @@ export default function Slide11({
                 <b style={{ color: '#0d6e64', fontFamily: 'JetBrains Mono, monospace' }}>{fBiteN.toFixed(0)} N ({fBiteKgf.toFixed(1)} kgf)</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
-                <span style={{ color: 'var(--ink-2)' }}>Tensión Masetero (Fm):</span>
+                <span style={{ color: 'var(--ink-2)' }}>Masetero (M):</span>
                 <b style={{ color: '#b91c1c', fontFamily: 'JetBrains Mono, monospace' }}>{muscleForceN} N</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
@@ -181,7 +183,7 @@ export default function Slide11({
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Ventaja Mecánica (dm/d):</span>
                 <b style={{ color: biteMode === 'molar' ? '#047857' : '#b45309', fontFamily: 'JetBrains Mono, monospace' }}>
-                  {mechAdv.toFixed(2)}× {biteMode === 'molar' ? '(Multiplica fuerza)' : '(Reduce fuerza)'}
+                  {fx(mechAdv, 2)} (masetero, libro)
                 </b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -197,7 +199,7 @@ export default function Slide11({
           />
           <div className="prof-controls">
             <span className="badge">2.5 · Mandíbula</span>
-            <span>Mordida = <b style={{ color: '#0d6e64' }}>{fBiteN.toFixed(0)} N</b> ({biteMode === 'incisor' ? '0,67× Fm' : '1,43× Fm'})</span>
+            <span>Mordida = <b style={{ color: '#0d6e64' }}>{fBiteN.toFixed(0)} N</b> ({biteMode === 'incisor' ? '0,50 M' : '0,76 M'})</span>
 
             <div style={{ display: 'flex', gap: '0.45rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>
               {/* Presets rápidos */}
@@ -241,7 +243,7 @@ export default function Slide11({
                     transition: 'all 0.15s ease',
                   }}
                 >
-                  Incisivos (7,5 cm)
+                  Incisivo (VM 0,50)
                 </button>
                 <button
                   type="button"
@@ -258,12 +260,12 @@ export default function Slide11({
                     transition: 'all 0.15s ease',
                   }}
                 >
-                  Molares (3,5 cm)
+                  Primer molar (VM 0,76)
                 </button>
               </div>
 
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
-                <span>Masetero (Fm):</span>
+                <span>Masetero (M):</span>
                 <input
                   type="range"
                   min="100"

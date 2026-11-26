@@ -11,6 +11,7 @@ import {
 } from '../cap1/three/Callouts';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
+import { JAW_MA } from './staticsModels';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
 import { STUDIO_BG_DEEP } from '../cap1/three/materials';
 import { StudioLights } from '../cap1/three/StudioLights';
@@ -212,7 +213,7 @@ function BiteDynamometerGauge({
         {isCrushing ? '💥 TRITURACIÓN MÁXIMA (>600 N)' : (fBiteN > 300 ? '⚡ Masticación Fuerte' : '🦷 Corte Fisiológico')}
       </div>
       <div style={{ fontSize: '0.52rem', color: '#64748b', marginTop: '3px' }}>
-        Fm: <b>{muscleForceN} N</b> · R_atm: <b>{rAtmN.toFixed(0)} N</b>
+        M: <b>{muscleForceN} N</b> · R (ATM): <b>{rAtmN.toFixed(0)} N</b>
       </div>
     </div>
   );
@@ -308,7 +309,8 @@ function MasseterMuscle3D({
 /** Palanca mandibular (determinista). */
 function jawStats(biteMode: JawCanvasProps['biteMode'], muscleForceN: number) {
   const dMuscM = 0.050;
-  const dBiteM = biteMode === 'incisor' ? 0.075 : 0.035;
+  // Ventaja mecánica del masetero del libro: 0,50 (incisivo) y 0,76 (primer molar).
+  const dBiteM = dMuscM / (biteMode === 'incisor' ? JAW_MA.masseter.incisor : JAW_MA.masseter.molar);
   const fBiteN = (muscleForceN * dMuscM) / dBiteM;
   const rAtmN = Math.abs(muscleForceN - fBiteN);
   return { fBiteN, fBiteKgf: fBiteN / 9.81, rAtmN, rAtmKgf: rAtmN / 9.81 };
@@ -327,8 +329,9 @@ function Jaw3DScene({
 
   // Física del sistema de palanca mandibular
   const dMuscM = 0.050; // 5.0 cm inserción masetero respecto a ATM
-  const dBiteM = biteMode === 'incisor' ? 0.075 : 0.035; // 7.5 cm (incisivos) vs 3.5 cm (molares)
-  const mechAdv = dMuscM / dBiteM; // 0.667 vs 1.429
+  // VM del masetero (libro, ref. [34]): 0,50 incisivo, 0,76 primer molar.
+  const dBiteM = dMuscM / (biteMode === 'incisor' ? JAW_MA.masseter.incisor : JAW_MA.masseter.molar);
+  const mechAdv = dMuscM / dBiteM;
 
   // Equilibrio de momentos (Σ M_ATM = 0):
   const fBiteN = (muscleForceN * dMuscM) / dBiteM;
@@ -339,9 +342,9 @@ function Jaw3DScene({
   const rAtmKgf = rAtmN / 9.81;
 
   // Letreros del riel lateral (mismos valores que llenaban el DclReadout de esquina).
-  const lFm = `Fm = ${muscleForceN.toFixed(0)} N`;
-  const lFmord = `F_mord = ${fBiteN.toFixed(0)} N`;
-  const lRatm = `R_ATM = ${rAtmN.toFixed(0)} N`;
+  const lFm = `M = ${muscleForceN.toFixed(0)} N`;
+  const lFmord = `F mordida = ${fBiteN.toFixed(0)} N`;
+  const lRatm = `R (ATM) = ${rAtmN.toFixed(0)} N`;
 
   // Escala anatómica general
   const SKULL_SCALE = 16.0;

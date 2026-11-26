@@ -35,13 +35,16 @@ interface PostureInfo {
   nucleusOffset: number;
 }
 
+// Presiones = porcentaje de la Tabla 2.4 × 0,5 MPa (referencia ilustrativa para la
+// bipedestación relajada; el libro da solo los porcentajes). Las dos posturas de
+// levantamiento son con 20 kg, como en la tabla.
 const POSTURES: Record<string, PostureInfo> = {
   upright: {
     id: 'upright',
     name: 'De pie erguido',
     emoji: '🚶',
-    basePressureMPa: 0.50,
-    compMultiplier: 1.0,
+    basePressureMPa: 0.50, // Tabla 2.4: 100 %
+    compMultiplier: 0,
     shearMultiplier: 0.2,
     tiltAngle: 0.0,
     nucleusOffset: 0.0,
@@ -50,28 +53,28 @@ const POSTURES: Record<string, PostureInfo> = {
     id: 'seated',
     name: 'Sentado sin respaldo',
     emoji: '🪑',
-    basePressureMPa: 0.85,
-    compMultiplier: 1.4,
+    basePressureMPa: 0.46, // Tabla 2.4: 92 %
+    compMultiplier: 0,
     shearMultiplier: 0.5,
     tiltAngle: 0.09,
     nucleusOffset: -0.07,
   },
   knees: {
     id: 'knees',
-    name: 'Levantar con rodillas flexionadas (Ergonómico)',
+    name: 'Levantar 20 kg con las rodillas dobladas',
     emoji: '🏋️',
-    basePressureMPa: 1.30,
-    compMultiplier: 2.2,
+    basePressureMPa: 1.70, // Tabla 2.4: 340 % (20 kg, rodillas dobladas)
+    compMultiplier: 0,
     shearMultiplier: 0.4,
     tiltAngle: 0.04,
     nucleusOffset: -0.03,
   },
   bent_back: {
     id: 'bent_back',
-    name: 'Levantar con espalda curva (Lesivo)',
+    name: 'Levantar 20 kg sin doblar las rodillas',
     emoji: '⚠️',
-    basePressureMPa: 2.40,
-    compMultiplier: 4.8,
+    basePressureMPa: 2.30, // Tabla 2.4: 460 % (20 kg, sin doblar las rodillas)
+    compMultiplier: 0,
     shearMultiplier: 1.9,
     tiltAngle: 0.24,
     nucleusOffset: -0.21,
@@ -228,8 +231,8 @@ function PressureManometerGauge({
 
         {/* Marcas de escala numérica */}
         <text x="14" y="76" fontSize="7" fill="#64748b" fontFamily="JetBrains Mono, monospace" fontWeight="600">0</text>
-        <text x="56" y="16" fontSize="7" fill="#64748b" fontFamily="JetBrains Mono, monospace" fontWeight="600">2.0M</text>
-        <text x="100" y="76" fontSize="7" fill="#64748b" fontFamily="JetBrains Mono, monospace" fontWeight="600">4.0M</text>
+        <text x="56" y="16" fontSize="7" fill="#64748b" fontFamily="JetBrains Mono, monospace" fontWeight="600">2,0M</text>
+        <text x="100" y="76" fontSize="7" fill="#64748b" fontFamily="JetBrains Mono, monospace" fontWeight="600">4,0M</text>
       </svg>
 
       <div style={{ fontSize: '1.35rem', fontWeight: 800, color: statusColor, fontFamily: 'JetBrains Mono, monospace', margin: '2px 0 0' }}>
@@ -273,7 +276,7 @@ function discStats(posture: DiscPressureCanvasProps['posture'], loadKg: number) 
     totalPressureBar: totalPressureMPa * 10,
     compForceN,
     shearForceN,
-    isCritical: totalPressureMPa >= 2.5,
+    isCritical: totalPressureMPa >= 2.0,
   };
 }
 
@@ -290,7 +293,7 @@ function SpinalFunctionalUnit3D({
   const curPosture = POSTURES[posture] || POSTURES.bent_back;
   const loadFactor = loadKg / 20;
   const targetPressureMPa = curPosture.basePressureMPa + curPosture.compMultiplier * 0.65 * loadFactor;
-  const isCritical = targetPressureMPa >= 2.50;
+  const isCritical = targetPressureMPa >= 2.0;
 
   // Materiales anatómicos cálidos / calidad museo
   const boneIvoryMat = useMemo(
@@ -690,7 +693,7 @@ export default function DiscPressureCanvas({
         side="left"
         note={
           d.isCritical
-            ? 'Presión intradiscal crítica (> 2,5 MPa): riesgo de extrusión del núcleo pulposo.'
+            ? 'Levantar 20 kg sin doblar las rodillas: 460 % de la presión de pie (Tabla 2.4).'
             : 'Presión sobre un área discal ≈ 18 cm²; la postura multiplica la carga axial.'
         }
       />

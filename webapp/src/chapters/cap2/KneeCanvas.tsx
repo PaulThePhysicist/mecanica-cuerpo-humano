@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { Line } from '@react-three/drei';
 import * as THREE from 'three';
+import { KNEE, kneeStatics } from './staticsModels';
 import { AnatomyStage } from '../cap1/three/AnatomyStage';
 import { useAnatomyNodes, preloadAnatomy } from '../cap1/three/useAnatomyNodes';
 import { materials, makeMuscleActive } from '../cap1/three/materials';
@@ -16,7 +17,7 @@ import {
  * C3 · Estática de la rodilla (Herman §2.3.3, Figs. 2.23–2.27).
  *
  * Ejercicio de extensión de rodilla con peso en el tobillo. El cuádriceps,
- * vía tendón rotuliano, equilibra el peso de la pierna (W0) y la carga (W1):
+ * vía tendón rotuliano, equilibra el peso de la pierna (W1, a b) y la pesa (W0, a c):
  *
  *   M = (b·W1 + c·W0) · cosβ / (a · sinθ)        (2.34)
  *   Rx = M cos(θ+β) ,  Ry = M sin(θ+β) − W0 − W1  (2.35–2.36)
@@ -29,7 +30,7 @@ import {
 
 export interface KneeCanvasProps {
   betaDeg: number;      // ángulo pierna–horizontal (0 = horizontal, 90 = colgando)
-  ankleLoadN: number;   // W1 · peso añadido en el tobillo
+  ankleLoadN: number;   // W0 · pesa en el tobillo (libro: 100 N)
   patella: boolean;     // rótula presente (polea) vs. ausente (tendón en cuerda)
   showComponents: boolean;
   /** Lo enciende la columna de teoría del slide, no un botón sobre el lienzo:
@@ -37,12 +38,12 @@ export interface KneeCanvasProps {
   showLabels?: boolean;
 }
 
-const A_LEVER = 0.048;      // brazo de momento del tendón con rótula (~4,8 cm)
-const A_LEVER_NOPAT = 0.022; // sin rótula el tendón roza el cóndilo (~2,2 cm)
-const B_ARM = 0.22;        // rodilla → carga del tobillo (~22 cm)
-const C_ARM = 0.20;        // rodilla → centro de masa de la pierna (~20 cm)
-const THETA = (18 * Math.PI) / 180; // ángulo tendón rotuliano–tibia
-const W0 = 45;             // peso de la pierna (N)
+// Parámetros del libro (§2.3.3): a = 12 cm, b = 22 cm, c = 50 cm, θ = 15°,
+// W₁ = 150 N (pierna, a b) y W₀ = pesa del tobillo (a c; el libro: 100 N).
+const A_LEVER = KNEE.a / 100;
+const A_LEVER_NOPAT = 0.055; // sin rótula: valor ilustrativo (el libro no da cifra)
+const THETA = (KNEE.thetaDeg * Math.PI) / 180;
+const W_LEG = KNEE.W1;
 
 const TEAL = '#0d6e64';
 const AMBER = '#d97706';
@@ -122,7 +123,7 @@ function ForceArrow({
 // Landmarks en el espacio canónico del esqueleto (human_body.glb).
 const KNEE_C = new THREE.Vector3(-0.045, -0.250, -0.010);   // centro tibiofemoral
 const LEG_COM = new THREE.Vector3(-0.043, -0.352, -0.017);  // CdM de la pierna (mitad de la tibia)
-const ANKLE_C = new THREE.Vector3(-0.041, -0.466, -0.021);  // tobillo (carga W1)
+const ANKLE_C = new THREE.Vector3(-0.041, -0.466, -0.021);  // tobillo (pesa W0)
 const TUBEROSITY = new THREE.Vector3(-0.045, -0.286, 0.012); // inserción del tendón rotuliano
 const DEG = Math.PI / 180;
 
@@ -144,11 +145,12 @@ function swing(p: THREE.Vector3, alpha: number): THREE.Vector3 {
  */
 function kneeSolve(betaDeg: number, ankleLoadN: number, patella: boolean) {
   const beta = betaDeg * DEG;
-  const W1 = ankleLoadN;
+  const W0 = ankleLoadN; // pesa en el tobillo (c = 50 cm)
+  const W1 = W_LEG;      // peso de la pierna (b = 22 cm)
   const a = patella ? A_LEVER : A_LEVER_NOPAT;
-  const torqueExt = (B_ARM * W1 + C_ARM * W0) * Math.cos(beta); // torque a vencer
-  const M = torqueExt / (a * Math.sin(THETA));
-  const Mnopat = torqueExt / (A_LEVER_NOPAT * Math.sin(THETA));
+  const book = kneeStatics(betaDeg, W0, a * 100); // Ecs. 2.34–2.36
+  const M = book.M;
+  const Mnopat = kneeStatics(betaDeg, W0, A_LEVER_NOPAT * 100).M;
   // Compresión femoropatelar: sólo con rótula, crece al flexionar.
   const fp = patella ? 2 * M * Math.sin(Math.PI / 2 - THETA - beta * 0.5) : 0;
 
@@ -162,12 +164,17 @@ function kneeSolve(betaDeg: number, ankleLoadN: number, patella: boolean) {
   const mDir = patApex.clone().sub(tubP).normalize();
 
   // R cierra ΣF = 0 en el centro articular:  R = −(M + W0 + W1).
-  const rxN = -(mDir.x * M);
-  const ryN = -(mDir.y * M - W0 - W1);
-  const rzN = -(mDir.z * M);
-  const R = Math.hypot(rxN, ryN, rzN);
+  // La dirección sale de la geometría 3D del tendón; la magnitud, de las Ecs. 2.35–2.36.
+  const gx = -(mDir.x * M);
+  const gy = -(mDir.y * M - W0 - W1);
+  const gz = -(mDir.z * M);
+  const k = book.R / Math.max(1e-6, Math.hypot(gx, gy, gz));
+  const rxN = gx * k;
+  const ryN = gy * k;
+  const rzN = gz * k;
+  const R = book.R;
 
-  return { beta, W1, a, M, Mnopat, fp, alpha, comP, ankP, tubP, patApex, mDir, rxN, ryN, rzN, R };
+  return { beta, W1: W0, a, M, Mnopat, fp, alpha, comP, ankP, tubP, patApex, mDir, rxN, ryN, rzN, R };
 }
 
 function KneeAnatomy({ betaDeg, ankleLoadN, patella, showComponents }: KneeCanvasProps) {
@@ -190,7 +197,7 @@ function KneeAnatomy({ betaDeg, ankleLoadN, patella, showComponents }: KneeCanva
 
   // Letreros del riel lateral (mismos valores que llenaban el DclReadout de esquina).
   const lM = `M = ${M.toFixed(0)} N`;
-  const lW1 = `W₁ = ${W1.toFixed(0)} N`;
+  const lW1 = `W₀ = ${W1.toFixed(0)} N`;
   const lR = `R = ${R.toFixed(0)} N`;
 
   const tendonPath: [number, number, number][] = [
@@ -235,11 +242,10 @@ function KneeAnatomy({ betaDeg, ankleLoadN, patella, showComponents }: KneeCanva
       )}
 
       {/* ── Vectores de fuerza (letrero → riel lateral con línea guía) ──
-          W₀ (peso de la pierna, ~45 N) es diminuto frente a M/R: no dibuja
-          flecha ni ocupa el riel; su valor está en la ecuación del slide.
-          W₁ solo aparece cuando la carga del tobillo basta para verse. */}
-      <ForceArrow origin={tubP.toArray()} vector={mVec} color={TEAL} label={lM} sub={patella ? 'cuádriceps' : 'sin rótula ⚠'} />
-      <ForceArrow origin={ankP.toArray()} vector={w1Vec} color={AMBER} label={lW1} sub="carga en el tobillo" emphasis="muted" />
+          W₁ (peso de la pierna, 150 N) no dibuja flecha: su valor está en la
+          ecuación del slide. La flecha del tobillo es W₀ (la pesa). */}
+      <ForceArrow origin={tubP.toArray()} vector={mVec} color={TEAL} label={lM} sub={patella ? 'cuádriceps · tendón rotuliano' : 'sin rótula (a ilustrativo)'} />
+      <ForceArrow origin={ankP.toArray()} vector={w1Vec} color={AMBER} label={lW1} sub="pesa en el tobillo" emphasis="muted" />
       <ForceArrow origin={KNEE_C.toArray()} vector={rVec} color={RED} label={lR} sub="tibiofemoral" emphasis="strong" />
 
       {showComponents && (

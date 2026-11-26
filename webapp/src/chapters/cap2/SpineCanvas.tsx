@@ -14,6 +14,8 @@ import {
   CalloutSource,
   useCalloutStore,
 } from '../cap1/three/Callouts';
+import { G, backStatics } from './staticsModels';
+import { fx } from './ab';
 
 interface SpineCanvasProps {
   trunkAngleDeg: number; // Ángulo de inclinación del tronco (0 a 90 grados, 0 = erguido, 90 = horizontal)
@@ -187,8 +189,8 @@ function LumbarTensionGauge({
 
         {/* Etiquetas de escala */}
         <text x="12" y="72" fontSize="7" fill="#64748b" fontFamily="JetBrains Mono, monospace">0</text>
-        <text x="52" y="16" fontSize="7" fill="#64748b" fontFamily="JetBrains Mono, monospace">2.2k</text>
-        <text x="94" y="72" fontSize="7" fill="#64748b" fontFamily="JetBrains Mono, monospace">4.5kN</text>
+        <text x="52" y="16" fontSize="7" fill="#64748b" fontFamily="JetBrains Mono, monospace">2,2k</text>
+        <text x="94" y="72" fontSize="7" fill="#64748b" fontFamily="JetBrains Mono, monospace">4,5kN</text>
       </svg>
 
       <div style={{ fontSize: '1.25rem', fontWeight: 800, color: isHighTension ? RED_ACCENT : TEAL_ACCENT, fontFamily: 'JetBrains Mono, monospace', margin: '2px 0 0' }}>
@@ -199,36 +201,26 @@ function LumbarTensionGauge({
       </div>
 
       <div style={{ fontSize: '0.54rem', color: isExtremeTension ? '#b91c1c' : '#64748b', marginTop: '4px', fontWeight: isExtremeTension ? 700 : 500 }}>
-        {isExtremeTension ? '⚠️ Sobrecarga crítica (Fasciculaciones)' : (isHighTension ? 'Demanda muscular severa' : 'Carga muscular fisiológica')}
+        {isExtremeTension ? 'M > 3200 N: carga muy alta' : (isHighTension ? 'M > 2400 N: carga alta' : 'Carga moderada')}
       </div>
       <div style={{ fontSize: '0.52rem', color: '#64748b', marginTop: '2px' }}>
-        Desventaja mecánica: <b>~10:1 (5 cm vs 50 cm)</b>
+        El erector forma solo 12° con la columna
       </div>
     </div>
   );
 }
 
 // ── 3. Modelo 3D de Columna Lumbar L1-L5 Articulada con Cuñamiento Discal y Erector Espinal ──
-/** Biomecánica lumbar L5-S1 (determinista). */
+/** Espalda: modelo del libro (Ecs. 2.41–2.46). `trunkAngleDeg` es la inclinación
+ *  desde la vertical (α); el libro usa θ = 90° − α desde la horizontal. */
 function spineStats(trunkAngleDeg: number, handLoadKg: number, bodyMassKg: number) {
-  const g = 9.81;
-  const wTrunkN = 0.65 * bodyMassKg * g;
-  const wLoadN = handLoadKg * g;
-  const alphaRad = (trunkAngleDeg * Math.PI) / 180;
-  const sinAlpha = Math.sin(alphaRad);
-  const cosAlpha = Math.cos(alphaRad);
-  const dMuscM = 0.05;
-  const thetaMRad = (12 * Math.PI) / 180;
-  const sinThetaM = Math.sin(thetaMRad);
-  const cosThetaM = Math.cos(thetaMRad);
-  const tauResNm = (wTrunkN * 0.38 + wLoadN * 0.50) * sinAlpha;
-  const fErectorN = Math.max(25, tauResNm / (dMuscM * sinThetaM));
-  const rCompN = fErectorN * cosThetaM + (wTrunkN + wLoadN) * cosAlpha;
-  const rShearN = Math.abs((wTrunkN + wLoadN) * sinAlpha - fErectorN * sinThetaM);
+  const WbN = bodyMassKg * G;
+  const b = backStatics(90 - trunkAngleDeg, WbN, handLoadKg * G);
   return {
-    wTrunkN, wLoadN,
-    tauResNm, fErectorN, fErectorKgf: fErectorN / g, rCompN, rCompKgf: rCompN / g, rShearN,
-    isHighTension: fErectorN > 2400, isExtremeTension: fErectorN > 3200,
+    WbN,
+    wTrunkN: b.W1, wLoadN: b.W2,
+    fErectorN: b.M, fErectorKgf: b.M / G, rCompN: b.comp, rCompKgf: b.comp / G, rShearN: b.shear, R: b.R,
+    isHighTension: b.M > 2400, isExtremeTension: b.M > 3200,
   };
 }
 
@@ -301,41 +293,19 @@ function LumbarSpine3D({
     []
   );
 
-  // ── Cálculos Biomecánicos de la Columna Lumbar (L5-S1) ──
-  const g = 9.81;
-  const totalWeightN = bodyMassKg * g;
-  const wTrunkN = 0.65 * totalWeightN; // Peso torso, cabeza y brazos
-  const wLoadN = handLoadKg * g;
-
-  const alphaRad = (trunkAngleDeg * Math.PI) / 180;
-  const sinAlpha = Math.sin(alphaRad);
-  const cosAlpha = Math.cos(alphaRad);
-
-  const dTrunkM = 0.38; // 38 cm al centro de gravedad del tronco
-  const dLoadM = 0.50;  // 50 cm a la carga en manos
-
-  // Erector de la espina: brazo dm = 5 cm, theta_m = 12°
-  const dMuscM = 0.05;
-  const thetaMRad = (12 * Math.PI) / 180;
-  const sinThetaM = Math.sin(thetaMRad);
-  const cosThetaM = Math.cos(thetaMRad);
-
-  // Momento flexor total
-  const tauResNm = (wTrunkN * dTrunkM + wLoadN * dLoadM) * sinAlpha;
-
-  // Tensión requerida en el erector espinal
-  const fErectorN = Math.max(25, tauResNm / (dMuscM * sinThetaM));
-  const fErectorKgf = fErectorN / g;
-
-  const isHighTension = fErectorN > 2400;
-  const isExtremeTension = fErectorN > 3200;
-
-  // Reacción sobre el disco L5-S1 (misma fórmula que `spineStats`).
-  const rCompN = fErectorN * cosThetaM + (wTrunkN + wLoadN) * cosAlpha;
-  const rShearN = Math.abs((wTrunkN + wLoadN) * sinAlpha - fErectorN * sinThetaM);
+  // ── Espalda: modelo del libro (Ecs. 2.41–2.46) ──
+  const st = spineStats(trunkAngleDeg, handLoadKg, bodyMassKg);
+  const wTrunkN = st.wTrunkN; // W₁ = 0,4 W_b (tronco) a L/2
+  const wLoadN = st.wLoadN;   // W₂ = 0,2 W_b + carga, en lo alto de la columna
+  const fErectorN = st.fErectorN;
+  const fErectorKgf = st.fErectorKgf;
+  const isHighTension = st.isHighTension;
+  const isExtremeTension = st.isExtremeTension;
+  const rCompN = st.rCompN;
+  const rShearN = st.rShearN;
 
   // Letreros del riel lateral (mismos valores que llenaban el DclReadout de esquina).
-  const lFm = `Fm = ${fErectorN.toFixed(0)} N`;
+  const lFm = `M = ${fErectorN.toFixed(0)} N`;
   const lW1 = `W₁ = ${wTrunkN.toFixed(0)} N`;
   const lW2 = `W₂ = ${wLoadN.toFixed(0)} N`;
   const lRn = `Rn = ${rCompN.toFixed(0)} N`;
@@ -467,7 +437,7 @@ function LumbarSpine3D({
                     </mesh>
 
                     {/* Vector Peso del Tronco W1 en Centro de Gravedad d1 = 38 cm */}
-                    <ForceVector3D origin={[0, 0.25, 0.22]} vector={[0, -wTrunkN * vScale * 1.1, 0]} color={AMBER_ACCENT} label={lW1} sub="0,65 W · tronco" />
+                    <ForceVector3D origin={[0, 0.25, 0.22]} vector={[0, -wTrunkN * vScale * 1.1, 0]} color={AMBER_ACCENT} label={lW1} sub="0,4 Wb · tronco, a L/2" />
 
                     {/* Brazos y Caja de Carga Levantada en Manos (d2 = 50 cm) */}
                     {handLoadKg > 0 && (
@@ -479,7 +449,7 @@ function LumbarSpine3D({
                         </mesh>
 
                         {/* Vector Peso Carga W2 */}
-                        <ForceVector3D origin={[0, -0.15, 0]} vector={[0, -wLoadN * vScale * 1.1, 0]} color="#232c36" label={lW2} sub="carga en manos" />
+                        <ForceVector3D origin={[0, -0.15, 0]} vector={[0, -wLoadN * vScale * 1.1, 0]} color="#232c36" label={lW2} sub="0,2 Wb + carga, en L" />
                       </group>
                     )}
                   </group>
@@ -620,7 +590,7 @@ export default function SpineCanvas({
       <CalloutRail
         store={callouts}
         side="left"
-        note={`Desventaja de palanca 10:1 (dm ≈ 5 cm): torque flexor ${s.tauResNm.toFixed(0)} N·m ⟹ el erector tira ${s.fErectorN.toFixed(0)} N.`}
+        note={`Erector a 2L/3 y 12° de la columna: M = ${fx(s.fErectorN / s.WbN, 2)} Wb = ${fx(s.fErectorN)} N; R = ${fx(s.R / s.WbN, 2)} Wb.`}
       />
 
       <div

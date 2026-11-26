@@ -5,14 +5,13 @@ import HudPanel from './HudPanel';
 import { AnimateButton } from './AnimateButton';
 import { useHarmonicClock } from '../cap1/three/useHarmonicClock';
 import type { Engine } from './useEngine';
+import { KNEE, kneeStatics } from './staticsModels';
+import { fx } from './ab';
 
 // C3 · Estática de la rodilla (Herman §2.3.3, Figs. 2.23–2.27).
-const A_LEVER = 0.048;
-const A_LEVER_NOPAT = 0.022;
-const B_ARM = 0.22;
-const C_ARM = 0.20;
-const THETA = (18 * Math.PI) / 180;
-const W0 = 45;
+// Parámetros del libro: a = 12 cm, b = 22 cm, c = 50 cm, W₁ = 150 N, W₀ = 100 N, θ = 15°.
+const A_LEVER = KNEE.a / 100;
+const A_LEVER_NOPAT = 0.055; // ilustrativo: el libro no da el brazo sin rótula
 
 export default function SlideKnee({
   isActive,
@@ -25,7 +24,7 @@ export default function SlideKnee({
   // Los letreros del visor los enciende el texto de abajo, no un botón
   // sobre el lienzo: el mando cuelga del párrafo que los explica.
   const [showLabels, setShowLabels] = useState<boolean>(false);
-  const [ankleLoadN, setAnkleLoadN] = useState<number>(150);
+  const [ankleLoadN, setAnkleLoadN] = useState<number>(KNEE.W0);
   const [patella, setPatella] = useState<boolean>(true);
   const [showComponents, setShowComponents] = useState<boolean>(false);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
@@ -36,19 +35,17 @@ export default function SlideKnee({
     setBetaDeg(82 - 74 * s);
   });
 
-  const beta = (betaDeg * Math.PI) / 180;
+  // Ecs. 2.34–2.36 con W₀ = pesa del tobillo (control) y W₁ = 150 N (pierna).
   const a = patella ? A_LEVER : A_LEVER_NOPAT;
-  const torqueExt = (B_ARM * ankleLoadN + C_ARM * W0) * Math.cos(beta);
-  const M = torqueExt / (a * Math.sin(THETA));
-  const rx = M * Math.cos(THETA + beta);
-  const ry = M * Math.sin(THETA + beta) - W0 - ankleLoadN;
-  const R = Math.hypot(rx, ry);
-  const Mnopat = torqueExt / (A_LEVER_NOPAT * Math.sin(THETA));
+  const ks = kneeStatics(betaDeg, ankleLoadN, a * 100);
+  const M = ks.M;
+  const R = ks.R;
+  const Mnopat = kneeStatics(betaDeg, ankleLoadN, A_LEVER_NOPAT * 100).M;
 
   const handleReset = () => {
     setIsAnimating(false);
     setBetaDeg(45);
-    setAnkleLoadN(150);
+    setAnkleLoadN(KNEE.W0);
     setPatella(true);
     setShowComponents(false);
   };
@@ -69,21 +66,20 @@ export default function SlideKnee({
             </div>
             <div className="card-body">
               <p style={{ fontSize: '.7rem' }}>
-                {'El cuádriceps, a través del tendón rotuliano, sostiene el peso de la pierna ($W_0$) y una carga en el tobillo ($W_1$) durante el ejercicio de extensión:'}
+                {'La rodilla son dos articulaciones: la tibiofemoral (cóndilos del fémur y tibia, separados por los meniscos) y la patelofemoral (rótula sobre los cóndilos). El cuádriceps llega a la tibia por tendón del cuádriceps → rótula → tendón patelar. Con una pesa $W_0$ en el tobillo, el peso de la pierna $W_1$ y la pierna a $\\beta$ de la horizontal (Figs. 2.23–2.25):'}
               </p>
               <div className="eq-block">
-                {'\\[ M = \\frac{(b\\,W_1 + c\\,W_0)\\,\\cos\\beta}{a\\,\\sin\\theta} \\]'}
+                {'\\[ M = \\frac{(b\\,W_1 + c\\,W_0)\\cos\\beta}{a\\sin\\theta}, \\quad R_x = M\\cos(\\theta+\\beta), \\quad R_y = M\\sin(\\theta+\\beta) - W_0 - W_1 \\]'}
               </div>
               <p style={{ fontSize: '.62rem', color: 'var(--ink-3)' }}>
-                {'Con $a \\approx 4{,}8\\text{ cm}$, $b \\approx 22\\text{ cm}$, $c \\approx 20\\text{ cm}$, $\\theta \\approx 18^\\circ$. Las fuerzas resultan enormes: $M$ y $R$ superan varias veces la carga real.'}
+                {'Datos del libro: $a = 12$, $b = 22$, $c = 50\\text{ cm}$, $W_1 = 150$, $W_0 = 100\\text{ N}$, $\\theta = 15^\\circ$, $\\beta = 45^\\circ$. El texto imprime $M = 1381\\text{ N}$ y $R = 1171\\text{ N}$; con esos mismos datos la Ec. 2.34 da $M \\approx 1890\\text{ N}$ y $R \\approx 1680\\text{ N}$ (el visor calcula con la ecuación; $R = 1171$ sí es coherente con $M = 1381$). En ambos casos: fuerzas enormes.'}
               </p>
-            
               <div style={{ marginTop: '.4rem' }}>
                 <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
-                  <b>🏷️ Rotular M, W₁ y R</b>
+                  <b>Rotular M, W₀ y R</b>
                 </TheoryToggle>
               </div>
-              <TheoryCue>Etiqueta la tracción del cuádriceps por el tendón rotuliano, la carga del tobillo y la reacción femorotibial.</TheoryCue>
+              <TheoryCue>Etiqueta la tracción del cuádriceps por el tendón patelar, la pesa del tobillo y la reacción tibiofemoral.</TheoryCue>
             </div>
           </div>
           <div className="card">
@@ -92,17 +88,17 @@ export default function SlideKnee({
             </div>
             <div className="card-body">
               <p style={{ fontSize: '.64rem', color: 'var(--ink-3)' }}>
-                {'La rótula separa el tendón del centro articular y aumenta el brazo de momento $a$. Sin rótula, para el mismo torque el cuádriceps debería tirar mucho más fuerte; el coste es la compresión femoropatelar $F_P$:'}
+                {'La rótula funciona como polea: aumenta el brazo de momento $a$ y con él el torque (Fig. 2.26). Su equilibrio entre la reacción de los cóndilos, el tendón patelar y el tendón del cuádriceps (Fig. 2.27) da la compresión sobre la rótula y su ángulo:'}
               </p>
               <div className="eq-block" style={{ fontSize: '.72rem' }}>
-                {'\\[ F_P = \\frac{\\cos\\gamma - \\cos\\alpha}{\\cos\\phi}\\,M \\]'}
+                {'\\[ F_P = \\frac{\\cos\\gamma - \\cos\\alpha}{\\cos\\phi}\\,M, \\qquad \\phi = \\arctan\\left(\\frac{\\sin\\alpha - \\sin\\gamma}{\\cos\\gamma - \\cos\\alpha}\\right) \\]'}
               </div>
             </div>
           </div>
           <div className="apuntes">
             <div className="a-hdr"><span>✍️</span> Apunte de cátedra</div>
             <div className="a-text">
-              Las reacciones tibiofemorales llegan a <b>3–4 veces el peso corporal</b> al caminar y son mucho mayores al subir escaleras o ponerse en cuclillas. La <b>patelectomía</b> obliga al cuádriceps a un sobreesfuerzo permanente por la pérdida del brazo de palanca.
+              Las reacciones en la rodilla son de <b>∼ 3–4 W<sub>b</sub></b> durante la marcha y mucho mayores al subir escaleras; la posición en cuclillas (subir, bajar, saltar) se trata en los Problemas 2.22–2.25. El botón «sin rótula» usa un brazo ilustrativo de 5,5 cm para mostrar por qué la polea importa.
             </div>
           </div>
         </div>
@@ -126,8 +122,8 @@ export default function SlideKnee({
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Brazo de momento (a):</span>
-                <b style={{ color: patella ? '#0d6e64' : '#b02318', fontFamily: 'JetBrains Mono, monospace' }}>
-                  {((patella ? A_LEVER : A_LEVER_NOPAT) * 100).toFixed(1)} cm {patella ? '(con rótula)' : '(sin rótula)'}
+                <b style={{ color: patella ? 'var(--teal)' : 'var(--blood)', fontFamily: 'var(--mono)' }}>
+                  {fx((patella ? A_LEVER : A_LEVER_NOPAT) * 100, 1)} cm {patella ? '(libro)' : '(sin rótula, ilustrativo)'}
                 </b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -159,7 +155,7 @@ export default function SlideKnee({
                 <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '30px' }}>{betaDeg.toFixed(0)}°</b>
               </label>
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                <span>W₁ tobillo:</span>
+                <span>W₀ tobillo:</span>
                 <input type="range" min="0" max="300" step="10" value={ankleLoadN} aria-label="Carga en el tobillo" onChange={(e) => setAnkleLoadN(parseFloat(e.target.value))} style={{ width: '58px' }} />
                 <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '38px' }}>{ankleLoadN} N</b>
               </label>
@@ -179,7 +175,7 @@ export default function SlideKnee({
                   transition: 'all 0.15s ease',
                 }}
               >
-                {patella ? '✓ Con rótula' : '✕ Sin rótula'}
+                {patella ? 'Con rótula' : 'Sin rótula'}
               </button>
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', cursor: 'pointer' }}>
                 <input type="checkbox" checked={showComponents} onChange={(e) => setShowComponents(e.target.checked)} />
