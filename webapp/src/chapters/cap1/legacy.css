@@ -481,6 +481,27 @@
 .data-mini .table-caption{font-size:.56rem;color:var(--ink-3);padding:.14rem .3rem;font-style:italic}
 .data-mini td b{color:var(--ink)}
 
+/* ─── PESTAÑAS DENTRO DE TARJETAS (D3, patrón de P6-25) ───
+   Mismo conmutador segmentado que «3D Cinemático | 2D Atlas» de B1, como
+   clase en vez de estilos en línea porque lo reutilizan varias tarjetas.
+   Estado local con useState en cada diapositiva; sin componente compartido. */
+.card-tabs{
+  display:inline-flex;flex-wrap:wrap;gap:2px;padding:2px;margin:0 0 .45rem;
+  background:var(--paper-2);border:1px solid var(--line);border-radius:6px;
+}
+.card-tabs button{
+  border:none;background:transparent;color:var(--ink);font:inherit;
+  font-size:max(12px,.66rem);font-weight:700;padding:.16rem .55rem;border-radius:4px;
+  cursor:pointer;white-space:nowrap;line-height:1.35;
+  transition:background-color var(--fade),color var(--fade);
+}
+.card-tabs button[aria-selected="true"]{background:var(--teal);color:var(--card)}
+.card-tabs button:focus-visible{outline:2px solid var(--teal);outline-offset:1px}
+/* Nota al pie de una tabla o pestaña (fuente, regla, advertencia). */
+.table-note{font-size:max(12px,.64rem);color:var(--ink-3);font-style:italic;margin-top:.3rem;line-height:1.45}
+/* Filas que responden al clic (resaltan algo en el lienzo o el 3D). */
+.data-mini tr.row-link{cursor:pointer}
+
 /* ─── ANIMACIÓN (un solo momento autorizado) ─── */
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 .slide.active .card{animation:fadeUp .48s cubic-bezier(.22,1,.36,1) both}
@@ -589,6 +610,8 @@
 .interactive-table tr{cursor:pointer;transition:background-color var(--fade),color var(--fade)}
 .interactive-table tr.highlight td{background:var(--teal-tint);color:var(--teal-deep)}
 .interactive-table tr[aria-selected="true"] td,.data-mini tr[aria-selected="true"] td{background:var(--teal-tint);color:var(--teal-deep);box-shadow:inset 3px 0 0 var(--teal)}
+/* La marca lateral de la fila seleccionada va solo en la primera celda. */
+.interactive-table tr[aria-selected="true"] td+td,.data-mini tr[aria-selected="true"] td+td{box-shadow:none}
 .interactive-table .table-caption{font-size:.56rem;color:var(--ink-3);padding:.14rem .4rem;font-style:italic}
 /* E3-02: aviso de foco por teclado en filas y tarjetas pulsables (mismas que ya
    responden a onClick); sin esto, tabular hasta una fila no mostraba ninguna
