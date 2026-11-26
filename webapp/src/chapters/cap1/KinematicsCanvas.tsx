@@ -557,7 +557,9 @@ export default function KinematicsCanvas({
       resetSignal={resetSignal}
       zoomSignal={zoomSignal}
       fit
-      fitPadding={2.0}
+      // V6-03: con el área segura (AnatomyStage) el encuadre ya se hace en el
+      // alto libre sobre el panel; 1,45 deja la pierna/brazo en ~65 % de ese alto.
+      fitPadding={1.45}
       refit={mode}
       onPointerMissed={() => onSelectJoint(null)}
     >

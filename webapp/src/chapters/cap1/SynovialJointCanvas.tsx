@@ -739,7 +739,8 @@ export default function SynovialJointCanvas({
       resetSignal={resetSignal}
       zoomSignal={zoomSignal}
       fit
-      fitPadding={1.5}
+      // V6-03: encuadre en el alto libre sobre el panel (ver AnatomyStage).
+      fitPadding={1.25}
       refit={type}
       overlay={overlay}
     >

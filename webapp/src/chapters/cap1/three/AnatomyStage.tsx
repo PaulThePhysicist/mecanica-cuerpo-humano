@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect, useId, useRef, useState } from 'react';
-import { Canvas, useThree } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { ContactShadows, Html, PerspectiveCamera } from '@react-three/drei';
 import * as THREE from 'three';
 import { AccessibleOrbitControls, SceneControlPad } from '../AccessibleOrbitControls';
@@ -8,6 +8,7 @@ import { StudioLights } from './StudioLights';
 import { FitCamera } from './FitCamera';
 import { sharedGLEnabled } from './sharedGL';
 import { useSharedStage } from './SharedStage';
+import { panelOverlap } from '../safeArea';
 
 // ── Boundary + detección de WebGL (impl. de referencia: BodyScene.tsx) ──
 class ThreeErrorBoundary extends React.Component<
@@ -107,6 +108,41 @@ function CameraRig({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resetSignal]);
+  return null;
+}
+
+/**
+ * V6-03 · Área segura frente al panel de controles flotante (decisión D2).
+ * Con el panel abierto, la proyección se reduce y se centra en el alto libre
+ * por encima de él (`setViewOffset`): todo lo que la cámara —o `FitCamera`—
+ * encuadra en su campo de visión cae sobre el panel, nunca debajo. El fondo,
+ * la cuadrícula y el suelo siguen llenando el lienzo entero. Con el panel
+ * colapsado (o sin panel) la proyección es la de siempre.
+ */
+function PanelSafeView() {
+  const { camera, gl, size } = useThree();
+  useFrame(() => {
+    const cam = camera as THREE.PerspectiveCamera;
+    if (!cam.isPerspectiveCamera) return;
+    const W = size.width;
+    const H = size.height;
+    const d = panelOverlap(gl.domElement);
+    if (d <= 0 || H - d < 120) {
+      if (cam.view?.enabled) cam.clearViewOffset();
+      return;
+    }
+    const k = H / (H - d);
+    const x = (W * (1 - k)) / 2;
+    const v = cam.view;
+    if (
+      v?.enabled &&
+      v.fullWidth === W &&
+      v.fullHeight === H &&
+      Math.abs(v.offsetX - x) < 0.5 &&
+      Math.abs(v.height - H * k) < 0.5
+    ) return;
+    cam.setViewOffset(W, H, x, 0, W * k, H * k);
+  });
   return null;
 }
 
@@ -325,6 +361,7 @@ export function AnatomyStage({
     <>
       <CameraRig position={camera.position} target={target} resetSignal={resetSignal} fit={fit} />
       <ZoomHandler zoomSignal={zoomSignal} />
+      <PanelSafeView />
 
       {/* Rig de estudio compartido (ambiente bajo + principal + contra). */}
       <StudioLights keyIntensity={1.55} />
