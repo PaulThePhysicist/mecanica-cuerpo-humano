@@ -1,4 +1,5 @@
 import React, { Suspense, useRef } from 'react';
+import { C, ca } from './palette';
 import { Canvas } from '@react-three/fiber';
 import { Html, OrbitControls, useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
@@ -39,7 +40,7 @@ const TITLES: Record<LeverClass, string> = {
 function LeverLoading() {
   return (
     <Html center>
-      <div style={{ background: 'rgba(255,253,248,.94)', border: '1px solid #c8bea9', borderRadius: 6, padding: '6px 10px', color: '#43505c', font: '600 .68rem Karla, sans-serif', whiteSpace: 'nowrap' }}>
+      <div style={{ background: ca(C.card, .94), border: `1px solid ${C.line}`, borderRadius: 6, padding: '6px 10px', color: C.ink2, font: '600 .68rem Karla, sans-serif', whiteSpace: 'nowrap' }}>
         Cargando región anatómica…
       </div>
     </Html>
@@ -133,8 +134,8 @@ function AnatomyRegion({ leverClass }: { leverClass: LeverClass; showLabels?: bo
             <sphereGeometry args={[0.010, 16, 16]} />
             <meshStandardMaterial color="#0d6e64" emissive="#0d6e64" emissiveIntensity={0.25} />
           </mesh>
-          <AnatomicalVector origin={[0.004, 0.455, 0.015]} vector={[0, -0.085, 0]} color="#d97706" symbol="W" sub={LEVER_LEGEND[1].w} />
-          <AnatomicalVector origin={[0.004, 0.425, -0.055]} vector={[0, -0.075, 0]} color="#0d6e64" symbol="Fm" sub={LEVER_LEGEND[1].fm} />
+          <AnatomicalVector origin={[0.004, 0.455, 0.015]} vector={[0, -0.085, 0]} color={C.amber} symbol="W" sub={LEVER_LEGEND[1].w} />
+          <AnatomicalVector origin={[0.004, 0.425, -0.055]} vector={[0, -0.075, 0]} color={C.teal} symbol="Fm" sub={LEVER_LEGEND[1].fm} />
         </group>
       </group>
     );
@@ -159,8 +160,8 @@ function AnatomyRegion({ leverClass }: { leverClass: LeverClass; showLabels?: bo
           {nodes?.metatarsal3_R && <mesh geometry={nodes.metatarsal3_R.geometry} material={BONE} />}
           {nodes?.metatarsal4_R && <mesh geometry={nodes.metatarsal4_R.geometry} material={BONE} />}
           {nodes?.metatarsal5_R && <mesh geometry={nodes.metatarsal5_R.geometry} material={BONE} />}
-          <AnatomicalVector origin={[-0.041, -0.463, -0.012]} vector={[0, 0.055, 0]} color="#2e8b57" symbol="Fm" sub={LEVER_LEGEND[2].fm} />
-          <AnatomicalVector origin={[-0.041, -0.463, -0.012]} vector={[0, -0.05, 0]} color="#d97706" symbol="W" sub={LEVER_LEGEND[2].w} />
+          <AnatomicalVector origin={[-0.041, -0.463, -0.012]} vector={[0, 0.055, 0]} color={C.coronal} symbol="Fm" sub={LEVER_LEGEND[2].fm} />
+          <AnatomicalVector origin={[-0.041, -0.463, -0.012]} vector={[0, -0.05, 0]} color={C.amber} symbol="W" sub={LEVER_LEGEND[2].w} />
         </group>
       </group>
     );
@@ -185,8 +186,8 @@ function AnatomyRegion({ leverClass }: { leverClass: LeverClass; showLabels?: bo
       </mesh>
       {/* Ambos vectores comparten el fulcro del codo y el eje del antebrazo
           calibrado en BicepsCanvas; no son marcadores flotantes. */}
-      <AnatomicalVector origin={[0.01, 0.005, 0.01]} vector={[0.01, 0.11, -0.01]} color="#b02318" symbol="Fm" sub={LEVER_LEGEND[3].fm} />
-      <AnatomicalVector origin={[0.01, 0.005, 0.01]} vector={[0, -0.08, 0]} color="#d97706" symbol="W" sub={LEVER_LEGEND[3].w} />
+      <AnatomicalVector origin={[0.01, 0.005, 0.01]} vector={[0.01, 0.11, -0.01]} color={C.blood} symbol="Fm" sub={LEVER_LEGEND[3].fm} />
+      <AnatomicalVector origin={[0.01, 0.005, 0.01]} vector={[0, -0.08, 0]} color={C.amber} symbol="W" sub={LEVER_LEGEND[3].w} />
     </group>
   );
 }

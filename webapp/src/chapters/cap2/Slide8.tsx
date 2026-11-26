@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { C, ca } from './palette';
 import CaneCanvas from './CaneCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
@@ -68,7 +69,7 @@ export default function Slide8({
               <p style={{ fontSize: '.64rem', color: 'var(--ink-3)' }}>
                 {'Entonces $R_x = 0{,}21\\,W_b$, $R_y = 1{,}24\\,W_b$, $R = 1{,}26\\,W_b$ y $\\phi = 9{,}5^\\circ$. Con $W_b = 880\\text{ N}$: $M$ baja de $1400$ a $540\\text{ N}$ y $R$ de $2100$ a $1100\\text{ N}$, con solo unos $145\\text{ N}$ sobre el bastón.'}
               </p>
-              <div style={{ marginTop: '.4rem' }}>
+              <div style={{ marginTop: '0.62rem' }}>
                 <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
                   <b>Rotular las fuerzas de la cadera</b>
                 </TheoryToggle>
@@ -144,18 +145,18 @@ export default function Slide8({
             <span className="badge">§2.3.2 · Bastón</span>
             <span>R = <b style={{ color: 'var(--teal)' }}>{fx(rJointN / totalWeightN, 2)} W<sub>b</sub></b> ({fx(rJointN)} N)</span>
 
-            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>
+            <div style={{ display: 'flex', gap: '0.62rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>
               <div style={{ display: 'inline-flex', gap: '1px', border: '1px solid var(--line)', borderRadius: '4px', padding: '1px', background: 'var(--paper-2)' }}>
                 <button
                   type="button"
                   onClick={() => setCaneHand('contra')}
                   style={{
                     background: caneHand === 'contra' ? 'var(--teal)' : 'transparent',
-                    color: caneHand === 'contra' ? '#fff' : 'var(--ink)',
+                    color: caneHand === 'contra' ? C.card : 'var(--ink)',
                     border: 'none',
                     borderRadius: '3px',
                     padding: '2px 7px',
-                    fontSize: '0.58rem',
+                    fontSize: '0.62rem',
                     fontWeight: caneHand === 'contra' ? 700 : 500,
                     cursor: 'pointer',
                     transition: 'all 0.15s ease',
@@ -167,12 +168,12 @@ export default function Slide8({
                   type="button"
                   onClick={() => setCaneHand('ipsi')}
                   style={{
-                    background: caneHand === 'ipsi' ? '#d97706' : 'transparent',
-                    color: caneHand === 'ipsi' ? '#fff' : 'var(--ink)',
+                    background: caneHand === 'ipsi' ? C.amber : 'transparent',
+                    color: caneHand === 'ipsi' ? C.card : 'var(--ink)',
                     border: 'none',
                     borderRadius: '3px',
                     padding: '2px 7px',
-                    fontSize: '0.58rem',
+                    fontSize: '0.62rem',
                     fontWeight: caneHand === 'ipsi' ? 700 : 500,
                     cursor: 'pointer',
                     transition: 'all 0.15s ease',
@@ -184,12 +185,12 @@ export default function Slide8({
                   type="button"
                   onClick={() => setCaneHand('none')}
                   style={{
-                    background: caneHand === 'none' ? '#b02318' : 'transparent',
-                    color: caneHand === 'none' ? '#fff' : 'var(--ink)',
+                    background: caneHand === 'none' ? C.blood : 'transparent',
+                    color: caneHand === 'none' ? C.card : 'var(--ink)',
                     border: 'none',
                     borderRadius: '3px',
                     padding: '2px 7px',
-                    fontSize: '0.58rem',
+                    fontSize: '0.62rem',
                     fontWeight: caneHand === 'none' ? 700 : 500,
                     cursor: 'pointer',
                     transition: 'all 0.15s ease',

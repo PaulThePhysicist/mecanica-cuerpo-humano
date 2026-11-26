@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
+import { C, ca } from './palette';
 import { fx } from './ab';
 import { readCap2Tokens, tokenRgba } from './designTokens';
 import CanvasReserveState from './CanvasReserveState';
@@ -228,7 +229,7 @@ export default function TorqueCanvas({
 
       // S4-01: tokens de :root leídos una vez por pasada de dibujo (no por trazo).
       const T = readCap2Tokens();
-      const tauColor = isCCW ? T.teal : (isCW ? '#b02318' : T.ink3);
+      const tauColor = isCCW ? T.teal : (isCW ? C.blood : T.ink3);
       // S4-02: mismo rótulo para todas las cifras de A2; solo F (la que se
       // arrastra) usa el borde de sentido — el resto lleva el neutro.
       const chipPaper = tokenRgba(T.paper, 0.94);
@@ -329,7 +330,7 @@ export default function TorqueCanvas({
       ctx.arc(pivotX, pivotY, 4.5, 0, Math.PI * 2);
       ctx.fillStyle = T.ink;
       ctx.fill();
-      ctx.strokeStyle = '#ffffff';
+      ctx.strokeStyle = C.card;
       ctx.lineWidth = 1.2;
       ctx.stroke();
       ctx.restore();
@@ -342,7 +343,7 @@ export default function TorqueCanvas({
       boneGrad.addColorStop(0.7, '#ede2ca');
       boneGrad.addColorStop(1, '#c5b593');
       ctx.fillStyle = boneGrad;
-      ctx.strokeStyle = '#7c6a4e';
+      ctx.strokeStyle = C.amberDeep;
       ctx.lineWidth = 1.8;
 
       ctx.beginPath();
@@ -365,7 +366,7 @@ export default function TorqueCanvas({
       ctx.arc(armEndX, armEndY, 6, 0, Math.PI * 2);
       ctx.fillStyle = '#f5f0e6';
       ctx.fill();
-      ctx.strokeStyle = '#7c6a4e';
+      ctx.strokeStyle = C.amberDeep;
       ctx.lineWidth = 1.6;
       ctx.stroke();
 
@@ -436,7 +437,7 @@ export default function TorqueCanvas({
         const footY = armEndY + proj * ufy;
 
         // Segmento r⊥ (eje → pie), naranja, grueso y punteado
-        ctx.strokeStyle = '#d97706';
+        ctx.strokeStyle = C.amber;
         ctx.lineWidth = 2;
         ctx.setLineDash([5, 3]);
         ctx.beginPath();
@@ -451,7 +452,7 @@ export default function TorqueCanvas({
         const pl = Math.hypot(px, py) || 1;
         const rx1 = px / pl, ry1 = py / pl;          // hacia el eje
         const dSign = proj >= 0 ? 1 : -1;
-        ctx.strokeStyle = '#d97706';
+        ctx.strokeStyle = C.amber;
         ctx.lineWidth = 1.1;
         ctx.beginPath();
         ctx.moveTo(footX + rx1 * s, footY + ry1 * s);
@@ -460,7 +461,7 @@ export default function TorqueCanvas({
         ctx.stroke();
 
         // Punto en el pie
-        ctx.fillStyle = '#d97706';
+        ctx.fillStyle = C.amber;
         ctx.beginPath();
         ctx.arc(footX, footY, 2.4, 0, Math.PI * 2);
         ctx.fill();
@@ -579,7 +580,7 @@ export default function TorqueCanvas({
       // Mango interactivo esmerilado en la punta
       ctx.beginPath();
       ctx.arc(fEndX, fEndY, isDraggingForce ? 5 : (isHoveredForce ? 4 : 3), 0, Math.PI * 2);
-      ctx.fillStyle = '#ffffff';
+      ctx.fillStyle = C.card;
       ctx.fill();
       ctx.strokeStyle = tauColor;
       ctx.lineWidth = 1.6;
@@ -661,7 +662,7 @@ export default function TorqueCanvas({
       // Zonas de signo: horario (−) rojo tenue a la izq, antihorario (+) teal tenue a la der
       ctx.beginPath();
       ctx.arc(dialX, dialY, dialR, startAngle, zeroAngle);
-      ctx.strokeStyle = 'rgba(176, 35, 24, 0.16)';
+      ctx.strokeStyle = ca(C.blood, 0.16);
       ctx.lineWidth = 9;
       ctx.stroke();
       ctx.beginPath();
@@ -689,7 +690,7 @@ export default function TorqueCanvas({
       // Etiquetas de sentido en los extremos del arco
       ctx.font = `${6.5 * uiScale}px Karla, system-ui, sans-serif`;
       ctx.textAlign = 'center';
-      ctx.fillStyle = 'rgba(176, 35, 24, 0.75)';
+      ctx.fillStyle = ca(C.blood, 0.75);
       ctx.fillText('↻ −', dialX + Math.cos(startAngle) * (dialR + 12), dialY + Math.sin(startAngle) * (dialR + 12) + 3);
       ctx.fillStyle = tokenRgba(T.teal, 0.8);
       ctx.fillText('↺ +', dialX + Math.cos(endAngle) * (dialR + 12), dialY + Math.sin(endAngle) * (dialR + 12) + 3);
@@ -705,7 +706,7 @@ export default function TorqueCanvas({
       ctx.arc(dialX, dialY, 5, 0, Math.PI * 2);
       ctx.fillStyle = tauColor;
       ctx.fill();
-      ctx.strokeStyle = '#fff';
+      ctx.strokeStyle = C.card;
       ctx.lineWidth = 1.6;
       ctx.stroke();
 

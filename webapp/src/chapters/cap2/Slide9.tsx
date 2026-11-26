@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { C, ca } from './palette';
 import SpineCanvas from './SpineCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
@@ -72,7 +73,7 @@ export default function Slide9({
               <div className="eq-block" style={{ fontSize: '.72rem' }}>
                 {'\\[ \\tau_z = \\frac{2L}{3}\\sin 12^\\circ\\,M - \\frac{L}{2}\\cos\\theta\\,(0{,}4\\,W_b) - L\\cos\\theta\\,(0{,}2\\,W_b) = 0 \\]'}
               </div>
-              <div style={{ marginTop: '.4rem' }}>
+              <div style={{ marginTop: '0.62rem' }}>
                 <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
                   <b>Rotular M, W₁ y W₂</b>
                 </TheoryToggle>
@@ -98,7 +99,7 @@ export default function Slide9({
                   ))}
                 </tbody>
               </table>
-              <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '.3rem' }}>
+              <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '0.62rem' }}>
                 Multiplica por 880 N (90 kg). Los brazos de momento de los pesos y del músculo son parecidos, pero el músculo tira casi paralelo a la columna: a cualquier ángulo de flexión su torque es pequeño.
               </p>
             </div>
@@ -156,7 +157,7 @@ export default function Slide9({
             <span className="badge">§2.3.4 · Espalda</span>
             <span>M = <b style={{ color: fErectorN > 2500 ? 'var(--blood)' : 'var(--teal)' }}>{fx(fErectorN)} N</b> · R = {fx(rCompN)} N</span>
 
-            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>
+            <div style={{ display: 'flex', gap: '0.62rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>
               {/* Presets rápidos de postura */}
               <div style={{ display: 'inline-flex', gap: '1px', border: '1px solid var(--line)', borderRadius: '4px', padding: '1px', background: 'var(--paper-2)' }}>
                 {[
@@ -171,11 +172,11 @@ export default function Slide9({
                     onClick={() => setTrunkAngleDeg(item.val)}
                     style={{
                       background: trunkAngleDeg === item.val ? 'var(--teal)' : 'transparent',
-                      color: trunkAngleDeg === item.val ? '#fff' : 'var(--ink)',
+                      color: trunkAngleDeg === item.val ? C.card : 'var(--ink)',
                       border: 'none',
                       borderRadius: '3px',
                       padding: '2px 5px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: trunkAngleDeg === item.val ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',

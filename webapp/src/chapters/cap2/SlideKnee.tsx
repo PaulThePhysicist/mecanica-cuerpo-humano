@@ -1,4 +1,5 @@
 import React, { Suspense, useState } from 'react';
+import { C, ca } from './palette';
 import KneeCanvas from './KneeCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
@@ -74,7 +75,7 @@ export default function SlideKnee({
               <p style={{ fontSize: '.62rem', color: 'var(--ink-3)' }}>
                 {'Datos del libro: $a = 12$, $b = 22$, $c = 50\\text{ cm}$, $W_1 = 150$, $W_0 = 100\\text{ N}$, $\\theta = 15^\\circ$, $\\beta = 45^\\circ$. El texto imprime $M = 1381\\text{ N}$ y $R = 1171\\text{ N}$; con esos mismos datos la Ec. 2.34 da $M \\approx 1890\\text{ N}$ y $R \\approx 1680\\text{ N}$ (el visor calcula con la ecuación; $R = 1171$ sí es coherente con $M = 1381$). En ambos casos: fuerzas enormes.'}
               </p>
-              <div style={{ marginTop: '.4rem' }}>
+              <div style={{ marginTop: '0.62rem' }}>
                 <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
                   <b>Rotular M, W₀ y R</b>
                 </TheoryToggle>
@@ -113,11 +114,11 @@ export default function SlideKnee({
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.62rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Cuádriceps (M):</span>
-                <b style={{ color: '#0d6e64', fontFamily: 'JetBrains Mono, monospace' }}>{M.toFixed(0)} N</b>
+                <b style={{ color: C.teal, fontFamily: 'JetBrains Mono, monospace' }}>{M.toFixed(0)} N</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Reacción tibiofemoral (R):</span>
-                <b style={{ color: '#b02318', fontFamily: 'JetBrains Mono, monospace' }}>{R.toFixed(0)} N</b>
+                <b style={{ color: C.blood, fontFamily: 'JetBrains Mono, monospace' }}>{R.toFixed(0)} N</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Brazo de momento (a):</span>
@@ -127,7 +128,7 @@ export default function SlideKnee({
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--ink-2)' }}>M sin rótula (mismo τ):</span>
-                <b style={{ color: '#b02318', fontFamily: 'JetBrains Mono, monospace' }}>{Mnopat.toFixed(0)} N (+{(((Mnopat - M) / M) * 100).toFixed(0)}%)</b>
+                <b style={{ color: C.blood, fontFamily: 'JetBrains Mono, monospace' }}>{Mnopat.toFixed(0)} N (+{(((Mnopat - M) / M) * 100).toFixed(0)}%)</b>
               </div>
             </div>
           </HudPanel>
@@ -145,9 +146,9 @@ export default function SlideKnee({
 
           <div className="prof-controls">
             <span className="badge">§2.3.3 · Rodilla</span>
-            <span>M = <b style={{ color: '#0d6e64' }}>{M.toFixed(0)} N</b> · R = <b style={{ color: '#b02318' }}>{R.toFixed(0)} N</b></span>
+            <span>M = <b style={{ color: C.teal }}>{M.toFixed(0)} N</b> · R = <b style={{ color: C.blood }}>{R.toFixed(0)} N</b></span>
 
-            <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '0.62rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto', flexWrap: 'wrap' }}>
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                 <span>β pierna:</span>
                 <input type="range" min="0" max="90" value={betaDeg} aria-label="Ángulo de la pierna con la horizontal" onChange={(e) => { setIsAnimating(false); setBetaDeg(parseFloat(e.target.value)); }} style={{ width: '58px' }} />
@@ -163,12 +164,12 @@ export default function SlideKnee({
                 onClick={() => setPatella((v) => !v)}
                 aria-pressed={patella}
                 style={{
-                  background: patella ? 'var(--teal)' : '#b02318',
-                  color: '#fff',
+                  background: patella ? 'var(--teal)' : C.blood,
+                  color: C.card,
                   border: 'none',
                   borderRadius: '4px',
                   padding: '2px 8px',
-                  fontSize: '0.58rem',
+                  fontSize: '0.62rem',
                   fontWeight: 700,
                   cursor: 'pointer',
                   transition: 'all 0.15s ease',

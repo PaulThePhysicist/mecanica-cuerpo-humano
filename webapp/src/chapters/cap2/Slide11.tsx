@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { C, ca } from './palette';
 import JawCanvas from './JawCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
@@ -127,10 +128,10 @@ export default function Slide11({
                   <tr><td>Temporal posterior</td><td>0,37</td><td>0,72</td></tr>
                 </tbody>
               </table>
-              <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '.25rem' }}>
+              <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '0.62rem' }}>
                 Hombres; algo menores en mujeres (Problema 2.28). Todas son menores que 1: el visor usa la del masetero.
               </p>
-              <div style={{ marginTop: '.4rem' }}>
+              <div style={{ marginTop: '0.62rem' }}>
                 <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
                   <b>Rotular la ATM y las fuerzas</b>
                 </TheoryToggle>
@@ -169,11 +170,11 @@ export default function Slide11({
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.62rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Fuerza de Mordida:</span>
-                <b style={{ color: '#0d6e64', fontFamily: 'JetBrains Mono, monospace' }}>{fBiteN.toFixed(0)} N ({fx(fBiteKgf, 1)} kgf)</b>
+                <b style={{ color: C.teal, fontFamily: 'JetBrains Mono, monospace' }}>{fBiteN.toFixed(0)} N ({fx(fBiteKgf, 1)} kgf)</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Masetero (M):</span>
-                <b style={{ color: '#b91c1c', fontFamily: 'JetBrains Mono, monospace' }}>{muscleForceN} N</b>
+                <b style={{ color: C.bloodDeep, fontFamily: 'JetBrains Mono, monospace' }}>{muscleForceN} N</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Brazo Dental (d):</span>
@@ -181,13 +182,13 @@ export default function Slide11({
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Ventaja Mecánica (dm/d):</span>
-                <b style={{ color: biteMode === 'molar' ? '#047857' : '#b45309', fontFamily: 'JetBrains Mono, monospace' }}>
+                <b style={{ color: biteMode === 'molar' ? C.tealDeep : C.amber, fontFamily: 'JetBrains Mono, monospace' }}>
                   {fx(mechAdv, 2)} (masetero, libro)
                 </b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Carga Cóndilo ATM (R):</span>
-                <b style={{ color: '#43505c', fontFamily: 'JetBrains Mono, monospace' }}>{rAtmN.toFixed(0)} N ({fx(rAtmKgf, 1)} kgf)</b>
+                <b style={{ color: C.ink2, fontFamily: 'JetBrains Mono, monospace' }}>{rAtmN.toFixed(0)} N ({fx(rAtmKgf, 1)} kgf)</b>
               </div>
             </div>
           </HudPanel>
@@ -198,9 +199,9 @@ export default function Slide11({
           />
           <div className="prof-controls">
             <span className="badge">§2.3.3 · Mandíbula</span>
-            <span>Mordida = <b style={{ color: '#0d6e64' }}>{fBiteN.toFixed(0)} N</b> ({biteMode === 'incisor' ? '0,50 M' : '0,76 M'})</span>
+            <span>Mordida = <b style={{ color: C.teal }}>{fBiteN.toFixed(0)} N</b> ({biteMode === 'incisor' ? '0,50 M' : '0,76 M'})</span>
 
-            <div style={{ display: 'flex', gap: '0.45rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>
+            <div style={{ display: 'flex', gap: '0.62rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>
               {/* Presets rápidos */}
               <div style={{ display: 'inline-flex', gap: '2px', border: '1px solid var(--line)', borderRadius: '4px', padding: '1px', background: 'var(--paper-2)' }}>
                 {JAW_PRESETS.map((p) => (
@@ -210,11 +211,11 @@ export default function Slide11({
                     onClick={() => handleSelectPreset(p)}
                     style={{
                       background: activePresetId === p.id ? 'var(--teal)' : 'transparent',
-                      color: activePresetId === p.id ? '#fff' : 'var(--ink)',
+                      color: activePresetId === p.id ? C.card : 'var(--ink)',
                       border: 'none',
                       borderRadius: '3px',
                       padding: '3px 6px',
-                      fontSize: '0.56rem',
+                      fontSize: '0.62rem',
                       fontWeight: activePresetId === p.id ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -232,11 +233,11 @@ export default function Slide11({
                   onClick={() => handleModeChange('incisor')}
                   style={{
                     background: biteMode === 'incisor' ? 'var(--teal)' : 'transparent',
-                    color: biteMode === 'incisor' ? '#fff' : 'var(--ink)',
+                    color: biteMode === 'incisor' ? C.card : 'var(--ink)',
                     border: 'none',
                     borderRadius: '3px',
                     padding: '3px 7px',
-                    fontSize: '0.58rem',
+                    fontSize: '0.62rem',
                     fontWeight: biteMode === 'incisor' ? 700 : 500,
                     cursor: 'pointer',
                     transition: 'all 0.15s ease',
@@ -249,11 +250,11 @@ export default function Slide11({
                   onClick={() => handleModeChange('molar')}
                   style={{
                     background: biteMode === 'molar' ? 'var(--teal)' : 'transparent',
-                    color: biteMode === 'molar' ? '#fff' : 'var(--ink)',
+                    color: biteMode === 'molar' ? C.card : 'var(--ink)',
                     border: 'none',
                     borderRadius: '3px',
                     padding: '3px 7px',
-                    fontSize: '0.58rem',
+                    fontSize: '0.62rem',
                     fontWeight: biteMode === 'molar' ? 700 : 500,
                     cursor: 'pointer',
                     transition: 'all 0.15s ease',

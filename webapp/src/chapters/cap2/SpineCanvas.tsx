@@ -1,4 +1,5 @@
 import React, { Suspense, useMemo, useRef } from 'react';
+import { C, ca } from './palette';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, ContactShadows, useGLTF } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
@@ -30,13 +31,13 @@ interface SpineCanvasProps {
 const BONE_IVORY = '#ede5d0';
 const BONE_DEEP = '#c5b593';
 const CARTILAGE_ICE = '#68c5b8';
-const MUSCLE_CARMINE = '#a92a1e';
-const MUSCLE_HEAVY = '#dc2626';
+const MUSCLE_CARMINE = C.blood;
+const MUSCLE_HEAVY = C.blood;
 const DISC_HEALTHY = '#88d4d0';
 const DISC_STRAINED = '#fca5a5';
-const TEAL_ACCENT = '#0d6e64';
-const AMBER_ACCENT = '#d97706';
-const RED_ACCENT = '#b02318';
+const TEAL_ACCENT = C.teal;
+const AMBER_ACCENT = C.amber;
+const RED_ACCENT = C.blood;
 
 // Pivot anatómico de L5-S1 en el modelo
 const P_SACRUM = new THREE.Vector3(0.006, 0.028, -0.029);
@@ -45,7 +46,7 @@ const P_SACRUM = new THREE.Vector3(0.006, 0.028, -0.029);
 function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [1, 0, 0] as [number, number, number],
-  color = '#0d6e64',
+  color = C.teal,
   label,
   sub,
   emphasis,
@@ -143,36 +144,36 @@ function LumbarTensionGauge({
   return (
     <div
       style={{
-        background: 'rgba(255, 255, 255, 0.95)',
+        background: ca(C.card, 0.95),
         backdropFilter: 'blur(8px)',
-        border: `1.5px solid ${isExtremeTension ? '#991b1b' : (isHighTension ? RED_ACCENT : '#cbd5e1')}`,
+        border: `1.5px solid ${isExtremeTension ? '${C.bloodDeep}' : (isHighTension ? RED_ACCENT : '${C.line}')}`,
         borderRadius: '10px',
         padding: '10px 14px',
-        boxShadow: '0 6px 20px rgba(35, 44, 54, 0.14)',
+        boxShadow: `0 6px 20px ${ca(C.ink, 0.14)}`,
         minWidth: '165px',
         textAlign: 'center',
         pointerEvents: 'none',
       }}
     >
-      <div style={{ fontSize: '0.60rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+      <div style={{ fontSize: '0.62rem', fontWeight: 700, color: C.ink3, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
         Tensión Erector Espinal
       </div>
 
       {/* SVG Dial */}
       <svg width="120" height="74" viewBox="0 0 120 74" style={{ margin: '4px auto 0', display: 'block' }}>
-        <path d="M 15 65 A 45 45 0 0 1 105 65" fill="none" stroke="#e2e8f0" strokeWidth="8" strokeLinecap="round" />
+        <path d="M 15 65 A 45 45 0 0 1 105 65" fill="none" stroke={C.lineSoft} strokeWidth="8" strokeLinecap="round" />
         {/* Sector Verde (< 1500 N) */}
-        <path d="M 15 65 A 45 45 0 0 1 52 22" fill="none" stroke="#0d6e64" strokeWidth="8" strokeDasharray="4 2" opacity={0.35} />
+        <path d="M 15 65 A 45 45 0 0 1 52 22" fill="none" stroke={C.teal} strokeWidth="8" strokeDasharray="4 2" opacity={0.35} />
         {/* Sector Ámbar (1500 - 2800 N) */}
-        <path d="M 52 22 A 45 45 0 0 1 88 32" fill="none" stroke="#d97706" strokeWidth="8" strokeDasharray="4 2" opacity={0.35} />
+        <path d="M 52 22 A 45 45 0 0 1 88 32" fill="none" stroke={C.amber} strokeWidth="8" strokeDasharray="4 2" opacity={0.35} />
         {/* Sector Rojo (> 2800 N) */}
-        <path d="M 88 32 A 45 45 0 0 1 105 65" fill="none" stroke="#b02318" strokeWidth="8" strokeDasharray="4 2" opacity={0.35} />
+        <path d="M 88 32 A 45 45 0 0 1 105 65" fill="none" stroke={C.blood} strokeWidth="8" strokeDasharray="4 2" opacity={0.35} />
 
         {/* Arco dinámico */}
         <path
           d="M 15 65 A 45 45 0 0 1 105 65"
           fill="none"
-          stroke={isExtremeTension ? '#991b1b' : (isHighTension ? RED_ACCENT : (fErectorN > 1500 ? '#d97706' : '#0d6e64'))}
+          stroke={isExtremeTension ? C.bloodDeep : (isHighTension ? RED_ACCENT : (fErectorN > 1500 ? C.amber : C.teal))}
           strokeWidth="8"
           strokeDasharray="141.37"
           strokeDashoffset={141.37 * (1 - normVal)}
@@ -182,15 +183,15 @@ function LumbarTensionGauge({
 
         {/* Aguja indicadora analógica */}
         <g transform={`rotate(${needleAngle} 60 65)`} style={{ transition: 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)' }}>
-          <line x1="60" y1="65" x2="60" y2="25" stroke="#1e293b" strokeWidth="2.5" strokeLinecap="round" />
-          <circle cx="60" cy="65" r="4.5" fill="#1e293b" />
-          <circle cx="60" cy="65" r="2" fill="#ffffff" />
+          <line x1="60" y1="65" x2="60" y2="25" stroke={C.ink} strokeWidth="2.5" strokeLinecap="round" />
+          <circle cx="60" cy="65" r="4.5" fill={C.ink} />
+          <circle cx="60" cy="65" r="2" fill={C.card} />
         </g>
 
         {/* Etiquetas de escala */}
-        <text x="12" y="72" fontSize="7" fill="#64748b" fontFamily="JetBrains Mono, monospace">0</text>
-        <text x="52" y="16" fontSize="7" fill="#64748b" fontFamily="JetBrains Mono, monospace">2,2k</text>
-        <text x="94" y="72" fontSize="7" fill="#64748b" fontFamily="JetBrains Mono, monospace">4,5kN</text>
+        <text x="12" y="72" fontSize="12" fill={C.ink3} fontFamily="JetBrains Mono, monospace">0</text>
+        <text x="52" y="16" fontSize="12" fill={C.ink3} fontFamily="JetBrains Mono, monospace">2,2k</text>
+        <text x="94" y="72" fontSize="12" fill={C.ink3} fontFamily="JetBrains Mono, monospace">4,5kN</text>
       </svg>
 
       <div style={{ fontSize: '1.25rem', fontWeight: 800, color: isHighTension ? RED_ACCENT : TEAL_ACCENT, fontFamily: 'JetBrains Mono, monospace', margin: '2px 0 0' }}>
@@ -200,10 +201,10 @@ function LumbarTensionGauge({
         {fErectorKgf.toFixed(0)} kgf en musculatura lumbar
       </div>
 
-      <div style={{ fontSize: '0.54rem', color: isExtremeTension ? '#b91c1c' : '#64748b', marginTop: '4px', fontWeight: isExtremeTension ? 700 : 500 }}>
+      <div style={{ fontSize: '0.62rem', color: isExtremeTension ? C.bloodDeep : C.ink3, marginTop: '4px', fontWeight: isExtremeTension ? 700 : 500 }}>
         {isExtremeTension ? 'M > 3200 N: carga muy alta' : (isHighTension ? 'M > 2400 N: carga alta' : 'Carga moderada')}
       </div>
-      <div style={{ fontSize: '0.52rem', color: '#64748b', marginTop: '2px' }}>
+      <div style={{ fontSize: '0.62rem', color: C.ink3, marginTop: '2px' }}>
         El erector forma solo 12° con la columna
       </div>
     </div>
@@ -449,7 +450,7 @@ function LumbarSpine3D({
                         </mesh>
 
                         {/* Vector Peso Carga W2 */}
-                        <ForceVector3D origin={[0, -0.15, 0]} vector={[0, -wLoadN * vScale * 1.1, 0]} color="#232c36" label={lW2} sub="0,2 Wb + carga, en L" />
+                        <ForceVector3D origin={[0, -0.15, 0]} vector={[0, -wLoadN * vScale * 1.1, 0]} color={C.ink} label={lW2} sub="0,2 Wb + carga, en L" />
                       </group>
                     )}
                   </group>
@@ -466,7 +467,7 @@ function LumbarSpine3D({
         <mesh position={[-0.14, 0.65 * Math.cos(curAlphaRad * 0.5), -0.65 * Math.sin(curAlphaRad * 0.5)]} rotation={[curAlphaRad * 0.5, 0, 0]}>
           <cylinderGeometry args={[muscleThickness * 0.7, muscleThickness, 1.45, 16]} />
           <meshStandardMaterial
-            color={isExtremeTension ? '#991b1b' : (isHighTension ? MUSCLE_HEAVY : MUSCLE_CARMINE)}
+            color={isExtremeTension ? C.bloodDeep : (isHighTension ? MUSCLE_HEAVY : MUSCLE_CARMINE)}
             roughness={0.48}
             metalness={0.08}
             emissive={isExtremeTension ? '#991b1b' : (isHighTension ? '#7f1d1d' : '#500e08')}
@@ -476,7 +477,7 @@ function LumbarSpine3D({
         <mesh position={[0.14, 0.65 * Math.cos(curAlphaRad * 0.5), -0.65 * Math.sin(curAlphaRad * 0.5)]} rotation={[curAlphaRad * 0.5, 0, 0]}>
           <cylinderGeometry args={[muscleThickness * 0.7, muscleThickness, 1.45, 16]} />
           <meshStandardMaterial
-            color={isExtremeTension ? '#991b1b' : (isHighTension ? MUSCLE_HEAVY : MUSCLE_CARMINE)}
+            color={isExtremeTension ? C.bloodDeep : (isHighTension ? MUSCLE_HEAVY : MUSCLE_CARMINE)}
             roughness={0.48}
             metalness={0.08}
             emissive={isExtremeTension ? '#991b1b' : (isHighTension ? '#7f1d1d' : '#500e08')}
@@ -496,7 +497,7 @@ function LumbarSpine3D({
 
       {/* Reacción sobre el disco L5-S1: sin flecha propia, pero su valor y punto
           de aplicación (la unión lumbosacra) van al riel. */}
-      <Callout position={[0, 0.92, 0.02]} label={lRn} sub="compresión axial" color="#1e293b" emphasis="strong" />
+      <Callout position={[0, 0.92, 0.02]} label={lRn} sub="compresión axial" color={C.ink} emphasis="strong" />
       <Callout position={[0, 0.78, 0.02]} label={lRt} sub="cizallamiento" color={AMBER_ACCENT} emphasis="muted" />
 
       <CalloutSource />
@@ -536,15 +537,15 @@ export default function SpineCanvas({
           top: '12px',
           right: '12px',
           zIndex: 10,
-          background: 'rgba(255, 255, 255, 0.92)',
-          border: '1px solid var(--line, #cbd5e1)',
+          background: ca(C.card, 0.92),
+          border: `1px solid var(--line, ${C.line})`,
           borderRadius: '6px',
           padding: '4px 9px',
           fontSize: '0.62rem',
           fontWeight: 600,
-          color: 'var(--ink, #232c36)',
+          color: `var(--ink, ${C.ink})`,
           cursor: 'pointer',
-          boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
+          boxShadow: `0 2px 6px ${ca(C.ink, 0.06)}`,
           backdropFilter: 'blur(4px)',
         }}
       >
@@ -599,7 +600,6 @@ export default function SpineCanvas({
           right: '10px',
           bottom: '10px',
           zIndex: 9,
-          transform: 'scale(0.78)',
           transformOrigin: 'bottom right',
           pointerEvents: 'none',
         }}

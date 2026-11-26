@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { C, ca } from './palette';
 import { Line } from '@react-three/drei';
 import * as THREE from 'three';
 import { KNEE, kneeStatics } from './staticsModels';
@@ -45,11 +46,11 @@ const A_LEVER_NOPAT = 0.055; // sin rótula: valor ilustrativo (el libro no da c
 const THETA = (KNEE.thetaDeg * Math.PI) / 180;
 const W_LEG = KNEE.W1;
 
-const TEAL = '#0d6e64';
-const AMBER = '#d97706';
-const RED = '#b02318';
-const BLUE = '#0284c7';
-const VIOLET = '#7c3aed';
+const TEAL = C.teal;
+const AMBER = C.amber;
+const RED = C.blood;
+const BLUE = C.series3;
+const VIOLET = C.sagittal;
 const TENDON_COLOR = '#e7dcc4';
 
 function ForceArrow({

@@ -42,7 +42,7 @@ export function TheoryToggle({
 /** Línea de cortesía al pie de una tarjeta: dice qué pasa al pulsar. */
 export function TheoryCue({ children }: { children: React.ReactNode }) {
   return (
-    <p style={{ fontSize: '.6rem', color: 'var(--ink-3)', marginTop: '.35rem', lineHeight: 1.45 }}>
+    <p style={{ fontSize: '0.62rem', color: 'var(--ink-3)', marginTop: '0.62rem', lineHeight: 1.45 }}>
       💡 {children}
     </p>
   );

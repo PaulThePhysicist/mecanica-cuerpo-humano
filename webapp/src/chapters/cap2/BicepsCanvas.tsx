@@ -1,4 +1,5 @@
 import React, { Suspense, useRef, useMemo } from 'react';
+import { C, ca } from './palette';
 import { fx } from './ab';
 import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls, ContactShadows, Html, useGLTF } from '@react-three/drei';
@@ -56,7 +57,7 @@ const P_SHOULDER = new THREE.Vector3(-0.096, 0.306, -0.018);
 function BicepsLoading() {
   return (
     <Html center>
-      <div style={{ background: 'rgba(255,253,248,.94)', border: '1px solid #c8bea9', borderRadius: 6, padding: '6px 10px', color: '#43505c', font: '600 .68rem Karla, sans-serif', whiteSpace: 'nowrap' }}>
+      <div style={{ background: ca(C.card, .94), border: `1px solid ${C.line}`, borderRadius: 6, padding: '6px 10px', color: C.ink2, font: '600 .68rem Karla, sans-serif', whiteSpace: 'nowrap' }}>
         Cargando anatomía del codo…
       </div>
     </Html>
@@ -67,7 +68,7 @@ function BicepsLoading() {
 function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [1, 0, 0] as [number, number, number],
-  color = '#0d6e64',
+  color = C.teal,
   label,
   sub,
   emphasis,
@@ -262,7 +263,7 @@ function RealArmBicepsScene({
       </mesh>
 
       {/* Vector Reacción Articular R_j en la Tróclea */}
-      <ForceVector3D origin={[0, 0, 0]} vector={vRj} color="#dc2626" label={lRj} sub="troclear" emphasis="strong" />
+      <ForceVector3D origin={[0, 0, 0]} vector={vRj} color={C.blood} label={lRj} sub="troclear" emphasis="strong" />
 
       {/* ── Segmento Móvil: Antebrazo y Mano Rotatorio ── */}
       <group rotation={[angleRad, 0, 0]}>
@@ -282,10 +283,10 @@ function RealArmBicepsScene({
         </group>
 
         {/* Vector de Fuerza Muscular Fm en la tuberosidad bicipital */}
-        <ForceVector3D origin={[0, 0, 0]} vector={vFm} color="#0d9488" label={lFm} sub={sFm} />
+        <ForceVector3D origin={[0, 0, 0]} vector={vFm} color={C.teal} label={lFm} sub={sFm} />
 
         {/* Vector de Carga W en la mano */}
-        <ForceVector3D origin={[0, 0, 0]} vector={vWh} color="#d97706" label={lW} sub={sW} />
+        <ForceVector3D origin={[0, 0, 0]} vector={vWh} color={C.amber} label={lW} sub={sW} />
       </group>
     </group>
   );

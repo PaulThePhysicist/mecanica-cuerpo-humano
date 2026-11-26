@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { C, ca } from './palette';
 import { fx } from './ab';
 import TorqueCanvas from './TorqueCanvas';
 import HudPanel from './HudPanel';
@@ -35,7 +36,7 @@ export default function Slide2({
 
   const isCCW = tau > 0.05;
   const isCW = tau < -0.05;
-  const tauColor = isCCW ? '#0d6e64' : (isCW ? '#b02318' : '#6b7885');
+  const tauColor = isCCW ? C.teal : (isCW ? C.blood : C.ink3);
 
   const handleUpdate = (newTheta: number, newR: number, newF: number) => {
     setIsAnimating(false);
@@ -123,7 +124,7 @@ export default function Slide2({
                   <b>{"r′ = r sen θ:"}</b> brazo de momento, perpendicular a la línea de acción.
                 </span>
               </div>
-              <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '.3rem' }}>
+              <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '0.62rem' }}>
                 {'Cuando $\\theta = 90^\\circ$, $\\sin(90^\\circ) = 1$ y el torque es máximo ($\\tau = r F$). Cuando $\\theta = 0^\\circ$ o $180^\\circ$, el torque es nulo y la fuerza es puramente compresiva o distractiva.'}
               </p>
             </div>
@@ -134,10 +135,10 @@ export default function Slide2({
             </div>
             <div className="card-body">
               <p style={{ fontSize: '.64rem' }}>
-                {'Aplicación directa del torque: si un cuerpo está en equilibrio bajo '}<strong>tres fuerzas</strong>{' no paralelas ('}<span style={{ color: '#2d7d4f', fontWeight: 700 }}>N</span>{', '}<span style={{ color: '#0d6e64', fontWeight: 700 }}>M</span>{', '}<span style={{ color: '#a92a1e', fontWeight: 700 }}>R</span>{'), sus líneas de acción '}<strong>concurren en un punto P</strong>.
+                {'Aplicación directa del torque: si un cuerpo está en equilibrio bajo '}<strong>tres fuerzas</strong>{' no paralelas ('}<span style={{ color: C.coronal, fontWeight: 700 }}>N</span>{', '}<span style={{ color: C.teal, fontWeight: 700 }}>M</span>{', '}<span style={{ color: C.blood, fontWeight: 700 }}>R</span>{'), sus líneas de acción '}<strong>concurren en un punto P</strong>.
               </p>
               <ThreeForceDiagram step={4} />
-              <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '.3rem' }}>
+              <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '0.62rem' }}>
                 {'Eligiendo el eje de momentos en P, $N$ y $M$ dan $\\tau = 0$ porque su $\\vec{r}$ es (anti)paralelo a su $\\vec{F}$ — el mismo caso $\\theta = 0^\\circ/180^\\circ$ de este visor. Como $\\sum\\vec{\\tau} = 0$, la reacción $\\vec{R}$ también debe pasar por P. El triángulo de la derecha cierra ($\\sum\\vec{F} = 0$) y fija las magnitudes.'}
               </p>
             </div>
@@ -157,7 +158,7 @@ export default function Slide2({
             badge={`${tau >= 0 ? '+' : ''}${fx(tau, 1)} N·m`}
             footer="💡 Arrastra la punta de la flecha o ajusta los controles inferiores"
           >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '0.58rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '0.62rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Torque Neto (τ):</span>
                 <b style={{ color: tauColor, fontFamily: 'JetBrains Mono, monospace' }}>
@@ -172,7 +173,7 @@ export default function Slide2({
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Brazo Perpendicular (r⊥):</span>
-                <b style={{ fontFamily: 'JetBrains Mono, monospace', color: '#d97706' }}>{fx(rPerp, 3)} m ({fx((rPerp * 100), 1)} cm)</b>
+                <b style={{ fontFamily: 'JetBrains Mono, monospace', color: C.amber }}>{fx(rPerp, 3)} m ({fx((rPerp * 100), 1)} cm)</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Fuerza Tangencial (F⊥):</span>
@@ -209,11 +210,11 @@ export default function Slide2({
                     onClick={() => setPreset('optimal')}
                     style={{
                       background: isOptimal ? 'var(--teal)' : 'var(--paper-2)',
-                      color: isOptimal ? '#fff' : 'var(--ink)',
+                      color: isOptimal ? C.card : 'var(--ink)',
                       border: `1px solid ${isOptimal ? 'var(--teal)' : 'var(--line)'}`,
                       borderRadius: '3px',
                       padding: '2px 6px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: isOptimal ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -226,11 +227,11 @@ export default function Slide2({
                     onClick={() => setPreset('acute')}
                     style={{
                       background: isAcute ? 'var(--teal)' : 'var(--paper-2)',
-                      color: isAcute ? '#fff' : 'var(--ink)',
+                      color: isAcute ? C.card : 'var(--ink)',
                       border: `1px solid ${isAcute ? 'var(--teal)' : 'var(--line)'}`,
                       borderRadius: '3px',
                       padding: '2px 6px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: isAcute ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -243,11 +244,11 @@ export default function Slide2({
                     onClick={() => setPreset('biceps')}
                     style={{
                       background: isBiceps ? 'var(--teal)' : 'var(--paper-2)',
-                      color: isBiceps ? '#fff' : 'var(--ink)',
+                      color: isBiceps ? C.card : 'var(--ink)',
                       border: `1px solid ${isBiceps ? 'var(--teal)' : 'var(--line)'}`,
                       borderRadius: '3px',
                       padding: '2px 6px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: isBiceps ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -260,11 +261,11 @@ export default function Slide2({
                     onClick={() => setPreset('zero')}
                     style={{
                       background: isZero ? 'var(--teal)' : 'var(--paper-2)',
-                      color: isZero ? '#fff' : 'var(--ink)',
+                      color: isZero ? C.card : 'var(--ink)',
                       border: `1px solid ${isZero ? 'var(--teal)' : 'var(--line)'}`,
                       borderRadius: '3px',
                       padding: '2px 6px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: isZero ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -277,11 +278,11 @@ export default function Slide2({
                     onClick={() => setPreset('reverse')}
                     style={{
                       background: isReverse ? 'var(--teal)' : 'var(--paper-2)',
-                      color: isReverse ? '#fff' : 'var(--ink)',
+                      color: isReverse ? C.card : 'var(--ink)',
                       border: `1px solid ${isReverse ? 'var(--teal)' : 'var(--line)'}`,
                       borderRadius: '3px',
                       padding: '2px 6px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: isReverse ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -293,7 +294,7 @@ export default function Slide2({
               );
             })()}
 
-            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', fontSize: '0.60rem', marginLeft: 'auto', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '0.62rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto', flexWrap: 'wrap' }}>
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
                 <span>θ:</span>
                 <input
@@ -343,7 +344,7 @@ export default function Slide2({
                   border: '1px solid var(--line)',
                   borderRadius: '4px',
                   padding: '2px 7px',
-                  fontSize: '0.60rem',
+                  fontSize: '0.62rem',
                   cursor: 'pointer',
                   color: 'var(--ink)',
                 }}

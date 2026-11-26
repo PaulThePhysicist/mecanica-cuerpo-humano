@@ -1,4 +1,5 @@
 import React, { Suspense, useMemo, useRef, useState, useEffect } from 'react';
+import { C, ca } from './palette';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, ContactShadows, Html, Line, useGLTF } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
@@ -164,20 +165,20 @@ const NODES_DATA: Record<BiomechNodeId, BiomechNodeInfo> = {
 
 // ── Paleta de Colores ──
 const BONE_BASE = '#ede5d0';
-const BONE_HIGHLIGHT = '#0d6e64';
-const MUSCLE_ACTIVE = '#b02318';
-const MUSCLE_PASSIVE = '#94a3b8';
-const TEAL_DEEP = '#0d6e64';
-const GREEN_ACCENT = '#10b981';
-const AMBER_ACCENT = '#f59e0b';
-const BLUE_ACCENT = '#2563eb';
-const RED_ACCENT = '#ef4444';
+const BONE_HIGHLIGHT = C.teal;
+const MUSCLE_ACTIVE = C.blood;
+const MUSCLE_PASSIVE = C.ink3;
+const TEAL_DEEP = C.teal;
+const GREEN_ACCENT = C.coronal;
+const AMBER_ACCENT = C.amber;
+const BLUE_ACCENT = C.series3;
+const RED_ACCENT = C.blood;
 
 // ── 1. Vector de Fuerza 3D con Cono y Rótulo ──
 function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [0, 1, 0] as [number, number, number],
-  color = '#0d6e64',
+  color = C.teal,
   label,
   sub,
   emphasis,
@@ -625,7 +626,7 @@ function Interactive3DNodes({
             <mesh>
               <sphereGeometry args={[isSelected ? 0.042 : (isHovered ? 0.036 : 0.028), 24, 24]} />
               <meshStandardMaterial
-                color={isSelected ? '#10b981' : (isHovered ? '#0d8577' : TEAL_DEEP)}
+                color={isSelected ? C.coronal : (isHovered ? C.teal : TEAL_DEEP)}
                 emissive={isSelected ? '#10b981' : (isHovered ? '#0d8577' : TEAL_DEEP)}
                 emissiveIntensity={isSelected ? 0.9 : 0.5}
                 roughness={0.2}
@@ -638,7 +639,7 @@ function Interactive3DNodes({
               <mesh rotation={[Math.PI / 2, 0, 0]}>
                 <ringGeometry args={[0.055, 0.075, 32]} />
                 <meshBasicMaterial
-                  color="#10b981"
+                  color={C.coronal}
                   transparent
                   opacity={0.6 + 0.3 * Math.sin(pulseRef.current)}
                   side={THREE.DoubleSide}
@@ -652,18 +653,18 @@ function Interactive3DNodes({
               <Html position={[0.08, 0, 0]} center={false} zIndexRange={[100, 0]} occlude="blending">
                 <div
                   style={{
-                    background: isSelected ? 'rgba(13, 110, 100, 0.96)' : 'rgba(255, 255, 255, 0.92)',
-                    color: isSelected ? '#ffffff' : '#0f172a',
+                    background: isSelected ? ca(C.teal, 0.96) : ca(C.card, 0.92),
+                    color: isSelected ? C.card : C.ink,
                     backdropFilter: 'blur(6px)',
-                    border: `1.5px solid ${isSelected ? '#042f2c' : '#cbd5e1'}`,
+                    border: `1.5px solid ${isSelected ? '${C.tealDeep}' : '${C.line}'}`,
                     borderRadius: '4px',
                     padding: '2px 5px',
-                    fontSize: '0.52rem',
+                    fontSize: '0.62rem',
                     fontWeight: isSelected ? 700 : 600,
                     fontFamily: 'JetBrains Mono, monospace',
                     whiteSpace: 'nowrap',
                     pointerEvents: 'none',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+                    boxShadow: `0 2px 8px ${ca(C.ink, 0.12)}`,
                     transform: 'translateY(-50%)',
                   }}
                 >
@@ -746,12 +747,12 @@ function BiomechInspectorCard({
   return (
     <div
       style={{
-        background: 'rgba(255, 255, 255, 0.95)',
+        background: ca(C.card, 0.95),
         backdropFilter: 'blur(10px)',
-        border: '1.5px solid var(--line, #cbd5e1)',
+        border: `1.5px solid var(--line, ${C.line})`,
         borderRadius: '10px',
         padding: isOverview ? '10px 12px' : '12px 14px',
-        boxShadow: '0 8px 24px rgba(35, 44, 54, 0.15)',
+        boxShadow: `0 8px 24px ${ca(C.ink, 0.15)}`,
         width: isOverview ? '234px' : '280px',
         pointerEvents: 'auto',
       }}
@@ -763,9 +764,9 @@ function BiomechInspectorCard({
         </span>
         <span
           style={{
-            background: node.vmType === 'force' ? '#dcfce7' : (node.vmType === 'speed' ? '#e0f2fe' : '#fef3c7'),
-            color: node.vmType === 'force' ? '#166534' : (node.vmType === 'speed' ? '#0369a1' : '#b45309'),
-            fontSize: '0.54rem',
+            background: node.vmType === 'force' ? ca(C.coronal, 0.12) : (node.vmType === 'speed' ? ca(C.series3, 0.10) : C.amberTint),
+            color: node.vmType === 'force' ? C.coronal : (node.vmType === 'speed' ? C.series3 : C.amber),
+            fontSize: '0.62rem',
             fontWeight: 800,
             padding: '2px 6px',
             borderRadius: '4px',
@@ -779,13 +780,13 @@ function BiomechInspectorCard({
       {/* Bloque de Ecuación de Equilibrio Estático */}
       <div
         style={{
-          background: 'rgba(13, 110, 100, 0.08)',
-          border: '1px solid rgba(13, 110, 100, 0.25)',
+          background: ca(C.teal, 0.08),
+          border: `1px solid ${ca(C.teal, 0.25)}`,
           borderRadius: '6px',
           padding: '6px 8px',
           textAlign: 'center',
           fontFamily: 'JetBrains Mono, monospace',
-          fontSize: isOverview ? '0.60rem' : '0.66rem',
+          fontSize: isOverview ? '0.62rem' : '0.66rem',
           fontWeight: 700,
           color: TEAL_DEEP,
           margin: '6px 0 8px',
@@ -796,13 +797,13 @@ function BiomechInspectorCard({
 
       {/* Relación Clave y Multiplicador */}
       <div style={{ marginBottom: '2px' }}>
-        <div style={{ fontSize: '0.56rem', fontWeight: 700, color: RED_ACCENT, textTransform: 'uppercase' }}>
+        <div style={{ fontSize: '0.62rem', fontWeight: 700, color: RED_ACCENT, textTransform: 'uppercase' }}>
           {node.ratioLabel}:
         </div>
-        <div style={{ fontSize: isOverview ? '0.80rem' : '0.90rem', fontWeight: 800, color: '#0f172a', fontFamily: 'JetBrains Mono, monospace' }}>
+        <div style={{ fontSize: isOverview ? '0.80rem' : '0.90rem', fontWeight: 800, color: C.ink, fontFamily: 'JetBrains Mono, monospace' }}>
           {node.keyRatio}
         </div>
-        <div style={{ fontSize: '0.58rem', color: '#64748b' }}>
+        <div style={{ fontSize: '0.62rem', color: C.ink3 }}>
           {node.vm}
         </div>
       </div>
@@ -810,14 +811,14 @@ function BiomechInspectorCard({
       {/* Bloques verbosos: sólo al enfocar una articulación concreta */}
       {!isOverview && (
         <>
-          <div style={{ fontSize: '0.62rem', color: '#64748b', margin: '6px 0 4px' }}>
+          <div style={{ fontSize: '0.62rem', color: C.ink3, margin: '6px 0 4px' }}>
             {node.leverType}
           </div>
-          <hr style={{ border: 'none', borderTop: '1px solid rgba(207, 195, 169, 0.5)', margin: '8px 0' }} />
-          <div style={{ fontSize: '0.56rem', fontWeight: 700, color: TEAL_DEEP, marginBottom: '3px' }}>
+          <hr style={{ border: 'none', borderTop: `1px solid ${ca(C.line, 0.5)}`, margin: '8px 0' }} />
+          <div style={{ fontSize: '0.62rem', fontWeight: 700, color: TEAL_DEEP, marginBottom: '3px' }}>
             IMPLICACIÓN CLÍNICA / ERGONÓMICA:
           </div>
-          <div style={{ fontSize: '0.60rem', color: '#334155', lineHeight: 1.35, marginBottom: '10px' }}>
+          <div style={{ fontSize: '0.62rem', color: C.ink, lineHeight: 1.35, marginBottom: '10px' }}>
             {node.clinical}
           </div>
         </>
@@ -830,12 +831,12 @@ function BiomechInspectorCard({
         style={{
           width: '100%',
           marginTop: isOverview ? '8px' : 0,
-          background: isOverview ? 'var(--teal, #0d6e64)' : 'var(--paper-2, #f1f5f9)',
-          color: isOverview ? '#ffffff' : 'var(--ink, #0f172a)',
-          border: '1px solid var(--line, #cbd5e1)',
+          background: isOverview ? `var(--teal, ${C.teal})` : `var(--paper-2, ${C.lineSoft})`,
+          color: isOverview ? C.card : `var(--ink, ${C.ink})`,
+          border: `1px solid var(--line, ${C.line})`,
           borderRadius: '5px',
           padding: '5px 8px',
-          fontSize: '0.58rem',
+          fontSize: '0.62rem',
           fontWeight: 700,
           cursor: 'pointer',
           transition: 'all 0.15s ease',
@@ -888,7 +889,7 @@ export default function BiomechSummaryCanvas({
         {/* ── Iluminación de Estudio Anatómico ── */}
         <ambientLight intensity={0.55} />
         {/* Luz de contra que perfila la silueta contra el fondo */}
-        <directionalLight position={[-2, 4, -7]} intensity={0.9} color="#ffffff" />
+        <directionalLight position={[-2, 4, -7]} intensity={0.9} color={C.card} />
         <directionalLight
           position={[5, 10, 5]}
           intensity={1.3}
@@ -940,7 +941,6 @@ export default function BiomechSummaryCanvas({
           left: '8px',
           bottom: '8px',
           zIndex: 9,
-          transform: 'scale(0.66)',
           transformOrigin: 'bottom left',
         }}
       >

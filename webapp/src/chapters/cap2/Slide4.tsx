@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { C, ca } from './palette';
 import { fx } from './ab';
 import BicepsCanvas from './BicepsCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
@@ -92,7 +93,7 @@ export default function Slide4({
               <p style={{ fontSize: '.64rem' }}>
                 {'Para 100 N: $M = 900 + 3{,}25 \\times 15 \\approx 950\\text{ N}$. Caso 3: con el brazo vertical y el antebrazo a un ángulo $\\theta$, los tres torques se multiplican por $\\sin\\theta$ y se obtiene la misma $M$ (Ecs. 2.16–2.17). La sutileza: la fuerza máxima del músculo depende de su longitud, es decir, de $\\theta$, y es mayor cerca de $90^\\circ$.'}
               </p>
-              <div style={{ marginTop: '.4rem' }}>
+              <div style={{ marginTop: '0.62rem' }}>
                 <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
                   <b>{'Rotular $M$, $W_W$ y $R$'}</b>
                 </TheoryToggle>
@@ -131,18 +132,18 @@ export default function Slide4({
             badge={`M = ${fMuscN.toFixed(0)} N (${fx(fMuscKgf, 1)} kgf)`}
             footer="💡 Rota la escena 3D y ajusta la carga o la distancia de inserción"
           >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '0.58rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '0.62rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Tensión del bíceps (M):</span>
-                <b style={{ color: '#0d6e64', fontFamily: 'JetBrains Mono, monospace' }}>{fMuscN.toFixed(0)} N</b>
+                <b style={{ color: C.teal, fontFamily: 'JetBrains Mono, monospace' }}>{fMuscN.toFixed(0)} N</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Equivalente masa:</span>
-                <b style={{ color: '#0d6e64', fontFamily: 'JetBrains Mono, monospace' }}>{fx(fMuscKgf, 1)} kgf</b>
+                <b style={{ color: C.teal, fontFamily: 'JetBrains Mono, monospace' }}>{fx(fMuscKgf, 1)} kgf</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Carga en mano:</span>
-                <b style={{ color: '#d97706', fontFamily: 'JetBrains Mono, monospace' }}>{handLoadKg} kg ({wHandN.toFixed(0)} N)</b>
+                <b style={{ color: C.amber, fontFamily: 'JetBrains Mono, monospace' }}>{handLoadKg} kg ({wHandN.toFixed(0)} N)</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Brazo del bíceps (d<sub>M</sub>):</span>
@@ -150,7 +151,7 @@ export default function Slide4({
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Compresión en el codo (R):</span>
-                <b style={{ color: '#dc2626', fontFamily: 'JetBrains Mono, monospace' }}>{rJointN.toFixed(0)} N ({fx((rJointN / 9.81), 1)} kgf)</b>
+                <b style={{ color: C.blood, fontFamily: 'JetBrains Mono, monospace' }}>{rJointN.toFixed(0)} N ({fx((rJointN / 9.81), 1)} kgf)</b>
               </div>
             </div>
           </HudPanel>
@@ -177,11 +178,11 @@ export default function Slide4({
                     onClick={() => setPreset('standard')}
                     style={{
                       background: isStd ? 'var(--teal)' : 'var(--paper-2)',
-                      color: isStd ? '#fff' : 'var(--ink)',
+                      color: isStd ? C.card : 'var(--ink)',
                       border: `1px solid ${isStd ? 'var(--teal)' : 'var(--line)'}`,
                       borderRadius: '3px',
                       padding: '2px 6px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: isStd ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -194,11 +195,11 @@ export default function Slide4({
                     onClick={() => setPreset('extension')}
                     style={{
                       background: isExt ? 'var(--teal)' : 'var(--paper-2)',
-                      color: isExt ? '#fff' : 'var(--ink)',
+                      color: isExt ? C.card : 'var(--ink)',
                       border: `1px solid ${isExt ? 'var(--teal)' : 'var(--line)'}`,
                       borderRadius: '3px',
                       padding: '2px 6px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: isExt ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -211,11 +212,11 @@ export default function Slide4({
                     onClick={() => setPreset('heavy')}
                     style={{
                       background: isHeavy ? 'var(--teal)' : 'var(--paper-2)',
-                      color: isHeavy ? '#fff' : 'var(--ink)',
+                      color: isHeavy ? C.card : 'var(--ink)',
                       border: `1px solid ${isHeavy ? 'var(--teal)' : 'var(--line)'}`,
                       borderRadius: '3px',
                       padding: '2px 6px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: isHeavy ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -228,11 +229,11 @@ export default function Slide4({
                     onClick={() => setPreset('leverage')}
                     style={{
                       background: isLev ? 'var(--teal)' : 'var(--paper-2)',
-                      color: isLev ? '#fff' : 'var(--ink)',
+                      color: isLev ? C.card : 'var(--ink)',
                       border: `1px solid ${isLev ? 'var(--teal)' : 'var(--line)'}`,
                       borderRadius: '3px',
                       padding: '2px 6px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: isLev ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -244,7 +245,7 @@ export default function Slide4({
               );
             })()}
 
-            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', fontSize: '0.60rem', marginLeft: 'auto', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '0.62rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto', flexWrap: 'wrap' }}>
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
                 <span>Carga:</span>
                 <input
@@ -295,7 +296,7 @@ export default function Slide4({
                   border: '1px solid var(--line)',
                   borderRadius: '4px',
                   padding: '2px 7px',
-                  fontSize: '0.60rem',
+                  fontSize: '0.62rem',
                   cursor: 'pointer',
                   color: 'var(--ink)',
                 }}

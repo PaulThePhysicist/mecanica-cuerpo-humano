@@ -1,4 +1,5 @@
 import React, { Suspense, useMemo, useRef } from 'react';
+import { C, ca } from './palette';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, ContactShadows, Line, useGLTF } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
@@ -29,13 +30,13 @@ interface CaneCanvasProps {
 // ── Colores y Paleta Anatómica de Grado Médico ──
 const BONE_IVORY = '#ede5d0';
 const CARTILAGE_ICE = '#68c5b8';
-const MUSCLE_CARMINE = '#a92a1e';
+const MUSCLE_CARMINE = C.blood;
 const MUSCLE_RELAXED = '#ce7b74';
 const TENDON_PEARL = '#f5f0e6';
-const TEAL_ACCENT = '#0d6e64';
-const AMBER_ACCENT = '#d97706';
-const RED_ACCENT = '#b02318';
-const CANE_TEAL = '#0d8577';
+const TEAL_ACCENT = C.teal;
+const AMBER_ACCENT = C.amber;
+const RED_ACCENT = C.blood;
+const CANE_TEAL = C.teal;
 
 // Pivot anatómico de la cabeza femoral derecha
 const P_HIP_R = new THREE.Vector3(-0.039, 0.002, -0.003);
@@ -44,7 +45,7 @@ const P_HIP_R = new THREE.Vector3(-0.039, 0.002, -0.003);
 function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [1, 0, 0] as [number, number, number],
-  color = '#0d6e64',
+  color = C.teal,
   label,
   sub,
   emphasis,
@@ -250,18 +251,18 @@ function ReliefGauge({
   return (
     <div
       style={{
-        background: 'rgba(255, 255, 255, 0.95)',
+        background: ca(C.card, 0.95),
         backdropFilter: 'blur(8px)',
-        border: `1.5px solid ${isOptimal ? '#0d6e64' : (caneHand === 'ipsi' ? '#d97706' : '#cbd5e1')}`,
+        border: `1.5px solid ${isOptimal ? '${C.teal}' : (caneHand === 'ipsi' ? '${C.amber}' : '${C.line}')}`,
         borderRadius: '10px',
         padding: '10px 14px',
-        boxShadow: '0 6px 20px rgba(35, 44, 54, 0.14)',
+        boxShadow: `0 6px 20px ${ca(C.ink, 0.14)}`,
         minWidth: '165px',
         textAlign: 'center',
         pointerEvents: 'none',
       }}
     >
-      <div style={{ fontSize: '0.60rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+      <div style={{ fontSize: '0.62rem', fontWeight: 700, color: C.ink3, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
         {caneHand === 'contra' ? 'Bastón contralateral' : (caneHand === 'ipsi' ? 'Bastón del mismo lado' : 'Sin bastón')}
       </div>
 
@@ -271,7 +272,7 @@ function ReliefGauge({
         <path
           d="M 15 65 A 45 45 0 0 1 105 65"
           fill="none"
-          stroke="#e2e8f0"
+          stroke={C.lineSoft}
           strokeWidth="8"
           strokeLinecap="round"
         />
@@ -279,7 +280,7 @@ function ReliefGauge({
         <path
           d="M 15 65 A 45 45 0 0 1 105 65"
           fill="none"
-          stroke="#2e8b57"
+          stroke={C.coronal}
           strokeWidth="8"
           strokeDasharray="4 2"
           opacity={0.3}
@@ -289,7 +290,7 @@ function ReliefGauge({
         <path
           d="M 15 65 A 45 45 0 0 1 105 65"
           fill="none"
-          stroke={isOptimal ? '#2e8b57' : (caneHand === 'ipsi' ? '#d97706' : '#94a3b8')}
+          stroke={isOptimal ? C.coronal : (caneHand === 'ipsi' ? C.amber : C.ink3)}
           strokeWidth="8"
           strokeDasharray="141.37"
           strokeDashoffset={141.37 * (1 - normVal)}
@@ -299,30 +300,30 @@ function ReliefGauge({
 
         {/* Aguja indicadora analógica */}
         <g transform={`rotate(${needleAngle} 60 65)`} style={{ transition: 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)' }}>
-          <line x1="60" y1="65" x2="60" y2="25" stroke="#1e293b" strokeWidth="2.5" strokeLinecap="round" />
-          <circle cx="60" cy="65" r="4.5" fill="#1e293b" />
-          <circle cx="60" cy="65" r="2" fill="#ffffff" />
+          <line x1="60" y1="65" x2="60" y2="25" stroke={C.ink} strokeWidth="2.5" strokeLinecap="round" />
+          <circle cx="60" cy="65" r="4.5" fill={C.ink} />
+          <circle cx="60" cy="65" r="2" fill={C.card} />
         </g>
 
         {/* Etiquetas de escala */}
-        <text x="12" y="72" fontSize="7" fill="#64748b" fontFamily="JetBrains Mono, monospace">0 %</text>
-        <text x="54" y="16" fontSize="7" fill="#64748b" fontFamily="JetBrains Mono, monospace">30 %</text>
-        <text x="94" y="72" fontSize="7" fill="#64748b" fontFamily="JetBrains Mono, monospace">60 %</text>
+        <text x="12" y="72" fontSize="12" fill={C.ink3} fontFamily="JetBrains Mono, monospace">0 %</text>
+        <text x="54" y="16" fontSize="12" fill={C.ink3} fontFamily="JetBrains Mono, monospace">30 %</text>
+        <text x="94" y="72" fontSize="12" fill={C.ink3} fontFamily="JetBrains Mono, monospace">60 %</text>
       </svg>
 
       {/* Lectura grande de alivio */}
-      <div style={{ fontSize: '1.3rem', fontWeight: 800, color: isOptimal ? '#2e8b57' : '#0d6e64', fontFamily: 'JetBrains Mono, monospace', margin: '2px 0 0' }}>
+      <div style={{ fontSize: '1.3rem', fontWeight: 800, color: isOptimal ? C.coronal : C.teal, fontFamily: 'JetBrains Mono, monospace', margin: '2px 0 0' }}>
         {fx(rJointN)} N
       </div>
-      <div style={{ fontSize: '0.68rem', fontWeight: 700, color: isOptimal ? '#2e8b57' : '#b02318' }}>
+      <div style={{ fontSize: '0.68rem', fontWeight: 700, color: isOptimal ? C.coronal : C.blood }}>
         {caneHand === 'none' ? 'Sin bastón' : `R ${reliefPct >= 0 ? '−' : '+'}${fx(Math.abs(reliefPct))} % frente a sin bastón`}
       </div>
 
       {/* Barra de progreso comparativa */}
-      <div style={{ background: '#e2e8f0', borderRadius: '4px', height: '6px', width: '100%', margin: '6px 0 4px', overflow: 'hidden' }}>
+      <div style={{ background: C.lineSoft, borderRadius: '4px', height: '6px', width: '100%', margin: '6px 0 4px', overflow: 'hidden' }}>
         <div
           style={{
-            background: isOptimal ? '#2e8b57' : (caneHand === 'ipsi' ? '#d97706' : '#b02318'),
+            background: isOptimal ? C.coronal : (caneHand === 'ipsi' ? C.amber : C.blood),
             height: '100%',
             width: `${Math.min(100, (rJointN / rBaseN) * 100)}%`,
             transition: 'width 0.25s ease',
@@ -330,7 +331,7 @@ function ReliefGauge({
         />
       </div>
 
-      <div style={{ fontSize: '0.54rem', color: '#64748b' }}>
+      <div style={{ fontSize: '0.62rem', color: C.ink3 }}>
         Sin bastón: <b>{fx(rBaseN)} N</b> · Con bastón: <b>{fx(rJointN)} N</b>
       </div>
     </div>
@@ -607,15 +608,15 @@ export default function CaneCanvas({
           top: '12px',
           right: '12px',
           zIndex: 10,
-          background: 'rgba(255, 255, 255, 0.92)',
-          border: '1px solid var(--line, #cbd5e1)',
+          background: ca(C.card, 0.92),
+          border: `1px solid var(--line, ${C.line})`,
           borderRadius: '6px',
           padding: '4px 9px',
           fontSize: '0.62rem',
           fontWeight: 600,
-          color: 'var(--ink, #232c36)',
+          color: `var(--ink, ${C.ink})`,
           cursor: 'pointer',
-          boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
+          boxShadow: `0 2px 6px ${ca(C.ink, 0.06)}`,
           backdropFilter: 'blur(4px)',
         }}
       >
@@ -669,7 +670,6 @@ export default function CaneCanvas({
           right: '10px',
           bottom: '10px',
           zIndex: 9,
-          transform: 'scale(0.72)',
           transformOrigin: 'bottom right',
           pointerEvents: 'none',
         }}

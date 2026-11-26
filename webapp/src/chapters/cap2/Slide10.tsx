@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { C, ca } from './palette';
 import DiscPressureCanvas from './DiscPressureCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
@@ -105,7 +106,7 @@ export default function Slide10({
               <p style={{ fontSize: '.64rem', color: 'var(--ink-3)' }}>
                 {'El disco protuberante (hernia discal) puede presionar la raíz nerviosa (Fig. 2.37b). Erguido ya soporta $0{,}6\\,W_b$ ($530\\text{ N}$), así que la carga pasa de $530$ a $2400\\text{ N}$; además no es uniforme: inclinarse hacia adelante comprime la parte anterior, tensa la posterior y empuja el núcleo hacia atrás (Fig. 2.43).'}
               </p>
-              <div style={{ marginTop: '.4rem' }}>
+              <div style={{ marginTop: '0.62rem' }}>
                 <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
                   <b>Rotular el disco y la compresión</b>
                 </TheoryToggle>
@@ -148,14 +149,14 @@ export default function Slide10({
                           {item.name}
                         </b>
                       </div>
-                      <span style={{ fontSize: '.58rem', fontFamily: 'JetBrains Mono, monospace', color: isCurved ? '#b02318' : 'var(--teal-deep)', fontWeight: 'bold' }}>
+                      <span style={{ fontSize: '0.62rem', fontFamily: 'JetBrains Mono, monospace', color: isCurved ? C.blood : 'var(--teal-deep)', fontWeight: 'bold' }}>
                         {item.mult} %
                       </span>
                     </button>
                   );
                 })}
               </div>
-              <details style={{ marginTop: '.35rem' }}>
+              <details style={{ marginTop: '0.62rem' }}>
                 <summary style={{ fontSize: '.64rem', cursor: 'pointer', color: 'var(--teal-deep)' }}>Tabla 2.4 completa</summary>
                 <table className="data-mini">
                   <thead><tr><th>Posición o actividad</th><th>%</th></tr></thead>
@@ -186,7 +187,7 @@ export default function Slide10({
                   </tbody>
                 </table>
               </details>
-              <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '.3rem' }}>
+              <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '0.62rem' }}>
                 Acostado, la carga lumbar es del 20 al 50 % de la de pie; al caminar rápido supera el doble del peso corporal (Fig. 2.44). Consejos del libro: estirar la espalda, doblar siempre las rodillas al levantar, mantener la curvatura lumbar (soporte lumbar o toalla enrollada), dormir boca arriba con rodillas dobladas o en posición fetal, nunca boca abajo.
               </p>
             </div>
@@ -210,13 +211,13 @@ export default function Slide10({
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.62rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Presión L5-S1:</span>
-                <b style={{ color: isCritical ? '#b02318' : '#0d6e64', fontFamily: 'JetBrains Mono, monospace' }}>
+                <b style={{ color: isCritical ? C.blood : C.teal, fontFamily: 'JetBrains Mono, monospace' }}>
                   {fx(totalP, 2)} MPa ({fx(totalPBar, 1)} bar)
                 </b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Estado Discal:</span>
-                <b style={{ color: isCritical ? '#b02318' : '#0d6e64' }}>
+                <b style={{ color: isCritical ? C.blood : C.teal }}>
                   {isCritical ? 'Carga muy alta' : (totalP > 1.0 ? 'Carga elevada' : 'Carga baja')}
                 </b>
               </div>
@@ -239,7 +240,7 @@ export default function Slide10({
             <span className="badge">§2.3.4 · Disco</span>
             <span>P ≈ <b style={{ color: isCritical ? 'var(--blood)' : 'var(--teal)' }}>{fx(totalP, 2)} MPa</b> ({curDetail.mult} %)</span>
 
-            <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>
+            <div style={{ display: 'flex', gap: '0.62rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>
               <button
                 type="button"
                 onClick={handleReset}

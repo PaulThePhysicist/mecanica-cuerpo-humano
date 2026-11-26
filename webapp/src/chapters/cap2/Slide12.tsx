@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { C, ca } from './palette';
 import { fx } from './ab';
 import JointTractionCanvas from './JointTractionCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
@@ -114,7 +115,7 @@ export default function Slide12({
                 {'Un ángulo $\\beta \\approx 20^\\circ\\text{--}25^\\circ$ maximiza la separación de los agujeros de conjunción neurales ($\\Delta h \\approx 1\\text{--}2\\text{ mm}$) sin sobrecargar los ligamentos longitudinales.'}
               </p>
             
-              <div style={{ marginTop: '.4rem' }}>
+              <div style={{ marginTop: '0.62rem' }}>
                 <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
                   <b>Rotular T y sus componentes</b>
                 </TheoryToggle>
@@ -153,23 +154,23 @@ export default function Slide12({
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.62rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Tensión Cable (T):</span>
-                <b style={{ color: '#0d8577', fontFamily: 'JetBrains Mono, monospace' }}>{tN.toFixed(0)} N ({tractionKg} kg)</b>
+                <b style={{ color: C.teal, fontFamily: 'JetBrains Mono, monospace' }}>{tN.toFixed(0)} N ({tractionKg} kg)</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Descompresión Axial:</span>
-                <b style={{ color: '#059669', fontFamily: 'JetBrains Mono, monospace' }}>{fAxialN.toFixed(0)} N</b>
+                <b style={{ color: C.coronal, fontFamily: 'JetBrains Mono, monospace' }}>{fAxialN.toFixed(0)} N</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Flexión Transversal:</span>
-                <b style={{ color: '#d97706', fontFamily: 'JetBrains Mono, monospace' }}>{fTransN.toFixed(0)} N</b>
+                <b style={{ color: C.amber, fontFamily: 'JetBrains Mono, monospace' }}>{fTransN.toFixed(0)} N</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Apertura Discal (Δh):</span>
-                <b style={{ color: '#059669', fontFamily: 'JetBrains Mono, monospace' }}>+{fx(deltaH_mm, 2)} mm</b>
+                <b style={{ color: C.coronal, fontFamily: 'JetBrains Mono, monospace' }}>+{fx(deltaH_mm, 2)} mm</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Ángulo de Tiro (β):</span>
-                <b style={{ color: '#2563eb', fontFamily: 'JetBrains Mono, monospace' }}>{angleDeg}°</b>
+                <b style={{ color: C.series3, fontFamily: 'JetBrains Mono, monospace' }}>{angleDeg}°</b>
               </div>
             </div>
           </HudPanel>
@@ -181,9 +182,9 @@ export default function Slide12({
           />
           <div className="prof-controls">
             <span className="badge">Complementario · Tracción</span>
-            <span>T = <b style={{ color: '#0d8577' }}>{tN.toFixed(0)} N</b> · F<sub>axial</sub> = {fAxialN.toFixed(0)} N</span>
+            <span>T = <b style={{ color: C.teal }}>{tN.toFixed(0)} N</b> · F<sub>axial</sub> = {fAxialN.toFixed(0)} N</span>
 
-            <div style={{ display: 'flex', gap: '0.45rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>
+            <div style={{ display: 'flex', gap: '0.62rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>
               {/* Presets de dosimetría */}
               <div style={{ display: 'inline-flex', gap: '2px', border: '1px solid var(--line)', borderRadius: '4px', padding: '1px', background: 'var(--paper-2)' }}>
                 {TRACTION_PRESETS.map((p) => (
@@ -193,11 +194,11 @@ export default function Slide12({
                     onClick={() => handleSelectPreset(p)}
                     style={{
                       background: activePresetId === p.id ? 'var(--teal)' : 'transparent',
-                      color: activePresetId === p.id ? '#fff' : 'var(--ink)',
+                      color: activePresetId === p.id ? C.card : 'var(--ink)',
                       border: 'none',
                       borderRadius: '3px',
                       padding: '3px 6px',
-                      fontSize: '0.56rem',
+                      fontSize: '0.62rem',
                       fontWeight: activePresetId === p.id ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',

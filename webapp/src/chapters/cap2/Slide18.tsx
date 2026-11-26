@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { C, ca } from './palette';
 import BiomechSummaryCanvas from './BiomechSummaryCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
@@ -99,19 +100,19 @@ export default function Slide18({
             <div className="card-body">
               <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '.62rem' }}>
                 <span className="pill has-marker">
-                  <span className="pill-dot" style={{ background: '#0d8577' }} />
+                  <span className="pill-dot" style={{ background: C.teal }} />
                   <span><b>1. Palancas:</b> {'el equilibrio de fuerzas y torques ($\\Sigma \\vec{F} = 0$, $\\Sigma \\vec{\\tau} = 0$) a menudo se analiza como una palanca, como en el antebrazo.'}</span>
                 </span>
                 <span className="pill has-marker">
-                  <span className="pill-dot" style={{ background: '#2563eb' }} />
+                  <span className="pill-dot" style={{ background: C.series3 }} />
                   <span><b>2. Todo y parte:</b> el equilibrio de una parte del cuerpo se estudia con las fuerzas de gravedad, músculos y reacciones sobre el cuerpo entero y sobre esa parte por separado.</span>
                 </span>
                 <span className="pill has-marker">
-                  <span className="pill-dot" style={{ background: '#b02318' }} />
+                  <span className="pill-dot" style={{ background: C.blood }} />
                   <span><b>3. Fuerzas internas enormes:</b> {'las fuerzas musculares y de reacción superan el peso corporal: cadera $R \\approx 2{,}4\\,W_b$, quinta lumbar $R \\approx 2{,}7\\,W_b$ (y $4{,}1\\,W_b$ levantando $0{,}2\\,W_b$).'}</span>
                 </span>
                 <span className="pill has-marker">
-                  <span className="pill-dot" style={{ background: '#d97706' }} />
+                  <span className="pill-dot" style={{ background: C.amber }} />
                   <span><b>4. Consecuencias:</b> {'por eso la cadera y la parte baja de la espalda dan problemas; un bastón contralateral casi divide por dos $R$ y se debe levantar peso con las piernas.'}</span>
                 </span>
               </div>
@@ -131,21 +132,21 @@ export default function Slide18({
                     style={{
                       padding: '3px 6px',
                       borderRadius: '4px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       background: selectedNode === btn.id ? 'var(--teal)' : 'var(--paper-2)',
-                      color: selectedNode === btn.id ? '#fff' : 'var(--ink)',
+                      color: selectedNode === btn.id ? C.card : 'var(--ink)',
                       border: '1px solid var(--line)',
                       cursor: 'pointer',
                       fontWeight: selectedNode === btn.id ? 700 : 500,
                       transition: 'all 0.15s ease',
                     }}
                   >
-                    {btn.label} <span style={{ opacity: 0.8, fontSize: '0.52rem' }}>({btn.badge})</span>
+                    {btn.label} <span style={{ opacity: 0.8, fontSize: '0.62rem' }}>({btn.badge})</span>
                   </button>
                 ))}
               </div>
             
-              <div style={{ marginTop: '.4rem' }}>
+              <div style={{ marginTop: '0.62rem' }}>
                 <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
                   <b>Rotular la articulación elegida</b>
                 </TheoryToggle>
@@ -175,15 +176,15 @@ export default function Slide18({
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Condición Estática:</span>
-                <b style={{ color: '#0d6e64', fontFamily: 'JetBrains Mono, monospace' }}>ΣF = 0, Στ = 0</b>
+                <b style={{ color: C.teal, fontFamily: 'JetBrains Mono, monospace' }}>ΣF = 0, Στ = 0</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Mapeo Corporal:</span>
-                <b style={{ color: '#0d8577' }}>7 Palancas Clave</b>
+                <b style={{ color: C.teal }}>7 Palancas Clave</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Ventaja Mecánica:</span>
-                <b style={{ color: '#b02318' }}>
+                <b style={{ color: C.blood }}>
                   {selectedNode === 'ankle' || selectedNode === 'jaw' ? 'Fuerza (VM > 1)' : 'Velocidad (VM < 1)'}
                 </b>
               </div>
@@ -198,8 +199,8 @@ export default function Slide18({
             <span className="badge">§2.6 · Resumen</span>
             <span>Nódulo: <b style={{ color: 'var(--teal-deep)' }}>{selectedNode.toUpperCase()}</b></span>
 
-            <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto', flexWrap: 'wrap' }}>
-              <div style={{ display: 'inline-flex', gap: '2px', border: '1px solid var(--line)', borderRadius: '4px', padding: '1px', background: 'rgba(255,255,255,0.6)' }}>
+            <div style={{ display: 'flex', gap: '0.62rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto', flexWrap: 'wrap' }}>
+              <div style={{ display: 'inline-flex', gap: '2px', border: '1px solid var(--line)', borderRadius: '4px', padding: '1px', background: ca(C.card, 0.6) }}>
                 {NODE_BUTTONS.map((b) => (
                   <button
                     key={b.id}
@@ -207,11 +208,11 @@ export default function Slide18({
                     onClick={() => handleSelectNode(b.id)}
                     style={{
                       background: selectedNode === b.id ? 'var(--teal)' : 'transparent',
-                      color: selectedNode === b.id ? '#fff' : 'var(--ink)',
+                      color: selectedNode === b.id ? C.card : 'var(--ink)',
                       border: 'none',
                       borderRadius: '3px',
                       padding: '2px 5px',
-                      fontSize: '0.56rem',
+                      fontSize: '0.62rem',
                       fontWeight: selectedNode === b.id ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { C, ca } from './palette';
 import BodySegmentsCanvas from './BodySegmentsCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
@@ -104,7 +105,7 @@ export default function Slide13({
                 {'Donde $M = \\sum m_i$ es la masa corporal total y los coeficientes $m_i$ provienen de los estándares antropométricos cadavéricos de Dempster (7 segmentos principales).'}
               </p>
             
-              <div style={{ marginTop: '.4rem' }}>
+              <div style={{ marginTop: '0.62rem' }}>
                 <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
                   <b>Rotular el CG y la base de apoyo</b>
                 </TheoryToggle>
@@ -152,11 +153,11 @@ export default function Slide13({
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Modelo Antropométrico:</span>
-                <b style={{ color: '#0d6e64' }}>Dempster (7 Segm.)</b>
+                <b style={{ color: C.teal }}>Dempster (7 Segm.)</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Estado de Estabilidad:</span>
-                <b style={{ color: posture === 'bent_forward' ? '#f59e0b' : '#0d6e64' }}>
+                <b style={{ color: posture === 'bent_forward' ? C.amber : C.teal }}>
                   {posture === 'bent_forward' ? 'Límite Anterior (Alerta)' : 'Equilibrio Estable'}
                 </b>
               </div>
@@ -172,7 +173,7 @@ export default function Slide13({
             <span className="badge">§2.3.6 · Segmentos</span>
             <span>Postura: <b style={{ color: 'var(--teal-deep)' }}>{curOpt.name}</b></span>
 
-            <div style={{ display: 'flex', gap: '0.45rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>
+            <div style={{ display: 'flex', gap: '0.62rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>
               <div style={{ display: 'inline-flex', gap: '2px', border: '1px solid var(--line)', borderRadius: '4px', padding: '1px', background: 'var(--paper-2)' }}>
                 {POSTURES.map((p) => (
                   <button
@@ -181,11 +182,11 @@ export default function Slide13({
                     onClick={() => handleSelect(p.id)}
                     style={{
                       background: posture === p.id ? 'var(--teal)' : 'transparent',
-                      color: posture === p.id ? '#fff' : 'var(--ink)',
+                      color: posture === p.id ? C.card : 'var(--ink)',
                       border: 'none',
                       borderRadius: '3px',
                       padding: '3px 7px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: posture === p.id ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',

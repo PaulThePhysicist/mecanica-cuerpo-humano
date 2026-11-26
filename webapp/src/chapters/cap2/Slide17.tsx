@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { C, ca } from './palette';
 import { fx } from './ab';
 import UnitsConverterCanvas from './UnitsConverterCanvas';
 import HudPanel from './HudPanel';
@@ -56,12 +57,12 @@ export default function Slide17({
               <p style={{ fontSize: '.7rem' }}>
                 {'El trabajo técnico usa MKS-SI (newtons); gran parte del médico, en EE. UU., el sistema inglés (libras). Un kilogramo pesa $9{,}8\\text{ N}$ ($2{,}2\\text{ lb}$) por $F = mg$ (Ec. 2.47), con $g = 9{,}8\\text{ m/s}^2 = 980{,}7\\text{ cm/s}^2 = 32{,}2\\text{ ft/s}^2$. La masa inglesa es el slug (pesa $32{,}2\\text{ lb}$). «1 kg» usado como fuerza debe leerse $1\\text{ kg (fuerza)} = 9{,}8\\text{ N} \\approx 10\\text{ N}$.'}
               </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '.62rem', marginTop: '.25rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '.62rem', marginTop: '0.62rem' }}>
                 <button
                   type="button"
                   className="pill"
                   aria-pressed={quantityType === 'force'}
-                  style={{ borderLeft: '3px solid #0d8577', cursor: 'pointer' }}
+                  style={{ borderLeft: `3px solid ${C.teal}`, cursor: 'pointer' }}
                   onClick={() => handleSelectType('force')}
                 >
                   <b>Fuerza (Tabla 2.5):</b> {'$1\\text{ N} = 1\\text{ kg·m/s}^2 = 10^5\\text{ dinas} = 0{,}225\\text{ lb}$; $1\\text{ lb} = 4{,}45\\text{ N}$.'}
@@ -70,7 +71,7 @@ export default function Slide17({
                   type="button"
                   className="pill"
                   aria-pressed={quantityType === 'torque'}
-                  style={{ borderLeft: '3px solid #2563eb', cursor: 'pointer' }}
+                  style={{ borderLeft: `3px solid ${C.series3}`, cursor: 'pointer' }}
                   onClick={() => handleSelectType('torque')}
                 >
                   <b>Torque:</b> {'$1\\text{ kgf}\\cdot\\text{m} = 9{,}8\\text{ N}\\cdot\\text{m} \\approx 7{,}23\\text{ lb}\\cdot\\text{ft}$ (fuerza × distancia).'}
@@ -79,7 +80,7 @@ export default function Slide17({
                   type="button"
                   className="pill"
                   aria-pressed={quantityType === 'pressure'}
-                  style={{ borderLeft: '3px solid #b02318', cursor: 'pointer' }}
+                  style={{ borderLeft: `3px solid ${C.blood}`, cursor: 'pointer' }}
                   onClick={() => handleSelectType('pressure')}
                 >
                   <b>Presión (Tabla 2.6):</b> {'$1\\text{ MPa} = 1\\text{ N/mm}^2 = 145\\text{ psi} \\simeq 10\\text{ atm}$; $1\\text{ atm} = 1{,}013\\text{ bar} = 760\\text{ mmHg} = 1033\\text{ cmH}_2\\text{O}$; $1\\text{ mmHg} = 133\\text{ Pa}$.'}
@@ -119,17 +120,17 @@ export default function Slide17({
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Análisis Dimensional:</span>
-                <b style={{ color: '#0d6e64', fontFamily: 'JetBrains Mono, monospace' }}>{dimensionInfo.dim}</b>
+                <b style={{ color: C.teal, fontFamily: 'JetBrains Mono, monospace' }}>{dimensionInfo.dim}</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Valor SI Base:</span>
-                <b style={{ color: '#0d8577', fontFamily: 'JetBrains Mono, monospace' }}>
+                <b style={{ color: C.teal, fontFamily: 'JetBrains Mono, monospace' }}>
                   {quantityType === 'pressure' ? `${fx((inputValue / 1e6), 3)} MPa` : `${inputValue} ${quantityType === 'force' ? 'N' : 'N·m'}`}
                 </b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Equivalente Técnico:</span>
-                <b style={{ color: '#b02318', fontFamily: 'JetBrains Mono, monospace' }}>
+                <b style={{ color: C.blood, fontFamily: 'JetBrains Mono, monospace' }}>
                   {quantityType === 'force'
                     ? `${fx((inputValue / 9.80665), 1)} kgf`
                     : quantityType === 'torque'
@@ -149,8 +150,8 @@ export default function Slide17({
             <span className="badge">§2.5 · Unidades</span>
             <span>Tipo: <b style={{ color: 'var(--teal-deep)' }}>{quantityType.toUpperCase()}</b></span>
 
-            <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto', flexWrap: 'wrap' }}>
-              <div style={{ display: 'inline-flex', gap: '2px', border: '1px solid var(--line)', borderRadius: '4px', padding: '1px', background: 'rgba(255,255,255,0.6)' }}>
+            <div style={{ display: 'flex', gap: '0.62rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto', flexWrap: 'wrap' }}>
+              <div style={{ display: 'inline-flex', gap: '2px', border: '1px solid var(--line)', borderRadius: '4px', padding: '1px', background: ca(C.card, 0.6) }}>
                 {(['force', 'torque', 'pressure'] as const).map((t) => (
                   <button
                     key={t}
@@ -158,11 +159,11 @@ export default function Slide17({
                     onClick={() => handleSelectType(t)}
                     style={{
                       background: quantityType === t ? 'var(--teal)' : 'transparent',
-                      color: quantityType === t ? '#fff' : 'var(--ink)',
+                      color: quantityType === t ? C.card : 'var(--ink)',
                       border: 'none',
                       borderRadius: '3px',
                       padding: '2px 7px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: quantityType === t ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',

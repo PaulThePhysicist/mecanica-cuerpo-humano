@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { C, ca } from './palette';
 import { fx } from './ab';
 import { Line } from '@react-three/drei';
 import * as THREE from 'three';
@@ -39,10 +40,10 @@ export interface AnkleCanvasProps {
 
 const THETA = (45 * Math.PI) / 180; // ángulo del tendón de Aquiles con la horizontal
 
-const TEAL = '#0d6e64';
-const AMBER = '#d97706';
-const RED = '#b02318';
-const SLATE = '#43505c';
+const TEAL = C.teal;
+const AMBER = C.amber;
+const RED = C.blood;
+const SLATE = C.ink2;
 const TENDON_COLOR = '#e7dcc4';
 
 function ForceArrow({
@@ -246,7 +247,7 @@ function AnkleAnatomy({ betaDeg, bodyWeightN, showComponents }: AnkleCanvasProps
 
       {showComponents && (
         <>
-          <ForceArrow origin={ankP.toArray()} vector={[0, 0, rzN * S]} color="#0284c7" label={`Rt = ${Math.abs(rzN).toFixed(0)} N`} sub="cizalla" emphasis="muted" dashed />
+          <ForceArrow origin={ankP.toArray()} vector={[0, 0, rzN * S]} color={C.series3} label={`Rt = ${Math.abs(rzN).toFixed(0)} N`} sub="cizalla" emphasis="muted" dashed />
           <ForceArrow origin={[ankP.x, ankP.y, ankP.z + rzN * S]} vector={[0, ryN * S, 0]} color={TEAL} label={`Rn = ${Math.abs(ryN).toFixed(0)} N`} sub="compresión" emphasis="muted" dashed />
         </>
       )}

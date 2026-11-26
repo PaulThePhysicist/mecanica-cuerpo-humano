@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
+import { C, ca } from './palette';
 import { fx, fexp } from './ab';
 import { readCap2Tokens, tokenRgba } from './designTokens';
 import CanvasReserveState from './CanvasReserveState';
@@ -203,7 +204,7 @@ export default function UnitsConverterCanvas({
         const isPrimary = idx === 0;
 
         ctx.save();
-        ctx.fillStyle = isPrimary ? tokenRgba(T.teal, 0.09) : 'rgba(255, 255, 255, 0.94)';
+        ctx.fillStyle = isPrimary ? tokenRgba(T.teal, 0.09) : ca(C.card, 0.94);
         ctx.shadowColor = tokenRgba(T.ink, 0.07);
         ctx.shadowBlur = 6;
         // E5-02: sin beginPath() el path de cada fila se acumulaba sobre el de
@@ -223,26 +224,26 @@ export default function UnitsConverterCanvas({
         const barPad = 8;
         const bW = tableW - barPad * 2;
         const bH = 3.2;
-        ctx.fillStyle = 'rgba(203, 213, 225, 0.45)';
+        ctx.fillStyle = ca(C.line, 0.45);
         ctx.fillRect(tableX + barPad, iy + itemH - 6.0, bW, bH);
 
         const fillW = Math.max(2, item.ratio * bW);
-        ctx.fillStyle = isPrimary ? T.teal : (item.ratio > 0.75 ? '#b02318' : (item.ratio > 0.4 ? '#d97706' : '#2563eb'));
+        ctx.fillStyle = isPrimary ? T.teal : (item.ratio > 0.75 ? C.blood : (item.ratio > 0.4 ? C.amber : C.series3));
         ctx.fillRect(tableX + barPad, iy + itemH - 6.0, fillW, bH);
 
         // Nombre de unidad
-        ctx.fillStyle = isPrimary ? T.teal : '#1e293b';
+        ctx.fillStyle = isPrimary ? T.teal : C.ink;
         ctx.font = 'bold 8px Karla, system-ui, sans-serif';
         ctx.textAlign = 'left';
         ctx.fillText(item.unit, tableX + 10, iy + itemH * 0.42);
 
         // Factor de conversión
-        ctx.fillStyle = '#64748b';
+        ctx.fillStyle = C.ink3;
         ctx.font = '6.8px Karla, system-ui, sans-serif';
         ctx.fillText(item.factor, tableX + 10, iy + itemH * 0.72);
 
         // Valor numérico convertido
-        ctx.fillStyle = isPrimary ? T.teal : '#b02318';
+        ctx.fillStyle = isPrimary ? T.teal : C.blood;
         ctx.font = 'bold 10.5px JetBrains Mono, monospace';
         ctx.textAlign = 'right';
         ctx.fillText(item.valStr, tableX + tableW - 10, iy + itemH * 0.54);
@@ -256,14 +257,14 @@ export default function UnitsConverterCanvas({
 
       ctx.save();
       // Fondo del dial
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.96)';
+      ctx.fillStyle = ca(C.card, 0.96);
       ctx.shadowColor = tokenRgba(T.ink, 0.10);
       ctx.shadowBlur = 8;
       ctx.beginPath();
       ctx.arc(dialX, dialY, dialR + 11, 0, Math.PI * 2);
       ctx.fill();
       ctx.shadowBlur = 0;
-      ctx.strokeStyle = '#cbd5e1';
+      ctx.strokeStyle = C.line;
       ctx.lineWidth = 1.4;
       ctx.stroke();
 
@@ -273,20 +274,20 @@ export default function UnitsConverterCanvas({
       const totalAngle = endAngle - startAngle;
 
       // Sector Verde (Fisiológico 0 - 50%)
-      ctx.strokeStyle = '#10b981';
+      ctx.strokeStyle = C.coronal;
       ctx.lineWidth = 5.5;
       ctx.beginPath();
       ctx.arc(dialX, dialY, dialR, startAngle, startAngle + totalAngle * 0.50);
       ctx.stroke();
 
       // Sector Ámbar (Esfuerzo 50 - 80%)
-      ctx.strokeStyle = '#f59e0b';
+      ctx.strokeStyle = C.amber;
       ctx.beginPath();
       ctx.arc(dialX, dialY, dialR, startAngle + totalAngle * 0.50, startAngle + totalAngle * 0.80);
       ctx.stroke();
 
       // Sector Rojo (Fallo tisular 80 - 100%)
-      ctx.strokeStyle = '#ef4444';
+      ctx.strokeStyle = C.blood;
       ctx.beginPath();
       ctx.arc(dialX, dialY, dialR, startAngle + totalAngle * 0.80, endAngle);
       ctx.stroke();
@@ -297,7 +298,7 @@ export default function UnitsConverterCanvas({
         const isMajor = i % 2 === 0;
         const r1 = dialR - 5;
         const r2 = dialR - (isMajor ? 11 : 8);
-        ctx.strokeStyle = '#64748b';
+        ctx.strokeStyle = C.ink3;
         ctx.lineWidth = isMajor ? 1.3 : 0.7;
         ctx.beginPath();
         ctx.moveTo(dialX + Math.cos(a) * r1, dialY + Math.sin(a) * r1);
@@ -312,7 +313,7 @@ export default function UnitsConverterCanvas({
       ctx.rotate(needleAngle);
 
       // Sombra aguja
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.18)';
+      ctx.fillStyle = ca(C.ink, 0.18);
       ctx.beginPath();
       ctx.moveTo(-2.5, 2.5);
       ctx.lineTo(dialR - 7, 1.5);
@@ -320,7 +321,7 @@ export default function UnitsConverterCanvas({
       ctx.fill();
 
       // Aguja de precisión
-      ctx.fillStyle = '#b02318';
+      ctx.fillStyle = C.blood;
       ctx.beginPath();
       ctx.moveTo(-3.5, 0);
       ctx.lineTo(-1.8, 2.5);
@@ -330,18 +331,18 @@ export default function UnitsConverterCanvas({
       ctx.fill();
 
       // Centro pivote
-      ctx.fillStyle = '#0f172a';
+      ctx.fillStyle = C.ink;
       ctx.beginPath();
       ctx.arc(0, 0, 4.5, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = '#ffffff';
+      ctx.fillStyle = C.card;
       ctx.beginPath();
       ctx.arc(0, 0, 1.8, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
 
       // Rótulo central digital en el dial
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.96)';
+      ctx.fillStyle = ca(C.card, 0.96);
       ctx.strokeStyle = T.teal;
       ctx.lineWidth = 0.9;
       const dW = 76;
@@ -369,7 +370,7 @@ export default function UnitsConverterCanvas({
       const refH = H * 0.40;
 
       ctx.save();
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.96)';
+      ctx.fillStyle = ca(C.card, 0.96);
       ctx.shadowColor = tokenRgba(T.ink, 0.08);
       ctx.shadowBlur = 7;
       ctx.roundRect(refX, refY, refW, refH, 6);
@@ -399,12 +400,12 @@ export default function UnitsConverterCanvas({
         }
 
         // Punto de estado de zona
-        ctx.fillStyle = r.zone === 'danger' ? '#ef4444' : (r.zone === 'caution' ? '#f59e0b' : '#10b981');
+        ctx.fillStyle = r.zone === 'danger' ? C.blood : (r.zone === 'caution' ? C.amber : C.coronal);
         ctx.beginPath();
         ctx.arc(refX + 10, ry + 7, 3.2, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.fillStyle = '#1e293b';
+        ctx.fillStyle = C.ink;
         ctx.font = 'bold 7.2px Karla, system-ui, sans-serif';
         ctx.textAlign = 'left';
         ctx.fillText(r.name, refX + 18, ry + 6.5);
@@ -414,7 +415,7 @@ export default function UnitsConverterCanvas({
         ctx.textAlign = 'right';
         ctx.fillText(`${r.siValue} ${r.unitSi}`, refX + refW - 6, ry + 6.5);
 
-        ctx.fillStyle = '#64748b';
+        ctx.fillStyle = C.ink3;
         ctx.font = '6.2px Karla, system-ui, sans-serif';
         ctx.textAlign = 'left';
         ctx.fillText(`≈ ${r.altValue} · ${r.note}`, refX + 18, ry + 15);

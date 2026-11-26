@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { C, ca } from './palette';
 import MultiMuscleCanvas from './MultiMuscleCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
@@ -68,7 +69,7 @@ export default function Slide5({
                   <tr><td>Braquiorradial (3)</td><td>7,5</td><td>1,5</td></tr>
                 </tbody>
               </table>
-              <div style={{ marginTop: '.4rem' }}>
+              <div style={{ marginTop: '0.62rem' }}>
                 <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
                   <b>Rotular los tres flexores</b>
                 </TheoryToggle>
@@ -107,7 +108,7 @@ export default function Slide5({
             badge={activeMuscleCount === 3 ? '3 FLEXORES · MISMA k' : 'BÍCEPS SOLO'}
             footer="💡 Alterna entre bíceps solo y tres flexores: compara 696 N con 262 + 399 + 85 N"
           >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '0.58rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '0.62rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
                 <span style={{ color: 'var(--coronal)' }}>Braquial M₂ (3,4 cm):</span>
                 <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>{fBrachN.toFixed(0)} N</b>
@@ -147,11 +148,11 @@ export default function Slide5({
                     onClick={() => setPreset('light')}
                     style={{
                       background: isLight ? 'var(--teal)' : 'var(--paper-2)',
-                      color: isLight ? '#fff' : 'var(--ink)',
+                      color: isLight ? C.card : 'var(--ink)',
                       border: `1px solid ${isLight ? 'var(--teal)' : 'var(--line)'}`,
                       borderRadius: '3px',
                       padding: '2px 6px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: isLight ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -164,11 +165,11 @@ export default function Slide5({
                     onClick={() => setPreset('moderate')}
                     style={{
                       background: isMod ? 'var(--teal)' : 'var(--paper-2)',
-                      color: isMod ? '#fff' : 'var(--ink)',
+                      color: isMod ? C.card : 'var(--ink)',
                       border: `1px solid ${isMod ? 'var(--teal)' : 'var(--line)'}`,
                       borderRadius: '3px',
                       padding: '2px 6px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: isMod ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -181,11 +182,11 @@ export default function Slide5({
                     onClick={() => setPreset('heavy')}
                     style={{
                       background: isHeavy ? 'var(--teal)' : 'var(--paper-2)',
-                      color: isHeavy ? '#fff' : 'var(--ink)',
+                      color: isHeavy ? C.card : 'var(--ink)',
                       border: `1px solid ${isHeavy ? 'var(--teal)' : 'var(--line)'}`,
                       borderRadius: '3px',
                       padding: '2px 6px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: isHeavy ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -197,7 +198,7 @@ export default function Slide5({
               );
             })()}
 
-            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', fontSize: '0.60rem', marginLeft: 'auto', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '0.62rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto', flexWrap: 'wrap' }}>
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
                 <span>Carga:</span>
                 <input
@@ -216,12 +217,12 @@ export default function Slide5({
                 type="button"
                 onClick={() => setActiveMuscleCount(activeMuscleCount === 3 ? 1 : 3)}
                 style={{
-                  background: activeMuscleCount === 3 ? 'var(--teal)' : '#dc2626',
-                  color: '#fff',
+                  background: activeMuscleCount === 3 ? 'var(--teal)' : C.blood,
+                  color: C.card,
                   border: '1px solid var(--line)',
                   borderRadius: '3px',
                   padding: '2px 8px',
-                  fontSize: '0.58rem',
+                  fontSize: '0.62rem',
                   cursor: 'pointer',
                   fontWeight: 600,
                 }}
@@ -237,7 +238,7 @@ export default function Slide5({
                   border: '1px solid var(--line)',
                   borderRadius: '4px',
                   padding: '2px 7px',
-                  fontSize: '0.60rem',
+                  fontSize: '0.62rem',
                   cursor: 'pointer',
                   color: 'var(--ink)',
                 }}

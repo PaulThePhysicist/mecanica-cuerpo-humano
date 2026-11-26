@@ -236,7 +236,9 @@ export default function Capitulo2({ onBack }: { onBack?: () => void }) {
       b.dataset.module = String(m.id);
       const name = m.name.replace(/^[A-Z] · /, '');
       const letter = String.fromCharCode(64 + m.id);
-      b.innerHTML = `<span class="mod-badge">${letter}</span>${m.ico} ${name}`;
+      b.innerHTML = `<span class="mod-badge">${letter}</span><span class="mod-ico" aria-hidden="true">${m.ico}</span><span class="mod-name">${name}</span>`;
+      b.title = `${letter} · ${name}`;
+      b.setAttribute('aria-label', `Módulo ${letter}: ${name}`);
       b.addEventListener('click', () => goModule(m.id));
       host.appendChild(b);
     });
@@ -263,8 +265,20 @@ export default function Capitulo2({ onBack }: { onBack?: () => void }) {
         toggle.setAttribute('aria-label', 'Ocultar controles de la visualización');
         toggle.setAttribute('aria-expanded', 'true');
 
+        // Área segura (P2): el alto del panel abierto se publica en la .sim-area
+        // para que el lienzo se componga por encima y no tape ejes ni pies.
+        const area = panel.closest<HTMLElement>('.sim-area');
+        const publishSafeArea = () => {
+          if (!area) return;
+          const open = !panel.classList.contains('is-collapsed');
+          const h = open ? Math.ceil(panel.getBoundingClientRect().height + 10) : 0;
+          area.style.setProperty('--cap2-safe-bottom', `${h}px`);
+        };
+        if (typeof ResizeObserver !== 'undefined') new ResizeObserver(publishSafeArea).observe(panel);
+
         const update = (collapsed: boolean) => {
           panel.classList.toggle('is-collapsed', collapsed);
+          requestAnimationFrame(publishSafeArea);
           toggle.textContent = collapsed ? '⚙' : '×';
           toggle.title = collapsed ? 'Mostrar controles de la visualización' : 'Ocultar controles de la visualización';
           toggle.setAttribute('aria-label', toggle.title);
@@ -330,7 +344,7 @@ export default function Capitulo2({ onBack }: { onBack?: () => void }) {
       <canvas id="c2-dust" aria-hidden="true" style={{ position: 'fixed', inset: 0, width: '100%', height: '100%', zIndex: 0, pointerEvents: 'none', opacity: 0.5 }} />
 
       <nav className="module-bar" id="moduleBar" aria-label="Módulos del Capítulo 2">
-        {onBack && <button type="button" onClick={onBack} style={{marginRight: '1rem', cursor: 'pointer', padding: '0.5rem'}}>← Inicio</button>}
+        {onBack && <button type="button" onClick={onBack} style={{marginRight: '1rem', cursor: 'pointer', padding: '0.62rem'}}>← Inicio</button>}
         <div className="brand-mark">
           <span className="treatise">El cuerpo humano · capítulo 2</span>
           <span className="book">Física del Cuerpo Humano — I. P. Herman</span>

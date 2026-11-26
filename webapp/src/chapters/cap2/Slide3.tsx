@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { C, ca } from './palette';
 import LeverCanvas from './LeverCanvas';
 import LeverAnatomyCanvas from './LeverAnatomyCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
@@ -102,7 +103,7 @@ export default function Slide3({
               <p style={{ fontSize: '.64rem', color: 'var(--ink-3)' }}>
                 {'Si el músculo no llega a esa $M$ no hay equilibrio (la bola de plomo pesa demasiado); si la supera, hay movimiento (lanzar una pelota). El eje puede elegirse en cualquier punto: a una distancia $x$ del peso, $Wx + (W+M)(d_W - x) - M(d_W + d_M - x) = 0$ (Ec. 2.12, Fig. 2.5) se reduce de nuevo a $W d_W - M d_M = 0$.'}
               </p>
-              <div style={{ marginTop: '.4rem' }}>
+              <div style={{ marginTop: '0.62rem' }}>
                 <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
                   <b>Rotular fuerzas y brazos</b>
                 </TheoryToggle>
@@ -146,9 +147,9 @@ export default function Slide3({
                       <span>
                         <b style={{ color: isSel ? 'var(--teal-deep)' : 'var(--ink)', fontSize: '.68rem' }}>{item.name}</b>
                         <br />
-                        <span style={{ fontSize: '.55rem', color: 'var(--ink-3)' }}>{item.anat}</span>
+                        <span style={{ fontSize: '0.62rem', color: 'var(--ink-3)' }}>{item.anat}</span>
                       </span>
-                      <span style={{ fontSize: '.60rem', fontFamily: 'JetBrains Mono, monospace', color: isSel ? 'var(--teal-deep)' : 'var(--ink-2)', fontWeight: 'bold' }}>
+                      <span style={{ fontSize: '0.62rem', fontFamily: 'JetBrains Mono, monospace', color: isSel ? 'var(--teal-deep)' : 'var(--ink-2)', fontWeight: 'bold' }}>
                         {item.vm}
                       </span>
                     </button>
@@ -172,14 +173,14 @@ export default function Slide3({
             badge={leverClass === 1 ? '1ª CLASE' : (leverClass === 2 ? '2ª CLASE (VM > 1)' : '3ª CLASE (VM < 1)')}
             footer="💡 Selecciona la clase para comparar fulcro y brazos de palanca"
           >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '0.58rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '0.62rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Tipo:</span>
                 <b style={{ color: 'var(--teal-deep)' }}>{curDetail.name.split(':')[0]}</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Secuencia:</span>
-                <b style={{ fontSize: '0.54rem' }}>{curDetail.order}</b>
+                <b style={{ fontSize: '0.62rem' }}>{curDetail.order}</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Fuerza muscular (M):</span>
@@ -191,7 +192,7 @@ export default function Slide3({
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Ventaja Mecánica (VM):</span>
-                <b style={{ color: leverClass === 2 ? '#2e8b57' : '#b02318', fontFamily: 'JetBrains Mono, monospace' }}>
+                <b style={{ color: leverClass === 2 ? C.coronal : C.blood, fontFamily: 'JetBrains Mono, monospace' }}>
                   VM = {fx(vm, 2)} · d<sub>M</sub> {bp} cm · d<sub>W</sub> {br} cm
                 </b>
               </div>
@@ -243,11 +244,11 @@ export default function Slide3({
                   onClick={() => handleSelect(c as 1 | 2 | 3)}
                   style={{
                     background: leverClass === c ? 'var(--teal)' : 'var(--paper-2)',
-                    color: leverClass === c ? '#fff' : 'var(--ink)',
+                    color: leverClass === c ? C.card : 'var(--ink)',
                     border: '1px solid var(--line)',
                     borderRadius: '3px',
                     padding: '2px 7px',
-                    fontSize: '0.58rem',
+                    fontSize: '0.62rem',
                     fontWeight: leverClass === c ? 700 : 500,
                     cursor: 'pointer',
                   }}
@@ -257,7 +258,7 @@ export default function Slide3({
               ))}
             </div>
 
-            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', fontSize: '0.60rem', marginLeft: 'auto' }}>
+            <div style={{ display: 'flex', gap: '0.62rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
                 <span>Carga:</span>
                 <input
@@ -279,7 +280,7 @@ export default function Slide3({
                   border: '1px solid var(--line)',
                   borderRadius: '4px',
                   padding: '2px 7px',
-                  fontSize: '0.60rem',
+                  fontSize: '0.62rem',
                   cursor: 'pointer',
                   color: 'var(--ink)',
                 }}

@@ -1,4 +1,5 @@
 import React, { Suspense, useState } from 'react';
+import { C, ca } from './palette';
 import { fx } from './ab';
 import AnkleCanvas from './AnkleCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
@@ -74,7 +75,7 @@ export default function SlideAnkle({
                 {'Con $\\theta \\approx 45^\\circ$ y $\\beta \\approx 60^\\circ$: $M \\approx 1{,}93\\,W_b$ y $R \\approx 2{,}73\\,W_b$ — ambas muy por encima del peso corporal.'}
               </p>
             
-              <div style={{ marginTop: '.4rem' }}>
+              <div style={{ marginTop: '0.62rem' }}>
                 <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
                   <b>Rotular M, N y R</b>
                 </TheoryToggle>
@@ -110,15 +111,15 @@ export default function SlideAnkle({
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.62rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Aquiles (M):</span>
-                <b style={{ color: '#0d6e64', fontFamily: 'JetBrains Mono, monospace' }}>{M.toFixed(0)} N ({fx((M / Wb), 2)}·Wb)</b>
+                <b style={{ color: C.teal, fontFamily: 'JetBrains Mono, monospace' }}>{M.toFixed(0)} N ({fx((M / Wb), 2)}·Wb)</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Reacción astrágalo (R):</span>
-                <b style={{ color: '#b02318', fontFamily: 'JetBrains Mono, monospace' }}>{R.toFixed(0)} N ({fx((R / Wb), 2)}·Wb)</b>
+                <b style={{ color: C.blood, fontFamily: 'JetBrains Mono, monospace' }}>{R.toFixed(0)} N ({fx((R / Wb), 2)}·Wb)</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Peso corporal (Wb):</span>
-                <b style={{ color: '#43505c', fontFamily: 'JetBrains Mono, monospace' }}>{Wb.toFixed(0)} N</b>
+                <b style={{ color: C.ink2, fontFamily: 'JetBrains Mono, monospace' }}>{Wb.toFixed(0)} N</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Ángulos:</span>
@@ -139,9 +140,9 @@ export default function SlideAnkle({
 
           <div className="prof-controls">
             <span className="badge">§2.3.3 · Tobillo</span>
-            <span>M = <b style={{ color: '#0d6e64' }}>{M.toFixed(0)} N</b> · R = <b style={{ color: '#b02318' }}>{R.toFixed(0)} N</b></span>
+            <span>M = <b style={{ color: C.teal }}>{M.toFixed(0)} N</b> · R = <b style={{ color: C.blood }}>{R.toFixed(0)} N</b></span>
 
-            <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '0.62rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto', flexWrap: 'wrap' }}>
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                 <span>β pie:</span>
                 <input type="range" min="55" max="75" value={betaDeg} aria-label="Ángulo del pie con la horizontal" onChange={(e) => { setIsAnimating(false); setBetaDeg(parseFloat(e.target.value)); }} style={{ width: '60px' }} />

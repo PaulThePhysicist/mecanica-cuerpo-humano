@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
+import { C, ca } from './palette';
 import { fx } from './ab';
 import { readCap2Tokens, tokenRgba } from './designTokens';
 import CanvasReserveState from './CanvasReserveState';
@@ -174,7 +175,7 @@ export default function TactileThresholdCanvas({
       ctx.fillRect(plotLeft + 3, plotTop + 3, plotW, plotH);
 
       // Fondo del gráfico
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+      ctx.fillStyle = ca(C.card, 0.95);
       ctx.fillRect(plotLeft, plotTop, plotW, plotH);
 
       // ─── Cuadrícula Logarítmica Principal y Secundaria ───
@@ -184,7 +185,7 @@ export default function TactileThresholdCanvas({
         for (let m = 2; m <= 9; m++) {
           const f = base * m;
           const x = freqToX(f);
-          ctx.strokeStyle = 'rgba(215, 205, 185, 0.32)';
+          ctx.strokeStyle = ca(C.line, 0.32);
           ctx.beginPath();
           ctx.moveTo(x, plotTop);
           ctx.lineTo(x, plotBottom);
@@ -197,7 +198,7 @@ export default function TactileThresholdCanvas({
         for (let m = 2; m <= 9; m++) {
           const a = base * m;
           const y = ampToY(a);
-          ctx.strokeStyle = 'rgba(215, 205, 185, 0.32)';
+          ctx.strokeStyle = ca(C.line, 0.32);
           ctx.beginPath();
           ctx.moveTo(plotLeft, y);
           ctx.lineTo(plotRight, y);
@@ -215,7 +216,7 @@ export default function TactileThresholdCanvas({
         ctx.lineTo(x, plotBottom);
         ctx.stroke();
 
-        ctx.fillStyle = '#64748b';
+        ctx.fillStyle = C.ink3;
         ctx.font = 'bold 7px JetBrains Mono, monospace';
         ctx.textAlign = 'center';
         ctx.fillText(`${f} Hz`, x, plotBottom + 12);
@@ -231,7 +232,7 @@ export default function TactileThresholdCanvas({
         ctx.lineTo(plotRight, y);
         ctx.stroke();
 
-        ctx.fillStyle = '#64748b';
+        ctx.fillStyle = C.ink3;
         ctx.font = 'bold 7px JetBrains Mono, monospace';
         ctx.textAlign = 'right';
         ctx.fillText(`${a < 1 ? fx(a, 2) : a} µm`, plotLeft - 4, y + 2.5);
@@ -243,7 +244,7 @@ export default function TactileThresholdCanvas({
       ctx.strokeRect(plotLeft, plotTop, plotW, plotH);
 
       // Rótulos de los ejes
-      ctx.fillStyle = '#1e293b';
+      ctx.fillStyle = C.ink;
       ctx.font = 'bold 8px Karla, system-ui, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText('FRECUENCIA DE VIBRACIÓN (Hz) →', plotLeft + plotW * 0.5, plotBottom + 23);
@@ -292,7 +293,7 @@ export default function TactileThresholdCanvas({
       ctx.fill();
 
       // ─── Curva Pacini (Azul) ───
-      ctx.strokeStyle = '#2563eb';
+      ctx.strokeStyle = C.series3;
       ctx.lineWidth = 2.0;
       ctx.beginPath();
       for (let f = 15; f <= 900; f += 5) {
@@ -306,17 +307,17 @@ export default function TactileThresholdCanvas({
       // Marca valle de Pacini (250 Hz, 0.08 µm)
       const pacX = freqToX(250);
       const pacY = ampToY(0.08);
-      ctx.fillStyle = '#2563eb';
+      ctx.fillStyle = C.series3;
       ctx.beginPath();
       ctx.arc(pacX, pacY, 3.5, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = '#1e40af';
+      ctx.fillStyle = C.series3;
       ctx.font = 'bold 6.5px Karla, system-ui, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText('PACINI (250 Hz / 0,08 µm)', pacX, pacY + 10);
 
       // ─── Curva Meissner (Esmeralda) ───
-      ctx.strokeStyle = '#0d8577';
+      ctx.strokeStyle = C.teal;
       ctx.lineWidth = 2.0;
       ctx.beginPath();
       for (let f = 2; f <= 200; f += 2) {
@@ -330,17 +331,17 @@ export default function TactileThresholdCanvas({
       // Marca valle de Meissner (35 Hz, 1.8 µm)
       const meisX = freqToX(35);
       const meisY = ampToY(1.8);
-      ctx.fillStyle = '#0d8577';
+      ctx.fillStyle = C.teal;
       ctx.beginPath();
       ctx.arc(meisX, meisY, 3.5, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = '#065f46';
+      ctx.fillStyle = C.tealDeep;
       ctx.font = 'bold 6.5px Karla, system-ui, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText('MEISSNER (35 Hz / 1,8 µm)', meisX, meisY - 7);
 
       // ─── Curva Merkel (Carmín) ───
-      ctx.strokeStyle = '#b02318';
+      ctx.strokeStyle = C.blood;
       ctx.lineWidth = 1.8;
       ctx.beginPath();
       for (let f = 1; f <= 40; f += 1) {
@@ -353,7 +354,7 @@ export default function TactileThresholdCanvas({
 
       const merkX = freqToX(3);
       const merkY = ampToY(calcMerkelThreshold(3));
-      ctx.fillStyle = '#b02318';
+      ctx.fillStyle = C.blood;
       ctx.beginPath();
       ctx.arc(merkX, merkY, 3.0, 0, Math.PI * 2);
       ctx.fill();
@@ -362,7 +363,7 @@ export default function TactileThresholdCanvas({
       ctx.fillText('MERKEL (<5 Hz)', merkX + 5, merkY - 3);
 
       // ─── Curva Ruffini (Ámbar) ───
-      ctx.strokeStyle = '#d97706';
+      ctx.strokeStyle = C.amber;
       ctx.lineWidth = 1.7;
       ctx.beginPath();
       for (let f = 1; f <= 60; f += 2) {
@@ -375,7 +376,7 @@ export default function TactileThresholdCanvas({
 
       const rufX = freqToX(12);
       const rufY = ampToY(calcRuffiniThreshold(12));
-      ctx.fillStyle = '#d97706';
+      ctx.fillStyle = C.amber;
       ctx.font = 'bold 6.5px Karla, system-ui, sans-serif';
       ctx.textAlign = 'left';
       ctx.fillText('RUFFINI (Estático)', rufX + 5, rufY + 9);
@@ -396,28 +397,28 @@ export default function TactileThresholdCanvas({
       const merkRatio = amplitudeUm / merkThresh;
       const rufRatio = amplitudeUm / rufThresh;
 
-      let dominantColor = '#64748b';
+      let dominantColor = C.ink3;
       let sensationText = 'Estímulo mecánico subumbral (imperceptible).';
       let channelTag = 'SUBUMBRAL';
 
       if (pacRatio >= 1.0 && pacRatio >= meisRatio && freqHz >= 80) {
-        dominantColor = '#2563eb';
+        dominantColor = C.series3;
         channelTag = 'PACINI (RA2)';
         sensationText = 'Zumbido de alta frecuencia y percepción de nanotextura sedosa.';
       } else if (meisRatio >= 1.0 && freqHz >= 8 && freqHz <= 100) {
-        dominantColor = '#0d8577';
+        dominantColor = C.teal;
         channelTag = 'MEISSNER (RA1)';
         sensationText = 'Aleteo táctil (flutter), detección de deslizamiento y vibración baja.';
       } else if (merkRatio >= 1.0 && freqHz < 15) {
-        dominantColor = '#b02318';
+        dominantColor = C.blood;
         channelTag = 'MERKEL (SA1)';
         sensationText = 'Presión localizada sostenida, bordes y curvatura de relieve.';
       } else if (rufRatio >= 1.0 && freqHz < 30) {
-        dominantColor = '#d97706';
+        dominantColor = C.amber;
         channelTag = 'RUFFINI (SA2)';
         sensationText = 'Tensión cutánea tangencial y estiramiento del tejido dérmico.';
       } else if (Math.max(pacRatio, meisRatio, merkRatio, rufRatio) >= 1.0) {
-        dominantColor = '#7c3aed';
+        dominantColor = C.sagittal;
         channelTag = 'COESTIMULACIÓN';
         sensationText = 'Activación simultánea de múltiples canales de mecanorreceptores.';
       }
@@ -441,7 +442,7 @@ export default function TactileThresholdCanvas({
       ctx.fillStyle = dominantColor;
       ctx.roundRect(stimX - 22, plotBottom + 2, 44, 12, 2.5);
       ctx.fill();
-      ctx.fillStyle = '#ffffff';
+      ctx.fillStyle = C.card;
       ctx.font = 'bold 6.5px JetBrains Mono, monospace';
       ctx.textAlign = 'center';
       ctx.fillText(`${freqHz} Hz`, stimX, plotBottom + 10.5);
@@ -452,7 +453,7 @@ export default function TactileThresholdCanvas({
       ctx.fillStyle = dominantColor;
       ctx.roundRect(plotLeft - 38, stimY - 6, 36, 12, 2.5);
       ctx.fill();
-      ctx.fillStyle = '#ffffff';
+      ctx.fillStyle = C.card;
       ctx.font = 'bold 6px JetBrains Mono, monospace';
       ctx.textAlign = 'center';
       ctx.fillText(ampBadgeText, plotLeft - 20, stimY + 2.5);
@@ -461,7 +462,7 @@ export default function TactileThresholdCanvas({
       const pulseR = 7 + Math.sin(t * 8) * 2.5;
       ctx.beginPath();
       ctx.arc(stimX, stimY, pulseR, 0, Math.PI * 2);
-      ctx.fillStyle = dominantColor === '#64748b' ? 'rgba(100, 116, 139, 0.22)' : `${dominantColor}30`;
+      ctx.fillStyle = dominantColor === C.ink3 ? ca(C.ink3, 0.22) : `${dominantColor}30`;
       ctx.fill();
 
       // Punto central
@@ -469,13 +470,13 @@ export default function TactileThresholdCanvas({
       ctx.arc(stimX, stimY, 4.5, 0, Math.PI * 2);
       ctx.fillStyle = dominantColor;
       ctx.fill();
-      ctx.strokeStyle = '#ffffff';
+      ctx.strokeStyle = C.card;
       ctx.lineWidth = 1.6;
       ctx.stroke();
 
       // Rótulo flotante encima del punto
       ctx.beginPath();
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.96)';
+      ctx.fillStyle = ca(C.card, 0.96);
       ctx.strokeStyle = dominantColor;
       ctx.lineWidth = 0.9;
       const pW = 84;
@@ -500,7 +501,7 @@ export default function TactileThresholdCanvas({
       const cardH = H * 0.70;
 
       ctx.save();
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.96)';
+      ctx.fillStyle = ca(C.card, 0.96);
       ctx.shadowColor = tokenRgba(T.ink, 0.10);
       ctx.shadowBlur = 8;
       ctx.roundRect(cardX, cardY, cardW, cardH, 6);
@@ -529,13 +530,13 @@ export default function TactileThresholdCanvas({
       ctx.stroke();
 
       // Descripción perceptual
-      ctx.fillStyle = '#334155';
+      ctx.fillStyle = C.ink;
       ctx.font = 'bold 7px Karla, system-ui, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText('SENSACIÓN PERCIBIDA:', cardX + cardW / 2, cardY + 51);
 
       ctx.font = '7px Karla, system-ui, sans-serif';
-      ctx.fillStyle = '#475569';
+      ctx.fillStyle = C.ink2;
       const words = sensationText.split(' ');
       let line = '';
       let ty = cardY + 64;
@@ -554,15 +555,15 @@ export default function TactileThresholdCanvas({
       // ─── Barras de Activación de los 4 Canales ───
       const barStartY = cardY + cardH * 0.52;
       ctx.font = 'bold 7px Karla, system-ui, sans-serif';
-      ctx.fillStyle = '#1e293b';
+      ctx.fillStyle = C.ink;
       ctx.textAlign = 'left';
       ctx.fillText('EXCITACIÓN POR CANAL:', cardX + 10, barStartY);
 
       const channels = [
-        { name: 'Pacini (RA2)', ratio: pacRatio, color: '#2563eb' },
-        { name: 'Meissner (RA1)', ratio: meisRatio, color: '#0d8577' },
-        { name: 'Merkel (SA1)', ratio: merkRatio, color: '#b02318' },
-        { name: 'Ruffini (SA2)', ratio: rufRatio, color: '#d97706' },
+        { name: 'Pacini (RA2)', ratio: pacRatio, color: C.series3 },
+        { name: 'Meissner (RA1)', ratio: meisRatio, color: C.teal },
+        { name: 'Merkel (SA1)', ratio: merkRatio, color: C.blood },
+        { name: 'Ruffini (SA2)', ratio: rufRatio, color: C.amber },
       ];
 
       const barW = cardW - 20;
@@ -570,26 +571,26 @@ export default function TactileThresholdCanvas({
 
       channels.forEach((ch, idx) => {
         const by = barStartY + 12 + idx * 20;
-        ctx.fillStyle = '#64748b';
+        ctx.fillStyle = C.ink3;
         ctx.font = 'bold 6.5px Karla, system-ui, sans-serif';
         ctx.textAlign = 'left';
         ctx.fillText(ch.name, cardX + 10, by - 2);
 
         const pct = Math.min(100, Math.round(ch.ratio * 100));
         ctx.textAlign = 'right';
-        ctx.fillStyle = ch.ratio >= 1.0 ? ch.color : '#94a3b8';
+        ctx.fillStyle = ch.ratio >= 1.0 ? ch.color : C.ink3;
         ctx.font = 'bold 6.5px JetBrains Mono, monospace';
         ctx.fillText(ch.ratio >= 1.0 ? `${pct}% (ACTIVO)` : 'SUBUMBRAL', cardX + cardW - 10, by - 2);
 
         // Fondo barra
-        ctx.fillStyle = '#e2e8f0';
+        ctx.fillStyle = C.lineSoft;
         ctx.fillRect(cardX + 10, by, barW, barH);
 
         // Relleno barra
         const fillW = Math.min(barW, Math.max(0, (Math.min(2.5, ch.ratio) / 2.5) * barW));
-        ctx.fillStyle = ch.ratio >= 1.0 ? ch.color : '#cbd5e1';
+        ctx.fillStyle = ch.ratio >= 1.0 ? ch.color : C.line;
         ctx.fillRect(cardX + 10, by, fillW, barH);
-        ctx.strokeStyle = '#cbd5e1';
+        ctx.strokeStyle = C.line;
         ctx.lineWidth = 0.5;
         ctx.strokeRect(cardX + 10, by, barW, barH);
       });

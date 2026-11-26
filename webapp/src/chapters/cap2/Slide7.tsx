@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { C, ca } from './palette';
 import HipCanvas from './HipCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
@@ -62,7 +63,7 @@ export default function Slide7({
               <div className="eq-block" style={{ fontSize: '.72rem' }}>
                 {'\\[ M = \\frac{10{,}8 - 0{,}5}{7{,}0\\,\\sin 70^\\circ}\\,W_b = 1{,}57\\,W_b \\]'}
               </div>
-              <div style={{ marginTop: '.4rem' }}>
+              <div style={{ marginTop: '0.62rem' }}>
                 <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
                   <b>{'Rotular $W_b$, $M$ y $R$'}</b>
                 </TheoryToggle>
@@ -101,7 +102,7 @@ export default function Slide7({
                   <tr><td>Levantarse de una silla</td><td>3,3</td></tr>
                 </tbody>
               </table>
-              <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '.3rem' }}>
+              <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '0.62rem' }}>
                 Fuerzas excesivas y prolongadas desgastan el cartílago; el reemplazo total de cadera sustituye la bola del fémur (aleación de cobalto-cromo o titanio, a menudo fijada con PMMA, «cemento óseo») y el acetábulo (polietileno de peso molecular ultra alto).
               </p>
             </div>
@@ -125,7 +126,7 @@ export default function Slide7({
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.62rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Reacción Articular (R):</span>
-                <b style={{ color: trendelenburg ? '#b02318' : '#0d6e64', fontFamily: 'JetBrains Mono, monospace' }}>
+                <b style={{ color: trendelenburg ? C.blood : C.teal, fontFamily: 'JetBrains Mono, monospace' }}>
                   {fx(rJointN)} N ({fx(rJointN / totalWeightN, 2)} W<sub>b</sub>)
                 </b>
               </div>
@@ -139,7 +140,7 @@ export default function Slide7({
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Ángulo de R con la vertical (φ):</span>
-                <b style={{ color: trendelenburg ? '#b02318' : '#0d6e64', fontFamily: 'JetBrains Mono, monospace' }}>
+                <b style={{ color: trendelenburg ? C.blood : C.teal, fontFamily: 'JetBrains Mono, monospace' }}>
                   {fx(hip.phi)}°
                 </b>
               </div>
@@ -159,7 +160,7 @@ export default function Slide7({
             <span className="badge">§2.3.2 · Cadera</span>
             <span>R = <b style={{ color: trendelenburg ? 'var(--blood)' : 'var(--teal)' }}>{fx(rJointN)} N</b> ({fx(rJointN / totalWeightN, 2)} W<sub>b</sub>)</span>
 
-            <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>
+            <div style={{ display: 'flex', gap: '0.62rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                 <span>Masa:</span>
                 <input
@@ -180,11 +181,11 @@ export default function Slide7({
                   onClick={() => setTrendelenburg(false)}
                   style={{
                     background: !trendelenburg ? 'var(--teal)' : 'transparent',
-                    color: !trendelenburg ? '#fff' : 'var(--ink)',
+                    color: !trendelenburg ? C.card : 'var(--ink)',
                     border: 'none',
                     borderRadius: '3px',
                     padding: '2px 7px',
-                    fontSize: '0.58rem',
+                    fontSize: '0.62rem',
                     fontWeight: !trendelenburg ? 700 : 500,
                     cursor: 'pointer',
                     transition: 'all 0.15s ease',
@@ -196,12 +197,12 @@ export default function Slide7({
                   type="button"
                   onClick={() => setTrendelenburg(true)}
                   style={{
-                    background: trendelenburg ? '#b02318' : 'transparent',
-                    color: trendelenburg ? '#fff' : 'var(--ink)',
+                    background: trendelenburg ? C.blood : 'transparent',
+                    color: trendelenburg ? C.card : 'var(--ink)',
                     border: 'none',
                     borderRadius: '3px',
                     padding: '2px 7px',
-                    fontSize: '0.58rem',
+                    fontSize: '0.62rem',
                     fontWeight: trendelenburg ? 700 : 500,
                     cursor: 'pointer',
                     transition: 'all 0.15s ease',

@@ -1,4 +1,5 @@
 import React, { Suspense, useMemo, useRef, useEffect } from 'react';
+import { C, ca } from './palette';
 import { fx } from './ab';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, ContactShadows, useGLTF } from '@react-three/drei';
@@ -29,13 +30,13 @@ interface BodySegmentsCanvasProps {
 // ── Paleta y Materiales de Grado Museo Anatómico ──
 const BONE_IVORY = '#ede5d0';
 const BONE_DEEP = '#ded3be';
-const BONE_ACCENT = '#7c6a4e';
+const BONE_ACCENT = C.amberDeep;
 const CARTILAGE_ICE = '#68c5b8';
-const TEAL_ACCENT = '#0d6e64';
-const AMBER_ACCENT = '#d97706';
-const RED_ACCENT = '#dc2626';
-const GOLD_PLUMB = '#f59e0b';
-const BRASS_DARK = '#b45309';
+const TEAL_ACCENT = C.teal;
+const AMBER_ACCENT = C.amber;
+const RED_ACCENT = C.blood;
+const GOLD_PLUMB = C.amber;
+const BRASS_DARK = C.amber;
 
 // ── Segmentos Corporales Estándar de Dempster (7 Masas Principales) ──
 interface SegmentDempster {
@@ -218,18 +219,18 @@ function SegmentMassMarker3D({
       {/* Anillo ecuatorial contrastante */}
       <mesh rotation={[Math.PI / 2, 0, 0]}>
         <torusGeometry args={[r * 1.05, 0.002, 12, 32]} />
-        <meshBasicMaterial color="#7c6a4e" />
+        <meshBasicMaterial color={C.amberDeep} />
       </mesh>
 
       {/* Punto nuclear */}
       <mesh>
         <sphereGeometry args={[0.005, 12, 12]} />
-        <meshBasicMaterial color="#232c36" />
+        <meshBasicMaterial color={C.ink} />
       </mesh>
 
       {/* Cifra → riel lateral (V2-03: en el centro se solapaban en los
           segmentos cortos, antebrazo/manos y piernas). */}
-      <Callout position={[0, 0, 0]} label={shortName} sub={`${(massPct * 100).toFixed(0)}%`} color="#7c6a4e" />
+      <Callout position={[0, 0, 0]} label={shortName} sub={`${(massPct * 100).toFixed(0)}%`} color={C.amberDeep} />
     </group>
   );
 }
@@ -337,30 +338,30 @@ function StabilityGauge({
   return (
     <div
       style={{
-        background: 'rgba(255, 255, 255, 0.96)',
+        background: ca(C.card, 0.96),
         backdropFilter: 'blur(8px)',
         border: `1.5px solid ${statusColor}`,
         borderRadius: '10px',
         padding: '8px 12px',
-        boxShadow: '0 6px 20px rgba(35, 44, 54, 0.12)',
+        boxShadow: `0 6px 20px ${ca(C.ink, 0.12)}`,
         width: '168px',
         textAlign: 'center',
         pointerEvents: 'none',
       }}
     >
-      <div style={{ fontSize: '0.58rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+      <div style={{ fontSize: '0.62rem', fontWeight: 700, color: C.ink3, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
         Análisis de Estabilidad
       </div>
 
       {/* SVG Dial */}
       <svg width="116" height="70" viewBox="0 0 120 74" style={{ margin: '2px auto 0', display: 'block' }}>
-        <path d="M 15 65 A 45 45 0 0 1 105 65" fill="none" stroke="#e2e8f0" strokeWidth="8" strokeLinecap="round" />
+        <path d="M 15 65 A 45 45 0 0 1 105 65" fill="none" stroke={C.lineSoft} strokeWidth="8" strokeLinecap="round" />
         {/* Sector Óptimo / Estable (< 52%) */}
-        <path d="M 15 65 A 45 45 0 0 1 60 20" fill="none" stroke="#10b981" strokeWidth="8" strokeDasharray="4 2" opacity={0.4} />
+        <path d="M 15 65 A 45 45 0 0 1 60 20" fill="none" stroke={C.coronal} strokeWidth="8" strokeDasharray="4 2" opacity={0.4} />
         {/* Sector Neutro (52% - 58%) */}
-        <path d="M 60 20 A 45 45 0 0 1 88 32" fill="none" stroke="#0d6e64" strokeWidth="8" strokeDasharray="4 2" opacity={0.4} />
+        <path d="M 60 20 A 45 45 0 0 1 88 32" fill="none" stroke={C.teal} strokeWidth="8" strokeDasharray="4 2" opacity={0.4} />
         {/* Sector Alto / Inestable (> 58%) */}
-        <path d="M 88 32 A 45 45 0 0 1 105 65" fill="none" stroke="#ef4444" strokeWidth="8" strokeDasharray="4 2" opacity={0.4} />
+        <path d="M 88 32 A 45 45 0 0 1 105 65" fill="none" stroke={C.blood} strokeWidth="8" strokeDasharray="4 2" opacity={0.4} />
 
         {/* Arco dinámico */}
         <path
@@ -376,15 +377,15 @@ function StabilityGauge({
 
         {/* Aguja indicadora analógica */}
         <g transform={`rotate(${needleAngle} 60 65)`} style={{ transition: 'transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)' }}>
-          <line x1="60" y1="65" x2="60" y2="26" stroke="#1e293b" strokeWidth="2.4" strokeLinecap="round" />
-          <circle cx="60" cy="65" r="4.2" fill="#1e293b" />
-          <circle cx="60" cy="65" r="1.8" fill="#ffffff" />
+          <line x1="60" y1="65" x2="60" y2="26" stroke={C.ink} strokeWidth="2.4" strokeLinecap="round" />
+          <circle cx="60" cy="65" r="4.2" fill={C.ink} />
+          <circle cx="60" cy="65" r="1.8" fill={C.card} />
         </g>
 
         {/* Marcas de escala */}
-        <text x="12" y="72" fontSize="6.5" fill="#64748b" fontFamily="JetBrains Mono, monospace">30%</text>
-        <text x="54" y="16" fontSize="6.5" fill="#64748b" fontFamily="JetBrains Mono, monospace">56%</text>
-        <text x="94" y="72" fontSize="6.5" fill="#64748b" fontFamily="JetBrains Mono, monospace">75%</text>
+        <text x="12" y="72" fontSize="13" fill={C.ink3} fontFamily="JetBrains Mono, monospace">30%</text>
+        <text x="54" y="16" fontSize="13" fill={C.ink3} fontFamily="JetBrains Mono, monospace">56%</text>
+        <text x="94" y="72" fontSize="13" fill={C.ink3} fontFamily="JetBrains Mono, monospace">75%</text>
       </svg>
 
       <div style={{ fontSize: '1.15rem', fontWeight: 800, color: statusColor, fontFamily: 'JetBrains Mono, monospace', margin: '0' }}>
@@ -394,11 +395,11 @@ function StabilityGauge({
         {!isStable ? 'Fuera de la base: caída' : (isWarning ? 'Cerca del límite anterior' : 'Equilibrio estable')}
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.52rem', color: '#475569', marginTop: '4px', borderTop: '1px solid #e2e8f0', paddingTop: '3px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.62rem', color: C.ink2, marginTop: '4px', borderTop: `1px solid ${C.lineSoft}`, paddingTop: '3px' }}>
         <span>Altura Baricentro:</span>
         <b style={{ color: statusColor, fontFamily: 'JetBrains Mono, monospace' }}>{fx(cgHeightPct, 1)}% H</b>
       </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.52rem', color: '#475569', marginTop: '1px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.62rem', color: C.ink2, marginTop: '1px' }}>
         <span>Margen Estabilidad:</span>
         <b style={{ color: TEAL_ACCENT, fontFamily: 'JetBrains Mono, monospace' }}>{stabilityMarginPct.toFixed(0)}%</b>
       </div>
@@ -780,7 +781,7 @@ function DempsterSkeletonRig3D({
         <mesh>
           <sphereGeometry args={[0.024, 24, 24]} />
           <meshStandardMaterial
-            color="#ef4444"
+            color={C.blood}
             roughness={0.2}
             metalness={0.4}
             emissive="#dc2626"
@@ -791,7 +792,7 @@ function DempsterSkeletonRig3D({
         {/* Retículo ecuatorial */}
         <mesh rotation={[Math.PI / 2, 0, 0]}>
           <torusGeometry args={[0.038 + pulseRef.current * 1.5, 0.003, 16, 32]} />
-          <meshBasicMaterial color="#ef4444" />
+          <meshBasicMaterial color={C.blood} />
         </mesh>
 
         {/* Retículo sagital */}
@@ -801,7 +802,7 @@ function DempsterSkeletonRig3D({
         </mesh>
 
         {/* Marcador del centro de gravedad global */}
-        <DclTag position={[0.12, 0.02, 0]} color="#b91c1c" symbol="CG" />
+        <DclTag position={[0.12, 0.02, 0]} color={C.bloodDeep} symbol="CG" />
       </group>
 
       {/* ── E. LÍNEA DE PLOMADA Y PLOMADA DE BRONCE AL SUELO ── */}
@@ -813,7 +814,7 @@ function DempsterSkeletonRig3D({
 
       {/* ── F. LECTURA CG · ESTABILIDAD → riel lateral (línea guía al contacto
              de la plomada con el suelo, el punto que se compara con la BoS) ── */}
-      <Callout position={[cgGlobalX, 0.10, cgGlobalZ]} label={lCG} sub={sCG} color="#b91c1c" emphasis="strong" />
+      <Callout position={[cgGlobalX, 0.10, cgGlobalZ]} label={lCG} sub={sCG} color={C.bloodDeep} emphasis="strong" />
       <Callout position={[cgGlobalX, 0.03, cgGlobalZ]} label={lMargen} sub={sMargen} color={cgColor} />
 
       <CalloutSource />
@@ -868,7 +869,7 @@ export default function BodySegmentsCanvas({
           scale={3.2}
           blur={2.0}
           far={1.6}
-          color="#232c36"
+          color={C.ink}
         />
 
         <OrbitControls
@@ -898,7 +899,6 @@ export default function BodySegmentsCanvas({
           right: '10px',
           bottom: '10px',
           zIndex: 9,
-          transform: 'scale(0.8)',
           transformOrigin: 'bottom right',
           pointerEvents: 'none',
         }}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { C, ca } from './palette';
 import { fx } from './ab';
 import ForcePlateCanvas from './ForcePlateCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
@@ -97,8 +98,8 @@ export default function Slide14({
               <p style={{ fontSize: '.7rem' }}>
                 Una plataforma dinamométrica piezoeléctrica registra las tres componentes ortogonales de la interacción pie-suelo:
               </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '.62rem', marginTop: '.25rem' }}>
-                <span className="pill" style={{ background: 'rgba(13, 110, 100, 0.12)', border: '1px solid var(--teal)' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '.62rem', marginTop: '0.62rem' }}>
+                <span className="pill" style={{ background: ca(C.teal, 0.12), border: '1px solid var(--teal)' }}>
                   <b>Fz (Vertical):</b> {'Carga gravitatoria y de aceleración con el clásico patrón de doble pico en "M" ($1{,}15\\text{--}1{,}25\\times W$).'}
                 </span>
                 <span className="pill">
@@ -109,7 +110,7 @@ export default function Slide14({
                 </span>
               </div>
             
-              <div style={{ marginTop: '.4rem' }}>
+              <div style={{ marginTop: '0.62rem' }}>
                 <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
                   <b>Rotular la GRF y el COP</b>
                 </TheoryToggle>
@@ -152,23 +153,23 @@ export default function Slide14({
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Fuerza Vertical (Fz):</span>
-                <b style={{ color: '#0d6e64', fontFamily: 'JetBrains Mono, monospace' }}>
+                <b style={{ color: C.teal, fontFamily: 'JetBrains Mono, monospace' }}>
                   {fzN.toFixed(0)} N ({fx((fzN / (bodyMassKg * 9.81)), 2)}× W)
                 </b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Anteroposterior (Fy):</span>
-                <b style={{ color: fyN > 0 ? '#10b981' : (fyN === 0 ? 'var(--ink-2)' : '#ef4444'), fontFamily: 'JetBrains Mono, monospace' }}>
+                <b style={{ color: fyN > 0 ? C.coronal : (fyN === 0 ? 'var(--ink-2)' : C.blood), fontFamily: 'JetBrains Mono, monospace' }}>
                   {fyN > 0 ? `+${fyN} N (Propulsión)` : (fyN === 0 ? '0 N (Neutro)' : `${fyN} N (Frenado)`)}
                 </b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Resultante GRF:</span>
-                <b style={{ color: '#0d6e64', fontFamily: 'JetBrains Mono, monospace' }}>{grfResultantN.toFixed(0)} N</b>
+                <b style={{ color: C.teal, fontFamily: 'JetBrains Mono, monospace' }}>{grfResultantN.toFixed(0)} N</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Presión Plantar Pico:</span>
-                <b style={{ color: '#ef4444', fontFamily: 'JetBrains Mono, monospace' }}>
+                <b style={{ color: C.blood, fontFamily: 'JetBrains Mono, monospace' }}>
                   {gaitPhase === 'toe_off' ? '380 kPa' : (gaitPhase === 'mid_stance' ? '145 kPa' : '290 kPa')}
                 </b>
               </div>
@@ -183,7 +184,7 @@ export default function Slide14({
             <span className="badge">Complementario · Marcha</span>
             <span>Fase: <b style={{ color: 'var(--teal-deep)' }}>{curPhase.name}</b></span>
 
-            <div style={{ display: 'flex', gap: '0.45rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>
+            <div style={{ display: 'flex', gap: '0.62rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>
               <div style={{ display: 'inline-flex', gap: '2px', border: '1px solid var(--line)', borderRadius: '4px', padding: '1px', background: 'var(--paper-2)' }}>
                 {PHASES.map((p) => (
                   <button
@@ -192,11 +193,11 @@ export default function Slide14({
                     onClick={() => handleSelect(p.id)}
                     style={{
                       background: gaitPhase === p.id ? 'var(--teal)' : 'transparent',
-                      color: gaitPhase === p.id ? '#fff' : 'var(--ink)',
+                      color: gaitPhase === p.id ? C.card : 'var(--ink)',
                       border: 'none',
                       borderRadius: '3px',
                       padding: '3px 7px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: gaitPhase === p.id ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',

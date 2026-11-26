@@ -1,4 +1,5 @@
 import React, { Suspense, useRef, useMemo, useState } from 'react';
+import { C, ca } from './palette';
 import { fx } from './ab';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, ContactShadows, useGLTF } from '@react-three/drei';
@@ -38,7 +39,7 @@ const P_ELBOW = new THREE.Vector3(-0.128, 0.142, -0.016);
 function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [1, 0, 0] as [number, number, number],
-  color = '#0d6e64',
+  color = C.teal,
   label,
   sub,
   emphasis,
@@ -169,7 +170,7 @@ function BrachioradialisAnatomicalBand({
   const bellyMat = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
-        color: isActive ? '#d97706' : '#718096',
+        color: isActive ? C.amber : C.ink3,
         roughness: 0.54,
         metalness: 0.06,
         emissive: isActive ? '#d97706' : '#000000',
@@ -262,7 +263,7 @@ function MultiMuscleScene({
   const brachialisMat = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
-        color: activeMuscleCount === 3 ? '#2e8b57' : '#64748b',
+        color: activeMuscleCount === 3 ? C.coronal : C.ink3,
         roughness: 0.54,
         metalness: 0.06,
         emissive: activeMuscleCount === 3 ? '#2e8b57' : '#000000',
@@ -275,7 +276,7 @@ function MultiMuscleScene({
   const bicepsMat = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
-        color: '#dc2626',
+        color: C.blood,
         roughness: 0.52,
         metalness: 0.06,
         emissive: '#dc2626',
@@ -367,7 +368,7 @@ function MultiMuscleScene({
       </mesh>
 
       {/* Vector Reacción Articular R_j en la Tróclea */}
-      <ForceVector3D origin={[0, 0, 0]} vector={[0, -rjLen, 0]} color="#0d9488" label={lRj} sub="compresión" emphasis="strong" />
+      <ForceVector3D origin={[0, 0, 0]} vector={[0, -rjLen, 0]} color={C.teal} label={lRj} sub="compresión" emphasis="strong" />
 
       {/* ── Segmento Móvil: Antebrazo a 90° de Flexión ── */}
       <group rotation={[angleRad, 0, 0]}>
@@ -407,7 +408,7 @@ function MultiMuscleScene({
           <ForceVector3D
             origin={[-0.018, -0.025, 0.010]}
             vector={[brachLen * 0.08, brachLen * 0.98, -brachLen * 0.12]}
-            color="#2e8b57"
+            color={C.coronal}
             label={lBraq}
             sub="45% τ"
           />
@@ -417,7 +418,7 @@ function MultiMuscleScene({
         <ForceVector3D
           origin={[0.030, -0.040, 0.020]}
           vector={[bicLen * 0.14, bicLen * 0.97, -bicLen * 0.18]}
-          color="#dc2626"
+          color={C.blood}
           label={lBic}
           sub={activeMuscleCount === 3 ? '40% τ' : '100% aislado'}
         />
@@ -427,7 +428,7 @@ function MultiMuscleScene({
           <ForceVector3D
             origin={[-0.022, -0.250, 0.018]}
             vector={[-bradLen * 0.12, bradLen * 0.98, bradLen * 0.08]}
-            color="#d97706"
+            color={C.amber}
             label={lBrad}
             sub="15% · shunt"
           />
@@ -437,7 +438,7 @@ function MultiMuscleScene({
         <ForceVector3D
           origin={[-0.040, -0.350, 0.045]}
           vector={[0, -wLen, 0]}
-          color="#232c36"
+          color={C.ink}
           label={lW}
           sub={`${handLoadKg} kg`}
         />
@@ -560,17 +561,17 @@ export default function MultiMuscleCanvas({
             type="button"
             onClick={() => setView(view)}
             style={{
-              background: cameraView === view ? '#0d6e64' : 'rgba(255, 255, 255, 0.88)',
-              color: cameraView === view ? '#ffffff' : '#43505c',
-              border: '1px solid rgba(207, 195, 169, 0.9)',
+              background: cameraView === view ? C.teal : ca(C.card, 0.88),
+              color: cameraView === view ? C.card : C.ink2,
+              border: `1px solid ${ca(C.line, 0.9)}`,
               backdropFilter: 'blur(4px)',
               borderRadius: '4px',
               padding: '3px 7px',
-              fontSize: '0.54rem',
+              fontSize: '0.62rem',
               fontWeight: cameraView === view ? 700 : 500,
               cursor: 'pointer',
               textTransform: 'capitalize',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+              boxShadow: `0 1px 3px ${ca(C.ink, 0.06)}`,
             }}
           >
             {view === 'default' ? '3D Iso' : view === 'lateral' ? 'Lateral (Brazos d)' : view === 'anterior' ? 'Frontal' : 'Cenital'}
@@ -590,14 +591,14 @@ export default function MultiMuscleCanvas({
           right: '10px',
           zIndex: 13,
           pointerEvents: 'auto',
-          border: '1px solid rgba(207, 195, 169, 0.9)',
+          border: `1px solid ${ca(C.line, 0.9)}`,
           borderRadius: '5px',
-          background: showTelemetry ? '#0d6e64' : 'rgba(255,253,248,.96)',
-          color: showTelemetry ? '#fff' : '#43505c',
+          background: showTelemetry ? C.teal : ca(C.card, .96),
+          color: showTelemetry ? C.card : C.ink2,
           padding: '4px 8px',
-          font: '700 .58rem Karla, sans-serif',
+          font: '700 .62rem Karla, sans-serif',
           cursor: 'pointer',
-          boxShadow: '0 2px 8px rgba(35,44,54,.14)',
+          boxShadow: `0 2px 8px ${ca(C.ink, .14)}`,
         }}
       >
         {showTelemetry ? '× Ocultar información' : 'Información'}
@@ -609,22 +610,22 @@ export default function MultiMuscleCanvas({
           top: '42px',
           right: '10px',
           width: '210px',
-          background: 'rgba(255, 255, 255, 0.95)',
+          background: ca(C.card, 0.95),
           backdropFilter: 'blur(8px)',
-          border: '1px solid rgba(207, 195, 169, 0.9)',
+          border: `1px solid ${ca(C.line, 0.9)}`,
           borderRadius: '7px',
           padding: '7px 9px',
-          boxShadow: '0 3px 12px rgba(35, 44, 54, 0.12)',
+          boxShadow: `0 3px 12px ${ca(C.ink, 0.12)}`,
           zIndex: 10,
           pointerEvents: showTelemetry ? 'none' : 'none',
           display: showTelemetry ? 'block' : 'none',
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-          <span style={{ fontSize: '0.58rem', fontWeight: 800, color: '#232c36', letterSpacing: '0.02em' }}>
+          <span style={{ fontSize: '0.62rem', fontWeight: 800, color: C.ink, letterSpacing: '0.02em' }}>
             DISTRIBUCIÓN DE TORQUE
           </span>
-          <span style={{ fontSize: '0.52rem', fontFamily: 'JetBrains Mono, monospace', color: '#0d6e64', fontWeight: 700 }}>
+          <span style={{ fontSize: '0.62rem', fontFamily: 'JetBrains Mono, monospace', color: C.teal, fontWeight: 700 }}>
             Στ = {fx(totalTauNm, 1)} N·m
           </span>
         </div>
@@ -637,21 +638,21 @@ export default function MultiMuscleCanvas({
             width: '100%',
             borderRadius: '3px',
             overflow: 'hidden',
-            border: '1px solid #43505c',
+            border: `1px solid ${C.ink2}`,
             marginBottom: '6px',
-            boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.15)',
+            boxShadow: `inset 0 1px 2px ${ca(C.ink, 0.15)}`,
           }}
         >
           {activeMuscleCount === 1 ? (
             <div
               style={{
                 width: '100%',
-                background: 'linear-gradient(90deg, #b91c1c, #dc2626)',
+                background: `linear-gradient(90deg, ${C.bloodDeep}, ${C.blood})`,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: '#fff',
-                fontSize: '0.50rem',
+                color: C.card,
+                fontSize: '0.62rem',
                 fontWeight: 800,
               }}
             >
@@ -662,13 +663,13 @@ export default function MultiMuscleCanvas({
               <div
                 style={{
                   width: '42%',
-                  background: '#2e8b57',
-                  borderRight: '1px solid #fff',
+                  background: C.coronal,
+                  borderRight: `1px solid ${C.card}`,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: '#fff',
-                  fontSize: '0.48rem',
+                  color: C.card,
+                  fontSize: '0.62rem',
                   fontWeight: 800,
                 }}
                 title="Braquial 42 %"
@@ -678,13 +679,13 @@ export default function MultiMuscleCanvas({
               <div
                 style={{
                   width: '38%',
-                  background: '#dc2626',
-                  borderRight: '1px solid #fff',
+                  background: C.blood,
+                  borderRight: `1px solid ${C.card}`,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: '#fff',
-                  fontSize: '0.48rem',
+                  color: C.card,
+                  fontSize: '0.62rem',
                   fontWeight: 800,
                 }}
                 title="Bíceps 38 %"
@@ -694,12 +695,12 @@ export default function MultiMuscleCanvas({
               <div
                 style={{
                   width: '20%',
-                  background: '#d97706',
+                  background: C.amber,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: '#fff',
-                  fontSize: '0.48rem',
+                  color: C.card,
+                  fontSize: '0.62rem',
                   fontWeight: 800,
                 }}
                 title="Braquiorradial 20 %"
@@ -711,11 +712,11 @@ export default function MultiMuscleCanvas({
         </div>
 
         {/* Filas de telemetría EMG por músculo */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '3.5px', fontSize: '0.53rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '3.5px', fontSize: '0.62rem' }}>
           {/* Braquial */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: '#2e8b57' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: C.coronal }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: activeMuscleCount === 3 ? '#2e8b57' : '#94a3b8' }} />
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: activeMuscleCount === 3 ? C.coronal : C.ink3 }} />
               Braquial (d = 3,4 cm · 7,0 cm²):
             </span>
             <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>
@@ -724,9 +725,9 @@ export default function MultiMuscleCanvas({
           </div>
 
           {/* Bíceps */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: '#dc2626' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: C.blood }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#dc2626' }} />
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: C.blood }} />
               Bíceps (d = 4,6 cm · 4,6 cm²):
             </span>
             <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>
@@ -735,9 +736,9 @@ export default function MultiMuscleCanvas({
           </div>
 
           {/* Braquiorradial */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: '#d97706' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: C.amber }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: activeMuscleCount === 3 ? '#d97706' : '#94a3b8' }} />
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: activeMuscleCount === 3 ? C.amber : C.ink3 }} />
               Braquiorradial (d = 7,5 cm · 1,5 cm²):
             </span>
             <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>
@@ -748,7 +749,7 @@ export default function MultiMuscleCanvas({
           {/* Fuerza Muscular Total & Compresión */}
           <div
             style={{
-              borderTop: '1px solid rgba(67, 80, 92, 0.20)',
+              borderTop: `1px solid ${ca(C.ink2, 0.20)}`,
               paddingTop: '3px',
               marginTop: '1px',
               display: 'flex',
@@ -756,15 +757,15 @@ export default function MultiMuscleCanvas({
               gap: '2px',
             }}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', color: '#232c36' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', color: C.ink }}>
               <span style={{ fontWeight: 600 }}>Fuerza Muscular Total:</span>
-              <b style={{ fontFamily: 'JetBrains Mono, monospace', color: '#0d6e64' }}>
+              <b style={{ fontFamily: 'JetBrains Mono, monospace', color: C.teal }}>
                 {totalMuscleForceN.toFixed(0)} N ({fx((totalMuscleForceN / 9.81), 1)} kgf)
               </b>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', color: '#43505c' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', color: C.ink2 }}>
               <span>Compresión Articular (Rj):</span>
-              <b style={{ fontFamily: 'JetBrains Mono, monospace', color: '#0d9488' }}>
+              <b style={{ fontFamily: 'JetBrains Mono, monospace', color: C.teal }}>
                 {rJointN.toFixed(0)} N
               </b>
             </div>

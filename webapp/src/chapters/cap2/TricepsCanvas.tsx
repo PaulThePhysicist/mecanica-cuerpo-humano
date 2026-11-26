@@ -1,4 +1,5 @@
 import React, { Suspense, useRef, useMemo, useState } from 'react';
+import { C, ca } from './palette';
 import { fx } from './ab';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, ContactShadows, useGLTF } from '@react-three/drei';
@@ -49,7 +50,7 @@ const P_ELBOW = new THREE.Vector3(-0.128, 0.142, -0.016);
 function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [1, 0, 0] as [number, number, number],
-  color = '#0d6e64',
+  color = C.teal,
   label,
   sub,
   emphasis,
@@ -189,7 +190,7 @@ function RealArmTricepsScene({
   const tricepsMat = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
-        color: '#dc2626',
+        color: C.blood,
         roughness: 0.52,
         metalness: 0.06,
         emissive: '#dc2626',
@@ -299,7 +300,7 @@ function RealArmTricepsScene({
       </mesh>
 
       {/* Vector Reacción Articular ADITIVA R_j en la Tróclea */}
-      <ForceVector3D origin={[0, 0, 0]} vector={vRj} color="#7c3aed" label={lRj} sub="troclear (aditiva)" emphasis="strong" />
+      <ForceVector3D origin={[0, 0, 0]} vector={vRj} color={C.sagittal} label={lRj} sub="troclear (aditiva)" emphasis="strong" />
 
       {/* ── Segmento Móvil: Antebrazo con Olécranon Posterior ── */}
       <group rotation={[angleRad, 0, 0]}>
@@ -325,21 +326,21 @@ function RealArmTricepsScene({
         <LeverArmCaliper3D
           start={[0, 0, 0]}
           end={olecranonOffset}
-          color="#dc2626"
+          color={C.blood}
           label={`d = ${fx(insertCm, 1)} cm`}
         />
         <LeverArmCaliper3D
           start={[0, 0, 0]}
           end={[-0.040, -0.350, 0.045]}
-          color="#d97706"
+          color={C.amber}
           label="dW = 36 cm"
         />
 
         {/* Vector de Tracción del Tríceps Ft en el Pico del Olécranon */}
-        <ForceVector3D origin={olecranonOffset} vector={vFt} color="#dc2626" label={lFt} sub={sFt} />
+        <ForceVector3D origin={olecranonOffset} vector={vFt} color={C.blood} label={lFt} sub={sFt} />
 
         {/* Vector de Fuerza de Empuje W en la Palma de la Mano */}
-        <ForceVector3D origin={[-0.040, -0.350, 0.045]} vector={vWpush} color="#d97706" label={lW} sub={sW} />
+        <ForceVector3D origin={[-0.040, -0.350, 0.045]} vector={vWpush} color={C.amber} label={lW} sub={sW} />
       </group>
     </group>
   );
@@ -380,7 +381,7 @@ export default function TricepsCanvas({
   };
 
   // Nivel de estrés articular
-  const stressColor = rJointN < 1000 ? '#0d6e64' : rJointN < 2000 ? '#d97706' : '#dc2626';
+  const stressColor = rJointN < 1000 ? C.teal : rJointN < 2000 ? C.amber : C.blood;
   const stressLevel = rJointN < 1000 ? 'Normal / Fisiológico' : rJointN < 2000 ? 'Elevado' : 'Sobrecarga Articular Aguda';
 
   return (
@@ -457,17 +458,17 @@ export default function TricepsCanvas({
             type="button"
             onClick={() => setView(view)}
             style={{
-              background: cameraView === view ? '#7c3aed' : 'rgba(255, 255, 255, 0.88)',
-              color: cameraView === view ? '#ffffff' : '#43505c',
-              border: '1px solid rgba(207, 195, 169, 0.9)',
+              background: cameraView === view ? C.sagittal : ca(C.card, 0.88),
+              color: cameraView === view ? C.card : C.ink2,
+              border: `1px solid ${ca(C.line, 0.9)}`,
               backdropFilter: 'blur(4px)',
               borderRadius: '4px',
               padding: '3px 7px',
-              fontSize: '0.54rem',
+              fontSize: '0.62rem',
               fontWeight: cameraView === view ? 700 : 500,
               cursor: 'pointer',
               textTransform: 'capitalize',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+              boxShadow: `0 1px 3px ${ca(C.ink, 0.06)}`,
             }}
           >
             {view === 'default' ? '3D Iso' : view === 'lateral' ? 'Lateral (Palanca 1ª)' : view === 'posterior' ? 'Posterior (Tríceps)' : 'Frontal'}
@@ -486,15 +487,15 @@ export default function TricepsCanvas({
           top: '10px',
           right: showTelemetry ? '232px' : '10px',
           zIndex: 12,
-          border: '1px solid rgba(207, 195, 169, 0.9)',
+          border: `1px solid ${ca(C.line, 0.9)}`,
           borderRadius: '7px',
-          background: 'rgba(255, 253, 248, 0.95)',
-          color: '#232c36',
+          background: ca(C.card, 0.95),
+          color: C.ink,
           padding: '7px 9px',
-          fontSize: '0.58rem',
+          fontSize: '0.62rem',
           fontWeight: 700,
           cursor: 'pointer',
-          boxShadow: '0 3px 12px rgba(35, 44, 54, 0.12)',
+          boxShadow: `0 3px 12px ${ca(C.ink, 0.12)}`,
         }}
       >
         {showTelemetry ? '× Ocultar información' : 'Información'}
@@ -507,21 +508,21 @@ export default function TricepsCanvas({
           top: '10px',
           right: '10px',
           width: '215px',
-          background: 'rgba(255, 255, 255, 0.95)',
+          background: ca(C.card, 0.95),
           backdropFilter: 'blur(8px)',
-          border: '1px solid rgba(207, 195, 169, 0.9)',
+          border: `1px solid ${ca(C.line, 0.9)}`,
           borderRadius: '7px',
           padding: '7px 9px',
-          boxShadow: '0 3px 12px rgba(35, 44, 54, 0.12)',
+          boxShadow: `0 3px 12px ${ca(C.ink, 0.12)}`,
           zIndex: 10,
           pointerEvents: 'none',
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-          <span style={{ fontSize: '0.58rem', fontWeight: 800, color: '#232c36', letterSpacing: '0.02em' }}>
+          <span style={{ fontSize: '0.62rem', fontWeight: 800, color: C.ink, letterSpacing: '0.02em' }}>
             PALANCA DE 1ª CLASE
           </span>
-          <span style={{ fontSize: '0.52rem', fontFamily: 'JetBrains Mono, monospace', color: '#7c3aed', fontWeight: 700 }}>
+          <span style={{ fontSize: '0.62rem', fontFamily: 'JetBrains Mono, monospace', color: C.sagittal, fontWeight: 700 }}>
             D/d = {fx(mechanicalRatio, 1)}×
           </span>
         </div>
@@ -529,33 +530,33 @@ export default function TricepsCanvas({
         {/* Diagrama conceptual de balancín */}
         <div
           style={{
-            background: 'rgba(245, 240, 228, 0.75)',
-            border: '1px solid rgba(207, 195, 169, 0.8)',
+            background: ca(C.card, 0.75),
+            border: `1px solid ${ca(C.line, 0.8)}`,
             borderRadius: '4px',
             padding: '4px 6px',
             marginBottom: '5px',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            fontSize: '0.50rem',
+            fontSize: '0.62rem',
             fontFamily: 'JetBrains Mono, monospace',
           }}
         >
-          <span style={{ color: '#dc2626', fontWeight: 700 }}>▲ Ft ({fx(insertCm, 1)}cm)</span>
-          <span style={{ color: '#7c3aed', fontWeight: 800 }}>▼ FULCRO (O)</span>
-          <span style={{ color: '#d97706', fontWeight: 700 }}>▼ W (35cm)</span>
+          <span style={{ color: C.blood, fontWeight: 700 }}>▲ Ft ({fx(insertCm, 1)}cm)</span>
+          <span style={{ color: C.sagittal, fontWeight: 800 }}>▼ FULCRO (O)</span>
+          <span style={{ color: C.amber, fontWeight: 700 }}>▼ W (35cm)</span>
         </div>
 
         {/* Filas de telemetría */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '0.53rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', color: '#dc2626' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '0.62rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', color: C.blood }}>
             <span>■ Tracción Tríceps (Ft):</span>
             <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>
               {fTricepsN.toFixed(0)} N ({fx(fTricepsKgf, 1)} kgf)
             </b>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', color: '#d97706' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', color: C.amber }}>
             <span>■ Fuerza Empuje (W):</span>
             <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>
               {wPushN.toFixed(0)} N ({pushLoadKg} kg)
@@ -565,7 +566,7 @@ export default function TricepsCanvas({
           {/* Reacción Articular Aditiva */}
           <div
             style={{
-              borderTop: '1px solid rgba(67, 80, 92, 0.20)',
+              borderTop: `1px solid ${ca(C.ink2, 0.20)}`,
               paddingTop: '3px',
               marginTop: '1px',
               display: 'flex',
@@ -573,15 +574,15 @@ export default function TricepsCanvas({
               gap: '2px',
             }}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', color: '#7c3aed' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', color: C.sagittal }}>
               <span style={{ fontWeight: 700 }}>Compresión Troclear (Rj):</span>
               <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>
                 {rJointN.toFixed(0)} N ({fx(rJointKgf, 1)} kgf)
               </b>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.48rem', marginTop: '1px' }}>
-              <span style={{ color: '#43505c' }}>Estrés troclear:</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.62rem', marginTop: '1px' }}>
+              <span style={{ color: C.ink2 }}>Estrés troclear:</span>
               <span
                 style={{
                   background: `${stressColor}18`,

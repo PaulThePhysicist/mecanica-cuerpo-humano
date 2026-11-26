@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
+import { C, ca } from './palette';
 import { readCap2Tokens, tokenRgba } from './designTokens';
 import CanvasReserveState from './CanvasReserveState';
 
@@ -36,8 +37,8 @@ const RECEPTORS: Record<string, ReceptorInfo> = {
     field: '0,5–1 mm (Máxima resolución espacial)',
     bestFreq: '0,3 – 5 Hz (Presión estática y bordes)',
     function: 'Discriminación táctil fina de relieve, esquinas, bordes y curvaturas.',
-    color: '#b02318',
-    glowColor: 'rgba(176, 35, 24, 0.45)',
+    color: C.blood,
+    glowColor: ca(C.blood, 0.45),
     yNorm: 0.10, // ~200 µm en escala 2500 µm
     xRel: -36,
   },
@@ -51,8 +52,8 @@ const RECEPTORS: Record<string, ReceptorInfo> = {
     field: '3–5 mm (Puntual / Bordes netos)',
     bestFreq: '10 – 50 Hz (Vibración baja / Aleteo)',
     function: 'Detección de deslizamiento fino y control reflejo de prensión.',
-    color: '#0d8577',
-    glowColor: 'rgba(13, 133, 119, 0.45)',
+    color: C.teal,
+    glowColor: ca(C.teal, 0.45),
     yNorm: 0.22, // ~500 µm en escala 2500 µm
     xRel: -4,
   },
@@ -66,8 +67,8 @@ const RECEPTORS: Record<string, ReceptorInfo> = {
     field: 'Grande (Sensible a tracción direccional)',
     bestFreq: 'Estático / Estiramiento continuo',
     function: 'Propiocepción cutánea del estiramiento articular y deslizamiento sostenido.',
-    color: '#d97706',
-    glowColor: 'rgba(217, 119, 6, 0.45)',
+    color: C.amber,
+    glowColor: ca(C.amber, 0.45),
     yNorm: 0.58, // ~1450 µm en escala 2500 µm
     xRel: 34,
   },
@@ -81,8 +82,8 @@ const RECEPTORS: Record<string, ReceptorInfo> = {
     field: 'Grande y difuso (Dedo entero / Palma)',
     bestFreq: '200 – 400 Hz (Alta frecuencia)',
     function: 'Detección de vibraciones rápidas y nanotexturas de superficie.',
-    color: '#2563eb',
-    glowColor: 'rgba(37, 99, 235, 0.45)',
+    color: C.series3,
+    glowColor: ca(C.series3, 0.45),
     yNorm: 0.84, // ~2150 µm en escala 2500 µm
     xRel: 6,
   },
@@ -365,7 +366,7 @@ export default function MechanoreceptorsCanvas({
       ctx.save();
       for (let vx = skinLeft + 22; vx < skinRight; vx += 34) {
         const py = skinTop + epiderH;
-        ctx.strokeStyle = 'rgba(220, 38, 38, 0.55)';
+        ctx.strokeStyle = ca(C.blood, 0.55);
         ctx.lineWidth = 1.2;
         ctx.beginPath();
         ctx.moveTo(vx - 2.5, py + 18);
@@ -373,7 +374,7 @@ export default function MechanoreceptorsCanvas({
         ctx.arc(vx, py + 3, 2.5, Math.PI, 0);
         ctx.stroke();
 
-        ctx.strokeStyle = 'rgba(37, 99, 235, 0.55)';
+        ctx.strokeStyle = ca(C.series3, 0.55);
         ctx.lineWidth = 1.2;
         ctx.beginPath();
         ctx.moveTo(vx + 2.5, py + 3);
@@ -437,7 +438,7 @@ export default function MechanoreceptorsCanvas({
         const wavePhase = (t * stimulusFreqHz * 0.28 + w * 0.33) % 1.0;
         const waveRad = Math.max(0.1, 10 + wavePhase * (skinW * 0.42));
         const alpha = Math.max(0, 0.40 * (1 - wavePhase));
-        ctx.strokeStyle = `rgba(217, 119, 6, ${alpha.toFixed(3)})`;
+        ctx.strokeStyle = ca(C.amber, alpha);
         ctx.lineWidth = 1.2;
         ctx.setLineDash([3, 3]);
         ctx.beginPath();
@@ -491,7 +492,7 @@ export default function MechanoreceptorsCanvas({
           probeCenterX + rec.xRel * 0.45,
           nerveTrunkY
         );
-        ctx.strokeStyle = isSel ? '#eab308' : (isHov ? '#d97706' : 'rgba(197, 160, 80, 0.4)');
+        ctx.strokeStyle = isSel ? C.amber : (isHov ? C.amber : 'rgba(197, 160, 80, 0.4)');
         ctx.lineWidth = isSel ? 2.0 : 1.0;
         ctx.stroke();
 
@@ -505,8 +506,8 @@ export default function MechanoreceptorsCanvas({
 
             ctx.beginPath();
             ctx.arc(px, py, 3.2, 0, Math.PI * 2);
-            ctx.fillStyle = '#38bdf8';
-            ctx.shadowColor = '#0284c7';
+            ctx.fillStyle = C.series3;
+            ctx.shadowColor = C.series3;
             ctx.shadowBlur = 6;
             ctx.fill();
             ctx.shadowBlur = 0;
@@ -531,9 +532,9 @@ export default function MechanoreceptorsCanvas({
           }
           ctx.beginPath();
           ctx.ellipse(rx, ry, 7.5, 13, 0, 0, Math.PI * 2);
-          ctx.fillStyle = isSel ? '#0d8577' : (isHov ? '#14b8a6' : '#d2c2a4');
+          ctx.fillStyle = isSel ? C.teal : (isHov ? C.teal : '#d2c2a4');
           ctx.fill();
-          ctx.strokeStyle = isSel ? '#042f2c' : '#7c6a4e';
+          ctx.strokeStyle = isSel ? C.tealDeep : C.amberDeep;
           ctx.lineWidth = isSel ? 1.6 : 1.0;
           ctx.stroke();
 
@@ -559,19 +560,19 @@ export default function MechanoreceptorsCanvas({
             ctx.beginPath();
             ctx.ellipse(rx, ry, rxW, ryH, 0, 0, Math.PI * 2);
             if (l === numLamellae) {
-              ctx.fillStyle = isSel ? 'rgba(37, 99, 235, 0.18)' : 'rgba(210, 194, 164, 0.15)';
+              ctx.fillStyle = isSel ? ca(C.series3, 0.18) : ca(C.line, 0.15);
               ctx.fill();
             }
             ctx.strokeStyle = isSel
-              ? (l === 1 ? '#1d4ed8' : 'rgba(37, 99, 235, 0.5)')
-              : (isHov ? '#3b82f6' : 'rgba(140, 122, 92, 0.4)');
+              ? (l === 1 ? C.series3 : ca(C.series3, 0.5))
+              : (isHov ? C.series3 : 'rgba(140, 122, 92, 0.4)');
             ctx.lineWidth = l === 1 ? 1.8 : 0.9;
             ctx.stroke();
           }
           // Terminal axónico central
           ctx.beginPath();
           ctx.ellipse(rx, ry, 5, 1.8, 0, 0, Math.PI * 2);
-          ctx.fillStyle = isSel ? '#60a5fa' : '#b3a080';
+          ctx.fillStyle = isSel ? C.series3 : '#b3a080';
           ctx.fill();
         } else if (rec.id === 'merkel') {
           // Merkel: Cúpula táctil de discos epiteliales basales
@@ -583,9 +584,9 @@ export default function MechanoreceptorsCanvas({
           discs.forEach((dx) => {
             ctx.beginPath();
             ctx.arc(rx + dx, ry, 3.2, 0, Math.PI * 2);
-            ctx.fillStyle = isSel ? '#b02318' : (isHov ? '#dc2626' : '#d2c2a4');
+            ctx.fillStyle = isSel ? C.blood : (isHov ? C.blood : '#d2c2a4');
             ctx.fill();
-            ctx.strokeStyle = isSel ? '#5c0b05' : '#7c6a4e';
+            ctx.strokeStyle = isSel ? '#5c0b05' : C.amberDeep;
             ctx.lineWidth = 1.0;
             ctx.stroke();
           });
@@ -597,14 +598,14 @@ export default function MechanoreceptorsCanvas({
           }
           ctx.beginPath();
           ctx.ellipse(rx, ry, 15, 5.5, 0, 0, Math.PI * 2);
-          ctx.fillStyle = isSel ? 'rgba(217, 119, 6, 0.22)' : 'rgba(210, 194, 164, 0.18)';
+          ctx.fillStyle = isSel ? ca(C.amber, 0.22) : ca(C.line, 0.18);
           ctx.fill();
-          ctx.strokeStyle = isSel ? '#d97706' : (isHov ? '#f59e0b' : '#7c6a4e');
+          ctx.strokeStyle = isSel ? C.amber : (isHov ? C.amber : C.amberDeep);
           ctx.lineWidth = isSel ? 1.6 : 1.0;
           ctx.stroke();
 
           // Fibrillas ramificadas internas
-          ctx.strokeStyle = isSel ? '#fbbf24' : '#8c7a5c';
+          ctx.strokeStyle = isSel ? C.amber : '#8c7a5c';
           ctx.lineWidth = 0.8;
           ctx.beginPath();
           ctx.moveTo(rx - 11, ry);
@@ -628,7 +629,7 @@ export default function MechanoreceptorsCanvas({
           ctx.setLineDash([]);
 
           // Insignia flotante compacta
-          ctx.fillStyle = 'rgba(255, 255, 255, 0.96)';
+          ctx.fillStyle = ca(C.card, 0.96);
           ctx.strokeStyle = rec.color;
           ctx.lineWidth = 1;
           const badgeW = 74;
@@ -682,7 +683,7 @@ export default function MechanoreceptorsCanvas({
         ctx.lineTo(rulerX, tick.y);
         ctx.stroke();
 
-        ctx.fillStyle = '#64748b';
+        ctx.fillStyle = C.ink3;
         ctx.font = 'bold 6px JetBrains Mono, monospace';
         ctx.textAlign = 'right';
         ctx.fillText(tick.label, rulerX - 5, tick.y + 2);
@@ -693,10 +694,10 @@ export default function MechanoreceptorsCanvas({
       const scaleBarPx = (scaleBarUm / 2500) * skinH;
       const sbX = skinLeft + 8;
       const sbY = skinBottom - 14;
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.88)';
+      ctx.fillStyle = ca(C.card, 0.88);
       ctx.roundRect(sbX - 3, sbY - 10, scaleBarPx + 6, 16, 2.5);
       ctx.fill();
-      ctx.strokeStyle = '#64748b';
+      ctx.strokeStyle = C.ink3;
       ctx.lineWidth = 1.2;
       ctx.beginPath();
       ctx.moveTo(sbX, sbY);
@@ -707,7 +708,7 @@ export default function MechanoreceptorsCanvas({
       ctx.lineTo(sbX + scaleBarPx, sbY + 3);
       ctx.stroke();
 
-      ctx.fillStyle = '#334155';
+      ctx.fillStyle = C.ink;
       ctx.font = 'bold 6.5px JetBrains Mono, monospace';
       ctx.textAlign = 'center';
       ctx.fillText('500 µm', sbX + scaleBarPx / 2, sbY - 3);
@@ -732,14 +733,14 @@ export default function MechanoreceptorsCanvas({
       shaftGrad.addColorStop(1, '#334155');
       ctx.fillStyle = shaftGrad;
       ctx.fillRect(probeCenterX - shaftW / 2, probeY - shaftH - 3, shaftW, shaftH);
-      ctx.strokeStyle = '#1e293b';
+      ctx.strokeStyle = C.ink;
       ctx.lineWidth = 0.9;
       ctx.strokeRect(probeCenterX - shaftW / 2, probeY - shaftH - 3, shaftW, shaftH);
 
       // Micrómetro / Anillo de ajuste con marcas grabadas
-      ctx.fillStyle = '#0f172a';
+      ctx.fillStyle = C.ink;
       ctx.fillRect(probeCenterX - shaftW / 2 - 1, probeY - shaftH * 0.65, shaftW + 2, 6);
-      ctx.strokeStyle = '#cbd5e1';
+      ctx.strokeStyle = C.line;
       ctx.lineWidth = 0.5;
       for (let s = probeCenterX - shaftW / 2; s <= probeCenterX + shaftW / 2; s += 1.5) {
         ctx.beginPath();
@@ -763,8 +764,8 @@ export default function MechanoreceptorsCanvas({
 
       // Vector de Fuerza de Indentación Find (Flecha vertical carmín esbelta)
       const arrowLen = Math.min(22, 10 + (stimulusDepthUm / 150) * 12);
-      ctx.strokeStyle = '#b02318';
-      ctx.fillStyle = '#b02318';
+      ctx.strokeStyle = C.blood;
+      ctx.fillStyle = C.blood;
       ctx.lineWidth = 1.5;
       ctx.beginPath();
       ctx.moveTo(probeCenterX, probeY - shaftH - 8);
@@ -780,8 +781,8 @@ export default function MechanoreceptorsCanvas({
 
       // Insignia con lectura exacta de indentación y fuerza estimada
       const estimatedForceMn = Math.round((stimulusDepthUm / 50) * 40); // Estimación viscoelástica (mN)
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-      ctx.strokeStyle = '#b02318';
+      ctx.fillStyle = ca(C.card, 0.95);
+      ctx.strokeStyle = C.blood;
       ctx.lineWidth = 0.9;
       const pW = 88;
       const pH = 15;
@@ -791,7 +792,7 @@ export default function MechanoreceptorsCanvas({
       ctx.fill();
       ctx.stroke();
 
-      ctx.fillStyle = '#b02318';
+      ctx.fillStyle = C.blood;
       ctx.font = 'bold 7px JetBrains Mono, monospace';
       ctx.textAlign = 'center';
       ctx.fillText(`δ = ${stimulusDepthUm} µm · F ≈ ${estimatedForceMn} mN`, pX + pW / 2, pY + 10.5);
@@ -807,8 +808,8 @@ export default function MechanoreceptorsCanvas({
       ctx.save();
       // Chasis del osciloscopio (azul pizarra, no negro puro: el rectángulo
       // grande a la derecha chocaba contra el papel cálido del slide).
-      ctx.fillStyle = '#1c2733';
-      ctx.strokeStyle = '#3b4a5c';
+      ctx.fillStyle = C.ink;
+      ctx.strokeStyle = C.ink2;
       ctx.lineWidth = 1.8;
       ctx.roundRect(oscX, oscY, oscW, oscH, 7);
       ctx.fill();
@@ -833,7 +834,7 @@ export default function MechanoreceptorsCanvas({
       ctx.fillRect(scrX, scrY, scrW, scrH);
 
       // Cuadrícula verde de fósforo (8x6 divisiones)
-      ctx.strokeStyle = 'rgba(20, 184, 166, 0.16)';
+      ctx.strokeStyle = ca(C.teal, 0.16);
       ctx.lineWidth = 0.8;
       const gridCols = 8;
       const gridRows = 6;
@@ -853,7 +854,7 @@ export default function MechanoreceptorsCanvas({
       }
 
       // Ejes centrales con marcas milimétricas
-      ctx.strokeStyle = 'rgba(20, 184, 166, 0.32)';
+      ctx.strokeStyle = ca(C.teal, 0.32);
       ctx.lineWidth = 1.0;
       const midY1 = scrY + scrH * 0.28; // Eje estímulo mecánico
       const midY2 = scrY + scrH * 0.72; // Eje potenciales de acción
@@ -865,9 +866,9 @@ export default function MechanoreceptorsCanvas({
       ctx.stroke();
 
       // ─── Traza 1 (Canal A / Amarillo): Onda Mecánica de Indentación ───
-      ctx.strokeStyle = '#fbbf24';
+      ctx.strokeStyle = C.amber;
       ctx.lineWidth = 1.6;
-      ctx.shadowColor = '#f59e0b';
+      ctx.shadowColor = C.amber;
       ctx.shadowBlur = 5;
       ctx.beginPath();
       for (let x = 0; x <= scrW; x += 2) {
@@ -892,9 +893,9 @@ export default function MechanoreceptorsCanvas({
         firingRateHz = Math.round(10 + (stimulusDepthUm / 150) * 30);
       }
 
-      ctx.strokeStyle = '#34d399';
+      ctx.strokeStyle = C.coronal;
       ctx.lineWidth = 1.8;
-      ctx.shadowColor = '#10b981';
+      ctx.shadowColor = C.coronal;
       ctx.shadowBlur = 6;
       ctx.beginPath();
       ctx.moveTo(scrX, midY2);
@@ -919,7 +920,7 @@ export default function MechanoreceptorsCanvas({
 
       // Línea de barrido vertical fluorescente
       const sweepX = scrX + (t * 110) % scrW;
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+      ctx.strokeStyle = ca(C.card, 0.4);
       ctx.lineWidth = 1.2;
       ctx.beginPath();
       ctx.moveTo(sweepX, scrY);
@@ -927,15 +928,15 @@ export default function MechanoreceptorsCanvas({
       ctx.stroke();
 
       // Indicadores en pantalla CRT
-      ctx.fillStyle = '#fbbf24';
+      ctx.fillStyle = C.amber;
       ctx.font = 'bold 7px JetBrains Mono, monospace';
       ctx.textAlign = 'left';
       ctx.fillText(`CH1 ESTÍMULO: ${stimulusDepthUm} µm @ ${stimulusFreqHz} Hz`, scrX + 6, scrY + 11);
 
-      ctx.fillStyle = '#34d399';
+      ctx.fillStyle = C.coronal;
       ctx.fillText(`CH2 AFERENTE: ${firingRateHz} espigas/s`, scrX + 6, scrY + scrH * 0.52);
 
-      ctx.fillStyle = '#94a3b8';
+      ctx.fillStyle = C.ink3;
       ctx.font = '6.5px JetBrains Mono, monospace';
       ctx.fillText(`Vm: -70 mV → +30 mV`, scrX + 6, scrY + scrH * 0.62);
       ctx.fillText(`Modo: ${curRec.type.split(' ')[0]}`, scrX + 6, scrY + scrH * 0.94);

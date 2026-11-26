@@ -1,4 +1,5 @@
 import React from 'react';
+import { C as PAL_C, ca } from './palette';
 
 /**
  * Regla de las tres fuerzas (Herman, §2.3.5, Fig. 2.47).
@@ -22,13 +23,13 @@ import React from 'react';
 type Step = 1 | 2 | 3 | 4;
 
 const C = {
-  N: '#2d7d4f', // reacción normal / suelo
-  M: '#0d6e64', // músculo · tendón
-  R: '#a92a1e', // reacción articular
-  P: '#9a5b00', // punto de concurrencia
+  N: PAL_C.coronal, // reacción normal / suelo
+  M: PAL_C.teal, // músculo · tendón
+  R: PAL_C.blood, // reacción articular
+  P: PAL_C.amber, // punto de concurrencia
   bone: '#ddd0b5',
-  boneEdge: '#b6a67f',
-  joint: '#5d6b76',
+  boneEdge: PAL_C.bone,
+  joint: PAL_C.ink3,
 };
 
 function Arrow({
@@ -93,7 +94,7 @@ function Label({
       fontWeight={700}
       fill={color}
       fontFamily="JetBrains Mono, monospace"
-      stroke="#fbf8f0"
+      stroke={PAL_C.card}
       strokeWidth={3}
       paintOrder="stroke"
       strokeLinejoin="round"
@@ -124,17 +125,17 @@ export default function ThreeForceDiagram({ step = 4 }: { step?: Step }) {
       aria-label="Regla de las tres fuerzas: las líneas de acción de N, M y R concurren en el punto P"
       style={{ width: '100%', maxWidth: 380, height: 'auto', display: 'block' }}
     >
-      <text x={14} y={15} fontSize={8.5} fontWeight={700} fill={C.joint} fontFamily="Karla, sans-serif">
+      <text x={14} y={15} fontSize={9} fontWeight={700} fill={C.joint} fontFamily="Karla, sans-serif">
         a · construcción
       </text>
       {showTriangle && (
-        <text x={196} y={92} fontSize={8.5} fontWeight={700} fill={C.joint} fontFamily="Karla, sans-serif">
+        <text x={196} y={92} fontSize={9} fontWeight={700} fill={C.joint} fontFamily="Karla, sans-serif">
           b · Σ F = 0
         </text>
       )}
 
       {/* ── (a) pierna inferior aislada sobre el escalón ── */}
-      <rect x={20} y={166} width={120} height={8} fill="#e8dfc9" stroke="#cfc3a9" strokeWidth={1} />
+      <rect x={20} y={166} width={120} height={8} fill={PAL_C.paper3} stroke={PAL_C.line} strokeWidth={1} />
       <path
         d="M118 158 L54 163 L54 153 L100 142 L118 149 Z"
         fill="#e9e1cf"
@@ -179,7 +180,7 @@ export default function ThreeForceDiagram({ step = 4 }: { step?: Step }) {
       {/* reacción articular R en Q, colineal con la recta QP */}
       {showR && (
         <>
-          <circle cx={Q[0]} cy={Q[1]} r={4} fill="#fbf8f0" stroke={C.joint} strokeWidth={1.6} />
+          <circle cx={Q[0]} cy={Q[1]} r={4} fill={PAL_C.card} stroke={C.joint} strokeWidth={1.6} />
           <Label x={Q[0] + 7} y={Q[1] + 1} color={C.joint} size={10}>
             Q
           </Label>
@@ -209,7 +210,7 @@ export default function ThreeForceDiagram({ step = 4 }: { step?: Step }) {
       {/* ── (b) triángulo de fuerzas: cabeza con cola ⟹ ΣF = 0 ── */}
       {showTriangle && (
         <g>
-          <polygon points="234,172 234,126 195,97" fill="rgba(13,110,100,0.08)" stroke="none" />
+          <polygon points="234,172 234,126 195,97" fill={ca(PAL_C.teal, 0.08)} stroke="none" />
           <Arrow x1={234} y1={172} x2={234} y2={128} color={C.N} w={2.2} />
           <Label x={239} y={153} color={C.N} size={10}>
             N

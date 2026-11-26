@@ -1,4 +1,5 @@
 import React from 'react';
+import { C, ca } from './palette';
 import type { Engine } from './useEngine';
 
 export default function Slide0({
@@ -68,10 +69,10 @@ export default function Slide0({
             className="start-btn"
             onClick={onBack}
             style={{
-              background: 'var(--card, #fbf8f0)',
-              color: 'var(--ink-2, #43505c)',
-              borderColor: 'var(--line, #cfc3a9)',
-              boxShadow: '0 1px 3px rgba(35,44,54,0.08)',
+              background: `var(--card, ${C.card})`,
+              color: `var(--ink-2, ${C.ink2})`,
+              borderColor: `var(--line, ${C.line})`,
+              boxShadow: `0 1px 3px ${ca(C.ink, 0.08)}`,
             }}
           >
             ← Volver al Índice
