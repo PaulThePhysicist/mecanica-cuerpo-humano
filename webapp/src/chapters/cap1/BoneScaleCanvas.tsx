@@ -193,16 +193,22 @@ export default function BoneScaleCanvas({
           // Badge de Advertencia de Fractura
           ctx.save();
           const pulse = 0.5 + 0.5 * Math.sin(t * 6);
+          // V6-07: la banda se dimensiona al ancho real del texto (antes
+          // era fija, 104 px, y «FRACTURA: 215 MPa» se salía por la derecha).
+          const fractureLabel = `⚠️ FRACTURA: ${stressMPa} MPa`;
+          ctx.font = (compact ? 'bold 11px' : 'bold 12px') + ' Karla, system-ui, sans-serif';
+          const bandW = ctx.measureText(fractureLabel).width + 16;
+          const bandX = Math.max(4, Math.min(W - bandW - 4, cx - bandW / 2));
           ctx.fillStyle = `rgba(176, 35, 24, ${0.85 + pulse * 0.15})`;
-          ctx.fillRect(cx - 52, midY - 14, 104, 18);
+          ctx.fillRect(bandX, midY - 14, bandW, 18);
           ctx.strokeStyle = '#ffffff';
           ctx.lineWidth = 1;
-          ctx.strokeRect(cx - 52, midY - 14, 104, 18);
+          ctx.strokeRect(bandX, midY - 14, bandW, 18);
 
           ctx.fillStyle = '#ffffff';
           ctx.font = (compact ? 'bold 11px' : 'bold 12px') + ' Karla, system-ui, sans-serif';
           ctx.textAlign = 'center';
-          ctx.fillText(`⚠️ FRACTURA: ${stressMPa} MPa`, cx, midY - 2);
+          ctx.fillText(fractureLabel, bandX + bandW / 2, midY - 1);
           ctx.restore();
         }
 
