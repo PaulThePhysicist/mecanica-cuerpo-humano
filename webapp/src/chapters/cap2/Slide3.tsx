@@ -94,6 +94,9 @@ export default function Slide3({
               <span className="icon">⚖️</span> Principio de la palanca y ventaja mecánica
             </div>
             <div className="card-body">
+              <p style={{ fontSize: '.66rem', color: 'var(--ink-2)' }}>
+                {'Rodillas y codos se mueven en un plano: las seis ecuaciones (2.1)–(2.2) se reducen a tres (Ec. 2.8), $\\sum F_x = 0$, $\\sum F_y = 0$, $\\sum \\tau_z = 0$ (ejes $xyz$ convencionales de 2D, distintos de los del cuerpo en la Fig. 1.1).'}
+              </p>
               <p style={{ fontSize: '.7rem' }}>
                 {'Un peso $W$ y una fuerza muscular $M$ actúan sobre un hueso que se apoya en un fulcro (la articulación), a distancias $d_W$ y $d_M$. Para los tres tipos el torque total es cero cuando'}
               </p>

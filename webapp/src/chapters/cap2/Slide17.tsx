@@ -98,6 +98,19 @@ export default function Slide17({
               </p>
             </div>
           </div>
+          <details className="card" style={{ padding: '.5rem .85rem' }}>
+            <summary style={{ fontSize: '.66rem', fontWeight: 700, color: 'var(--teal-deep)', cursor: 'pointer' }}>Tabla 2.6 completa · unidades de presión</summary>
+            <div style={{ fontSize: '.64rem', lineHeight: 1.7, marginTop: '.3rem' }}>
+              {'$1\\text{ N/m}^2 = 1\\text{ Pa} = 9{,}87\\times 10^{-6}\\text{ atm} = 0{,}0075\\text{ mmHg} = 0{,}102\\text{ mmH}_2\\text{O}$'}<br />
+              {'$1\\text{ N/mm}^2 = 10^6\\text{ Pa} = 1\\text{ MPa} = 145\\text{ psi} = 9{,}87\\text{ atm} \\simeq 10\\text{ atm}$'}<br />
+              {'$1\\text{ psi} = 0{,}0069\\text{ N/mm}^2 = 6894{,}8\\text{ Pa} = 1/14{,}7\\text{ atm} = 0{,}068\\text{ atm}$'}<br />
+              {'$1\\text{ bar} = 10^5\\text{ Pa} = 0{,}1\\text{ N/mm}^2 \\simeq 1\\text{ atm}$'}<br />
+              {'$1\\text{ atm} = 1{,}013\\times 10^5\\text{ Pa} = 1{,}013\\text{ bar} = 0{,}103\\text{ MPa} = 14{,}7\\text{ psi} = 760\\text{ mmHg} = 29{,}9\\text{ in Hg} = 1033\\text{ cmH}_2\\text{O} = 407\\text{ in H}_2\\text{O}$'}<br />
+              {'$1\\text{ mmHg} = 0{,}00132\\text{ atm} = 133\\text{ Pa} = 13{,}6\\text{ mmH}_2\\text{O}$'}<br />
+              {'$1\\text{ mmH}_2\\text{O} = 0{,}1\\text{ cmH}_2\\text{O} = 9{,}68\\times 10^{-5}\\text{ atm} = 9{,}81\\text{ Pa} = 0{,}0735\\text{ mmHg}$'}<br />
+              {'$1\\text{ kg (fuerza)/cm}^2 = 9{,}8\\text{ N/cm}^2$'}
+            </div>
+          </details>
           <div className="apuntes">
             <div className="a-hdr"><span>✍️</span> Apunte de cátedra</div>
             <div className="a-text" id="info-text-17">

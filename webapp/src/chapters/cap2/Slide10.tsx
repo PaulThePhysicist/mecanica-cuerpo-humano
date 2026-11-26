@@ -188,7 +188,7 @@ export default function Slide10({
                 </table>
               </details>
               <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '0.62rem' }}>
-                Acostado, la carga lumbar es del 20 al 50 % de la de pie; al caminar rápido supera el doble del peso corporal (Fig. 2.44). Consejos del libro: estirar la espalda, doblar siempre las rodillas al levantar, mantener la curvatura lumbar (soporte lumbar o toalla enrollada), dormir boca arriba con rodillas dobladas o en posición fetal, nunca boca abajo.
+                Acostado, la carga lumbar es del 20 al 50 % de la de pie; al caminar rápido supera el doble del peso corporal (Fig. 2.44). Consejos del libro: estirar la espalda, doblar siempre las rodillas al levantar, mantener la curvatura lumbar (soporte lumbar o toalla enrollada), dormir boca arriba con rodillas dobladas o en posición fetal, nunca boca abajo, en una cama ni muy firme ni muy blanda; los ejercicios de hiperextensión (Fig. 2.46) fortalecen la espalda, siempre consultando antes al médico.
               </p>
             </div>
           </div>
