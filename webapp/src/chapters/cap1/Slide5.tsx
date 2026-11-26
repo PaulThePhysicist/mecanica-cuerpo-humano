@@ -255,12 +255,12 @@ export default function Slide5({ toggleJointsAnimation, slideCount }: Slide5Prop
                     return (
                       <tr
                         key={jId}
+                        className="row-link"
                         onClick={() => handleSelectJoint(jId)}
                         onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); handleSelectJoint(jId); } }}
                         tabIndex={0}
                         aria-selected={isSel}
                         style={{
-                          cursor: 'pointer',
                           background: isSel ? 'var(--teal-tint)' : 'transparent',
                           fontWeight: isSel ? 700 : 400,
                         }}

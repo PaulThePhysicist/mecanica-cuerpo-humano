@@ -176,12 +176,12 @@ export default function Slide15({ slideCount }: { slideCount?: string }) {
                     return (
                       <tr
                         key={s.id}
+                        className="row-link"
                         onClick={() => handleSelectPreset(s.id)}
                         onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); handleSelectPreset(s.id); } }}
                         tabIndex={0}
                         aria-selected={isSel}
                         style={{
-                          cursor: 'pointer',
                           background: isSel ? 'var(--teal-tint)' : 'transparent',
                           fontWeight: isSel ? 700 : 'normal',
                         }}

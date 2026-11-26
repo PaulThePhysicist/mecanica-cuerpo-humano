@@ -506,7 +506,6 @@
    (C3, D1, D4) y no puede distinguir el contenido, así que aquí se anula
    explícitamente en vez de tocar la regla general. */
 .data-mini.data-terms td:last-child{font-family:var(--sans);color:var(--ink-2);font-size:max(13px,.66rem)}
-.data-mini tr{cursor:pointer}
 .data-mini .table-caption{font-size:max(12px,.56rem);color:var(--ink-3);padding:.14rem .3rem;font-style:italic}
 .data-mini td b{color:var(--ink)}
 
@@ -667,7 +666,10 @@
   color:var(--ink-2);transition:background-color var(--fade),color var(--fade);
 }
 .interactive-table td:last-child{font-family:var(--mono);color:var(--ink);font-size:max(13px,.62rem)}
-.interactive-table tr{cursor:pointer;transition:background-color var(--fade),color var(--fade)}
+.interactive-table tr{transition:background-color var(--fade),color var(--fade)}
+/* I6-05: la mano solo sobre filas que responden al clic (clase row-link);
+   las tablas de consulta ya no prometen una interacción que no existe. */
+.interactive-table tr.row-link{cursor:pointer}
 .interactive-table tr.highlight td{background:var(--teal-tint);color:var(--teal-deep)}
 .interactive-table tr[aria-selected="true"] td,.data-mini tr[aria-selected="true"] td{background:var(--teal-tint);color:var(--teal-deep);box-shadow:inset 3px 0 0 var(--teal)}
 /* La marca lateral de la fila seleccionada va solo en la primera celda. */
@@ -711,8 +713,8 @@
   .concept-flow .step:hover{border-color:var(--teal);color:var(--teal-deep)}
   .slide-full .start-btn:hover{background:var(--teal-deep);box-shadow:0 8px 20px rgba(35,44,54,.22)}
   .prof-controls button:hover{border-color:var(--teal);color:var(--teal-deep)}
-  .interactive-table tr:hover td{background:var(--teal-tint);color:var(--ink)}
-  .data-mini tr:hover td{background:var(--teal-tint);color:var(--ink)}
+  .interactive-table tr.row-link:hover td{background:var(--teal-tint);color:var(--ink)}
+  .data-mini tr.row-link:hover td{background:var(--teal-tint);color:var(--ink)}
   .theory .card:hover{border-color:#bdb09a}
   .nav-dot:hover{background:var(--ink-3)}
 }
