@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { fmt } from './format';
 import { CFX } from './sims';
+import { panelOverlap } from './safeArea';
 
 interface AllometryCanvasProps {
   selectedParam: string; // 'BMR', 'area', 'HR', 'brain', 'life', 'muscle'
@@ -203,7 +204,9 @@ export default function AllometryCanvas({
       // top=58 (antes 48): la ballena azul (el punto más extremo en casi
       // todas las curvas) queda a 14px por encima de su punto — con solo
       // 48px de margen su rótulo tocaba el borde superior (V2-04).
-      const pad = { top: 58, bottom: 85, left: 62, right: 30 };
+      // V6-02: abajo solo las marcas del eje x (~30 px) más lo que tape el
+      // panel de controles abierto; con el panel colapsado la gráfica crece.
+      const pad = { top: 58, bottom: 30 + panelOverlap(canvas), left: 62, right: 30 };
       const plotW = W - pad.left - pad.right;
       const plotH = H - pad.top - pad.bottom;
 

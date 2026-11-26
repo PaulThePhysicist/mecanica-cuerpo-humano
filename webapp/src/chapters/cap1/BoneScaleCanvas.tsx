@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { fmt } from './format';
 import { CFX } from './sims';
+import { panelOverlap } from './safeArea';
 
 interface BoneScaleCanvasProps {
   selectedAnimal?: string | null;
@@ -80,7 +81,9 @@ export default function BoneScaleCanvas({
       // Reservamos una franja inferior para las métricas y los controles del visor.
       // En la vista estrecha esto evita que las etiquetas queden bajo el panel HUD.
       const compact = W < 390;
-      const floorY = H * (compact ? 0.69 : 0.75);
+      // V6-02: el suelo y la tarjeta de cada especie (≈ 52 px bajo el suelo)
+      // se componen por encima del panel de controles abierto.
+      const floorY = Math.min(H * (compact ? 0.69 : 0.75), H - panelOverlap(canvas) - 56);
       ctx.strokeStyle = 'rgba(207, 195, 169, 0.7)';
       ctx.lineWidth = 1;
       ctx.beginPath();
@@ -105,7 +108,10 @@ export default function BoneScaleCanvas({
         const cx = colW * (i + 0.5);
 
         // Longitudes normalizadas para visualización comparativa
-        const boneH = H * (compact ? (0.22 + i * 0.12) : (0.25 + i * 0.14));
+        // Alto relativo de cada fémur, limitado al espacio entre la cabecera
+        // (≈ 100 px con la flecha de carga) y el suelo.
+        const boneFrac = compact ? (0.22 + i * 0.12) : (0.25 + i * 0.14);
+        const boneH = Math.min(H * boneFrac, Math.max(40, floorY - 100) * boneFrac / (compact ? 0.46 : 0.53));
         const topY = floorY - boneH;
 
         // Grosor diafisario base

@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { fmt } from './format';
 import { SERIES_COLORS, INK, BLOOD } from './colorTokens';
 import { CFX } from './sims';
+import { panelOverlap } from './safeArea';
 
 interface StevensCanvasProps {
   n: number;
@@ -118,7 +119,8 @@ export default function StevensCanvas({
       CFX.scene(ctx, W, H, { spotX: W * 0.4 });
 
       // ─── 2. Dimensiones del Gráfico Psicofísico ───
-      const pad = { top: 46, bottom: 42, left: 52, right: 180 };
+      // V6-02: el eje x y su título se componen por encima del panel abierto.
+      const pad = { top: 46, bottom: 42 + panelOverlap(canvas), left: 52, right: 180 };
       const plotW = W - pad.left - pad.right;
       const plotH = H - pad.top - pad.bottom;
 
@@ -339,7 +341,8 @@ export default function StevensCanvas({
       ctx.lineWidth = 1.5;
       ctx.stroke();
 
-      CFX.chip(ctx, refX, refY + 14, 'S − S₀', { color: CFX.PAL.ink2, size: scaled(10), align: 'center', W });
+      // Encima y a la izquierda del punto: debajo pisaba la marca «1» del eje x.
+      CFX.chip(ctx, refX - 24, refY - 14, 'S − S₀', { color: CFX.PAL.ink2, size: scaled(10), align: 'center', W });
       CFX.chip(ctx, dblX, dblY - 8, `2·(S − S₀) (×${fmt(ratioPerceived, 2)})`, { color: CFX.PAL.ink2, size: scaled(10), align: 'center', W });
       ctx.restore();
 
