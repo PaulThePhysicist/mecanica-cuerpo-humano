@@ -198,7 +198,7 @@ export default function Slide12({ slideCount }: { slideCount?: string }) {
                       <div>
                         <b style={{ color: isSel ? 'var(--teal-deep)' : 'var(--ink)' }}>{item.name}</b>
                         <br />
-                        <span style={{ fontSize: '.55rem', color: 'var(--ink-3)' }}>Unidad: {item.unit}</span>
+                        <span style={{ fontSize:  'max(12px, .55rem)', color: 'var(--ink-3)' }}>Unidad: {item.unit}</span>
                       </div>
                       <span style={{ color: isSel ? 'var(--teal-deep)' : 'var(--ink-2)', whiteSpace: 'nowrap' }}>
                         <Tex>{`a = ${item.a} \\quad \\alpha = ${fmt(item.alpha, item.alpha === 1 ? 1 : 2).replace(',', '{,}')}`}</Tex>
@@ -252,7 +252,7 @@ export default function Slide12({ slideCount }: { slideCount?: string }) {
                   border: '1px solid var(--line)',
                   borderRadius: '4px',
                   padding: '2px 8px',
-                  fontSize: '0.60rem',
+                  fontSize:  'max(12px, 0.60rem)',
                   cursor: 'pointer',
                   color: 'var(--ink)',
                   marginLeft: '4px',

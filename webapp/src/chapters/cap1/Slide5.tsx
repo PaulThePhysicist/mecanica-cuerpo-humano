@@ -276,7 +276,7 @@ export default function Slide5({ toggleJointsAnimation, slideCount }: Slide5Prop
               <p style={{ marginTop: '.3rem' }}>
                 <strong>Análogos cotidianos:</strong> bisagra de puerta (1 GL) · junta universal de un coche (2 GL) · grifo de ducha (rótula, 3 GL).
               </p>
-              <p style={{ fontSize: '.6rem', color: 'var(--ink-3)', marginTop: '.2rem' }}>
+              <p style={{ fontSize:  'max(12px, .6rem)', color: 'var(--ink-3)', marginTop: '.2rem' }}>
                 Pasa el cursor o haz clic sobre cada tipo para verlo animado en el modelo 3D.
               </p>
             </div>
@@ -341,7 +341,7 @@ export default function Slide5({ toggleJointsAnimation, slideCount }: Slide5Prop
                     border: '1px solid var(--line)',
                     borderRadius: '3px',
                     padding: '1px 5px',
-                    fontSize: '0.58rem',
+                    fontSize:  'max(12px, 0.58rem)',
                     color: 'var(--ink-2)',
                     cursor: 'pointer',
                   }}
@@ -368,7 +368,7 @@ export default function Slide5({ toggleJointsAnimation, slideCount }: Slide5Prop
                     }}
                     style={{ width: currentMeta.sliders.length > 2 ? '45px' : '55px' }}
                   />
-                  <span style={{ fontFamily: 'monospace', fontSize: '0.58rem', color: 'var(--ink-3)', minWidth: '22px' }}>
+                  <span style={{ fontFamily: 'monospace', fontSize:  'max(12px, 0.58rem)', color: 'var(--ink-3)', minWidth: '22px' }}>
                     {Math.round(angles[s.key])}{s.unit}
                   </span>
                 </label>
@@ -398,7 +398,7 @@ export default function Slide5({ toggleJointsAnimation, slideCount }: Slide5Prop
 
               {/* Controles de Zoom integrados */}
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', background: 'var(--paper-2)', border: '1px solid var(--line)', borderRadius: '4px', padding: '1px 4px' }}>
-                <span style={{ fontSize: '0.58rem', color: 'var(--ink-3)' }}>Zoom</span>
+                <span style={{ fontSize:  'max(12px, 0.58rem)', color: 'var(--ink-3)' }}>Zoom</span>
                 <button
                   type="button"
                   onClick={handleZoomOut}
@@ -407,7 +407,7 @@ export default function Slide5({ toggleJointsAnimation, slideCount }: Slide5Prop
                 >
                   −
                 </button>
-                <span style={{ color: 'var(--line)', fontSize: '0.60rem' }}>|</span>
+                <span style={{ color: 'var(--line)', fontSize:  'max(12px, 0.60rem)' }}>|</span>
                 <button
                   type="button"
                   onClick={handleZoomIn}

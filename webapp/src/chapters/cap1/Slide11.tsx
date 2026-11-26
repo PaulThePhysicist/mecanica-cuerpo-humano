@@ -99,15 +99,15 @@ export default function Slide11({ slideCount }: { slideCount?: string }) {
                       <span style={{ fontSize: '1.2rem' }}>{item.emoji}</span>
                       <div style={{ flex: 1 }}>
                         <b style={{ color: isSel ? item.color : 'var(--ink)' }}>{item.name}</b>
-                        <span style={{ fontSize: '.54rem', color: 'var(--ink-3)', marginLeft: '6px', fontFamily: 'JetBrains Mono, monospace' }}>
+                        <span style={{ fontSize:  'max(12px, .54rem)', color: 'var(--ink-3)', marginLeft: '6px', fontFamily: 'JetBrains Mono, monospace' }}>
                           [{item.scores}]
                         </span>
                         <br />
-                        <span style={{ fontSize: '.55rem', color: 'var(--ink-2)' }}>{item.features}</span>
+                        <span style={{ fontSize:  'max(12px, .55rem)', color: 'var(--ink-2)' }}>{item.features}</span>
                       </div>
                       <span
                         style={{
-                          fontSize: '.52rem',
+                          fontSize:  'max(12px, .52rem)',
                           fontWeight: 'bold',
                           padding: '2px 6px',
                           borderRadius: '4px',
@@ -121,7 +121,7 @@ export default function Slide11({ slideCount }: { slideCount?: string }) {
                   );
                 })}
               </div>
-              <p style={{ fontSize: '.55rem', color: 'var(--ink-3)', marginTop: '.3rem' }}>
+              <p style={{ fontSize:  'max(12px, .55rem)', color: 'var(--ink-3)', marginTop: '.3rem' }}>
                 Terna ilustrativa (endo · meso · ecto), escala 1–7. De lanzadores a velocistas a fondistas, la mesomorfia baja y la ectomorfia sube.
               </p>
               <p style={{ fontSize: '.62rem', color: 'var(--ink-2)', marginTop: '.35rem' }}>

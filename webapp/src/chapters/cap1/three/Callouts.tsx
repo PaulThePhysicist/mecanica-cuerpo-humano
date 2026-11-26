@@ -187,7 +187,7 @@ export function Callout({
           }}
         >
           <div style={{ fontSize: '0.72rem' }}>{label}</div>
-          {sub && <div style={{ fontSize: '0.56rem', color }}>{sub}</div>}
+          {sub && <div style={{ fontSize:  'max(12px, 0.56rem)', color }}>{sub}</div>}
         </div>
       </Html>
     );
@@ -459,7 +459,7 @@ function CalloutRailInner({
                 {it.sub && (
                   <div
                     style={{
-                      fontSize: '0.6rem',
+                      fontSize:  'max(12px, 0.6rem)',
                       color: it.color,
                       fontWeight: 600,
                       whiteSpace: 'nowrap',
@@ -488,7 +488,7 @@ function CalloutRailInner({
               border: '1px solid rgba(35,44,54,0.10)',
               borderRadius: 5,
               fontFamily: 'var(--sans, system-ui, sans-serif)',
-              fontSize: '0.56rem',
+              fontSize:  'max(12px, 0.56rem)',
               lineHeight: 1.32,
               color: '#5b6672',
               textAlign: side === 'right' ? 'right' : 'left',
@@ -686,7 +686,7 @@ function AnchoredLabelOverlayInner({ store }: { store: CalloutStore }) {
           }}
         >
           <div style={{ fontWeight: 700, fontSize: '0.85rem' }}>{it.label}</div>
-          {it.sub && <div style={{ fontSize: '0.56rem', opacity: 0.85, marginTop: 1 }}>{it.sub}</div>}
+          {it.sub && <div style={{ fontSize:  'max(12px, 0.56rem)', opacity: 0.85, marginTop: 1 }}>{it.sub}</div>}
         </div>
       ))}
     </div>

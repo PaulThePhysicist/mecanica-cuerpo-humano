@@ -108,7 +108,7 @@ function DofArc({
               boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
               borderRadius: '4px',
               padding: '2px 5px',
-              fontSize: '0.55rem',
+              fontSize:  'max(12px, 0.55rem)',
               fontWeight: 700,
               fontFamily: 'JetBrains Mono, monospace',
               color: '#22303c',

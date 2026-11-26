@@ -96,7 +96,7 @@ export default function HudPanel({
       >
         <span
           style={{
-            fontSize: '0.56rem',
+            fontSize:  'max(12px, 0.56rem)',
             textTransform: 'uppercase',
             letterSpacing: '0.05em',
             fontWeight: 'bold',
@@ -109,7 +109,7 @@ export default function HudPanel({
           {badge && (
             <span
               style={{
-                fontSize: '0.60rem',
+                fontSize:  'max(12px, 0.60rem)',
                 fontFamily: 'JetBrains Mono, monospace',
                 fontWeight: 'bold',
                 color: 'var(--teal-deep)',
@@ -161,7 +161,7 @@ export default function HudPanel({
             marginTop: '5px',
             paddingTop: '3px',
             borderTop: '1px dashed var(--line)',
-            fontSize: '0.52rem',
+            fontSize:  'max(12px, 0.52rem)',
             color: 'var(--ink-3)',
             textAlign: 'center',
           }}

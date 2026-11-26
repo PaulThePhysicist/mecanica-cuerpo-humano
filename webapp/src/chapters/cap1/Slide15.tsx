@@ -199,10 +199,10 @@ export default function Slide15({ slideCount }: { slideCount?: string }) {
                   })}
                 </tbody>
               </table>
-              <p style={{ fontSize: '.6rem', color: 'var(--ink-3)', marginTop: '.25rem' }}>
+              <p style={{ fontSize:  'max(12px, .6rem)', color: 'var(--ink-3)', marginTop: '.25rem' }}>
                 La visión y audición abarcan ~12 órdenes de magnitud de sensibilidad física.
               </p>
-              <p style={{ fontSize: '.6rem', color: 'var(--ink-3)', marginTop: '.1rem' }}>
+              <p style={{ fontSize:  'max(12px, .6rem)', color: 'var(--ink-3)', marginTop: '.1rem' }}>
                 Pasa el cursor o haz clic sobre cada modalidad para comparar su curva en el gráfico.
               </p>
             </div>
@@ -242,14 +242,14 @@ export default function Slide15({ slideCount }: { slideCount?: string }) {
                     }}
                   >
                     <span style={{ fontSize: '0.62rem', fontWeight: 600, color: 'var(--ink)' }}>{s.name.split('(')[0].trim()}</span>
-                    <span style={{ fontSize: '0.58rem', fontFamily: 'var(--mono)', color: s.n > 1 ? 'var(--blood)' : 'var(--teal)', fontWeight: 'bold' }}>
+                    <span style={{ fontSize:  'max(12px, 0.58rem)', fontFamily: 'var(--mono)', color: s.n > 1 ? 'var(--blood)' : 'var(--teal)', fontWeight: 'bold' }}>
                       n = {fmt(s.n, 2)}
                     </span>
                   </div>
                 );
               })}
 
-              <div style={{ marginTop: '4px', borderTop: '1px dashed var(--line)', paddingTop: '4px', fontSize: '0.54rem', color: 'var(--ink-3)' }}>
+              <div style={{ marginTop: '4px', borderTop: '1px dashed var(--line)', paddingTop: '4px', fontSize:  'max(12px, 0.54rem)', color: 'var(--ink-3)' }}>
                 ⚡ <b>Duplicación:</b> 2ⁿ = {fmt(Math.pow(2, n), 2)}×
               </div>
             </div>

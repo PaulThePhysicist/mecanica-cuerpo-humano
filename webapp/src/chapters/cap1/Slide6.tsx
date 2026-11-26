@@ -268,13 +268,13 @@ export default function Slide6({ toggleMovementAnimation, slideCount }: Slide6Pr
                 }}
               >
                 <span><b>Circunducción</b>: cono compuesto 3D</span>
-                <span style={{ fontSize: '0.52rem', background: 'var(--teal-tint)', color: 'var(--teal-deep)', padding: '1px 5px', borderRadius: '3px', fontWeight: 'bold' }}>
+                <span style={{ fontSize:  'max(12px, 0.52rem)', background: 'var(--teal-tint)', color: 'var(--teal-deep)', padding: '1px 5px', borderRadius: '3px', fontWeight: 'bold' }}>
                   TRIAXIAL
                 </span>
               </div>
 
               <div style={{ marginTop: '0.45rem', padding: '6px 8px', background: 'var(--paper-2)', borderRadius: '4px', border: '1px solid var(--line)' }}>
-                <div style={{ fontSize: '0.58rem', color: 'var(--ink-2)', fontWeight: 600 }}>
+                <div style={{ fontSize:  'max(12px, 0.58rem)', color: 'var(--ink-2)', fontWeight: 600 }}>
                   Par Antagónico Activo:
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '2px', fontSize: '0.62rem' }}>
@@ -290,7 +290,7 @@ export default function Slide6({ toggleMovementAnimation, slideCount }: Slide6Pr
                         border: '1px solid var(--teal)',
                         color: 'var(--teal-deep)',
                         borderRadius: '3px',
-                        fontSize: '0.55rem',
+                        fontSize:  'max(12px, 0.55rem)',
                         fontWeight: 600,
                         padding: '1px 6px',
                         cursor: 'pointer',
@@ -300,7 +300,7 @@ export default function Slide6({ toggleMovementAnimation, slideCount }: Slide6Pr
                     </button>
                   )}
                 </div>
-                <div style={{ fontSize: '0.58rem', color: '#8c534b', marginTop: '2px' }}>
+                <div style={{ fontSize:  'max(12px, 0.58rem)', color: '#8c534b', marginTop: '2px' }}>
                   Antagonista: {currentMeta.antagonist}
                 </div>
               </div>
@@ -335,10 +335,10 @@ export default function Slide6({ toggleMovementAnimation, slideCount }: Slide6Pr
             </div>
             <div className="a-text" id="info-text-b3">
               <div dangerouslySetInnerHTML={{ __html: currentMeta.desc }} />
-              <div style={{ marginTop: '0.35rem', paddingTop: '0.35rem', borderTop: '1px dashed var(--line)', fontSize: '0.58rem', color: 'var(--ink-2)' }}>
+              <div style={{ marginTop: '0.35rem', paddingTop: '0.35rem', borderTop: '1px dashed var(--line)', fontSize:  'max(12px, 0.58rem)', color: 'var(--ink-2)' }}>
                 <b>Eje cinemático:</b> {currentMeta.axis} · <b>ROM:</b> {currentMeta.rom}
               </div>
-              <div style={{ marginTop: '0.2rem', fontFamily: 'JetBrains Mono, monospace', fontSize: '0.56rem', color: 'var(--teal-deep)' }}>
+              <div style={{ marginTop: '0.2rem', fontFamily: 'JetBrains Mono, monospace', fontSize:  'max(12px, 0.56rem)', color: 'var(--teal-deep)' }}>
                 {currentMeta.formula}
               </div>
             </div>
@@ -357,7 +357,7 @@ export default function Slide6({ toggleMovementAnimation, slideCount }: Slide6Pr
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
               {/* Sección Plano Sagital */}
-              <div style={{ fontSize: '0.50rem', fontWeight: 'bold', color: 'var(--ink-3)', marginTop: '1px', textTransform: 'uppercase' }}>
+              <div style={{ fontSize:  'max(12px, 0.50rem)', fontWeight: 'bold', color: 'var(--ink-3)', marginTop: '1px', textTransform: 'uppercase' }}>
                 Plano Sagital
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3px' }}>
@@ -398,7 +398,7 @@ export default function Slide6({ toggleMovementAnimation, slideCount }: Slide6Pr
               </div>
 
               {/* Sección Plano Coronal */}
-              <div style={{ fontSize: '0.50rem', fontWeight: 'bold', color: 'var(--ink-3)', marginTop: '3px', textTransform: 'uppercase' }}>
+              <div style={{ fontSize:  'max(12px, 0.50rem)', fontWeight: 'bold', color: 'var(--ink-3)', marginTop: '3px', textTransform: 'uppercase' }}>
                 Plano Coronal
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3px' }}>
@@ -439,7 +439,7 @@ export default function Slide6({ toggleMovementAnimation, slideCount }: Slide6Pr
               </div>
 
               {/* Sección Rotación Axial */}
-              <div style={{ fontSize: '0.50rem', fontWeight: 'bold', color: 'var(--ink-3)', marginTop: '3px', textTransform: 'uppercase' }}>
+              <div style={{ fontSize:  'max(12px, 0.50rem)', fontWeight: 'bold', color: 'var(--ink-3)', marginTop: '3px', textTransform: 'uppercase' }}>
                 Rotación Axial
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3px' }}>
@@ -480,7 +480,7 @@ export default function Slide6({ toggleMovementAnimation, slideCount }: Slide6Pr
               </div>
 
               {/* Sección Pivote Radiocubital */}
-              <div style={{ fontSize: '0.50rem', fontWeight: 'bold', color: 'var(--ink-3)', marginTop: '3px', textTransform: 'uppercase' }}>
+              <div style={{ fontSize:  'max(12px, 0.50rem)', fontWeight: 'bold', color: 'var(--ink-3)', marginTop: '3px', textTransform: 'uppercase' }}>
                 Pivote Radiocubital
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3px' }}>
@@ -540,12 +540,12 @@ export default function Slide6({ toggleMovementAnimation, slideCount }: Slide6Pr
                   <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#f59e0b' }} />
                   <span style={{ fontSize: '0.62rem', fontWeight: 600, color: 'var(--ink)' }}>Circunducción (Cono)</span>
                 </div>
-                <span style={{ fontSize: '0.52rem', color: 'var(--teal-deep)', fontWeight: 'bold' }}>3D</span>
+                <span style={{ fontSize:  'max(12px, 0.52rem)', color: 'var(--teal-deep)', fontWeight: 'bold' }}>3D</span>
               </div>
 
               {/* Capas Visuales Toggles */}
               <div style={{ marginTop: '5px', paddingTop: '4px', borderTop: '1px solid var(--line)', display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                <div style={{ fontSize: '0.48rem', fontWeight: 'bold', color: 'var(--ink-3)', textTransform: 'uppercase' }}>
+                <div style={{ fontSize:  'max(12px, 0.48rem)', fontWeight: 'bold', color: 'var(--ink-3)', textTransform: 'uppercase' }}>
                   Capas Visuales
                 </div>
                 <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
@@ -554,7 +554,7 @@ export default function Slide6({ toggleMovementAnimation, slideCount }: Slide6Pr
                     onClick={() => setShowMuscles((m) => !m)}
                     style={{
                       flex: '1 1 auto',
-                      fontSize: '0.54rem',
+                      fontSize:  'max(12px, 0.54rem)',
                       padding: '2px 4px',
                       borderRadius: '3px',
                       cursor: 'pointer',
@@ -571,7 +571,7 @@ export default function Slide6({ toggleMovementAnimation, slideCount }: Slide6Pr
                     onClick={() => setShowPlanes((p) => !p)}
                     style={{
                       flex: '1 1 auto',
-                      fontSize: '0.54rem',
+                      fontSize:  'max(12px, 0.54rem)',
                       padding: '2px 4px',
                       borderRadius: '3px',
                       cursor: 'pointer',
@@ -588,7 +588,7 @@ export default function Slide6({ toggleMovementAnimation, slideCount }: Slide6Pr
                     onClick={() => setShowLabels((l) => !l)}
                     style={{
                       flex: '1 1 auto',
-                      fontSize: '0.54rem',
+                      fontSize:  'max(12px, 0.54rem)',
                       padding: '2px 4px',
                       borderRadius: '3px',
                       cursor: 'pointer',
@@ -637,7 +637,7 @@ export default function Slide6({ toggleMovementAnimation, slideCount }: Slide6Pr
                   }}
                   style={{ width: '75px' }}
                 />
-                <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.60rem', minWidth: '28px' }}>
+                <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize:  'max(12px, 0.60rem)', minWidth: '28px' }}>
                   {Math.round(progress * 100)}%
                 </span>
               </label>
@@ -657,7 +657,7 @@ export default function Slide6({ toggleMovementAnimation, slideCount }: Slide6Pr
                       color: animSpeed === spd ? '#ffffff' : 'var(--ink-3)',
                       borderRadius: '2px',
                       padding: '1px 4px',
-                      fontSize: '0.55rem',
+                      fontSize:  'max(12px, 0.55rem)',
                       fontWeight: 600,
                       cursor: 'pointer',
                     }}
@@ -687,7 +687,7 @@ export default function Slide6({ toggleMovementAnimation, slideCount }: Slide6Pr
 
               {/* Controles de Zoom */}
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', background: 'var(--paper-2)', border: '1px solid var(--line)', borderRadius: '4px', padding: '1px 4px' }}>
-                <span style={{ fontSize: '0.58rem', color: 'var(--ink-3)' }}>Zoom</span>
+                <span style={{ fontSize:  'max(12px, 0.58rem)', color: 'var(--ink-3)' }}>Zoom</span>
                 <button
                   type="button"
                   onClick={handleZoomOut}
@@ -696,7 +696,7 @@ export default function Slide6({ toggleMovementAnimation, slideCount }: Slide6Pr
                 >
                   −
                 </button>
-                <span style={{ color: 'var(--line)', fontSize: '0.60rem' }}>|</span>
+                <span style={{ color: 'var(--line)', fontSize:  'max(12px, 0.60rem)' }}>|</span>
                 <button
                   type="button"
                   onClick={handleZoomIn}

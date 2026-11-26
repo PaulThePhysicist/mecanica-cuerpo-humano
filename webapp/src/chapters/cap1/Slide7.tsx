@@ -294,7 +294,7 @@ export default function Slide7({ slideCount }: { slideCount?: string }) {
             {mode === 'eye' ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 {/* 3 Pares de Antagonistas */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', fontSize: '0.58rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', fontSize:  'max(12px, 0.58rem)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', padding: '2px 4px', background: gaze.x !== 0 ? 'var(--teal-tint)' : 'transparent', borderRadius: '3px' }}>
                     <span style={{ color: 'var(--ink)' }}>↔ Horizontal:</span>
                     <span style={{ fontWeight: 'bold', color: 'var(--teal-deep)' }}>RL ↔ RM</span>
@@ -311,7 +311,7 @@ export default function Slide7({ slideCount }: { slideCount?: string }) {
 
                 {/* Brújula / Matriz de 9 miradas cardinales */}
                 <div style={{ marginTop: '4px', borderTop: '1px solid var(--line)', paddingTop: '4px' }}>
-                  <span style={{ fontSize: '0.52rem', textTransform: 'uppercase', color: 'var(--ink-3)', fontWeight: 'bold' }}>
+                  <span style={{ fontSize:  'max(12px, 0.52rem)', textTransform: 'uppercase', color: 'var(--ink-3)', fontWeight: 'bold' }}>
                     Miradas Cardinales (Test en H):
                   </span>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '2px', marginTop: '3px' }}>
@@ -359,7 +359,7 @@ export default function Slide7({ slideCount }: { slideCount?: string }) {
                     {armFlexion < 0.45 ? 'ACTIVO (Tensión)' : 'Relajado'}
                   </span>
                 </div>
-                <div style={{ marginTop: '4px', borderTop: '1px dashed var(--line)', paddingTop: '4px', fontSize: '0.54rem', color: 'var(--ink-3)' }}>
+                <div style={{ marginTop: '4px', borderTop: '1px dashed var(--line)', paddingTop: '4px', fontSize:  'max(12px, 0.54rem)', color: 'var(--ink-3)' }}>
                   📐 <b>Palanca de 3.er Género:</b> Fulcro en el codo, Esfuerzo en el bíceps, Carga en la mano.
                 </div>
               </div>
@@ -438,7 +438,7 @@ export default function Slide7({ slideCount }: { slideCount?: string }) {
                   }}
                   style={{ width: '65px' }}
                 />
-                <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.60rem' }}>
+                <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize:  'max(12px, 0.60rem)' }}>
                   {Math.round(armFlexion * 100)}%
                 </span>
               </div>
@@ -464,7 +464,7 @@ export default function Slide7({ slideCount }: { slideCount?: string }) {
 
               {/* Controles de Zoom integrados */}
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', background: 'var(--paper-2)', border: '1px solid var(--line)', borderRadius: '4px', padding: '1px 4px' }}>
-                <span style={{ fontSize: '0.58rem', color: 'var(--ink-3)' }}>Zoom</span>
+                <span style={{ fontSize:  'max(12px, 0.58rem)', color: 'var(--ink-3)' }}>Zoom</span>
                 <button
                   type="button"
                   onClick={handleZoomOut}
@@ -473,7 +473,7 @@ export default function Slide7({ slideCount }: { slideCount?: string }) {
                 >
                   −
                 </button>
-                <span style={{ color: 'var(--line)', fontSize: '0.60rem' }}>|</span>
+                <span style={{ color: 'var(--line)', fontSize:  'max(12px, 0.60rem)' }}>|</span>
                 <button
                   type="button"
                   onClick={handleZoomIn}

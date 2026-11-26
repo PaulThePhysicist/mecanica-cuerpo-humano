@@ -331,7 +331,7 @@ export default function Slide9({ slideCount }: { slideCount?: string }) {
 
             <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.65rem', alignItems: 'center' }}>
               {selectedSegment && (
-                <span style={{ fontSize: '0.60rem', color: 'var(--teal-deep)', fontWeight: 'bold' }}>
+                <span style={{ fontSize:  'max(12px, 0.60rem)', color: 'var(--teal-deep)', fontWeight: 'bold' }}>
                   {SEGMENTS_DATA[selectedSegment]?.name}: {fmt((SEGMENTS_DATA[selectedSegment]?.frac || 0) * height, 1)} cm
                 </span>
               )}

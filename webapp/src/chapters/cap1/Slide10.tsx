@@ -366,7 +366,7 @@ export default function Slide10({ slideCount }: { slideCount?: string }) {
                           color: animSpeed === spd ? '#ffffff' : 'var(--ink-3)',
                           borderRadius: '2px',
                           padding: '1px 4px',
-                          fontSize: '0.55rem',
+                          fontSize:  'max(12px, 0.55rem)',
                           fontWeight: 600,
                           cursor: 'pointer',
                         }}

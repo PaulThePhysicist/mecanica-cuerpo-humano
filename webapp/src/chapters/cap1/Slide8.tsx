@@ -312,7 +312,7 @@ export default function Slide8({ slideCount }: { slideCount?: string }) {
                   onChange={(e) => setMass(parseFloat(e.target.value))}
                   style={{ width: '65px' }}
                 />
-                <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.60rem', fontWeight: 'bold' }}>
+                <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize:  'max(12px, 0.60rem)', fontWeight: 'bold' }}>
                   {mass} kg
                 </span>
               </label>
@@ -327,14 +327,14 @@ export default function Slide8({ slideCount }: { slideCount?: string }) {
                   onChange={(e) => setHeight(parseFloat(e.target.value))}
                   style={{ width: '65px' }}
                 />
-                <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.60rem', fontWeight: 'bold' }}>
+                <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize:  'max(12px, 0.60rem)', fontWeight: 'bold' }}>
                   {height} cm
                 </span>
               </label>
             </div>
 
             <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.65rem', alignItems: 'center' }}>
-              <span style={{ fontSize: '0.60rem', color: 'var(--ink-2)' }}>
+              <span style={{ fontSize:  'max(12px, 0.60rem)', color: 'var(--ink-2)' }}>
                 IMC: <b>{fmt(bmi, 1)}</b> · Área: <b>{fmt(bsa, 2)} m²</b>
               </span>
 

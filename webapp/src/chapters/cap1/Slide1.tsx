@@ -192,7 +192,7 @@ export default function Slide1({ hl, slideCount }: Slide1Props) {
           <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.85rem', alignItems: 'center' }}>
             {/* Controles de Zoom integrados */}
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', background: 'var(--paper-2)', border: '1px solid var(--line)', borderRadius: '4px', padding: '1px 5px' }}>
-              <span style={{ fontSize: '0.60rem', color: 'var(--ink-3)', marginRight: '2px' }}>Zoom</span>
+              <span style={{ fontSize:  'max(12px, 0.60rem)', color: 'var(--ink-3)', marginRight: '2px' }}>Zoom</span>
               <button
                 type="button"
                 onClick={handleZoomOut}

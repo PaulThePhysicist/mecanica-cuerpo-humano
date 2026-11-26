@@ -184,7 +184,7 @@ export default function Slide14({ slideCount }: { slideCount?: string }) {
                     border: 'none',
                     borderRadius: '3px',
                     padding: '1px 5px',
-                    fontSize: '0.58rem',
+                    fontSize:  'max(12px, 0.58rem)',
                     cursor: 'pointer',
                   }}
                 >
@@ -199,7 +199,7 @@ export default function Slide14({ slideCount }: { slideCount?: string }) {
                     border: 'none',
                     borderRadius: '3px',
                     padding: '1px 5px',
-                    fontSize: '0.58rem',
+                    fontSize:  'max(12px, 0.58rem)',
                     cursor: 'pointer',
                   }}
                 >

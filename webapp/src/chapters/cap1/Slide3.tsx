@@ -131,7 +131,7 @@ export default function Slide3({ regionSel: parentRegionSel, slideCount }: Slide
                   </span>
                 ))}
               </div>
-              <p style={{ fontSize: '.6rem', color: 'var(--ink-3)', marginTop: '.3rem' }}>
+              <p style={{ fontSize:  'max(12px, .6rem)', color: 'var(--ink-3)', marginTop: '.3rem' }}>
                 💡 El nombre <em>braquial</em> viene de <strong>brachium</strong> (brazo): bíceps braquial, tríceps braquial.
                 <em> Bíceps</em> y <em>tríceps</em> nombran cualquier músculo con dos o tres orígenes, no solo los del brazo.
               </p>
@@ -181,7 +181,7 @@ export default function Slide3({ regionSel: parentRegionSel, slideCount }: Slide
             <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.85rem', alignItems: 'center' }}>
               {/* Controles de Zoom integrados */}
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', background: 'var(--paper-2)', border: '1px solid var(--line)', borderRadius: '4px', padding: '1px 5px' }}>
-                <span style={{ fontSize: '0.60rem', color: 'var(--ink-3)', marginRight: '2px' }}>Zoom</span>
+                <span style={{ fontSize:  'max(12px, 0.60rem)', color: 'var(--ink-3)', marginRight: '2px' }}>Zoom</span>
                 <button
                   type="button"
                   onClick={handleZoomOut}

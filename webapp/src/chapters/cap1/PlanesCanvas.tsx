@@ -214,7 +214,7 @@ function PlaneMesh({
               {isSelected ? '◉ ' : '▦ '}
               {name}
             </span>
-            <span style={{ opacity: 0.8, fontSize: '0.60rem' }}>({eq})</span>
+            <span style={{ opacity: 0.8, fontSize:  'max(12px, 0.60rem)' }}>({eq})</span>
           </div>
         </Html>
       )}
@@ -284,12 +284,12 @@ function AxisDoubleArrow({ length, color, dir, labelPos, subPos, labelNeg, subNe
       {showLabels && <>
         <Html position={[positive.x, positive.y, positive.z]} center zIndexRange={[100, 0]}>
           <div style={{ textAlign: 'center', pointerEvents: 'none', color, fontFamily: 'var(--sans)', whiteSpace: 'nowrap', opacity: .9 }}>
-            <div style={{ fontSize: '.56rem', marginBottom: 1 }}>{subPos}</div><div style={{ fontWeight: 'bold', fontSize: '.9rem' }}>{labelPos}</div>
+            <div style={{ fontSize:  'max(12px, .56rem)', marginBottom: 1 }}>{subPos}</div><div style={{ fontWeight: 'bold', fontSize: '.9rem' }}>{labelPos}</div>
           </div>
         </Html>
         <Html position={[negative.x, negative.y, negative.z]} center zIndexRange={[100, 0]}>
           <div style={{ textAlign: 'center', pointerEvents: 'none', color, fontFamily: 'var(--sans)', whiteSpace: 'nowrap', opacity: .9 }}>
-            <div style={{ fontWeight: 'bold', fontSize: '.9rem', marginBottom: 1 }}>{labelNeg}</div><div style={{ fontSize: '.56rem' }}>{subNeg}</div>
+            <div style={{ fontWeight: 'bold', fontSize: '.9rem', marginBottom: 1 }}>{labelNeg}</div><div style={{ fontSize:  'max(12px, .56rem)' }}>{subNeg}</div>
           </div>
         </Html>
       </>}

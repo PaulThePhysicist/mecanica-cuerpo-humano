@@ -256,14 +256,14 @@ export default function Slide13({ slideCount }: { slideCount?: string }) {
                     }}
                   >
                     <span style={{ fontSize: '0.62rem', fontWeight: 600, color: 'var(--ink)' }}>{a.name.split('(')[0].trim()}</span>
-                    <span style={{ fontSize: '0.58rem', fontFamily: 'JetBrains Mono, monospace', color: a.color, fontWeight: 'bold' }}>
+                    <span style={{ fontSize:  'max(12px, 0.58rem)', fontFamily: 'JetBrains Mono, monospace', color: a.color, fontWeight: 'bold' }}>
                       w/L = {fmt(a.wl, 1)}
                     </span>
                   </div>
                 );
               })}
 
-              <div style={{ marginTop: '4px', borderTop: '1px dashed var(--line)', paddingTop: '4px', fontSize: '0.54rem', color: 'var(--ink-3)' }}>
+              <div style={{ marginTop: '4px', borderTop: '1px dashed var(--line)', paddingTop: '4px', fontSize:  'max(12px, 0.54rem)', color: 'var(--ink-3)' }}>
                 📐 <b>Tensión límite (ilustrativa):</b> σ_rotura ≈ 150 MPa
               </div>
             </div>
