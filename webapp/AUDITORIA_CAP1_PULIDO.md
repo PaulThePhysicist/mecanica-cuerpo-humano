@@ -102,6 +102,18 @@ lote, verifica cada ticket y crea un commit por ticket. Los tickets en serie sig
   pestañas de la fase), `P6-20`, `P6-21`, `P6-23`, `P6-33`, `P6-34`. Orden previsto después: lote 2 = `P6-22`, `P6-32`,
   `P6-35`, `P6-36`, `P6-27`, `P6-30`; lote 3 = `P6-24`, `P6-26`, `P6-28`, `P6-31`; lote 4 = `P6-29`; cierre = `P6-37`.
 - 2026-11-15 · **`P6-40` cerrado sin cambio**: el rótulo «Atletas: …» solo lo pinta `componentsPanel` (`sims.ts:4529`),
+- 2026-11-26 · **FASES 2, 3 y 4 CERRADAS** (37 tickets, 37 commits `a82b192..32b802d` en la rama
+  `feat/cap1-fases-2-3-4`, desde `main` = `e4dced4`). Los seis tickets que la tabla marcaba `EN CURSO` (`P6-20`,
+  `P6-21`, `P6-23`, `P6-25`, `P6-33`, `P6-34`) no estaban en `main` y se rehicieron desde cero, empezando por `P6-25`
+  como patrón de pestañas: clase `.card-tabs` en `legacy.css` (mismo conmutador segmentado de B1, `role="tab"`) y
+  estado local con `useState` en cada diapositiva, sin componente compartido. Piezas nuevas: `Tex.tsx` (KaTeX en
+  línea para celdas), `segmentTables.ts` (Tablas 1.7–1.9, solo datos) y `safeArea.ts` (alto que tapa el panel
+  flotante abierto; lo usan los lienzos 2D, las gráficas y `AnatomyStage` vía `setViewOffset`). Verificación en
+  sesión Cloud con el Chromium preinstalado: `npm ci`, `npx tsc -b`, `npx oxlint src/chapters/cap1` (44 avisos,
+  los mismos que en `main`), `npm run build` en verde; `shoot-slides.mjs` (51 capturas, 0 errores de consola);
+  medición del DOM a 1280×720 sin textos < 12 px en las 17 diapositivas; prueba de teclado del Resumen (Tab ×4 +
+  Enter); recuento de filas con cursor de mano = filas interactivas en S5, S7–S10 y S15; capturas por ticket a
+  1280×720 con el panel abierto y cerrado. `R6-01` no entraba en el encargo y sigue `PENDIENTE`.
   función que nadie llama (lint: «declared but never used»). No se ve en pantalla; queda como código muerto.
 
 Solo informativo (no se toca, fase cerrada): el `.tex` dice «sobrepeso cuando el IMC es > 20»; la diapositiva usa los
@@ -122,10 +134,10 @@ rangos OMS (25). Conviene contrastar con el PDF original por si es errata de tra
 | Medial/lateral (\|y\|), proximal/distal (r), superficial/profundo (ρ) | A1 | ✅ | — |
 | Planos transverso (z), sagital (y), midsagital (y = 0), coronal (x) | A2 | ✅ | — |
 | Fig. 1.1 | A1–A2 (modelo 3D) | ✅ | — |
-| Tabla 1.1 — 24 términos regionales anteriores | A3: 11 de 24, varios mal traducidos | 🔴 | `P6-09`, `P6-20` |
-| Tabla 1.2 — 9 términos posteriores | A3: 7 de 9 | 🟡 | `P6-09`, `P6-20` |
-| *Brachium* → braquial; bíceps/tríceps = 2/3 orígenes | A3 (pista) | 🟡 | `P6-20` |
-| Anclas del texto (ojo derecho del paciente, venas cavas superior e inferior) | — | 🔴 | `P6-20` |
+| Tabla 1.1 — 24 términos regionales anteriores | A3: 10 chips + lista de consulta (14 restantes) | ✅ | `P6-09`, `P6-20` |
+| Tabla 1.2 — 9 términos posteriores | A3: 6 chips + lista de consulta (3 restantes) | ✅ | `P6-09`, `P6-20` |
+| *Brachium* → braquial; bíceps/tríceps = 2/3 orígenes | A3 (pista ampliada) | ✅ | `P6-20` |
+| Anclas del texto (ojo derecho del paciente, venas cavas superior e inferior) | A3, apunte por defecto | ✅ | `P6-20` |
 
 ### §1.2 Movimiento en la máquina humana
 
@@ -134,59 +146,61 @@ rangos OMS (25). Conviene contrastar con el PDF original por si es errata de tra
 | GL: 3 traslacionales + 3 rotacionales | B1 | ✅ | — |
 | Articulaciones fibrosas, cartilaginosas, sinoviales; cartílago y líquido sinovial; Fig. 1.3 | B2 | ✅ | — |
 | 6 tipos sinoviales (Fig. 1.4) con sus GL | B2 (modelos 3D) | ✅ | — |
-| Análogos físicos (bisagra de puerta, junta universal, grifo de ducha) | — | 🔴 | `P6-22` |
+| Análogos físicos (bisagra de puerta, junta universal, grifo de ducha) | B2, bajo la tabla | ✅ | `P6-22` |
 | Pierna 3+1+2 = 6 GL; brazo 3+1+2+1 = 7 GL; pivote radiocubital | B1 | ✅ | — |
-| Fig. 1.5 (posicionamiento no único del brazo) | B1 (solo texto) | 🟡 | `P6-21` |
-| Mano: muchos más GL (Fig. 1.6) | — | 🔴 | `P6-21` |
-| Rodilla y codo dividen el miembro en mitades casi iguales (Fig. 1.7) | — | 🔴 | `P6-21` |
+| Fig. 1.5 (posicionamiento no único del brazo) | B1, miniatura con lightbox | ✅ | `P6-21` |
+| Mano: muchos más GL (Fig. 1.6) | B1, texto + Fig. 1.6 | ✅ | `P6-21` |
+| Rodilla y codo dividen el miembro en mitades casi iguales (Fig. 1.7) | B1, texto + Fig. 1.7 | ✅ | `P6-21` |
 | Fig. 1.2 (esqueleto) | modelo 3D | ✅ | — |
-| 4 componentes: huesos, ligamentos, músculos, tendones; origen e inserción; Fig. 1.8 | — | 🔴 | `P6-23` |
+| 4 componentes: huesos, ligamentos, músculos, tendones; origen e inserción; Fig. 1.8 | B4, «Principio antagonista» + Fig. 1.8 | ✅ | `P6-23` |
 | Los músculos solo se contraen → pares antagonistas | B4 | ✅ | — |
 | Flexión/extensión, abducción/aducción, rotación, pronación/supinación; Figs. 1.9–1.10 | B3 | ✅ | `P6-08` (ejes) |
-| Regla del destornillador (supinación = atornillar con la derecha) | — | 🔴 | `P6-23` |
+| Regla del destornillador (supinación = atornillar con la derecha) | B4 | ✅ | `P6-23` |
 | Fig. 1.11 (ejes de rotación) | B2 | ✅ | — |
 | Bíceps/tríceps como palanca; Fig. 1.12 | B4 | ✅ | — |
-| Ojo: aducción/abducción, elevación/depresión, intorsión/extorsión; Fig. 1.13 | B4: sin torsión ni figura | 🟡 | `P6-24` |
-| Fig. 1.14 (músculos oculares) | B4 (miniatura) | ✅ | `V6-04` (el 3D no los muestra) |
-| Tabla 1.3 — acción primaria **y secundaria** | B4: solo primaria | 🟡 | `P6-24` |
-| Tabla 1.4 — combinaciones binoculares por dirección de mirada | B4: citada en el título, ausente | 🔴 | `P6-24` |
+| Ojo: aducción/abducción, elevación/depresión, intorsión/extorsión; Fig. 1.13 | B4, Tabla 1.3 (secundaria) + Fig. 1.13 | ✅ | `P6-24` |
+| Fig. 1.14 (músculos oculares) | B4 (miniatura + ojo 3D con los 6 músculos rotulados) | ✅ | `V6-04` |
+| Tabla 1.3 — acción primaria **y secundaria** | B4, pestaña «Por músculo» | ✅ | `P6-24` |
+| Tabla 1.4 — combinaciones binoculares por dirección de mirada | B4, pestaña «Por mirada» | ✅ | `P6-24` |
 
 ### §1.3 El humano estándar
 
 | Contenido del `.tex` | Dónde | Estado | Ticket |
 | :--- | :--- | :---: | :--- |
-| Tabla 1.5 — 29 parámetros | C1: 10 valores | 🟡 | `P6-05`, `P6-15`, `P6-25` |
-| Variación regional/temporal (8–17 cm en dos siglos); nota de la tabla (varones EE. UU. ~1975; mujeres) | — | 🔴 | `P6-25` |
-| Tabla 1.6 — 13 longitudes L/H; Fig. 1.15 | C2: 9 de 13 | 🟡 | `P6-10`, `P6-27` |
-| Tabla 1.7 — masas y densidades segmentarias | — | 🔴 | `P6-28` |
-| Tabla 1.8 — centro de masa por segmento | — | 🔴 | `P6-29` |
-| Tabla 1.9 — radio de giro | — | 🔴 | `P6-29` |
-| «Las tablas no siempre son coherentes entre sí» | — | 🔴 | `P6-07` |
-| Tabla 1.10 — 16 rangos con media y SD; regla del 68 %; Fig. 1.16 | C3: 9 de 16, sin SD ni figura | 🟡 | `P6-30` |
-| Tabla 1.11 — masa y volumen de 29 órganos | C3: 8, sin volumen | 🟡 | `P6-31` |
-| Tabla 1.12 — contenido molecular de una célula | — | 🔴 | `P6-31` |
-| Somatotipos ecto/meso/endo; Heath-Carter; ejemplos de atletas | C4: descriptores no del libro | 🔴 | `P6-13`, `P6-14` |
-| Tiempos característicos (1 s, 1 min, 2 min) | — | 🔴 | `P6-26` |
-| Viajes espaciales: ~10 efectos enlazados a capítulos | C4: 2 | 🟡 | `P6-32` |
+| Tabla 1.5 — 29 parámetros | C1, 4 pestañas | ✅ | `P6-05`, `P6-15`, `P6-25` |
+| Variación regional/temporal (8–17 cm en dos siglos); nota de la tabla (varones EE. UU. ~1975; mujeres) | C1, «Nota de la Tabla 1.5» | ✅ | `P6-25` |
+| Tabla 1.6 — 13 longitudes L/H; Fig. 1.15 | C2: 9 interactivas + 4 de consulta | ✅ | `P6-10`, `P6-27` |
+| Tabla 1.7 — masas y densidades segmentarias | C2, pestaña 1.7 | ✅ | `P6-28` |
+| Tabla 1.8 — centro de masa por segmento | C2, pestaña 1.8 | ✅ | `P6-29` |
+| Tabla 1.9 — radio de giro | C2, pestaña 1.9 | ✅ | `P6-29` |
+| «Las tablas no siempre son coherentes entre sí» | C1 (apuntes) y C2 (pestaña 1.8) | ✅ | `P6-07` |
+| Tabla 1.10 — 16 rangos con media y SD; regla del 68 %; Fig. 1.16 | C3: 16 filas con SD + Fig. 1.16 | ✅ | `P6-30` |
+| Tabla 1.11 — masa y volumen de 29 órganos | C3: 12 de 29, con volumen (selección declarada) | 🟡 | `P6-31` |
+| Tabla 1.12 — contenido molecular de una célula | C3, pestaña «Célula (1.12)» | ✅ | `P6-31` |
+| Somatotipos ecto/meso/endo; Heath-Carter; ejemplos de atletas | C4 (fase 1) | ✅ | `P6-13`, `P6-14` |
+| Tiempos característicos (1 s, 1 min, 2 min) | C1, tres chips | ✅ | `P6-26` |
+| Viajes espaciales: ~10 efectos enlazados a capítulos | C4: 7 efectos con su capítulo | ✅ | `P6-32` |
 
 ### §1.4 Relaciones de escala y §1.5 Resumen
 
 | Contenido del `.tex` | Dónde | Estado | Ticket |
 | :--- | :--- | :---: | :--- |
-| Ec. 1.1 f = a·m_b^α; alométrica vs isométrica (con sus ejemplos) | D1 | 🟡 | `P6-33` |
-| Tabla 1.13 — 15 parámetros con `a` y α | D1: 6, sin `a` | 🟡 | `P6-11`, `P6-33` |
+| Ec. 1.1 f = a·m_b^α; alométrica vs isométrica (con sus ejemplos) | D1, con los ejemplos del libro | ✅ | `P6-33` |
+| Tabla 1.13 — 15 parámetros con `a` y α | D1: 6 tarjetas con `a` + 9 en tabla | ✅ | `P6-11`, `P6-33` |
 | Escalado óseo w ∝ L^(3/2), w/L ∝ m_b^(1/6), factor ~4; UCS | D2 | ✅ | `P6-17` |
 | Ec. 1.2 Du Bois | D3 | ✅ | — |
-| Índice m_b/H^p (p = 1–3); S (p = 3); IMC / Quételet (p = 2) | D3: sin la familia ni Quételet | 🟡 | `P6-35` |
+| Índice m_b/H^p (p = 1–3); S (p = 3); IMC / Quételet (p = 2) | D3 | ✅ | `P6-35` |
 | Ec. 1.3 densidad; Ecs. 1.4–1.5 grasa por sexo | D3 | ✅ | `P6-16` (rótulo) |
-| Grasa normal 14–20 % / 21–27 %; mortalidad vs IMC | — | 🔴 | `P6-35` |
-| Salto ~2/3 m y carrera ~7 m/s (dentro de un factor 2); fuerza ∝ área | D2, **rotulado «Tabla 1.14»** | 🔴 | `P6-04` |
-| Tabla 1.14 — 7 grupos adimensionales | — | 🔴 | `P6-34` |
+| Grasa normal 14–20 % / 21–27 %; mortalidad vs IMC | D3 | ✅ | `P6-35` |
+| Salto ~2/3 m y carrera ~7 m/s (dentro de un factor 2); fuerza ∝ área | D2, «Lo que no escala con la masa» (fase 1) | ✅ | `P6-04` |
+| Tabla 1.14 — 7 grupos adimensionales | D2, tarjeta propia | ✅ | `P6-34` |
 | Ec. 1.6 Ley de Stevens; sublineal/superlineal; ~12 órdenes de magnitud | D4 | ✅ | `P6-02`, `P6-03` |
-| Tabla 1.15 — 9 percepciones, 17 exponentes | D4: 7, **2 mal emparejadas** | 🔴 | `P6-01`, `P6-36` |
-| §1.5 Resumen (4 ideas) | Resumen | 🟡 | `P6-37` |
+| Tabla 1.15 — 9 percepciones, 17 exponentes | D4: 9 percepciones, 16 exponentes (ver hallazgos) | ✅ | `P6-01`, `P6-36` |
+| §1.5 Resumen (4 ideas) | Resumen: 3 viñetas por pilar | ✅ | `P6-37` |
 
 **Recuento:** tablas 0 ✅ / 9 🟡 / 6 🔴 · ecuaciones 6 ✅ · figuras 7 de 16 mostradas (otras 3 sustituidas por 3D).
+
+**Recuento tras las fases 2–4 (2026-11-26):** tablas 14 ✅ / 1 🟡 (1.11, selección declarada de 12 de 29) / 0 🔴 · ecuaciones 6 ✅ · figuras 13 de 16 mostradas (1.5, 1.6, 1.7, 1.8, 1.13 y 1.16 añadidas; otras 3 sustituidas por 3D).
 
 ---
 
@@ -231,44 +245,44 @@ rangos OMS (25). Conviene contrastar con el PDF original por si es errata de tra
 | `P6-38` | M | 1 | C4: apuntes de somatotipo sin rasgos inventados | CERRADO | `P6-14` | `0cb333c` |
 | `P6-39` | M | 1 | D4: eje, nombres y apuntes coherentes con el umbral | CERRADO | `P6-03` | `5bc3e35` |
 | `P6-40` | M | 1 | C4 lienzo: «lanzadores» no son endomorfos | CERRADO | `P6-19` | `sin cambio: código muerto` |
-| `P6-20` | A | 2 | A3: completar Tablas 1.1–1.2 | EN CURSO | `P6-09` | |
-| `P6-21` | M | 2 | B1: la mano y las Figs. 1.5–1.7 | EN CURSO | — | |
-| `P6-22` | B | 2 | B2: análogos cotidianos de cada articulación | PENDIENTE | — | |
-| `P6-23` | A | 2 | B4: los cuatro componentes + Fig. 1.8 | EN CURSO | `I6-01` | |
-| `P6-24` | A | 2 | B4: Tabla 1.3 completa, Tabla 1.4 y Fig. 1.13 | PENDIENTE | `P6-23` | |
-| `P6-25` | A | 2 | C1: Tabla 1.5 completa por grupos | EN CURSO | `P6-15` | |
-| `P6-26` | M | 2 | C1: tiempos característicos del cuerpo | PENDIENTE | `P6-25` | |
-| `P6-27` | M | 2 | C2: filas faltantes de la Tabla 1.6 | PENDIENTE | `P6-10` | |
-| `P6-28` | A | 2 | C2: Tabla 1.7 en pestaña | PENDIENTE | `P6-27` | |
-| `P6-29` | M | 2 | C2: Tablas 1.8 y 1.9 en pestañas | PENDIENTE | `P6-28` | |
-| `P6-30` | A | 2 | C3: Tabla 1.10 completa con SD + Fig. 1.16 | PENDIENTE | — | |
-| `P6-31` | M | 2 | C3: Tabla 1.11 con volumen + Tabla 1.12 | PENDIENTE | `P6-30` | |
-| `P6-32` | M | 2 | C4: efectos de la microgravedad | PENDIENTE | `P6-13` | |
-| `P6-33` | A | 2 | D1: Tabla 1.13 con `a` y los 15 parámetros | EN CURSO | `P6-12` | |
-| `P6-34` | A | 2 | D2: la Tabla 1.14 real | EN CURSO | `P6-04` | |
-| `P6-35` | M | 2 | D3: grasa normal, Quételet y familia m_b/H^p | PENDIENTE | `P6-16` | |
-| `P6-36` | M | 2 | D4: Gusto, Temperatura y segundos valores | PENDIENTE | `P6-03` | |
-| `P6-37` | M | 2 | Resumen dictable | PENDIENTE | fases 1–2 | |
-| `A6-01` | A | 3 | Apunte de cátedra siempre visible | PENDIENTE | fase 2 | |
-| `A6-02` | A | 3 | Piso tipográfico de 12 px en el DOM | PENDIENTE | `A6-01` | |
-| `A6-03` | M | 3 | Rótulos de ejes 3D: tamaño, contraste, colisión | PENDIENTE | — | |
-| `A6-04` | M | 3 | D4: leyenda legible | PENDIENTE | `P6-36` | |
-| `V6-01` | A | 3 | Área segura: lienzos 2D de C1, C2, C3 y D3 | PENDIENTE | `P6-18`, `P6-19` | |
-| `V6-02` | A | 3 | Área segura: gráficas D1, D2 y D4 | PENDIENTE | `P6-11`, `A6-04` | |
-| `V6-03` | M | 3 | Área segura: encuadre 3D de B1, B2 y C3 | PENDIENTE | — | |
-| `V6-04` | A | 3 | B4: el ojo 3D debe mostrar sus músculos | PENDIENTE | `P6-24` | |
+| `P6-20` | A | 2 | A3: completar Tablas 1.1–1.2 | CERRADO | `P6-09` | `75d4c51` |
+| `P6-21` | M | 2 | B1: la mano y las Figs. 1.5–1.7 | CERRADO | — | `8304470` |
+| `P6-22` | B | 2 | B2: análogos cotidianos de cada articulación | CERRADO | — | `d71a2c0` |
+| `P6-23` | A | 2 | B4: los cuatro componentes + Fig. 1.8 | CERRADO | `I6-01` | `7be5afb` |
+| `P6-24` | A | 2 | B4: Tabla 1.3 completa, Tabla 1.4 y Fig. 1.13 | CERRADO | `P6-23` | `e8499ae` |
+| `P6-25` | A | 2 | C1: Tabla 1.5 completa por grupos | CERRADO | `P6-15` | `a82b192` |
+| `P6-26` | M | 2 | C1: tiempos característicos del cuerpo | CERRADO | `P6-25` | `00d7e1f` |
+| `P6-27` | M | 2 | C2: filas faltantes de la Tabla 1.6 | CERRADO | `P6-10` | `73d7834` |
+| `P6-28` | A | 2 | C2: Tabla 1.7 en pestaña | CERRADO | `P6-27` | `e275c2b` |
+| `P6-29` | M | 2 | C2: Tablas 1.8 y 1.9 en pestañas | CERRADO | `P6-28` | `8801344` |
+| `P6-30` | A | 2 | C3: Tabla 1.10 completa con SD + Fig. 1.16 | CERRADO | — | `882e3b6` |
+| `P6-31` | M | 2 | C3: Tabla 1.11 con volumen + Tabla 1.12 | CERRADO | `P6-30` | `3e1ea45` |
+| `P6-32` | M | 2 | C4: efectos de la microgravedad | CERRADO | `P6-13` | `b7db999` |
+| `P6-33` | A | 2 | D1: Tabla 1.13 con `a` y los 15 parámetros | CERRADO | `P6-12` | `aab345a` |
+| `P6-34` | A | 2 | D2: la Tabla 1.14 real | CERRADO | `P6-04` | `7ef03b7` |
+| `P6-35` | M | 2 | D3: grasa normal, Quételet y familia m_b/H^p | CERRADO | `P6-16` | `cedd731` |
+| `P6-36` | M | 2 | D4: Gusto, Temperatura y segundos valores | CERRADO | `P6-03` | `30bf37e` |
+| `P6-37` | M | 2 | Resumen dictable | CERRADO | fases 1–2 | `c914900` |
+| `A6-01` | A | 3 | Apunte de cátedra siempre visible | CERRADO | fase 2 | `701ea06` |
+| `A6-02` | A | 3 | Piso tipográfico de 12 px en el DOM | CERRADO | `A6-01` | `a1a3d28` |
+| `A6-03` | M | 3 | Rótulos de ejes 3D: tamaño, contraste, colisión | CERRADO | — | `bd9656f` |
+| `A6-04` | M | 3 | D4: leyenda legible | CERRADO | `P6-36` | `5538ab6` |
+| `V6-01` | A | 3 | Área segura: lienzos 2D de C1, C2, C3 y D3 | CERRADO | `P6-18`, `P6-19` | `2f6951d` |
+| `V6-02` | A | 3 | Área segura: gráficas D1, D2 y D4 | CERRADO | `P6-11`, `A6-04` | `4b2ab5e` |
+| `V6-03` | M | 3 | Área segura: encuadre 3D de B1, B2 y C3 | CERRADO | — | `66e0a06` |
+| `V6-04` | A | 3 | B4: el ojo 3D debe mostrar sus músculos | CERRADO | `P6-24` | `992464a` |
 | `R6-01` | M | 3 | B1 Atlas 2D: rótulos que vuelven a solaparse | PENDIENTE | `P6-21` | |
-| `A6-05` | B | 3 | Resumen: tarjetas operables por teclado | PENDIENTE | `P6-37` | |
-| `V6-05` | B | 4 | A2: deslizadores con el color del sistema | PENDIENTE | — | |
-| `V6-06` | B | 4 | D3: barra de composición recortada | PENDIENTE | `V6-01` | |
-| `V6-07` | B | 4 | D2: rótulo «FRACTURA» desbordado | PENDIENTE | `P6-17`, `V6-02` | |
-| `V6-08` | B | 4 | D1: «Perro» tapado y «Comparativa animada» | PENDIENTE | `V6-02` | |
-| `V6-09` | B | 4 | Portada: pie recortado a 720 px | PENDIENTE | — | |
-| `I6-05` | B | 4 | Cursor de mano falso en tablas de consulta | PENDIENTE | fase 2 | |
-| `S6-01a` | M | 4 | Sin emoji en las gráficas de D1, D2 y D4 | PENDIENTE | fases 1–3 | |
-| `S6-01b` | M | 4 | Sin emoji en los lienzos de C1–C4 y D3 | PENDIENTE | `S6-01a`, `V6-01` | |
-| `S6-01c` | B | 4 | Sin emoji en botones y paneles de control | PENDIENTE | `S6-01b` | |
-| `S6-02` | B | 4 | C3: icono que sale como cuadro vacío (ex `S4-05`) | PENDIENTE | `S6-01` | |
+| `A6-05` | B | 3 | Resumen: tarjetas operables por teclado | CERRADO | `P6-37` | `ae653c9` |
+| `V6-05` | B | 4 | A2: deslizadores con el color del sistema | CERRADO | — | `b535e57` |
+| `V6-06` | B | 4 | D3: barra de composición recortada | CERRADO | `V6-01` | `b120e2f` |
+| `V6-07` | B | 4 | D2: rótulo «FRACTURA» desbordado | CERRADO | `P6-17`, `V6-02` | `4b42602` |
+| `V6-08` | B | 4 | D1: «Perro» tapado y «Comparativa animada» | CERRADO | `V6-02` | `113ca7f` |
+| `V6-09` | B | 4 | Portada: pie recortado a 720 px | CERRADO | — | `fde72a4` |
+| `I6-05` | B | 4 | Cursor de mano falso en tablas de consulta | CERRADO | fase 2 | `70a9705` |
+| `S6-01a` | M | 4 | Sin emoji en las gráficas de D1, D2 y D4 | CERRADO | fases 1–3 | `d1c0156` |
+| `S6-01b` | M | 4 | Sin emoji en los lienzos de C1–C4 y D3 | CERRADO | `S6-01a`, `V6-01` | `486e94e` |
+| `S6-01c` | B | 4 | Sin emoji en botones y paneles de control | CERRADO | `S6-01b` | `3485497` |
+| `S6-02` | B | 4 | C3: icono que sale como cuadro vacío (ex `S4-05`) | CERRADO | `S6-01` | `32b802d` |
 
 **Paralelizables sin conflicto de archivos** (primer lote): `I6-01` (Slide7) ‖ `P6-01` (Slide15/StevensCanvas) ‖
 `P6-04` (Slide13) ‖ `P6-05` (Slide8) ‖ `P6-08` (Slide6) ‖ `P6-11` (AllometryCanvas) ‖ `P6-13` (Slide11).
@@ -1023,3 +1037,16 @@ Los ejecutores añaden aquí lo que vean y **no** corrijan.
 - (auditor) `scratch/fix-S4-01/` contiene capturas de un intento anterior de `S4-01` que nunca se commiteó.
 - (auditor) `STATUS.md` dice que el Cap. 1 tiene 21 diapositivas; son 17.
 - (auditor) Siguen vigentes los colaterales de código muerto de `EJECUTAR_CORRECCIONES_CAP1.md` (`calcBMI`, `drawAllometry`, `drawStevens`, `PLANES`, selectores `data-*` huérfanos). No afectan a lo que se ve; fuera de esta ronda.
+- (`P6-33`) La Tabla 1.13 del `.tex` dice «Volumen pulmonar efectivo, en m²»: un volumen va en m³ (probable errata de traducción). Se copió literal; conviene contrastar con el PDF original.
+- (`P6-36`) La Tabla 1.15 tiene 16 exponentes (2+2+2+2+3+2+1+1+1), no 17 como decía el ticket; están los 16.
+- (`P6-36`) Gusto y temperatura usan las series `--ink` y `--blood` (tokens existentes de `:root`, espejados en `colorTokens.ts`): `--series-1..7` solo da 7 tonos. Si se quiere una escala categórica de 9, añadir `--series-8/9` en `src/index.css` (fuera de alcance).
+- (`P6-24`) `EYE_GAZE_PRESETS` (fuera de alcance) describe las diagonales con dos músculos de un mismo ojo («Abajo-derecha: recto inferior + recto lateral»); la Tabla 1.4 da los pares binoculares (RI del derecho + OS del izquierdo). No se contradicen, pero conviene alinear el apunte con la tabla.
+- (`S6-01a`) El subtítulo del lienzo de D2 sigue con «w/L ∝ mᵦ¹ᐟ⁶» (subíndice que se lee β), el mismo defecto que `P6-11` corrigió en D1; y en D4 el exponente en superíndice del título y del panel se pinta con «·» como separador («2⁰·⁵⁴»), porque Unicode no tiene coma en superíndice. Ambos se arreglan dibujándolos como en D1 (`drawScriptedText`).
+- (`V6-03`) B3: en algunas fases de la animación el encuadre corta el hombro por arriba, con el panel abierto o cerrado (preexistente; B3 no estaba en el ticket).
+- (`S6-01b`) Quedan emoji pintados en lienzo en funciones de `sims.ts` que no dibujan C1–C4 ni D3: `drawGL` (💡 y los iconos de los 6 tipos sinoviales) y `drawAntagonist` (🔄). B1, B2 y B4 son hoy escenas 3D; si esos lienzos 2D ya no se muestran es código muerto, si no, ticket aparte.
+- (`S6-01c`) `three/AnatomyStage.tsx` conserva ⚠️ en el mensaje de respaldo cuando no hay WebGL (no es un control). Se reporta, como pedía el ticket.
+- (`I6-05`) El ticket se limitó a tablas: las píldoras `.pill` sin acción (clasificación fibrosas/cartilaginosas/sinoviales en B2; «Salto vertical»/«Carrera máx.» en D2) siguen con cursor de mano.
+- (`V6-01`) Con el panel abierto, el tramo «Cuello» de la barra a escala de C2 queda demasiado fino para su rótulo (la cifra «8,9 cm» sí se lee).
+- (`V6-06`) En D3, con IMC bajo (≈ 13,5) la aguja del dial pasa por encima de la cifra central.
+- (`P6-25`) El apunte de «Corazón y sangre» en C1 dice «aprox. 7,5 % de la masa» y «lpm»: el porcentaje no está en el libro y la unidad no coincide con la tabla («latidos/min»).
+- (`V6-04`) La vista del ojo es en tres cuartos desde el lado lateral: los vientres de OS y OI se ven poco (sus rótulos marcan la tróclea y el origen del OI). Una vista que los muestre enteros tapa la pupila; queda a criterio de Paul en Chrome.
