@@ -14,6 +14,7 @@
 import { STANDARD_MAN, STANDARD_GRAVITY } from './standardMan';
 import { fmt } from './format';
 import { AMBER, BODY_SEGMENT_SHADES } from './colorTokens';
+import { panelOverlap } from './safeArea';
 
 export const TOTAL = 17;
 export const MODULES = [
@@ -3559,12 +3560,15 @@ export function drawBodyProportions(customMass?: number, customHeight?: number) 
   var hr = 65, rr = 15;
 
   /* ── Escena ── */
-  var floorY = H * 0.905;
+  // V6-01: el suelo (y con él la figura y sus cotas) se compone por encima
+  // del panel de controles abierto; fondo y cuadrícula siguen a sangre.
+  var floorY = Math.min(H * 0.905, H - panelOverlap(canvas) - 14);
+  var He = floorY / 0.905; // alto «útil» equivalente para escalar la figura
   CFX.scene(ctx, W, H, { floor: true, floorY: floorY, spotX: W * 0.40, gridStep: 26 });
   CFX.title(ctx, W, isRefBody ? '⚖ Hombre Estándar · 70 kg de referencia' : '⚖ Sujeto · ' + mass + ' kg', 'Tabla 1.5 · valores fisiológicos en reposo');
 
   /* ── Figura ── */
-  var bodyH = H * 0.66 * (Href / 1.72);
+  var bodyH = He * 0.66 * (Href / 1.72);
   var top = floorY - bodyH;
   var cx = W * 0.38;
   var fatFrac = Math.max(0, Math.min(1, (bmi - 17) / 18));
@@ -3878,13 +3882,15 @@ export function drawProportions(highlight?: string | null, customHeight?: number
   var PAL = CFX.PAL;
   ctx.clearRect(0, 0, W, H);
 
-  var floorY = H * 0.905;
+  // V6-01: figura, cotas y barra por encima del panel de controles abierto.
+  var floorY = Math.min(H * 0.905, H - panelOverlap(canvas) - 14);
+  var He = floorY / 0.905;
   CFX.scene(ctx, W, H, { floor: true, floorY: floorY, spotX: W * 0.34 });
   CFX.title(ctx, W, '📏 Proporciones segmentarias · L/H constante',
     'Tabla 1.6 · fracciones L/H');
 
   /* ── Figura acotada ── */
-  var bodyH = H * 0.655;
+  var bodyH = He * 0.655;
   var top = floorY - bodyH;
   var cx = W * 0.34;
   var p = window.CFXBody.buildParams(0.45, 0.52, 0.26);
@@ -3990,7 +3996,7 @@ export function drawProportions(highlight?: string | null, customHeight?: number
   }
 
   /* ── Barra apilada sincronizada (derecha) ── */
-  stackedBar(ctx, W * 0.67, H * 0.17, W * 0.17, H * 0.64, height, hl);
+  stackedBar(ctx, W * 0.67, He * 0.17, W * 0.17, He * 0.64, height, hl);
 
   window.__stage('sim-proportions', 'PROPORCIÓN', height + ' cm · L/H constante', 'violet', 'anatomy');
   CFX.footnote(ctx, W, H, 'Pasa el cursor: resalta cuerpo y barra');
@@ -4093,7 +4099,10 @@ export function drawMobility(highlight) {
   var PAL = CFX.PAL;
   ctx.clearRect(0, 0, W, H);
 
-  var floorY = H * 0.845;
+  // V6-01: el esqueleto y sus arcos (el del tobillo incluido) por encima
+  // del panel de controles abierto.
+  var floorY = Math.min(H * 0.845, H - panelOverlap(canvas) - 14);
+  var He = floorY / 0.845;
   CFX.scene(ctx, W, H, { floor: true, floorY: floorY, spotX: W * 0.33 });
   CFX.title(ctx, W, '🏹 Rango de movilidad articular',
     'Tabla 1.10 · varones universitarios · grados medios');
@@ -4101,7 +4110,7 @@ export function drawMobility(highlight) {
   /* ── Figura de referencia con los ejes articulares ── */
   // Sin paneles laterales duplicados, la figura puede ocupar y aprovechar
   // todo el ancho disponible del visor.
-  var bodyH = H * 0.68;
+  var bodyH = He * 0.68;
   var top = floorY - bodyH;
   var cx = W * 0.52;
   var p = window.CFXBody.buildParams(0.44, 0.55, 0.24);

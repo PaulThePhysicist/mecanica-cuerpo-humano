@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { CFX, CFXBody } from './sims';
 import { fmt } from './format';
+import { panelOverlap } from './safeArea';
 
 interface BMICalculatorCanvasProps {
   mass: number;     // en kg (40 a 160)
@@ -101,13 +102,20 @@ export default function BMICalculatorCanvas({
       ctx.scale(dpr, dpr);
       ctx.clearRect(0, 0, W, H);
 
+      // V6-01: la figura y el cuadro de instrumentos se componen en un alto
+      // útil `He` que deja libre lo que tapa el panel de controles abierto
+      // (rótulo de masa bajo el suelo y pie de la barra de composición
+      // incluidos). El fondo y la cuadrícula siguen ocupando todo el lienzo.
+      const free = H - panelOverlap(canvas);
+      const He = Math.min(H, (free - 20) / 0.88, (free - 32) / 0.75);
+
       // ─── 1. Fondo de estudio (compartido con las demás familias visuales) ───
-      const floorY = H * 0.88;
+      const floorY = He * 0.88;
       const figCenterX = W * 0.28;
       CFX.scene(ctx, W, H, { floor: true, floorY, spotX: figCenterX });
 
       // ─── 2. Figura Anatómica Adaptativa (Izquierda) ───
-      const figH = H * 0.74 * (cur.height / 1.72);
+      const figH = He * 0.74 * (cur.height / 1.72);
       const figTopY = floorY - figH;
 
       // Sombra de contacto
@@ -156,8 +164,8 @@ export default function BMICalculatorCanvas({
 
       // ── 3.1 Dial Radial de IMC con Sectores OMS ──
       const gaugeCenterX = panelX + panelW * 0.46;
-      const gaugeCenterY = H * 0.24;
-      const gaugeR = Math.min(panelW * 0.38, H * 0.16);
+      const gaugeCenterY = He * 0.24;
+      const gaugeR = Math.min(panelW * 0.38, He * 0.16);
 
       const startAngle = Math.PI * 0.8;
       const endAngle = Math.PI * 2.2;
@@ -211,7 +219,7 @@ export default function BMICalculatorCanvas({
 
       // ── 3.2 Disco Térmico Du Bois (Área Superficial) ──
       const discCenterX = panelX + panelW * 0.22;
-      const discCenterY = H * 0.56;
+      const discCenterY = He * 0.56;
       const maxDiscR = panelW * 0.20;
       const curDiscR = maxDiscR * Math.sqrt(Math.max(0.2, Math.min(1.0, A / 2.6)));
 
@@ -245,9 +253,9 @@ export default function BMICalculatorCanvas({
 
       // ── 3.3 Medidor Hidrostático de Densidad y Flotabilidad (ρ) ──
       const tubeX = panelX + panelW * 0.72;
-      const tubeY = H * 0.45;
+      const tubeY = He * 0.45;
       const tubeW = 26;
-      const tubeH = H * 0.22;
+      const tubeH = He * 0.22;
 
       ctx.save();
       // Tubo de ensayo
@@ -284,7 +292,7 @@ export default function BMICalculatorCanvas({
 
       // ── 3.4 Barra Segmentada de Composición Corporal (Masa Magra vs Grasa) ──
       const barX = panelX;
-      const barY = H * 0.75;
+      const barY = He * 0.75;
       const barW = panelW * 0.92;
       const barH = 16;
 
