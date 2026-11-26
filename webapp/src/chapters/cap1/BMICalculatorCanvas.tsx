@@ -107,7 +107,7 @@ export default function BMICalculatorCanvas({
       // (rótulo de masa bajo el suelo y pie de la barra de composición
       // incluidos). El fondo y la cuadrícula siguen ocupando todo el lienzo.
       const free = H - panelOverlap(canvas);
-      const He = Math.min(H, (free - 20) / 0.88, (free - 32) / 0.75);
+      const He = Math.min(H, (free - 20) / 0.88, (free - 44) / 0.75);
 
       // ─── 1. Fondo de estudio (compartido con las demás familias visuales) ───
       const floorY = He * 0.88;
@@ -315,13 +315,30 @@ export default function BMICalculatorCanvas({
       ctx.fillStyle = '#ffffff';
       ctx.font = `bold ${scaled(8)}px Karla, system-ui, sans-serif`;
       ctx.textAlign = 'center';
-      if (leanW > 40) ctx.fillText(`Magra: ${fmt(leanKg, 1)} kg`, barX + leanW / 2, barY + 11);
-      if (fatW > 35) ctx.fillText(`Grasa: ${fmt(fatKg, 1)} kg`, barX + leanW + fatW / 2, barY + 11);
+      // V6-06: cada rótulo solo se pinta dentro de su tramo si cabe entero;
+      // las cifras completas van en el pie, en dos líneas que no pasan del
+      // borde derecho del lienzo (antes asomaba «aró» de «Varón»).
+      const leanLabel = `Magra: ${fmt(leanKg, 1)} kg`;
+      const fatLabel = `Grasa: ${fmt(fatKg, 1)} kg`;
+      if (ctx.measureText(leanLabel).width < leanW - 6) ctx.fillText(leanLabel, barX + leanW / 2, barY + 11);
+      if (ctx.measureText(fatLabel).width < fatW - 6) ctx.fillText(fatLabel, barX + leanW + fatW / 2, barY + 11);
 
       ctx.fillStyle = '#17212b';
-      ctx.font = `${scaled(8)}px Karla, system-ui, sans-serif`;
       ctx.textAlign = 'left';
-      ctx.fillText(`Composición (IMC): Magra ${fmt(100 - fatPct, 1)} %  ·  Grasa ${fmt(fatPct, 1)} % (${gender === 'H' ? 'Varón' : 'Mujer'})`, barX, barY + barH + 12);
+      const captionMaxW = W - barX - 8;
+      const captionLines = [
+        `Composición estimada por IMC (${gender === 'H' ? 'varón' : 'mujer'}):`,
+        `Magra ${fmt(leanKg, 1)} kg · ${fmt(100 - fatPct, 1)} %  ·  Grasa ${fmt(fatKg, 1)} kg · ${fmt(fatPct, 1)} %`,
+      ];
+      captionLines.forEach((line, i) => {
+        let size = scaled(8.5);
+        ctx.font = `${size}px Karla, system-ui, sans-serif`;
+        while (size > 7.5 && ctx.measureText(line).width > captionMaxW) {
+          size -= 0.5;
+          ctx.font = `${size}px Karla, system-ui, sans-serif`;
+        }
+        ctx.fillText(line, barX, barY + barH + 12 + i * (size + 3));
+      });
       ctx.restore();
 
       ctx.restore();
