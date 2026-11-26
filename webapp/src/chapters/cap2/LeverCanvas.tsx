@@ -1,3 +1,5 @@
+import { fmt, fx } from './ab';
+import { C, ca } from './palette';
 import React, { useRef, useEffect, useState } from 'react';
 import { readCap2Tokens, tokenRgba } from './designTokens';
 import CanvasReserveState from './CanvasReserveState';
@@ -24,7 +26,7 @@ const LEVER_DATA: Record<number, LeverInfo> = {
     anatExample: 'Articulación Atlanto-occipital (C1 / Nuca)',
     order: 'Potencia (F) — Fulcro (Δ) — Resistencia (W)',
     vmDesc: 'VM variable: depende de la posición relativa del fulcro respecto a la carga.',
-    color: '#0d6e64',
+    color: C.teal,
     bp: 5,
     br: 12,
   },
@@ -33,7 +35,7 @@ const LEVER_DATA: Record<number, LeverInfo> = {
     anatExample: 'Apoyo plantar sobre metatarsos (Gemelos y Tendón de Aquiles)',
     order: 'Fulcro (Δ) — Resistencia (W) — Potencia (F)',
     vmDesc: 'Ventaja mecánica permanente (VM > 1): siempre multiplica la fuerza muscular.',
-    color: '#2e8b57',
+    color: C.coronal,
     bp: 18,
     br: 10,
   },
@@ -42,9 +44,9 @@ const LEVER_DATA: Record<number, LeverInfo> = {
     anatExample: 'Flexión de codo (Bíceps braquial y antebrazo)',
     order: 'Fulcro (Δ) — Potencia (F) — Resistencia (W)',
     vmDesc: 'Desventaja de fuerza (VM < 1), pero gran amplificación de velocidad y rango distal.',
-    color: '#b02318',
+    color: C.blood,
     bp: 4,
-    br: 35,
+    br: 36,
   },
 };
 
@@ -176,7 +178,7 @@ export default function LeverCanvas({
         skullGrad.addColorStop(0.5, '#ede2ca');
         skullGrad.addColorStop(1, '#c5b593');
         ctx.fillStyle = skullGrad;
-        ctx.strokeStyle = '#7c6a4e';
+        ctx.strokeStyle = C.amberDeep;
         ctx.lineWidth = 1.6;
 
         ctx.beginPath();
@@ -206,16 +208,16 @@ export default function LeverCanvas({
         // Centro de gravedad del cráneo (Anterior al fulcro C1, br = 12 cm)
         const cgX = spineX + 38;
         const cgY = anatCenterY - 4;
-        ctx.fillStyle = '#d97706';
+        ctx.fillStyle = C.amber;
         ctx.beginPath();
         ctx.arc(cgX, cgY, 5, 0, Math.PI * 2);
         ctx.fill();
-        ctx.strokeStyle = '#ffffff';
+        ctx.strokeStyle = C.card;
         ctx.lineWidth = 1.2;
         ctx.stroke();
 
         // Vector peso de la cabeza W (hacia abajo)
-        ctx.strokeStyle = '#d97706';
+        ctx.strokeStyle = C.amber;
         ctx.lineWidth = 1.8;
         ctx.beginPath();
         ctx.moveTo(cgX, cgY);
@@ -228,7 +230,7 @@ export default function LeverCanvas({
         ctx.closePath();
         ctx.fill();
 
-        ctx.fillStyle = '#d97706';
+        ctx.fillStyle = C.amber;
         ctx.font = `bold ${7 * uiScale}px JetBrains Mono, monospace`;
         ctx.textAlign = 'left';
         ctx.fillText(`W = ${wNewtons.toFixed(0)} N`, cgX + 5, cgY + 20);
@@ -255,8 +257,8 @@ export default function LeverCanvas({
         ctx.stroke();
 
         // Vector Fm del músculo nucal (tira hacia abajo para sostener la cabeza)
-        ctx.strokeStyle = '#0d6e64';
-        ctx.fillStyle = '#0d6e64';
+        ctx.strokeStyle = C.teal;
+        ctx.fillStyle = C.teal;
         ctx.lineWidth = 1.8;
         ctx.beginPath();
         ctx.moveTo(muscX + 4, muscY);
@@ -271,7 +273,7 @@ export default function LeverCanvas({
 
         ctx.font = `bold ${7 * uiScale}px JetBrains Mono, monospace`;
         ctx.textAlign = 'right';
-        ctx.fillText(`F_nuca = ${fMuscNewtons.toFixed(0)} N`, muscX - 3, muscY + 16);
+        ctx.fillText(`M (nuca) = ${fMuscNewtons.toFixed(0)} N`, muscX - 3, muscY + 16);
 
       } else if (leverClass === 2) {
         // ── CLASE 2: Tobillo y Pie en Flexión Plantar (Metatarsos / Gemelos) ──
@@ -296,7 +298,7 @@ export default function LeverCanvas({
         footGrad.addColorStop(0.5, '#ede2ca');
         footGrad.addColorStop(1, '#c5b593');
         ctx.fillStyle = footGrad;
-        ctx.strokeStyle = '#7c6a4e';
+        ctx.strokeStyle = C.amberDeep;
         ctx.lineWidth = 1.6;
 
         ctx.beginPath();
@@ -330,7 +332,7 @@ export default function LeverCanvas({
         tibGrad.addColorStop(0, '#f5ecd8');
         tibGrad.addColorStop(1, '#c5b593');
         ctx.fillStyle = tibGrad;
-        ctx.strokeStyle = '#7c6a4e';
+        ctx.strokeStyle = C.amberDeep;
         ctx.lineWidth = 1.4;
 
         ctx.beginPath();
@@ -339,8 +341,8 @@ export default function LeverCanvas({
         ctx.stroke();
 
         // Vector Carga W (Peso corporal sobre el tobillo)
-        ctx.strokeStyle = '#d97706';
-        ctx.fillStyle = '#d97706';
+        ctx.strokeStyle = C.amber;
+        ctx.fillStyle = C.amber;
         ctx.lineWidth = 1.8;
         ctx.beginPath();
         ctx.moveTo(tibiaX, tibiaY - 35);
@@ -353,7 +355,7 @@ export default function LeverCanvas({
         ctx.closePath();
         ctx.fill();
 
-        ctx.fillStyle = '#d97706';
+        ctx.fillStyle = C.amber;
         ctx.font = `bold ${7 * uiScale}px JetBrains Mono, monospace`;
         ctx.textAlign = 'left';
         ctx.fillText(`W = ${wNewtons.toFixed(0)} N`, tibiaX + 6, tibiaY - 18);
@@ -385,8 +387,8 @@ export default function LeverCanvas({
         ctx.stroke();
 
         // Vector Fm del Tendón de Aquiles
-        ctx.strokeStyle = '#2e8b57';
-        ctx.fillStyle = '#2e8b57';
+        ctx.strokeStyle = C.coronal;
+        ctx.fillStyle = C.coronal;
         ctx.lineWidth = 1.8;
         ctx.beginPath();
         ctx.moveTo(achillesX, achillesY);
@@ -399,10 +401,10 @@ export default function LeverCanvas({
         ctx.closePath();
         ctx.fill();
 
-        ctx.fillStyle = '#2e8b57';
+        ctx.fillStyle = C.coronal;
         ctx.font = `bold ${7 * uiScale}px JetBrains Mono, monospace`;
         ctx.textAlign = 'right';
-        ctx.fillText(`F_aq = ${fMuscNewtons.toFixed(0)} N`, achillesX - 6, achillesY - 14);
+        ctx.fillText(`M (Aquiles) = ${fMuscNewtons.toFixed(0)} N`, achillesX - 6, achillesY - 14);
 
       } else {
         // ── CLASE 3: Flexión de Codo (Bíceps) ──
@@ -416,7 +418,7 @@ export default function LeverCanvas({
         humGrad.addColorStop(0, '#f5ecd8');
         humGrad.addColorStop(1, '#c5b593');
         ctx.fillStyle = humGrad;
-        ctx.strokeStyle = '#7c6a4e';
+        ctx.strokeStyle = C.amberDeep;
         ctx.lineWidth = 1.5;
         ctx.beginPath();
         ctx.roundRect(elbowJointX - 10, elbowJointY - 65, 20, 65, 5);
@@ -434,7 +436,7 @@ export default function LeverCanvas({
         armGrad.addColorStop(0, '#ede2ca');
         armGrad.addColorStop(1, '#c5b593');
         ctx.fillStyle = armGrad;
-        ctx.strokeStyle = '#7c6a4e';
+        ctx.strokeStyle = C.amberDeep;
         ctx.lineWidth = 1.6;
         ctx.beginPath();
         ctx.roundRect(elbowJointX - 6, elbowJointY - 6, 136, 12, 5);
@@ -478,8 +480,8 @@ export default function LeverCanvas({
         ctx.stroke();
 
         // Vector Fm del bíceps (hacia arriba)
-        ctx.strokeStyle = '#b02318';
-        ctx.fillStyle = '#b02318';
+        ctx.strokeStyle = C.blood;
+        ctx.fillStyle = C.blood;
         ctx.lineWidth = 1.8;
         ctx.beginPath();
         ctx.moveTo(bInsertX, bInsertY);
@@ -492,14 +494,14 @@ export default function LeverCanvas({
         ctx.closePath();
         ctx.fill();
 
-        ctx.fillStyle = '#b02318';
+        ctx.fillStyle = C.blood;
         ctx.font = `bold ${7 * uiScale}px JetBrains Mono, monospace`;
         ctx.textAlign = 'left';
-        ctx.fillText(`F_bic = ${fMuscNewtons.toFixed(0)} N`, bInsertX + 5, bInsertY - 14);
+        ctx.fillText(`M (bíceps) = ${fMuscNewtons.toFixed(0)} N`, bInsertX + 5, bInsertY - 14);
 
         // Vector Carga W en la mano (hacia abajo)
-        ctx.strokeStyle = '#d97706';
-        ctx.fillStyle = '#d97706';
+        ctx.strokeStyle = C.amber;
+        ctx.fillStyle = C.amber;
         ctx.lineWidth = 1.8;
         ctx.beginPath();
         ctx.moveTo(handTipX, handTipY);
@@ -512,7 +514,7 @@ export default function LeverCanvas({
         ctx.closePath();
         ctx.fill();
 
-        ctx.fillStyle = '#d97706';
+        ctx.fillStyle = C.amber;
         ctx.font = `bold ${7 * uiScale}px JetBrains Mono, monospace`;
         ctx.textAlign = 'center';
         ctx.fillText(`W = ${wNewtons.toFixed(0)} N`, handTipX, handTipY + 32);
@@ -562,7 +564,7 @@ export default function LeverCanvas({
       beamGrad.addColorStop(0.5, '#ede2ca');
       beamGrad.addColorStop(1, '#c5b593');
       ctx.fillStyle = beamGrad;
-      ctx.strokeStyle = '#7c6a4e';
+      ctx.strokeStyle = C.amberDeep;
       ctx.lineWidth = 1.6;
 
       ctx.beginPath();
@@ -586,7 +588,7 @@ export default function LeverCanvas({
       fulcGrad.addColorStop(0, '#4a5568');
       fulcGrad.addColorStop(1, '#2d3748');
       ctx.fillStyle = fulcGrad;
-      ctx.strokeStyle = '#1a202c';
+      ctx.strokeStyle = C.ink;
       ctx.lineWidth = 1.6;
 
       ctx.beginPath();
@@ -602,7 +604,7 @@ export default function LeverCanvas({
       ctx.arc(fulcrumX, barY + 7, 5, 0, Math.PI * 2);
       ctx.fillStyle = '#f5ecd8';
       ctx.fill();
-      ctx.strokeStyle = '#2d3748';
+      ctx.strokeStyle = C.ink;
       ctx.lineWidth = 1.5;
       ctx.stroke();
 
@@ -615,8 +617,8 @@ export default function LeverCanvas({
       // Vector de Carga / Resistencia (W)
       const loadArrowLen = Math.min(26, 12 + loadKg * 0.32);
       ctx.save();
-      ctx.strokeStyle = '#d97706';
-      ctx.fillStyle = '#d97706';
+      ctx.strokeStyle = C.amber;
+      ctx.fillStyle = C.amber;
       ctx.lineWidth = 1.8;
       ctx.beginPath();
       ctx.moveTo(loadX, barY + 7);
@@ -639,14 +641,14 @@ export default function LeverCanvas({
       wGrad.addColorStop(0, '#fef3c7');
       wGrad.addColorStop(1, '#fde68a');
       ctx.fillStyle = wGrad;
-      ctx.strokeStyle = '#d97706';
+      ctx.strokeStyle = C.amber;
       ctx.lineWidth = 1.2;
       ctx.beginPath();
       ctx.roundRect(loadX - weightW / 2, weightY, weightW, weightH, 3);
       ctx.fill();
       ctx.stroke();
 
-      ctx.fillStyle = '#92400e';
+      ctx.fillStyle = C.amberDeep;
       ctx.font = `bold ${7.5 * uiScale}px JetBrains Mono, monospace`;
       ctx.textAlign = 'center';
       ctx.fillText(`${loadKg} kg`, loadX, weightY + 8);
@@ -691,7 +693,7 @@ export default function LeverCanvas({
       const badgeH = 21 * uiScale;
       const badgeY = isPullUp ? muscEndY - 22 : muscEndY + 6;
 
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+      ctx.fillStyle = ca(C.card, 0.95);
       ctx.shadowColor = tokenRgba(T.ink, 0.10);
       ctx.shadowBlur = 4;
       ctx.beginPath();
@@ -705,10 +707,10 @@ export default function LeverCanvas({
       ctx.fillStyle = curColor;
       ctx.font = `bold ${7.5 * uiScale}px JetBrains Mono, monospace`;
       ctx.textAlign = 'center';
-      ctx.fillText(`F_m = ${fMuscNewtons.toFixed(0)} N`, muscleX, badgeY + 8);
+      ctx.fillText(`M = ${fMuscNewtons.toFixed(0)} N`, muscleX, badgeY + 8);
       ctx.font = `${6.5 * uiScale}px Karla, system-ui, sans-serif`;
       ctx.fillStyle = tokenRgba(T.ink3, 0.95);
-      ctx.fillText(`(${(fMuscNewtons / 9.81).toFixed(1)} kgf)`, muscleX, badgeY + 15);
+      ctx.fillText(`(${fmt(1 / vm, 2)} W)`, muscleX, badgeY + 15);
       ctx.restore();
 
       // Cotas de Brazos de Palanca (bp y br)
@@ -730,10 +732,10 @@ export default function LeverCanvas({
       ctx.fillStyle = curColor;
       ctx.font = `bold ${7 * uiScale}px JetBrains Mono, monospace`;
       ctx.textAlign = 'center';
-      ctx.fillText(`bp = ${bp} cm`, (fulcrumX + muscleX) / 2, barY - 19);
+      ctx.fillText(`dM = ${bp} cm`, (fulcrumX + muscleX) / 2, barY - 19);
 
       // Cota br
-      ctx.strokeStyle = '#d97706';
+      ctx.strokeStyle = C.amber;
       ctx.lineWidth = 1.0;
       ctx.setLineDash([2, 2]);
       ctx.beginPath();
@@ -746,8 +748,8 @@ export default function LeverCanvas({
       ctx.stroke();
       ctx.setLineDash([]);
 
-      ctx.fillStyle = '#d97706';
-      ctx.fillText(`br = ${br} cm`, (fulcrumX + loadX) / 2, barY - 32);
+      ctx.fillStyle = C.amber;
+      ctx.fillText(`dW = ${br} cm`, (fulcrumX + loadX) / 2, barY - 32);
       ctx.restore();
 
       // ─── 5. Panel Medidor de Ventaja Mecánica (Derecha) ───
@@ -759,7 +761,7 @@ export default function LeverCanvas({
       const cardH = 152;
 
       ctx.save();
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+      ctx.fillStyle = ca(C.card, 0.95);
       ctx.shadowColor = tokenRgba(T.ink, 0.10);
       ctx.shadowBlur = 8;
       ctx.beginPath();
@@ -778,7 +780,7 @@ export default function LeverCanvas({
       ctx.fillText('(VM)', cardX + cardW / 2, cardY + 27);
 
       ctx.font = `bold ${18 * uiScale}px JetBrains Mono, monospace`;
-      ctx.fillText(`VM = ${vm.toFixed(2).replace('.', ',')}`, cardX + cardW / 2, cardY + 50);
+      ctx.fillText(`VM = ${fx(vm, 2)}`, cardX + cardW / 2, cardY + 50);
 
       // Barra medidora de ventaja
       const barBoxW = cardW - 20;
@@ -790,25 +792,25 @@ export default function LeverCanvas({
       ctx.fillRect(barBoxX, barBoxY, barBoxW, barBoxH);
 
       const fillRatio = Math.min(1, Math.max(0.06, vm / 2.0));
-      ctx.fillStyle = vm >= 1.0 ? '#2e8b57' : '#b02318';
+      ctx.fillStyle = vm >= 1.0 ? C.coronal : C.blood;
       ctx.fillRect(barBoxX, barBoxY, barBoxW * fillRatio, barBoxH);
       ctx.strokeStyle = tokenRgba(T.ink2, 0.35);
       ctx.strokeRect(barBoxX, barBoxY, barBoxW, barBoxH);
 
       ctx.font = `bold ${7.5 * uiScale}px Karla, system-ui, sans-serif`;
-      ctx.fillStyle = vm >= 1.0 ? '#2e8b57' : '#b02318';
+      ctx.fillStyle = vm >= 1.0 ? C.coronal : C.blood;
       ctx.fillText(
-        vm >= 1.0 ? '✓ Multiplica fuerza · VM > 1' : '⚠ Menor fuerza · VM < 1',
+        vm >= 1.0 ? 'Multiplica la fuerza · VM > 1' : 'Exige más fuerza · VM < 1',
         cardX + cardW / 2,
         cardY + 80
       );
 
       ctx.font = `${7 * uiScale}px Karla, system-ui, sans-serif`;
       ctx.fillStyle = T.ink2;
-      ctx.fillText(`Fm/W = ${(1 / vm).toFixed(1)} ×`, cardX + cardW / 2, cardY + 95);
-      ctx.fillText(`bp ${bp} cm · br ${br} cm`, cardX + cardW / 2, cardY + 108);
-      ctx.fillText(vm < 1.0 ? '⚡ Más velocidad distal' : '💪 Ahorro de fuerza', cardX + cardW / 2, cardY + 121);
-      ctx.fillText(`Fm ${fMuscNewtons.toFixed(0)} N · ${(fMuscNewtons / 9.81).toFixed(1)} kgf`, cardX + cardW / 2, cardY + 136);
+      ctx.fillText(`M/W = ${fmt(1 / vm, 2)}`, cardX + cardW / 2, cardY + 95);
+      ctx.fillText(`dM ${bp} cm · dW ${br} cm`, cardX + cardW / 2, cardY + 108);
+      ctx.fillText(vm < 1.0 ? 'Amplifica el desplazamiento' : 'Ahorra fuerza', cardX + cardW / 2, cardY + 121);
+      ctx.fillText(`M ${fMuscNewtons.toFixed(0)} N`, cardX + cardW / 2, cardY + 136);
       ctx.restore();
       }
 

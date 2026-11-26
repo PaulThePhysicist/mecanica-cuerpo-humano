@@ -1,4 +1,6 @@
 import React, { Suspense, useMemo, useRef, useState, useEffect } from 'react';
+import { C, ca } from './palette';
+import { fx } from './ab';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, ContactShadows, Line, useGLTF } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
@@ -86,11 +88,11 @@ const GAIT_CONFIG: Record<string, GaitPhaseConfig> = {
 const BONE_IVORY = '#ede5d0';
 const BONE_ACCENT = '#c5b593';
 const CARTILAGE_ICE = '#68c5b8';
-const TEAL_ACCENT = '#0d6e64';
-const GREEN_ACCENT = '#059669';
-const RED_ACCENT = '#ef4444';
-const BLUE_ACCENT = '#2563eb';
-const AMBER_ACCENT = '#f59e0b';
+const TEAL_ACCENT = C.teal;
+const GREEN_ACCENT = C.coronal;
+const RED_ACCENT = C.blood;
+const BLUE_ACCENT = C.series3;
+const AMBER_ACCENT = C.amber;
 
 // Puntos de la curva COP continua tipo "Mariposa de Marcha" (Butterfly Trajectory)
 const COP_TRAJECTORY_POINTS: [number, number, number][] = [
@@ -107,7 +109,7 @@ const COP_TRAJECTORY_POINTS: [number, number, number][] = [
 function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [0, 1, 0] as [number, number, number],
-  color = '#0d6e64',
+  color = C.teal,
   label,
   sub,
   emphasis,
@@ -236,7 +238,7 @@ function usePlantarHeatmapTexture(gaitPhase: string) {
       ctx.fill();
 
       // Anillos isobáricos (líneas de contorno de presión constante)
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+      ctx.strokeStyle = ca(C.card, 0.35);
       ctx.lineWidth = 1.2;
       for (let cr = r * 0.3; cr < r; cr += r * 0.25) {
         ctx.beginPath();
@@ -292,7 +294,7 @@ function ForcePlatform3D() {
       <mesh position={[0, 0, 0]} receiveShadow>
         <boxGeometry args={[2.2, 0.14, 3.0]} />
         <meshStandardMaterial
-          color="#334155"
+          color={C.ink}
           metalness={0.88}
           roughness={0.24}
         />
@@ -302,7 +304,7 @@ function ForcePlatform3D() {
       <mesh position={[0, 0.065, 0]}>
         <boxGeometry args={[2.24, 0.015, 3.04]} />
         <meshStandardMaterial
-          color="#64748b"
+          color={C.ink3}
           metalness={0.92}
           roughness={0.18}
         />
@@ -312,7 +314,7 @@ function ForcePlatform3D() {
       <mesh position={[0, 0.076, 0]} receiveShadow>
         <boxGeometry args={[2.16, 0.01, 2.96]} />
         <meshStandardMaterial
-          color="#f1f5f9"
+          color={C.lineSoft}
           transparent
           opacity={0.82}
           roughness={0.12}
@@ -334,7 +336,7 @@ function ForcePlatform3D() {
             <ringGeometry args={[0.04, 0.075, 24]} />
             <meshStandardMaterial
               ref={i === 0 ? ledGlowRef : undefined}
-              color="#10b981"
+              color={C.coronal}
               emissive="#10b981"
               emissiveIntensity={0.9}
               toneMapped={false}
@@ -353,10 +355,10 @@ function ForcePlatform3D() {
             [0, 0, 0],
             [0, 0, 0.45],
           ]}
-          color="#059669"
+          color={C.coronal}
           lineWidth={2.2}
         />
-        <DclTag position={[0, 0, 0.50]} color="#059669" symbol="+Fy" />
+        <DclTag position={[0, 0, 0.50]} color={C.coronal} symbol="+Fy" />
 
         {/* Eje +Fx (Mediolateral) */}
         <Line
@@ -364,10 +366,10 @@ function ForcePlatform3D() {
             [0, 0, 0],
             [0.35, 0, 0],
           ]}
-          color="#2563eb"
+          color={C.series3}
           lineWidth={2.2}
         />
-        <DclTag position={[0.40, 0, 0]} color="#2563eb" symbol="+Fx" />
+        <DclTag position={[0.40, 0, 0]} color={C.series3} symbol="+Fx" />
       </group>
     </group>
   );
@@ -576,21 +578,21 @@ function CopAndGrfVectors3D({
         </mesh>
 
         {/* COP: referencia anclada, se queda sobre la plataforma. */}
-        <DclTag position={[0, -0.06, 0.08]} color="#ef4444" symbol="COP" />
+        <DclTag position={[0, -0.06, 0.08]} color={C.blood} symbol="COP" />
       </group>
 
       {/* ── Vector Resultante de la Reacción del Suelo (GRF) ── */}
-      <ForceVector3D origin={copPos} vector={grfVec} color={TEAL_ACCENT} label={lGRF} sub={`${(grfResultantN / weightN).toFixed(2)}·W`} emphasis="strong" shaftRadius={0.016} />
+      <ForceVector3D origin={copPos} vector={grfVec} color={TEAL_ACCENT} label={lGRF} sub={`${fx((grfResultantN / weightN), 2)}·W`} emphasis="strong" shaftRadius={0.016} />
 
       {/* ── Componente Vertical Fz (Verde Esmeralda) ── */}
-      <ForceVector3D origin={copPos} vector={fzVec} color={GREEN_ACCENT} label={lFz} sub={`vertical · ${cfg.fzMult.toFixed(2)} W`} emphasis="muted" shaftRadius={0.012} />
+      <ForceVector3D origin={copPos} vector={fzVec} color={GREEN_ACCENT} label={lFz} sub={`vertical · ${fx(cfg.fzMult, 2)} W`} emphasis="muted" shaftRadius={0.012} />
 
       {/* ── Componente Anteroposterior Fy (Frenado / Propulsión) ── */}
       {Math.abs(fyN) > 5 && (
         <ForceVector3D
           origin={copPos}
           vector={fyVec}
-          color={fyN > 0 ? '#10b981' : RED_ACCENT}
+          color={fyN > 0 ? C.coronal : RED_ACCENT}
           label={lFy}
           sub={fyN > 0 ? 'propulsión anterior' : 'frenado'}
           emphasis="muted"
@@ -618,7 +620,7 @@ function CopAndGrfVectors3D({
           [copPos[0] + grfVec[0], copPos[1] + grfVec[1], copPos[2] + grfVec[2]],
           [copPos[0] + fyVec[0] + fxVec[0], copPos[1], copPos[2] + fyVec[2] + fxVec[2]],
         ]}
-        color="#64748b"
+        color={C.ink3}
         lineWidth={1.2}
         dashed
         dashScale={18}
@@ -664,12 +666,12 @@ function VerticalMCurveOscilloscope({
   return (
     <div
       style={{
-        background: 'rgba(255, 255, 255, 0.95)',
+        background: ca(C.card, 0.95),
         backdropFilter: 'blur(8px)',
-        border: '1.5px solid #cbd5e1',
+        border: `1.5px solid ${C.line}`,
         borderRadius: '8px',
         padding: '8px 12px',
-        boxShadow: '0 4px 18px rgba(35, 44, 54, 0.12)',
+        boxShadow: `0 4px 18px ${ca(C.ink, 0.12)}`,
         width: '185px',
         pointerEvents: 'none',
       }}
@@ -680,8 +682,8 @@ function VerticalMCurveOscilloscope({
 
       <svg width="160" height="75" viewBox="0 0 160 75" style={{ display: 'block', margin: '0 auto' }}>
         {/* Línea base de 1.0 W (Peso corporal de referencia) */}
-        <line x1="8" y1="45" x2="152" y2="45" stroke="#94a3b8" strokeWidth="1" strokeDasharray="3 2" />
-        <text x="126" y="42" fontSize="6.5" fill="#64748b" fontFamily="JetBrains Mono, monospace">1.0 W</text>
+        <line x1="8" y1="45" x2="152" y2="45" stroke={C.ink3} strokeWidth="1" strokeDasharray="3 2" />
+        <text x="126" y="42" fontSize="12" fill={C.ink3} fontFamily="JetBrains Mono, monospace">1,0 W</text>
 
         {/* Curva en M clásica */}
         <path
@@ -708,12 +710,12 @@ function VerticalMCurveOscilloscope({
           <circle cx="130" cy="12" r="6" fill="none" stroke={RED_ACCENT} strokeWidth="1.5" />
         )}
 
-        <text x="48" y="10" fontSize="6" fill={gaitPhase === 'heel_strike' ? RED_ACCENT : '#64748b'} textAnchor="middle" fontWeight="bold">1.15 W</text>
-        <text x="88" y="66" fontSize="6" fill={gaitPhase === 'mid_stance' ? RED_ACCENT : '#64748b'} textAnchor="middle" fontWeight="bold">0.85 W</text>
-        <text x="130" y="6" fontSize="6" fill={gaitPhase === 'toe_off' ? RED_ACCENT : '#64748b'} textAnchor="middle" fontWeight="bold">1.25 W</text>
+        <text x="48" y="10" fontSize="12" fill={gaitPhase === 'heel_strike' ? RED_ACCENT : C.ink3} textAnchor="middle" fontWeight="bold">1,15 W</text>
+        <text x="88" y="66" fontSize="12" fill={gaitPhase === 'mid_stance' ? RED_ACCENT : C.ink3} textAnchor="middle" fontWeight="bold">0,85 W</text>
+        <text x="130" y="6" fontSize="12" fill={gaitPhase === 'toe_off' ? RED_ACCENT : C.ink3} textAnchor="middle" fontWeight="bold">1,25 W</text>
       </svg>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.54rem', fontFamily: 'JetBrains Mono, monospace', marginTop: '3px', color: '#475569' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.62rem', fontFamily: 'JetBrains Mono, monospace', marginTop: '3px', color: C.ink2 }}>
         <span>W = {weightN.toFixed(0)} N</span>
         <b style={{ color: TEAL_ACCENT }}>
           Fz = {(weightN * GAIT_CONFIG[gaitPhase].fzMult).toFixed(0)} N
@@ -737,29 +739,29 @@ function PeakPressureGauge({
   return (
     <div
       style={{
-        background: 'rgba(255, 255, 255, 0.95)',
+        background: ca(C.card, 0.95),
         backdropFilter: 'blur(8px)',
-        border: '1.5px solid #cbd5e1',
+        border: `1.5px solid ${C.line}`,
         borderRadius: '8px',
         padding: '8px 12px',
-        boxShadow: '0 4px 18px rgba(35, 44, 54, 0.12)',
+        boxShadow: `0 4px 18px ${ca(C.ink, 0.12)}`,
         width: '165px',
         textAlign: 'center',
         pointerEvents: 'none',
       }}
     >
-      <div style={{ fontSize: '0.60rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.4px' }}>
+      <div style={{ fontSize: '0.62rem', fontWeight: 800, color: C.ink3, textTransform: 'uppercase', letterSpacing: '0.4px' }}>
         Presión Pico Baropodométrica
       </div>
 
       <svg width="110" height="66" viewBox="0 0 110 66" style={{ margin: '3px auto 0', display: 'block' }}>
-        <path d="M 15 58 A 40 40 0 0 1 95 58" fill="none" stroke="#e2e8f0" strokeWidth="7" strokeLinecap="round" />
+        <path d="M 15 58 A 40 40 0 0 1 95 58" fill="none" stroke={C.lineSoft} strokeWidth="7" strokeLinecap="round" />
         {/* Sector Verde (0 - 200 kPa) */}
-        <path d="M 15 58 A 40 40 0 0 1 55 18" fill="none" stroke="#10b981" strokeWidth="7" strokeDasharray="3 2" opacity={0.4} />
+        <path d="M 15 58 A 40 40 0 0 1 55 18" fill="none" stroke={C.coronal} strokeWidth="7" strokeDasharray="3 2" opacity={0.4} />
         {/* Sector Ámbar (200 - 320 kPa) */}
-        <path d="M 55 18 A 40 40 0 0 1 85 34" fill="none" stroke="#f59e0b" strokeWidth="7" strokeDasharray="3 2" opacity={0.4} />
+        <path d="M 55 18 A 40 40 0 0 1 85 34" fill="none" stroke={C.amber} strokeWidth="7" strokeDasharray="3 2" opacity={0.4} />
         {/* Sector Rojo (> 320 kPa) */}
-        <path d="M 85 34 A 40 40 0 0 1 95 58" fill="none" stroke="#ef4444" strokeWidth="7" strokeDasharray="3 2" opacity={0.4} />
+        <path d="M 85 34 A 40 40 0 0 1 95 58" fill="none" stroke={C.blood} strokeWidth="7" strokeDasharray="3 2" opacity={0.4} />
 
         {/* Arco de valor */}
         <path
@@ -775,16 +777,16 @@ function PeakPressureGauge({
 
         {/* Aguja indicadora */}
         <g transform={`rotate(${needleAngle} 55 58)`} style={{ transition: 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)' }}>
-          <line x1="55" y1="58" x2="55" y2="22" stroke="#1e293b" strokeWidth="2.2" strokeLinecap="round" />
-          <circle cx="55" cy="58" r="4" fill="#1e293b" />
-          <circle cx="55" cy="58" r="1.8" fill="#ffffff" />
+          <line x1="55" y1="58" x2="55" y2="22" stroke={C.ink} strokeWidth="2.2" strokeLinecap="round" />
+          <circle cx="55" cy="58" r="4" fill={C.ink} />
+          <circle cx="55" cy="58" r="1.8" fill={C.card} />
         </g>
       </svg>
 
       <div style={{ fontSize: '1.15rem', fontWeight: 800, color: RED_ACCENT, fontFamily: 'JetBrains Mono, monospace', marginTop: '2px' }}>
         {cfg.peakPressureKPa} kPa
       </div>
-      <div style={{ fontSize: '0.52rem', color: '#64748b' }}>
+      <div style={{ fontSize: '0.62rem', color: C.ink3 }}>
         {gaitPhase === 'toe_off' ? 'Propulsión 1er Metatarso' : (gaitPhase === 'heel_strike' ? 'Choque de Talón' : 'Apoyo Medio Plano')}
       </div>
     </div>
@@ -853,7 +855,7 @@ export default function ForcePlateCanvas({
         {/* ── Iluminación de Estudio Anatómico ── */}
         <ambientLight intensity={0.55} />
         {/* Luz de contra que perfila la silueta contra el fondo */}
-        <directionalLight position={[-2, 3.5, -6]} intensity={0.9} color="#ffffff" />
+        <directionalLight position={[-2, 3.5, -6]} intensity={0.9} color={C.card} />
         <directionalLight
           position={[4, 8, 5]}
           intensity={1.3}
@@ -906,10 +908,10 @@ export default function ForcePlateCanvas({
       <CalloutRail store={callouts} side="right" reserveBottom={120} />
 
       {/* ── Widgets HUD anclados a las esquinas (fuera del 3D → no se recortan) ── */}
-      <div style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 9, transform: 'scale(0.82)', transformOrigin: 'top left', pointerEvents: 'none' }}>
+      <div style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 9, transformOrigin: 'top left', pointerEvents: 'none' }}>
         <VerticalMCurveOscilloscope gaitPhase={gaitPhase} bodyMassKg={bodyMassKg} />
       </div>
-      <div style={{ position: 'absolute', right: '10px', bottom: '10px', zIndex: 9, transform: 'scale(0.8)', transformOrigin: 'bottom right', pointerEvents: 'none' }}>
+      <div style={{ position: 'absolute', right: '10px', bottom: '10px', zIndex: 9, transformOrigin: 'bottom right', pointerEvents: 'none' }}>
         <PeakPressureGauge gaitPhase={gaitPhase} />
       </div>
 
@@ -921,12 +923,12 @@ export default function ForcePlateCanvas({
           left: '12px',
           display: 'flex',
           gap: '4px',
-          background: 'rgba(255, 255, 255, 0.92)',
+          background: ca(C.card, 0.92),
           backdropFilter: 'blur(6px)',
           border: '1px solid var(--line)',
           borderRadius: '6px',
           padding: '3px',
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+          boxShadow: `0 2px 8px ${ca(C.ink, 0.08)}`,
           zIndex: 10,
         }}
       >
@@ -935,11 +937,11 @@ export default function ForcePlateCanvas({
           onClick={() => setViewPreset('iso')}
           style={{
             background: viewPreset === 'iso' ? 'var(--teal)' : 'transparent',
-            color: viewPreset === 'iso' ? '#fff' : 'var(--ink)',
+            color: viewPreset === 'iso' ? C.card : 'var(--ink)',
             border: 'none',
             borderRadius: '4px',
             padding: '3px 7px',
-            fontSize: '0.56rem',
+            fontSize: '0.62rem',
             fontWeight: viewPreset === 'iso' ? 700 : 500,
             cursor: 'pointer',
           }}
@@ -951,11 +953,11 @@ export default function ForcePlateCanvas({
           onClick={() => setViewPreset('sagittal')}
           style={{
             background: viewPreset === 'sagittal' ? 'var(--teal)' : 'transparent',
-            color: viewPreset === 'sagittal' ? '#fff' : 'var(--ink)',
+            color: viewPreset === 'sagittal' ? C.card : 'var(--ink)',
             border: 'none',
             borderRadius: '4px',
             padding: '3px 7px',
-            fontSize: '0.56rem',
+            fontSize: '0.62rem',
             fontWeight: viewPreset === 'sagittal' ? 700 : 500,
             cursor: 'pointer',
           }}
@@ -967,11 +969,11 @@ export default function ForcePlateCanvas({
           onClick={() => setViewPreset('frontal')}
           style={{
             background: viewPreset === 'frontal' ? 'var(--teal)' : 'transparent',
-            color: viewPreset === 'frontal' ? '#fff' : 'var(--ink)',
+            color: viewPreset === 'frontal' ? C.card : 'var(--ink)',
             border: 'none',
             borderRadius: '4px',
             padding: '3px 7px',
-            fontSize: '0.56rem',
+            fontSize: '0.62rem',
             fontWeight: viewPreset === 'frontal' ? 700 : 500,
             cursor: 'pointer',
           }}
@@ -983,11 +985,11 @@ export default function ForcePlateCanvas({
           onClick={() => setViewPreset('top')}
           style={{
             background: viewPreset === 'top' ? 'var(--teal)' : 'transparent',
-            color: viewPreset === 'top' ? '#fff' : 'var(--ink)',
+            color: viewPreset === 'top' ? C.card : 'var(--ink)',
             border: 'none',
             borderRadius: '4px',
             padding: '3px 7px',
-            fontSize: '0.56rem',
+            fontSize: '0.62rem',
             fontWeight: viewPreset === 'top' ? 700 : 500,
             cursor: 'pointer',
           }}

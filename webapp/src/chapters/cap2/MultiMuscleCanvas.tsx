@@ -1,4 +1,6 @@
 import React, { Suspense, useRef, useMemo, useState } from 'react';
+import { C, ca } from './palette';
+import { fx } from './ab';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, ContactShadows, useGLTF } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
@@ -14,6 +16,7 @@ import {
   CalloutSource,
   useCalloutStore,
 } from '../cap1/three/Callouts';
+import { G, FOREARM, flexorStatics, FLEXOR_BOOK_LOAD_KG } from './staticsModels';
 
 interface MultiMuscleCanvasProps {
   handLoadKg?: number;       // Carga en mano (1 a 20 kg, default: 7)
@@ -36,7 +39,7 @@ const P_ELBOW = new THREE.Vector3(-0.128, 0.142, -0.016);
 function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [1, 0, 0] as [number, number, number],
-  color = '#0d6e64',
+  color = C.teal,
   label,
   sub,
   emphasis,
@@ -167,7 +170,7 @@ function BrachioradialisAnatomicalBand({
   const bellyMat = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
-        color: isActive ? '#d97706' : '#718096',
+        color: isActive ? C.amber : C.ink3,
         roughness: 0.54,
         metalness: 0.06,
         emissive: isActive ? '#d97706' : '#000000',
@@ -201,6 +204,16 @@ function BrachioradialisAnatomicalBand({
 }
 
 // ── Escena 3D Multi-Músculo Real con Modelos GLB ──
+/** Fuerzas de los flexores para una carga en la mano (libro: W_F = 15 N a 13 cm, W_W a 36 cm). */
+function flexorLoads(handLoadKg: number, activeMuscleCount: 1 | 3) {
+  const wHandN = handLoadKg * G;
+  const tauNcm = wHandN * FOREARM.dW + FOREARM.WF * FOREARM.dF;
+  const f = flexorStatics(tauNcm, activeMuscleCount === 1);
+  // Músculos verticales y antebrazo horizontal: R = ΣM_i − W_W − W_F.
+  const rJointN = Math.max(0, f.total - wHandN - FOREARM.WF);
+  return { tauNcm, fBicepsN: f.biceps, fBrachialisN: f.brachialis, fBrachioradialisN: f.brachioradialis, total: f.total, k: f.k, rJointN };
+}
+
 function MultiMuscleScene({
   handLoadKg,
   activeMuscleCount,
@@ -211,41 +224,9 @@ function MultiMuscleScene({
   const { nodes: boneNodes } = useGLTF('/assets/cap1/human_body.glb') as any;
   const { nodes: muscleNodes } = useGLTF('/assets/cap1/human_muscles_arm.glb') as any;
 
-  // ── Biomecánica y Torque Neto ──
-  const g = 9.81;
-  const wHandN = handLoadKg * g;
-  const wForearmN = 1.5 * g; // Peso medio de antebrazo y mano (~1.5 kg)
-  const dForearmM = 0.14;
-  const dHandM = 0.35;
-
-  const totalTauNm = wHandN * dHandM + wForearmN * dForearmM;
-
-  let fBrachialisN = 0;
-  let fBicepsN = 0;
-  let fBrachioradialisN = 0;
-
-  if (activeMuscleCount === 1) {
-    // Modo aislado: el bíceps asume el 100% de la carga de flexión
-    fBicepsN = totalTauNm / (0.040 * Math.sin((80 * Math.PI) / 180));
-    fBrachialisN = 0;
-    fBrachioradialisN = 0;
-  } else {
-    // Modo sinérgico cooperativo (45% Braquial, 40% Bíceps, 15% Braquiorradial)
-    const tauBrachialis = totalTauNm * 0.45;
-    const tauBiceps = totalTauNm * 0.40;
-    const tauBrachioradialis = totalTauNm * 0.15;
-
-    fBrachialisN = tauBrachialis / (0.025 * Math.sin((85 * Math.PI) / 180));
-    fBicepsN = tauBiceps / (0.040 * Math.sin((80 * Math.PI) / 180));
-    fBrachioradialisN = tauBrachioradialis / (0.250 * Math.sin((15 * Math.PI) / 180));
-  }
-
-  // Reacción articular neta
-  const verticalMuscleForce =
-    fBrachialisN * Math.sin((85 * Math.PI) / 180) +
-    fBicepsN * Math.sin((80 * Math.PI) / 180) +
-    fBrachioradialisN * Math.sin((15 * Math.PI) / 180);
-  const rJointN = Math.max(0, verticalMuscleForce - (wHandN + wForearmN));
+  // ── Caso 4 del libro (Tabla 2.1, Ecs. 2.21–2.24): M_i = k A_i, θ = 90° ──
+  const { fBrachialisN, fBicepsN, fBrachioradialisN, rJointN } = flexorLoads(handLoadKg, activeMuscleCount);
+  const wHandN = handLoadKg * G;
 
   // Deformación volumétrica y EMG dinámico
   const bicepsBulge =
@@ -282,7 +263,7 @@ function MultiMuscleScene({
   const brachialisMat = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
-        color: activeMuscleCount === 3 ? '#2e8b57' : '#64748b',
+        color: activeMuscleCount === 3 ? C.coronal : C.ink3,
         roughness: 0.54,
         metalness: 0.06,
         emissive: activeMuscleCount === 3 ? '#2e8b57' : '#000000',
@@ -295,7 +276,7 @@ function MultiMuscleScene({
   const bicepsMat = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
-        color: '#dc2626',
+        color: C.blood,
         roughness: 0.52,
         metalness: 0.06,
         emissive: '#dc2626',
@@ -323,11 +304,11 @@ function MultiMuscleScene({
   const rjLen = Math.min(0.105, Math.max(0.030, rJointN * 0.00014));
 
   const isolated = activeMuscleCount === 1;
-  const lBraq = `Braq = ${fBrachialisN.toFixed(0)} N`;
-  const lBic = `Bíc${isolated ? ' ⚠' : ''} = ${fBicepsN.toFixed(0)} N`;
-  const lBrad = `Brad = ${fBrachioradialisN.toFixed(0)} N`;
+  const lBraq = `M₂ braquial = ${fBrachialisN.toFixed(0)} N`;
+  const lBic = `M₁ bíceps = ${fBicepsN.toFixed(0)} N`;
+  const lBrad = `M₃ braquiorr. = ${fBrachioradialisN.toFixed(0)} N`;
   const lW = `W = ${wHandN.toFixed(0)} N`;
-  const lRj = `R_j = ${rJointN.toFixed(0)} N`;
+  const lRj = `R = ${rJointN.toFixed(0)} N`;
 
   return (
     <group position={[-0.05, 0.05, 0]} scale={ARM_SCALE}>
@@ -387,7 +368,7 @@ function MultiMuscleScene({
       </mesh>
 
       {/* Vector Reacción Articular R_j en la Tróclea */}
-      <ForceVector3D origin={[0, 0, 0]} vector={[0, -rjLen, 0]} color="#0d9488" label={lRj} sub="compresión" emphasis="strong" />
+      <ForceVector3D origin={[0, 0, 0]} vector={[0, -rjLen, 0]} color={C.teal} label={lRj} sub="compresión" emphasis="strong" />
 
       {/* ── Segmento Móvil: Antebrazo a 90° de Flexión ── */}
       <group rotation={[angleRad, 0, 0]}>
@@ -427,7 +408,7 @@ function MultiMuscleScene({
           <ForceVector3D
             origin={[-0.018, -0.025, 0.010]}
             vector={[brachLen * 0.08, brachLen * 0.98, -brachLen * 0.12]}
-            color="#2e8b57"
+            color={C.coronal}
             label={lBraq}
             sub="45% τ"
           />
@@ -437,7 +418,7 @@ function MultiMuscleScene({
         <ForceVector3D
           origin={[0.030, -0.040, 0.020]}
           vector={[bicLen * 0.14, bicLen * 0.97, -bicLen * 0.18]}
-          color="#dc2626"
+          color={C.blood}
           label={lBic}
           sub={activeMuscleCount === 3 ? '40% τ' : '100% aislado'}
         />
@@ -447,7 +428,7 @@ function MultiMuscleScene({
           <ForceVector3D
             origin={[-0.022, -0.250, 0.018]}
             vector={[-bradLen * 0.12, bradLen * 0.98, bradLen * 0.08]}
-            color="#d97706"
+            color={C.amber}
             label={lBrad}
             sub="15% · shunt"
           />
@@ -457,7 +438,7 @@ function MultiMuscleScene({
         <ForceVector3D
           origin={[-0.040, -0.350, 0.045]}
           vector={[0, -wLen, 0]}
-          color="#232c36"
+          color={C.ink}
           label={lW}
           sub={`${handLoadKg} kg`}
         />
@@ -471,7 +452,7 @@ useGLTF.preload('/assets/cap1/human_muscles_arm.glb');
 
 export default function MultiMuscleCanvas({
   showLabels = false,
-  handLoadKg = 7,
+  handLoadKg = FLEXOR_BOOK_LOAD_KG,
   activeMuscleCount = 3,
 }: MultiMuscleCanvasProps) {
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
@@ -479,34 +460,18 @@ export default function MultiMuscleCanvas({
   const [cameraView, setCameraView] = useState<'default' | 'lateral' | 'anterior' | 'top'>('default');
   const [showTelemetry, setShowTelemetry] = useState(false);
 
-  const g = 9.81;
-  const wHandN = handLoadKg * g;
-  const wForearmN = 1.5 * g;
-  const totalTauNm = wHandN * 0.35 + wForearmN * 0.14;
-
-  let fBrachN = 0;
-  let fBicN = 0;
-  let fBradN = 0;
-
-  if (activeMuscleCount === 1) {
-    fBicN = totalTauNm / (0.040 * Math.sin((80 * Math.PI) / 180));
-  } else {
-    fBrachN = (totalTauNm * 0.45) / (0.025 * Math.sin((85 * Math.PI) / 180));
-    fBicN = (totalTauNm * 0.40) / (0.040 * Math.sin((80 * Math.PI) / 180));
-    fBradN = (totalTauNm * 0.15) / (0.250 * Math.sin((15 * Math.PI) / 180));
-  }
-
-  const totalMuscleForceN = fBrachN + fBicN + fBradN;
-  const verticalMuscleForce =
-    fBrachN * Math.sin((85 * Math.PI) / 180) +
-    fBicN * Math.sin((80 * Math.PI) / 180) +
-    fBradN * Math.sin((15 * Math.PI) / 180);
-  const rJointN = Math.max(0, verticalMuscleForce - (wHandN + wForearmN));
+  const fl = flexorLoads(handLoadKg, activeMuscleCount);
+  const fBrachN = fl.fBrachialisN;
+  const fBicN = fl.fBicepsN;
+  const fBradN = fl.fBrachioradialisN;
+  const totalMuscleForceN = fl.total;
+  const rJointN = fl.rJointN;
+  const totalTauNm = fl.tauNcm / 100;
 
   const railNote =
     activeMuscleCount === 3
-      ? 'Tres flexores reparten el torque: menos tensión por músculo y menos compresión articular.'
-      : 'Bíceps aislado: asume el 100 % del torque → tensión y compresión máximas.';
+      ? 'Tres flexores con la misma k: la suma (≈ 746 N en el libro) supera al bíceps solo (≈ 696 N) porque el braquial tiene un brazo corto.'
+      : 'Bíceps solo (d = 4,6 cm): asume todo el torque de la carga.';
 
   const setView = (view: 'default' | 'lateral' | 'anterior' | 'top') => {
     setCameraView(view);
@@ -596,17 +561,17 @@ export default function MultiMuscleCanvas({
             type="button"
             onClick={() => setView(view)}
             style={{
-              background: cameraView === view ? '#0d6e64' : 'rgba(255, 255, 255, 0.88)',
-              color: cameraView === view ? '#ffffff' : '#43505c',
-              border: '1px solid rgba(207, 195, 169, 0.9)',
+              background: cameraView === view ? C.teal : ca(C.card, 0.88),
+              color: cameraView === view ? C.card : C.ink2,
+              border: `1px solid ${ca(C.line, 0.9)}`,
               backdropFilter: 'blur(4px)',
               borderRadius: '4px',
               padding: '3px 7px',
-              fontSize: '0.54rem',
+              fontSize: '0.62rem',
               fontWeight: cameraView === view ? 700 : 500,
               cursor: 'pointer',
               textTransform: 'capitalize',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+              boxShadow: `0 1px 3px ${ca(C.ink, 0.06)}`,
             }}
           >
             {view === 'default' ? '3D Iso' : view === 'lateral' ? 'Lateral (Brazos d)' : view === 'anterior' ? 'Frontal' : 'Cenital'}
@@ -626,17 +591,17 @@ export default function MultiMuscleCanvas({
           right: '10px',
           zIndex: 13,
           pointerEvents: 'auto',
-          border: '1px solid rgba(207, 195, 169, 0.9)',
+          border: `1px solid ${ca(C.line, 0.9)}`,
           borderRadius: '5px',
-          background: showTelemetry ? '#0d6e64' : 'rgba(255,253,248,.96)',
-          color: showTelemetry ? '#fff' : '#43505c',
+          background: showTelemetry ? C.teal : ca(C.card, .96),
+          color: showTelemetry ? C.card : C.ink2,
           padding: '4px 8px',
-          font: '700 .58rem Karla, sans-serif',
+          font: '700 .62rem Karla, sans-serif',
           cursor: 'pointer',
-          boxShadow: '0 2px 8px rgba(35,44,54,.14)',
+          boxShadow: `0 2px 8px ${ca(C.ink, .14)}`,
         }}
       >
-        {showTelemetry ? '× Ocultar información' : '☷ Información'}
+        {showTelemetry ? '× Ocultar información' : 'Información'}
       </button>
       <div
         id="b3-torque-hud"
@@ -645,23 +610,23 @@ export default function MultiMuscleCanvas({
           top: '42px',
           right: '10px',
           width: '210px',
-          background: 'rgba(255, 255, 255, 0.95)',
+          background: ca(C.card, 0.95),
           backdropFilter: 'blur(8px)',
-          border: '1px solid rgba(207, 195, 169, 0.9)',
+          border: `1px solid ${ca(C.line, 0.9)}`,
           borderRadius: '7px',
           padding: '7px 9px',
-          boxShadow: '0 3px 12px rgba(35, 44, 54, 0.12)',
+          boxShadow: `0 3px 12px ${ca(C.ink, 0.12)}`,
           zIndex: 10,
           pointerEvents: showTelemetry ? 'none' : 'none',
           display: showTelemetry ? 'block' : 'none',
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-          <span style={{ fontSize: '0.58rem', fontWeight: 800, color: '#232c36', letterSpacing: '0.02em' }}>
+          <span style={{ fontSize: '0.62rem', fontWeight: 800, color: C.ink, letterSpacing: '0.02em' }}>
             DISTRIBUCIÓN DE TORQUE
           </span>
-          <span style={{ fontSize: '0.52rem', fontFamily: 'JetBrains Mono, monospace', color: '#0d6e64', fontWeight: 700 }}>
-            Στ = {totalTauNm.toFixed(1)} N·m
+          <span style={{ fontSize: '0.62rem', fontFamily: 'JetBrains Mono, monospace', color: C.teal, fontWeight: 700 }}>
+            Στ = {fx(totalTauNm, 1)} N·m
           </span>
         </div>
 
@@ -673,118 +638,118 @@ export default function MultiMuscleCanvas({
             width: '100%',
             borderRadius: '3px',
             overflow: 'hidden',
-            border: '1px solid #43505c',
+            border: `1px solid ${C.ink2}`,
             marginBottom: '6px',
-            boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.15)',
+            boxShadow: `inset 0 1px 2px ${ca(C.ink, 0.15)}`,
           }}
         >
           {activeMuscleCount === 1 ? (
             <div
               style={{
                 width: '100%',
-                background: 'linear-gradient(90deg, #b91c1c, #dc2626)',
+                background: `linear-gradient(90deg, ${C.bloodDeep}, ${C.blood})`,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: '#fff',
-                fontSize: '0.50rem',
+                color: C.card,
+                fontSize: '0.62rem',
                 fontWeight: 800,
               }}
             >
-              BÍCEPS 100%
+              BÍCEPS 100 %
             </div>
           ) : (
             <>
               <div
                 style={{
-                  width: '45%',
-                  background: '#2e8b57',
-                  borderRight: '1px solid #fff',
+                  width: '42%',
+                  background: C.coronal,
+                  borderRight: `1px solid ${C.card}`,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: '#fff',
-                  fontSize: '0.48rem',
+                  color: C.card,
+                  fontSize: '0.62rem',
                   fontWeight: 800,
                 }}
-                title="Braquial 45%"
+                title="Braquial 42 %"
               >
-                45%
+                42 %
               </div>
               <div
                 style={{
-                  width: '40%',
-                  background: '#dc2626',
-                  borderRight: '1px solid #fff',
+                  width: '38%',
+                  background: C.blood,
+                  borderRight: `1px solid ${C.card}`,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: '#fff',
-                  fontSize: '0.48rem',
+                  color: C.card,
+                  fontSize: '0.62rem',
                   fontWeight: 800,
                 }}
-                title="Bíceps 40%"
+                title="Bíceps 38 %"
               >
-                40%
+                38 %
               </div>
               <div
                 style={{
-                  width: '15%',
-                  background: '#d97706',
+                  width: '20%',
+                  background: C.amber,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: '#fff',
-                  fontSize: '0.48rem',
+                  color: C.card,
+                  fontSize: '0.62rem',
                   fontWeight: 800,
                 }}
-                title="Braquiorradial 15%"
+                title="Braquiorradial 20 %"
               >
-                15%
+                20 %
               </div>
             </>
           )}
         </div>
 
         {/* Filas de telemetría EMG por músculo */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '3.5px', fontSize: '0.53rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '3.5px', fontSize: '0.62rem' }}>
           {/* Braquial */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: '#2e8b57' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: C.coronal }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: activeMuscleCount === 3 ? '#2e8b57' : '#94a3b8' }} />
-              Braquial (d = 2,5 cm):
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: activeMuscleCount === 3 ? C.coronal : C.ink3 }} />
+              Braquial (d = 3,4 cm · 7,0 cm²):
             </span>
             <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>
-              {activeMuscleCount === 3 ? `${fBrachN.toFixed(0)} N (${(fBrachN / 9.81).toFixed(1)} kgf)` : '0 N (Inactivo)'}
+              {activeMuscleCount === 3 ? `${fBrachN.toFixed(0)} N (${fx((fBrachN / 9.81), 1)} kgf)` : '0 N (Inactivo)'}
             </b>
           </div>
 
           {/* Bíceps */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: '#dc2626' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: C.blood }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#dc2626' }} />
-              Bíceps (d = 4,0 cm):
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: C.blood }} />
+              Bíceps (d = 4,6 cm · 4,6 cm²):
             </span>
             <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>
-              {fBicN.toFixed(0)} N ({(fBicN / 9.81).toFixed(1)} kgf)
+              {fBicN.toFixed(0)} N ({fx((fBicN / 9.81), 1)} kgf)
             </b>
           </div>
 
           {/* Braquiorradial */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: '#d97706' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: C.amber }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: activeMuscleCount === 3 ? '#d97706' : '#94a3b8' }} />
-              Braquiorradial (d = 25 cm):
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: activeMuscleCount === 3 ? C.amber : C.ink3 }} />
+              Braquiorradial (d = 7,5 cm · 1,5 cm²):
             </span>
             <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>
-              {activeMuscleCount === 3 ? `${fBradN.toFixed(0)} N (${(fBradN / 9.81).toFixed(1)} kgf)` : '0 N (Inactivo)'}
+              {activeMuscleCount === 3 ? `${fBradN.toFixed(0)} N (${fx((fBradN / 9.81), 1)} kgf)` : '0 N (Inactivo)'}
             </b>
           </div>
 
           {/* Fuerza Muscular Total & Compresión */}
           <div
             style={{
-              borderTop: '1px solid rgba(67, 80, 92, 0.20)',
+              borderTop: `1px solid ${ca(C.ink2, 0.20)}`,
               paddingTop: '3px',
               marginTop: '1px',
               display: 'flex',
@@ -792,15 +757,15 @@ export default function MultiMuscleCanvas({
               gap: '2px',
             }}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', color: '#232c36' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', color: C.ink }}>
               <span style={{ fontWeight: 600 }}>Fuerza Muscular Total:</span>
-              <b style={{ fontFamily: 'JetBrains Mono, monospace', color: '#0d6e64' }}>
-                {totalMuscleForceN.toFixed(0)} N ({(totalMuscleForceN / 9.81).toFixed(1)} kgf)
+              <b style={{ fontFamily: 'JetBrains Mono, monospace', color: C.teal }}>
+                {totalMuscleForceN.toFixed(0)} N ({fx((totalMuscleForceN / 9.81), 1)} kgf)
               </b>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', color: '#43505c' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', color: C.ink2 }}>
               <span>Compresión Articular (Rj):</span>
-              <b style={{ fontFamily: 'JetBrains Mono, monospace', color: '#0d9488' }}>
+              <b style={{ fontFamily: 'JetBrains Mono, monospace', color: C.teal }}>
                 {rJointN.toFixed(0)} N
               </b>
             </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { C } from './palette';
 
 /**
  * Botón ▶ Animar / ⏸ Pausar de los slides de cap2. Mismo aspecto y sitio que
@@ -23,11 +24,11 @@ export function AnimateButton({
       title={playing ? 'Pausar la animación del gesto' : 'Animar el gesto de forma cíclica'}
       style={{
         background: playing ? 'var(--teal)' : 'var(--paper-2)',
-        color: playing ? '#fff' : 'var(--ink)',
+        color: playing ? C.card : 'var(--ink)',
         border: `1px solid ${playing ? 'var(--teal)' : 'var(--line)'}`,
         borderRadius: '4px',
         padding: '2px 8px',
-        fontSize: '0.58rem',
+        fontSize: '0.62rem',
         fontWeight: 700,
         cursor: 'pointer',
         transition: 'all 0.15s ease',

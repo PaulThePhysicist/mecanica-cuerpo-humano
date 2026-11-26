@@ -50,6 +50,25 @@ export function fmt(x: number, d: number = 1): string {
   return s;
 }
 
+/**
+ * Cifra con un número FIJO de decimales y coma decimal es-ES (a diferencia de
+ * `fmt`, no recorta ceros: 2,50 sigue siendo 2,50). Evita «-0».
+ */
+export function fx(x: number, d: number = 0): string {
+  const s = Number(x).toFixed(d);
+  const clean = Number(s) === 0 ? s.replace(/^-/, '') : s;
+  return clean.replace('.', ',');
+}
+
+/** Notación científica legible: 1,01 × 10⁵ (sin «e+5» ni punto decimal). */
+export function fexp(x: number, d: number = 2): string {
+  if (!Number.isFinite(x) || x === 0) return fx(x, d);
+  const e = Math.floor(Math.log10(Math.abs(x)));
+  const sup: Record<string, string> = { '-': '⁻', '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹' };
+  const exp = String(e).split('').map((c) => sup[c] ?? c).join('');
+  return `${fx(x / 10 ** e, d)} × 10${exp}`;
+}
+
 export function text(
   ctx: CanvasRenderingContext2D,
   s: string,

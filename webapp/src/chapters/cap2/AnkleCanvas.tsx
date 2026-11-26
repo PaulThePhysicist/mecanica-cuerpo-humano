@@ -1,4 +1,6 @@
 import React, { useMemo } from 'react';
+import { C } from './palette';
+import { fx } from './ab';
 import { Line } from '@react-three/drei';
 import * as THREE from 'three';
 import { AnatomyStage } from '../cap1/three/AnatomyStage';
@@ -38,10 +40,10 @@ export interface AnkleCanvasProps {
 
 const THETA = (45 * Math.PI) / 180; // ángulo del tendón de Aquiles con la horizontal
 
-const TEAL = '#0d6e64';
-const AMBER = '#d97706';
-const RED = '#b02318';
-const SLATE = '#43505c';
+const TEAL = C.teal;
+const AMBER = C.amber;
+const RED = C.blood;
+const SLATE = C.ink2;
 const TENDON_COLOR = '#e7dcc4';
 
 function ForceArrow({
@@ -239,13 +241,13 @@ function AnkleAnatomy({ betaDeg, bodyWeightN, showComponents }: AnkleCanvasProps
       </mesh>
 
       {/* ── Vectores (letrero → riel lateral con línea guía) ── */}
-      <ForceArrow origin={heelP.toArray()} vector={mVec} color={TEAL} label={lM} sub={`${(M / Wb).toFixed(2)}·Wb · tríceps sural`} />
+      <ForceArrow origin={heelP.toArray()} vector={mVec} color={TEAL} label={lM} sub={`${fx((M / Wb), 2)}·Wb · tríceps sural`} />
       <ForceArrow origin={FULCRUM.toArray()} vector={nVec} color={SLATE} label={lN} sub="= Wb (normal del suelo)" />
-      <ForceArrow origin={ankP.toArray()} vector={rVec} color={RED} label={lR} sub={`${(R / Wb).toFixed(2)}·Wb · astrágalo`} emphasis="strong" />
+      <ForceArrow origin={ankP.toArray()} vector={rVec} color={RED} label={lR} sub={`${fx((R / Wb), 2)}·Wb · astrágalo`} emphasis="strong" />
 
       {showComponents && (
         <>
-          <ForceArrow origin={ankP.toArray()} vector={[0, 0, rzN * S]} color="#0284c7" label={`Rt = ${Math.abs(rzN).toFixed(0)} N`} sub="cizalla" emphasis="muted" dashed />
+          <ForceArrow origin={ankP.toArray()} vector={[0, 0, rzN * S]} color={C.series3} label={`Rt = ${Math.abs(rzN).toFixed(0)} N`} sub="cizalla" emphasis="muted" dashed />
           <ForceArrow origin={[ankP.x, ankP.y, ankP.z + rzN * S]} vector={[0, ryN * S, 0]} color={TEAL} label={`Rn = ${Math.abs(ryN).toFixed(0)} N`} sub="compresión" emphasis="muted" dashed />
         </>
       )}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { C, ca } from './palette';
 
 interface HudPanelProps {
   title: string;
@@ -13,7 +14,8 @@ interface HudPanelProps {
 export default function HudPanel({
   title,
   badge,
-  icon = '🧭',
+  // `icon` se ignora (regla D1: sin emoji en controles); se conserva en la API.
+  icon: _icon,
   defaultCollapsed = true,
   children,
   footer,
@@ -33,21 +35,22 @@ export default function HudPanel({
           top: '52px',
           right: '12px',
           zIndex: 10,
-          width: '30px',
+          minWidth: '30px',
           height: '30px',
+          paddingInline: '8px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          background: 'rgba(255, 253, 248, 0.94)',
+          background: ca(C.card, 0.94),
           backdropFilter: 'blur(6px)',
           border: '1px solid var(--line)',
           borderRadius: '7px',
-          boxShadow: '0 4px 14px rgba(0, 0, 0, 0.08)',
+          boxShadow: `0 4px 14px ${ca(C.ink, 0.08)}`,
           cursor: 'pointer',
-          fontSize: '0.95rem',
-          color: 'var(--ink)',
+          fontSize: '0.64rem',
+          fontWeight: 700,
+          color: 'var(--teal-deep)',
           transition: 'all 0.15s ease',
-          padding: 0,
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.background = 'var(--paper-2)';
@@ -55,12 +58,12 @@ export default function HudPanel({
           e.currentTarget.style.transform = 'scale(1.05)';
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.background = 'rgba(255, 253, 248, 0.94)';
+          e.currentTarget.style.background = ca(C.card, 0.94);
           e.currentTarget.style.borderColor = 'var(--line)';
           e.currentTarget.style.transform = 'scale(1)';
         }}
       >
-        {icon}
+        Datos
       </button>
     );
   }
@@ -73,12 +76,12 @@ export default function HudPanel({
         right: '10px',
         zIndex: 10,
         width: width,
-        background: 'rgba(255, 253, 248, 0.94)',
+        background: ca(C.card, 0.94),
         backdropFilter: 'blur(8px)',
         border: '1px solid var(--line)',
         borderRadius: '8px',
         padding: '8px 10px',
-        boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
+        boxShadow: `0 4px 16px ${ca(C.ink, 0.08)}`,
         fontFamily: 'var(--sans)',
       }}
     >
@@ -94,7 +97,7 @@ export default function HudPanel({
       >
         <span
           style={{
-            fontSize: '0.56rem',
+            fontSize: '0.62rem',
             textTransform: 'uppercase',
             letterSpacing: '0.05em',
             fontWeight: 'bold',
@@ -107,7 +110,7 @@ export default function HudPanel({
           {badge && (
             <span
               style={{
-                fontSize: '0.60rem',
+                fontSize: '0.62rem',
                 fontFamily: 'JetBrains Mono, monospace',
                 fontWeight: 'bold',
                 color: 'var(--teal-deep)',
@@ -159,7 +162,7 @@ export default function HudPanel({
             marginTop: '5px',
             paddingTop: '3px',
             borderTop: '1px dashed var(--line)',
-            fontSize: '0.52rem',
+            fontSize: '0.62rem',
             color: 'var(--ink-3)',
             textAlign: 'center',
           }}

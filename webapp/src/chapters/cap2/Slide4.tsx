@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
+import { C } from './palette';
+import { fx } from './ab';
 import BicepsCanvas from './BicepsCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
 import { AnimateButton } from './AnimateButton';
 import { useHarmonicClock } from '../cap1/three/useHarmonicClock';
 import type { Engine } from './useEngine';
+import { G, FOREARM } from './staticsModels';
 
 export default function Slide4({
   isActive,
@@ -14,7 +17,7 @@ export default function Slide4({
   engine?: Engine;
   [key: string]: any;
 }) {
-  const [handLoadKg, setHandLoadKg] = useState<number>(5);
+  const [handLoadKg, setHandLoadKg] = useState<number>(10);
   // Los letreros del visor los enciende el texto de abajo, no un botón
   // sobre el lienzo: el mando cuelga del párrafo que los explica.
   const [showLabels, setShowLabels] = useState<boolean>(false);
@@ -28,18 +31,20 @@ export default function Slide4({
     setElbowAngleDeg(55 + 75 * s);
   });
 
-  const g = 9.81;
-  const wForearmN = 1.5 * g;
+  // Casos 2–3 del libro (Ecs. 2.13–2.17): W_F = 15 N a d_F = 13 cm, W_W a d_W = 36 cm.
+  // Todos los torques llevan sen θ, así que M no depende del ángulo (Ec. 2.17).
+  const g = G;
+  const wForearmN = FOREARM.WF;
   const wHandN = handLoadKg * g;
   const flexRad = (elbowAngleDeg * Math.PI) / 180;
-  const tauResNm = (wForearmN * 0.14 + wHandN * 0.35) * Math.sin(flexRad);
+  const tauResNm = (wForearmN * FOREARM.dF / 100 + wHandN * FOREARM.dW / 100) * Math.sin(flexRad);
   const fMuscN = tauResNm / ((insertCm / 100) * Math.max(0.2, Math.sin(flexRad)));
   const fMuscKgf = fMuscN / g;
   const rJointN = Math.max(0, fMuscN - (wForearmN + wHandN));
 
   const setPreset = (type: 'standard' | 'extension' | 'heavy' | 'leverage') => {
     if (type === 'standard') {
-      setHandLoadKg(5);
+      setHandLoadKg(10);
       setInsertCm(4.0);
       setElbowAngleDeg(90);
     } else if (type === 'extension') {
@@ -59,7 +64,7 @@ export default function Slide4({
 
   const handleReset = () => {
     setIsAnimating(false);
-    setHandLoadKg(5);
+    setHandLoadKg(10);
     setInsertCm(4.0);
     setElbowAngleDeg(90);
   };
@@ -69,7 +74,7 @@ export default function Slide4({
       <div className="module-header">
         <span className="mnum">B2</span>
         <h2 className="mtitle">Flexión del codo: el bíceps 3D</h2>
-        <span className="msub">Palanca de 3ª clase · Desventaja mecánica y fuerza de compresión articular</span>
+        <span className="msub">Palanca de 3ª clase · Casos 1–3 del libro (Ecs. 2.13–2.17)</span>
         <span className="mslide-count">2 / 4</span>
       </div>
       <div className="content-grid">
@@ -80,21 +85,17 @@ export default function Slide4({
             </div>
             <div className="card-body">
               <p style={{ fontSize: '.7rem' }}>
-                Tomando momentos alrededor del eje articular troclear del codo ($\Delta$):
+                {'Caso 1: el bíceps se inserta en el radio a $d_M \\approx 4\\text{ cm}$ del pivote y el peso $W_W$ de la mano está a $d_W = 0{,}2H = 36\\text{ cm}$ ($H = 180\\text{ cm}$): $M = (36/4)\\,W_W = 9\\,W_W$; 100 N en la mano exigen 900 N al bíceps. Caso 2: se añade el peso del antebrazo $W_F \\approx 0{,}022\\,W_b \\approx 15\\text{ N}$ en su centro, $d_F = 13\\text{ cm}$:'}
               </p>
               <div className="eq-block">
-                {'\\[ F_m\\, d = W_a\\, D_a + W_h\\, D \\]'}
+                {'\\[ \\tau_z = M d_M - W_W d_W - W_F d_F = 0 \\;\\Rightarrow\\; M = \\frac{d_W}{d_M} W_W + \\frac{d_F}{d_M} W_F = 9\\,W_W + 3{,}25\\,W_F \\]'}
               </div>
               <p style={{ fontSize: '.64rem' }}>
-                {'Donde $d \\approx 4\\text{ cm}$ (inserción en la tuberosidad bicipital del radio), $D_a \\approx 14\\text{ cm}$ (centro de masa del antebrazo) y $D \\approx 35\\text{ cm}$ (carga en la palma de la mano).'}
+                {'Para 100 N: $M = 900 + 3{,}25 \\times 15 \\approx 950\\text{ N}$. Caso 3: con el brazo vertical y el antebrazo a un ángulo $\\theta$, los tres torques se multiplican por $\\sin\\theta$ y se obtiene la misma $M$ (Ecs. 2.16–2.17). La sutileza: la fuerza máxima del músculo depende de su longitud, es decir, de $\\theta$, y es mayor cerca de $90^\\circ$.'}
               </p>
-              <div className="eq-block" style={{ fontSize: '.72rem' }}>
-                {'\\[ F_m = W_h \\left(\\frac{D}{d}\\right) + W_a \\left(\\frac{D_a}{d}\\right) \\approx 8{,}75\\, W_h + 3{,}5\\, W_a \\]'}
-              </div>
-            
-              <div style={{ marginTop: '.4rem' }}>
+              <div style={{ marginTop: '0.62rem' }}>
                 <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
-                  <b>🏷️ Rotular F_m, W y R_j</b>
+                  <b>{'Rotular $M$, $W_W$ y $R$'}</b>
                 </TheoryToggle>
               </div>
               <TheoryCue>Cuelga de cada flecha su valor en newtons: la tensión del bíceps, la carga en la mano y la reacción sobre la tróclea.</TheoryCue>
@@ -106,20 +107,20 @@ export default function Slide4({
             </div>
             <div className="card-body">
               <p style={{ fontSize: '.64rem', color: 'var(--ink-3)' }}>
-                {'La fuerza de reacción articular $R_j$ comprime la tróclea humeral contra la escotadura troclear del cúbito:'}
+                {'El libro no calcula la reacción del codo, pero sale de $\\sum F_y = 0$ con el antebrazo a $90^\\circ$: el húmero empuja el antebrazo hacia abajo con'}
               </p>
               <div className="eq-block">
-                {'\\[ R_j = F_m - (W_a + W_h) \\]'}
+                {'\\[ R = M - W_W - W_F \\]'}
               </div>
               <p style={{ fontSize: '.62rem', color: 'var(--ink-3)' }}>
-                {'Sostener solo $5\\text{ kg}$ en la mano somete al cartílago articular del codo a más de $\\sim 400\\text{ N}$ de compresión continua.'}
+                {'Con 100 N en la mano, $R \\approx 950 - 100 - 15 \\approx 835\\text{ N}$: casi ocho veces la carga. Supuestos del modelo: antebrazo y brazo a $90^\\circ$ (Caso 1) y brazo de momento fijo, aunque en realidad cambia con $\\theta$ (Fig. 3.46).'}
               </p>
             </div>
           </div>
           <div className="apuntes">
             <div className="a-hdr"><span>✍️</span> Apunte de cátedra</div>
             <div className="a-text" id="info-text-4">
-              La evolución diseñó el miembro superior como un sistema de <strong>palancas de 3ª clase</strong>: pagamos un alto costo en fuerza muscular para ganar amplitud angular y movimientos sumamente veloces en la manipulación distal.
+              Empieza siempre por un modelo simple y declara sus supuestos (ángulo de 90°, antebrazo sin masa); luego hazlo más realista. Así se pasa del Caso 1 (900 N) al Caso 2 (950 N), al Caso 3 (cualquier ángulo) y al Caso 4 (tres músculos, siguiente diapositiva).
             </div>
           </div>
         </div>
@@ -128,30 +129,29 @@ export default function Slide4({
           {/* Panel HUD Colapsable */}
           <HudPanel
             title="MECÁNICA DEL BÍCEPS"
-            badge={`Fm = ${fMuscN.toFixed(0)} N (${fMuscKgf.toFixed(1)} kgf)`}
-            icon="💪"
+            badge={`M = ${fMuscN.toFixed(0)} N (${fx(fMuscKgf, 1)} kgf)`}
             footer="💡 Rota la escena 3D y ajusta la carga o la distancia de inserción"
           >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '0.58rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '0.62rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
-                <span style={{ color: 'var(--ink-2)' }}>Tensión Bíceps (Fm):</span>
-                <b style={{ color: '#0d6e64', fontFamily: 'JetBrains Mono, monospace' }}>{fMuscN.toFixed(0)} N</b>
+                <span style={{ color: 'var(--ink-2)' }}>Tensión del bíceps (M):</span>
+                <b style={{ color: C.teal, fontFamily: 'JetBrains Mono, monospace' }}>{fMuscN.toFixed(0)} N</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Equivalente masa:</span>
-                <b style={{ color: '#0d6e64', fontFamily: 'JetBrains Mono, monospace' }}>{fMuscKgf.toFixed(1)} kgf</b>
+                <b style={{ color: C.teal, fontFamily: 'JetBrains Mono, monospace' }}>{fx(fMuscKgf, 1)} kgf</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Carga en mano:</span>
-                <b style={{ color: '#d97706', fontFamily: 'JetBrains Mono, monospace' }}>{handLoadKg} kg ({wHandN.toFixed(0)} N)</b>
+                <b style={{ color: C.amber, fontFamily: 'JetBrains Mono, monospace' }}>{handLoadKg} kg ({wHandN.toFixed(0)} N)</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
-                <span style={{ color: 'var(--ink-2)' }}>Brazo inserción (d):</span>
-                <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>{insertCm.toFixed(1)} cm</b>
+                <span style={{ color: 'var(--ink-2)' }}>Brazo del bíceps (d<sub>M</sub>):</span>
+                <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>{fx(insertCm, 1)} cm</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--ink-2)' }}>Compresión Articular (Rj):</span>
-                <b style={{ color: '#dc2626', fontFamily: 'JetBrains Mono, monospace' }}>{rJointN.toFixed(0)} N ({(rJointN / 9.81).toFixed(1)} kgf)</b>
+                <span style={{ color: 'var(--ink-2)' }}>Compresión en el codo (R):</span>
+                <b style={{ color: C.blood, fontFamily: 'JetBrains Mono, monospace' }}>{rJointN.toFixed(0)} N ({fx((rJointN / 9.81), 1)} kgf)</b>
               </div>
             </div>
           </HudPanel>
@@ -162,11 +162,11 @@ export default function Slide4({
             elbowAngleDeg={elbowAngleDeg}
           />
           <div className="prof-controls">
-            <span className="badge">2.2 · Bíceps</span>
+            <span className="badge">§2.3.1 · Antebrazo</span>
 
             {/* Presets */}
             {(() => {
-              const isStd = handLoadKg === 5 && elbowAngleDeg === 90 && insertCm === 4;
+              const isStd = handLoadKg === 10 && elbowAngleDeg === 90 && insertCm === 4;
               const isExt = handLoadKg === 5 && elbowAngleDeg === 135 && insertCm === 4;
               const isHeavy = handLoadKg === 18 && elbowAngleDeg === 90 && insertCm === 4;
               const isLev = handLoadKg === 5 && elbowAngleDeg === 90 && insertCm === 6;
@@ -178,11 +178,11 @@ export default function Slide4({
                     onClick={() => setPreset('standard')}
                     style={{
                       background: isStd ? 'var(--teal)' : 'var(--paper-2)',
-                      color: isStd ? '#fff' : 'var(--ink)',
+                      color: isStd ? C.card : 'var(--ink)',
                       border: `1px solid ${isStd ? 'var(--teal)' : 'var(--line)'}`,
                       borderRadius: '3px',
                       padding: '2px 6px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: isStd ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -195,11 +195,11 @@ export default function Slide4({
                     onClick={() => setPreset('extension')}
                     style={{
                       background: isExt ? 'var(--teal)' : 'var(--paper-2)',
-                      color: isExt ? '#fff' : 'var(--ink)',
+                      color: isExt ? C.card : 'var(--ink)',
                       border: `1px solid ${isExt ? 'var(--teal)' : 'var(--line)'}`,
                       borderRadius: '3px',
                       padding: '2px 6px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: isExt ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -212,11 +212,11 @@ export default function Slide4({
                     onClick={() => setPreset('heavy')}
                     style={{
                       background: isHeavy ? 'var(--teal)' : 'var(--paper-2)',
-                      color: isHeavy ? '#fff' : 'var(--ink)',
+                      color: isHeavy ? C.card : 'var(--ink)',
                       border: `1px solid ${isHeavy ? 'var(--teal)' : 'var(--line)'}`,
                       borderRadius: '3px',
                       padding: '2px 6px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: isHeavy ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -229,11 +229,11 @@ export default function Slide4({
                     onClick={() => setPreset('leverage')}
                     style={{
                       background: isLev ? 'var(--teal)' : 'var(--paper-2)',
-                      color: isLev ? '#fff' : 'var(--ink)',
+                      color: isLev ? C.card : 'var(--ink)',
                       border: `1px solid ${isLev ? 'var(--teal)' : 'var(--line)'}`,
                       borderRadius: '3px',
                       padding: '2px 6px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: isLev ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -245,7 +245,7 @@ export default function Slide4({
               );
             })()}
 
-            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', fontSize: '0.60rem', marginLeft: 'auto', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '0.62rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto', flexWrap: 'wrap' }}>
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
                 <span>Carga:</span>
                 <input
@@ -270,7 +270,7 @@ export default function Slide4({
                   onChange={(e) => setInsertCm(parseFloat(e.target.value))}
                   style={{ width: '45px' }}
                 />
-                <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '28px' }}>{insertCm.toFixed(1)}cm</b>
+                <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '28px' }}>{fx(insertCm, 1)}cm</b>
               </label>
 
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
@@ -296,7 +296,7 @@ export default function Slide4({
                   border: '1px solid var(--line)',
                   borderRadius: '4px',
                   padding: '2px 7px',
-                  fontSize: '0.60rem',
+                  fontSize: '0.62rem',
                   cursor: 'pointer',
                   color: 'var(--ink)',
                 }}

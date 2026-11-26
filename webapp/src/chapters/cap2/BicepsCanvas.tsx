@@ -1,4 +1,6 @@
 import React, { Suspense, useRef, useMemo } from 'react';
+import { C, ca } from './palette';
+import { fx } from './ab';
 import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls, ContactShadows, Html, useGLTF } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
@@ -15,14 +17,15 @@ import {
   CalloutSource,
   useCalloutStore,
 } from '../cap1/three/Callouts';
+import { G, FOREARM } from './staticsModels';
 
 /** Estática del codo en flexión (fuente única: escena + panel de lecturas). */
 function elbowSolve(handLoadKg: number, insertCm: number, elbowAngleDeg: number) {
-  const g = 9.81;
-  const wForearmN = 1.5 * g;
+  const g = G;
+  const wForearmN = FOREARM.WF; // 15 N (libro, Caso 2)
   const wHandN = handLoadKg * g;
   const flexRad = (elbowAngleDeg * Math.PI) / 180;
-  const tauResNm = (wForearmN * 0.14 + wHandN * 0.35) * Math.sin(flexRad);
+  const tauResNm = (wForearmN * FOREARM.dF / 100 + wHandN * FOREARM.dW / 100) * Math.sin(flexRad);
   const dM = insertCm / 100;
   const fMuscN = tauResNm / (dM * Math.max(0.2, Math.sin(flexRad)));
   const rJointN = Math.max(0, fMuscN - (wForearmN + wHandN));
@@ -54,7 +57,7 @@ const P_SHOULDER = new THREE.Vector3(-0.096, 0.306, -0.018);
 function BicepsLoading() {
   return (
     <Html center>
-      <div style={{ background: 'rgba(255,253,248,.94)', border: '1px solid #c8bea9', borderRadius: 6, padding: '6px 10px', color: '#43505c', font: '600 .68rem Karla, sans-serif', whiteSpace: 'nowrap' }}>
+      <div style={{ background: ca(C.card, .94), border: `1px solid ${C.line}`, borderRadius: 6, padding: '6px 10px', color: C.ink2, font: '600 .68rem Karla, sans-serif', whiteSpace: 'nowrap' }}>
         Cargando anatomía del codo…
       </div>
     </Html>
@@ -65,7 +68,7 @@ function BicepsLoading() {
 function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [1, 0, 0] as [number, number, number],
-  color = '#0d6e64',
+  color = C.teal,
   label,
   sub,
   emphasis,
@@ -152,11 +155,11 @@ function RealArmBicepsScene({
 
   // Física del codo (fuente única)
   const { wHandN, fMuscN, fMuscKgf, rJointN } = elbowSolve(handLoadKg, insertCm, elbowAngleDeg);
-  const lFm = `F_m = ${fMuscN.toFixed(0)} N`;
-  const sFm = `${fMuscKgf.toFixed(1)} kgf`;
+  const lFm = `M = ${fMuscN.toFixed(0)} N`;
+  const sFm = `${fx(fMuscKgf, 1)} kgf`;
   const lW = `W = ${wHandN.toFixed(0)} N`;
   const sW = `${handLoadKg} kg`;
-  const lRj = `R_j = ${rJointN.toFixed(0)} N`;
+  const lRj = `R = ${rJointN.toFixed(0)} N`;
 
   // Ángulo de rotación del antebrazo en Three.js
   const angleRad = ((180 - elbowAngleDeg) * Math.PI) / 180;
@@ -260,7 +263,7 @@ function RealArmBicepsScene({
       </mesh>
 
       {/* Vector Reacción Articular R_j en la Tróclea */}
-      <ForceVector3D origin={[0, 0, 0]} vector={vRj} color="#dc2626" label={lRj} sub="troclear" emphasis="strong" />
+      <ForceVector3D origin={[0, 0, 0]} vector={vRj} color={C.blood} label={lRj} sub="troclear" emphasis="strong" />
 
       {/* ── Segmento Móvil: Antebrazo y Mano Rotatorio ── */}
       <group rotation={[angleRad, 0, 0]}>
@@ -280,10 +283,10 @@ function RealArmBicepsScene({
         </group>
 
         {/* Vector de Fuerza Muscular Fm en la tuberosidad bicipital */}
-        <ForceVector3D origin={[0, 0, 0]} vector={vFm} color="#0d9488" label={lFm} sub={sFm} />
+        <ForceVector3D origin={[0, 0, 0]} vector={vFm} color={C.teal} label={lFm} sub={sFm} />
 
         {/* Vector de Carga W en la mano */}
-        <ForceVector3D origin={[0, 0, 0]} vector={vWh} color="#d97706" label={lW} sub={sW} />
+        <ForceVector3D origin={[0, 0, 0]} vector={vWh} color={C.amber} label={lW} sub={sW} />
       </group>
     </group>
   );
@@ -357,7 +360,7 @@ export default function BicepsCanvas({
       <CalloutRail
         store={callouts}
         side="left"
-        note="Palanca de 3ª clase: el bíceps sacrifica fuerza (d ≈ 4 cm) por velocidad y rango de la mano (D ≈ 35 cm)."
+        note="Palanca de 3ª clase: con el bíceps a 4 cm y la mano a 36 cm, M = 9 W en la mano + 3,25 W del antebrazo."
       />
     </div>
     </CalloutProvider>

@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
+import { C } from './palette';
 import LeverCanvas from './LeverCanvas';
 import LeverAnatomyCanvas from './LeverAnatomyCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import BicepsCanvas from './BicepsCanvas';
 import HudPanel from './HudPanel';
+import KatexHtml from './KatexHtml';
 import type { Engine } from './useEngine';
+import { G } from './staticsModels';
+import { fx } from './ab';
 
 interface LeverDetail {
   id: 1 | 2 | 3;
@@ -18,27 +22,27 @@ interface LeverDetail {
 const LEVERS_INFO: Record<number, LeverDetail> = {
   1: {
     id: 1,
-    name: '1ª Clase: Interapoyo',
-    order: 'Potencia — Fulcro — Resistencia',
-    anat: 'Articulación Atlanto-occipital (Cabeza/Cuello) y Tríceps',
-    vm: 'VM variable (puede ser > 1 o < 1)',
-    desc: '<b>1ª Clase (Interapoyo):</b> El fulcro está entre la potencia y la resistencia. En la cabeza, los músculos de la nuca (esplenio y trapecio) tiran hacia abajo ($b_p \\approx 5\\text{ cm}$) para equilibrar el peso anterior de la cabeza ($b_r \\approx 12\\text{ cm}$) sobre el atlas ($C_1$), requiriendo $F_m \\approx 2{,}4 \\times W$.',
+    name: '1ª clase',
+    order: 'Músculo — Fulcro — Peso',
+    anat: 'Balancín · cabeza sobre la columna · tríceps sobre el codo',
+    vm: 'VM > 1 o < 1 según los brazos',
+    desc: '<b>1ª clase:</b> peso y músculo actúan a lados opuestos del fulcro y en la misma dirección (hacia abajo); el fulcro aporta $W + M$ hacia arriba. Es la menos común en el cuerpo: la cabeza sobre la columna (Fig. 2.6a) y el tríceps tirando del cúbito (Fig. 2.6b), donde $d_M \\ll d_W$ y el tríceps debe hacer mucha más fuerza que la mano. Brazos del visor ilustrativos ($d_M = 5$, $d_W = 12\\text{ cm}$).',
   },
   2: {
     id: 2,
-    name: '2ª Clase: Interresistencia',
-    order: 'Fulcro — Resistencia — Potencia',
-    anat: 'Apoyo plantar sobre metatarsos (Gemelos y Sóleo)',
-    vm: 'VM > 1 (Ahorro de fuerza muscular permanente)',
-    desc: '<b>2ª Clase (Interresistencia):</b> La resistencia está entre el fulcro y la potencia. Al pararse de puntillas, el tendón de Aquiles tira a mayor distancia del fulcro ($b_p = 18\\text{ cm} > b_r = 10\\text{ cm}$), logrando ventaja mecánica ($\\text{VM} = 1{,}8$) que permite elevar todo el peso corporal con facilidad.',
+    name: '2ª clase',
+    order: 'Fulcro — Peso — Músculo',
+    anat: 'Ponerse de puntillas (Aquiles) · empujar hacia abajo con el tríceps',
+    vm: 'VM > 1: M < W',
+    desc: '<b>2ª clase:</b> músculo y peso del mismo lado del fulcro, con el peso más cerca; $M < W$ y la ventaja mecánica $W/M = d_M/d_W$ es $> 1$. Segunda en frecuencia: ponerse de puntillas, con el fulcro en los dedos y el tendón de Aquiles tirando del talón (Fig. 2.6c). Brazos del visor ilustrativos ($d_M = 18$, $d_W = 10\\text{ cm}$).',
   },
   3: {
     id: 3,
-    name: '3ª Clase: Interpotencia',
-    order: 'Fulcro — Potencia — Resistencia',
-    anat: 'Flexión de codo (Bíceps), Mandíbula, Cuádriceps',
-    vm: 'VM < 1 (Desventaja de fuerza, gran ventaja de velocidad)',
-    desc: '<b>3ª Clase (Interpotencia):</b> La potencia muscular está entre el fulcro y la carga ($b_p = 4\\text{ cm} < b_r = 35\\text{ cm}$). Es la más abundante en el cuerpo: sacrifica fuerza ($F_m \\approx 8{,}75 \\times W$) pero amplifica por $8{,}75\\times$ la velocidad y el arco de movimiento de las manos y pies.',
+    name: '3ª clase',
+    order: 'Fulcro — Músculo — Peso',
+    anat: 'Bíceps sobre el radio · sostener un peso con el brazo extendido',
+    vm: 'VM < 1: M ≫ W',
+    desc: '<b>3ª clase:</b> la más común. El músculo está más cerca del fulcro que el peso: con $d_M = 4\\text{ cm}$ y $d_W = 36\\text{ cm}$, $M = (d_W/d_M)\\,W = 9\\,W$ (desventaja mecánica). La ganancia: el desplazamiento del peso se amplifica por $d_W/d_M$. El bíceps mide unos $25\\text{ cm}$ y se contrae como mucho $\\sim 7\\text{--}8\\text{ cm}$, pero la mano recorre mucho más.',
   },
 };
 
@@ -68,10 +72,11 @@ export default function Slide3({
     setLoadKg(10);
   };
 
+  // Brazos d_M y d_W (cm). 3ª clase: valores del libro (4 y 36 cm, Caso 1).
   const bp = leverClass === 1 ? 5 : (leverClass === 2 ? 18 : 4);
-  const br = leverClass === 1 ? 12 : (leverClass === 2 ? 10 : 35);
+  const br = leverClass === 1 ? 12 : (leverClass === 2 ? 10 : 36);
   const vm = bp / br;
-  const wN = loadKg * 9.81;
+  const wN = loadKg * G;
   const fmN = wN / vm;
 
   return (
@@ -79,7 +84,7 @@ export default function Slide3({
       <div className="module-header">
         <span className="mnum">B1</span>
         <h2 className="mtitle">Las tres clases de palancas</h2>
-        <span className="msub">{'1ª, 2ª y 3ª clase · Ventaja mecánica $\\text{VM} = b_p / b_r$ en la anatomía humana'}</span>
+        <span className="msub">{'1ª, 2ª y 3ª clase · $M\\,d_M = W\\,d_W$ (Ecs. 2.9–2.10) en la anatomía humana'}</span>
         <span className="mslide-count">1 / 4</span>
       </div>
       <div className="content-grid">
@@ -89,24 +94,26 @@ export default function Slide3({
               <span className="icon">⚖️</span> Principio de la palanca y ventaja mecánica
             </div>
             <div className="card-body">
+              <p style={{ fontSize: '.66rem', color: 'var(--ink-2)' }}>
+                {'Rodillas y codos se mueven en un plano: las seis ecuaciones (2.1)–(2.2) se reducen a tres (Ec. 2.8), $\\sum F_x = 0$, $\\sum F_y = 0$, $\\sum \\tau_z = 0$ (ejes $xyz$ convencionales de 2D, distintos de los del cuerpo en la Fig. 1.1).'}
+              </p>
               <p style={{ fontSize: '.7rem' }}>
-                {'Una palanca es un cuerpo rígido articulado en un fulcro fijo ($\\Delta$). El equilibrio estático de momentos exige:'}
+                {'Un peso $W$ y una fuerza muscular $M$ actúan sobre un hueso que se apoya en un fulcro (la articulación), a distancias $d_W$ y $d_M$. Para los tres tipos el torque total es cero cuando'}
               </p>
               <div className="eq-block">
-                {'\\[ F_m\\, b_p = W\\, b_r \\qquad\\Rightarrow\\qquad \\text{VM} = \\frac{W}{F_m} = \\frac{b_p}{b_r} \\]'}
+                {'\\[ M\\,d_M = W\\,d_W \\qquad\\Rightarrow\\qquad M = \\frac{d_W}{d_M}\\,W, \\qquad \\text{VM} = \\frac{W}{M} = \\frac{d_M}{d_W} \\]'}
               </div>
               <p style={{ fontSize: '.64rem', color: 'var(--ink-3)' }}>
-                {'Donde $b_p$ es el brazo de potencia muscular y $b_r$ es el brazo de resistencia externa.'}
+                {'Si el músculo no llega a esa $M$ no hay equilibrio (la bola de plomo pesa demasiado); si la supera, hay movimiento (lanzar una pelota). El eje puede elegirse en cualquier punto: a una distancia $x$ del peso, $Wx + (W+M)(d_W - x) - M(d_W + d_M - x) = 0$ (Ec. 2.12, Fig. 2.5) se reduce de nuevo a $W d_W - M d_M = 0$.'}
               </p>
-            
-              <div style={{ marginTop: '.4rem' }}>
+              <div style={{ marginTop: '0.62rem' }}>
                 <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
-                  <b>🏷️ Rotular fuerzas y brazos</b>
+                  <b>Rotular fuerzas y brazos</b>
                 </TheoryToggle>
               </div>
               <TheoryCue>
-                En la vista <b>3D · Anatomía</b>, etiqueta sobre el modelo la potencia, la resistencia
-                y los brazos <b>b<sub>p</sub></b> y <b>b<sub>r</sub></b> que entran en la fórmula.
+                En la vista <b>3D · Anatomía</b>, etiqueta sobre el modelo la fuerza muscular, el peso
+                y los brazos <b>d<sub>M</sub></b> y <b>d<sub>W</sub></b> que entran en la fórmula.
               </TheoryCue>
             </div>
           </div>
@@ -143,10 +150,10 @@ export default function Slide3({
                       <span>
                         <b style={{ color: isSel ? 'var(--teal-deep)' : 'var(--ink)', fontSize: '.68rem' }}>{item.name}</b>
                         <br />
-                        <span style={{ fontSize: '.55rem', color: 'var(--ink-3)' }}>{item.anat}</span>
+                        <span style={{ fontSize: '0.62rem', color: 'var(--ink-3)' }}>{item.anat}</span>
                       </span>
-                      <span style={{ fontSize: '.60rem', fontFamily: 'JetBrains Mono, monospace', color: isSel ? 'var(--teal-deep)' : 'var(--ink-2)', fontWeight: 'bold' }}>
-                        {c === 1 ? 'VM = 0,42' : (c === 2 ? 'VM = 1,80' : 'VM = 0,11')}
+                      <span style={{ fontSize: '0.62rem', fontFamily: 'JetBrains Mono, monospace', color: isSel ? 'var(--teal-deep)' : 'var(--ink-2)', fontWeight: 'bold' }}>
+                        {item.vm}
                       </span>
                     </button>
                   );
@@ -157,7 +164,7 @@ export default function Slide3({
           <div className="apuntes">
             <div className="a-hdr"><span>✍️</span> Apunte de cátedra</div>
             <div className="a-text" id="info-text-3">
-              <span dangerouslySetInnerHTML={{ __html: curDetail.desc }} />
+              <KatexHtml html={curDetail.desc} />
             </div>
           </div>
         </div>
@@ -166,31 +173,30 @@ export default function Slide3({
           {/* Panel HUD Colapsable */}
           <HudPanel
             title="PALANCAS ANATÓMICAS"
-            badge={leverClass === 1 ? '1ª CLASE (INTERAPOYO)' : (leverClass === 2 ? '2ª CLASE (VM > 1)' : '3ª CLASE (VM < 1)')}
-            icon="⚖️"
+            badge={leverClass === 1 ? '1ª CLASE' : (leverClass === 2 ? '2ª CLASE (VM > 1)' : '3ª CLASE (VM < 1)')}
             footer="💡 Selecciona la clase para comparar fulcro y brazos de palanca"
           >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '0.58rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '0.62rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Tipo:</span>
                 <b style={{ color: 'var(--teal-deep)' }}>{curDetail.name.split(':')[0]}</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Secuencia:</span>
-                <b style={{ fontSize: '0.54rem' }}>{curDetail.order}</b>
+                <b style={{ fontSize: '0.62rem' }}>{curDetail.order}</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
-                <span style={{ color: 'var(--ink-2)' }}>Fuerza Músculo (Fm):</span>
-                <b style={{ color: '#b02318', fontFamily: 'JetBrains Mono, monospace' }}>{fmN.toFixed(0)} N ({(fmN / 9.81).toFixed(1)} kgf)</b>
+                <span style={{ color: 'var(--ink-2)' }}>Fuerza muscular (M):</span>
+                <b style={{ color: 'var(--blood)', fontFamily: 'var(--mono)' }}>{fx(fmN)} N ({fx(fmN / wN, 2)} W)</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
-                <span style={{ color: 'var(--ink-2)' }}>Carga Aplicada (W):</span>
-                <b style={{ color: '#d97706', fontFamily: 'JetBrains Mono, monospace' }}>{wN.toFixed(0)} N ({loadKg} kg)</b>
+                <span style={{ color: 'var(--ink-2)' }}>Peso (W):</span>
+                <b style={{ color: 'var(--amber)', fontFamily: 'var(--mono)' }}>{fx(wN)} N ({loadKg} kg)</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Ventaja Mecánica (VM):</span>
-                <b style={{ color: leverClass === 2 ? '#2e8b57' : '#b02318', fontFamily: 'JetBrains Mono, monospace' }}>
-                  VM = {vm.toFixed(2).replace('.', ',')}
+                <b style={{ color: leverClass === 2 ? C.coronal : C.blood, fontFamily: 'JetBrains Mono, monospace' }}>
+                  VM = {fx(vm, 2)} · d<sub>M</sub> {bp} cm · d<sub>W</sub> {br} cm
                 </b>
               </div>
             </div>
@@ -230,7 +236,7 @@ export default function Slide3({
             )}
           </div>
           <div className="prof-controls">
-            <span className="badge">2.2 · Palancas</span>
+            <span className="badge">§2.2 · Palancas</span>
 
             {/* Selector de clase segmentado */}
             <div style={{ display: 'flex', gap: '3px', alignItems: 'center' }}>
@@ -241,11 +247,11 @@ export default function Slide3({
                   onClick={() => handleSelect(c as 1 | 2 | 3)}
                   style={{
                     background: leverClass === c ? 'var(--teal)' : 'var(--paper-2)',
-                    color: leverClass === c ? '#fff' : 'var(--ink)',
+                    color: leverClass === c ? C.card : 'var(--ink)',
                     border: '1px solid var(--line)',
                     borderRadius: '3px',
                     padding: '2px 7px',
-                    fontSize: '0.58rem',
+                    fontSize: '0.62rem',
                     fontWeight: leverClass === c ? 700 : 500,
                     cursor: 'pointer',
                   }}
@@ -255,7 +261,7 @@ export default function Slide3({
               ))}
             </div>
 
-            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', fontSize: '0.60rem', marginLeft: 'auto' }}>
+            <div style={{ display: 'flex', gap: '0.62rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
                 <span>Carga:</span>
                 <input
@@ -277,7 +283,7 @@ export default function Slide3({
                   border: '1px solid var(--line)',
                   borderRadius: '4px',
                   padding: '2px 7px',
-                  fontSize: '0.60rem',
+                  fontSize: '0.62rem',
                   cursor: 'pointer',
                   color: 'var(--ink)',
                 }}

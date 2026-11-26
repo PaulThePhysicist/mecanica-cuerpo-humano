@@ -1,4 +1,6 @@
 import React, { Suspense, useMemo, useRef } from 'react';
+import { C, ca } from './palette';
+import { fx } from './ab';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, ContactShadows, useGLTF } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
@@ -27,7 +29,6 @@ interface DiscPressureCanvasProps {
 interface PostureInfo {
   id: 'upright' | 'seated' | 'knees' | 'bent_back';
   name: string;
-  emoji: string;
   basePressureMPa: number;
   compMultiplier: number;
   shearMultiplier: number;
@@ -35,13 +36,15 @@ interface PostureInfo {
   nucleusOffset: number;
 }
 
+// Presiones = porcentaje de la Tabla 2.4 × 0,5 MPa (referencia ilustrativa para la
+// bipedestación relajada; el libro da solo los porcentajes). Las dos posturas de
+// levantamiento son con 20 kg, como en la tabla.
 const POSTURES: Record<string, PostureInfo> = {
   upright: {
     id: 'upright',
     name: 'De pie erguido',
-    emoji: '🚶',
-    basePressureMPa: 0.50,
-    compMultiplier: 1.0,
+    basePressureMPa: 0.50, // Tabla 2.4: 100 %
+    compMultiplier: 0,
     shearMultiplier: 0.2,
     tiltAngle: 0.0,
     nucleusOffset: 0.0,
@@ -49,29 +52,26 @@ const POSTURES: Record<string, PostureInfo> = {
   seated: {
     id: 'seated',
     name: 'Sentado sin respaldo',
-    emoji: '🪑',
-    basePressureMPa: 0.85,
-    compMultiplier: 1.4,
+    basePressureMPa: 0.46, // Tabla 2.4: 92 %
+    compMultiplier: 0,
     shearMultiplier: 0.5,
     tiltAngle: 0.09,
     nucleusOffset: -0.07,
   },
   knees: {
     id: 'knees',
-    name: 'Levantar con rodillas flexionadas (Ergonómico)',
-    emoji: '🏋️',
-    basePressureMPa: 1.30,
-    compMultiplier: 2.2,
+    name: 'Levantar 20 kg con las rodillas dobladas',
+    basePressureMPa: 1.70, // Tabla 2.4: 340 % (20 kg, rodillas dobladas)
+    compMultiplier: 0,
     shearMultiplier: 0.4,
     tiltAngle: 0.04,
     nucleusOffset: -0.03,
   },
   bent_back: {
     id: 'bent_back',
-    name: 'Levantar con espalda curva (Lesivo)',
-    emoji: '⚠️',
-    basePressureMPa: 2.40,
-    compMultiplier: 4.8,
+    name: 'Levantar 20 kg sin doblar las rodillas',
+    basePressureMPa: 2.30, // Tabla 2.4: 460 % (20 kg, sin doblar las rodillas)
+    compMultiplier: 0,
     shearMultiplier: 1.9,
     tiltAngle: 0.24,
     nucleusOffset: -0.21,
@@ -82,7 +82,7 @@ const POSTURES: Record<string, PostureInfo> = {
 function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [0, -1, 0] as [number, number, number],
-  color = '#0d6e64',
+  color = C.teal,
   label,
   sub,
   emphasis,
@@ -174,38 +174,38 @@ function PressureManometerGauge({
   const normVal = Math.min(1, Math.max(0, totalPressureMPa / maxScale));
   const needleAngle = -135 + normVal * 270;
 
-  const statusColor = isCritical ? '#b02318' : (totalPressureMPa > 1.2 ? '#d97706' : '#0d6e64');
+  const statusColor = isCritical ? C.blood : (totalPressureMPa > 1.2 ? C.amber : C.teal);
 
   return (
     <div
       style={{
-        background: 'rgba(255, 255, 255, 0.96)',
+        background: ca(C.card, 0.96),
         backdropFilter: 'blur(10px)',
-        border: `1.5px solid ${isCritical ? '#b02318' : '#cbd5e1'}`,
+        border: `1.5px solid ${isCritical ? '${C.blood}' : '${C.line}'}`,
         borderRadius: '12px',
         padding: '10px 14px',
-        boxShadow: isCritical ? '0 8px 24px rgba(176, 35, 24, 0.25)' : '0 8px 24px rgba(35, 44, 54, 0.12)',
+        boxShadow: isCritical ? `0 8px 24px ${ca(C.blood, 0.25)}` : `0 8px 24px ${ca(C.ink, 0.12)}`,
         minWidth: '175px',
         textAlign: 'center',
         pointerEvents: 'none',
         userSelect: 'none',
       }}
     >
-      <div style={{ fontSize: '0.60rem', fontWeight: 800, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.6px' }}>
+      <div style={{ fontSize: '0.62rem', fontWeight: 800, color: C.ink2, textTransform: 'uppercase', letterSpacing: '0.6px' }}>
         Presión Intradiscal L5-S1
       </div>
 
       {/* Dial SVG con sectores de seguridad y aguja amortiguada */}
       <svg width="130" height="78" viewBox="0 0 130 78" style={{ margin: '4px auto 0', display: 'block' }}>
         {/* Fondo del arco */}
-        <path d="M 18 68 A 47 47 0 0 1 112 68" fill="none" stroke="#e2e8f0" strokeWidth="8.5" strokeLinecap="round" />
+        <path d="M 18 68 A 47 47 0 0 1 112 68" fill="none" stroke={C.lineSoft} strokeWidth="8.5" strokeLinecap="round" />
 
         {/* Sector Verde Fisiológico (< 1.2 MPa) */}
-        <path d="M 18 68 A 47 47 0 0 1 52 26" fill="none" stroke="#0d6e64" strokeWidth="8.5" opacity={0.35} />
+        <path d="M 18 68 A 47 47 0 0 1 52 26" fill="none" stroke={C.teal} strokeWidth="8.5" opacity={0.35} />
         {/* Sector Ámbar Carga Moderada (1.2 - 2.4 MPa) */}
-        <path d="M 52 26 A 47 47 0 0 1 90 32" fill="none" stroke="#d97706" strokeWidth="8.5" opacity={0.35} />
+        <path d="M 52 26 A 47 47 0 0 1 90 32" fill="none" stroke={C.amber} strokeWidth="8.5" opacity={0.35} />
         {/* Sector Rojo Riesgo Crítico (> 2.4 MPa) */}
-        <path d="M 90 32 A 47 47 0 0 1 112 68" fill="none" stroke="#b02318" strokeWidth="8.5" opacity={0.35} />
+        <path d="M 90 32 A 47 47 0 0 1 112 68" fill="none" stroke={C.blood} strokeWidth="8.5" opacity={0.35} />
 
         {/* Arco de presión dinámico activo */}
         <path
@@ -221,39 +221,39 @@ function PressureManometerGauge({
 
         {/* Aguja analógica con pivote central */}
         <g transform={`rotate(${needleAngle} 65 68)`} style={{ transition: 'transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)' }}>
-          <line x1="65" y1="68" x2="65" y2="26" stroke="#1e293b" strokeWidth="2.8" strokeLinecap="round" />
-          <circle cx="65" cy="68" r="5" fill="#1e293b" />
-          <circle cx="65" cy="68" r="2.2" fill="#ffffff" />
+          <line x1="65" y1="68" x2="65" y2="26" stroke={C.ink} strokeWidth="2.8" strokeLinecap="round" />
+          <circle cx="65" cy="68" r="5" fill={C.ink} />
+          <circle cx="65" cy="68" r="2.2" fill={C.card} />
         </g>
 
         {/* Marcas de escala numérica */}
-        <text x="14" y="76" fontSize="7" fill="#64748b" fontFamily="JetBrains Mono, monospace" fontWeight="600">0</text>
-        <text x="56" y="16" fontSize="7" fill="#64748b" fontFamily="JetBrains Mono, monospace" fontWeight="600">2.0M</text>
-        <text x="100" y="76" fontSize="7" fill="#64748b" fontFamily="JetBrains Mono, monospace" fontWeight="600">4.0M</text>
+        <text x="14" y="76" fontSize="12" fill={C.ink3} fontFamily="JetBrains Mono, monospace" fontWeight="600">0</text>
+        <text x="56" y="16" fontSize="12" fill={C.ink3} fontFamily="JetBrains Mono, monospace" fontWeight="600">2,0M</text>
+        <text x="100" y="76" fontSize="12" fill={C.ink3} fontFamily="JetBrains Mono, monospace" fontWeight="600">4,0M</text>
       </svg>
 
       <div style={{ fontSize: '1.35rem', fontWeight: 800, color: statusColor, fontFamily: 'JetBrains Mono, monospace', margin: '2px 0 0' }}>
-        {totalPressureMPa.toFixed(2)} MPa
+        {fx(totalPressureMPa, 2)} MPa
       </div>
       <div style={{ fontSize: '0.74rem', fontWeight: 700, color: statusColor, fontFamily: 'JetBrains Mono, monospace' }}>
-        ({totalPressureBar.toFixed(1)} bar)
+        ({fx(totalPressureBar, 1)} bar)
       </div>
 
       <div
         style={{
-          fontSize: '0.58rem',
+          fontSize: '0.62rem',
           fontWeight: 800,
           color: statusColor,
           marginTop: '4px',
-          background: isCritical ? 'rgba(176,35,24,0.10)' : (totalPressureMPa > 1.2 ? 'rgba(217,119,6,0.10)' : 'rgba(13,110,100,0.10)'),
+          background: isCritical ? ca(C.blood, 0.10) : (totalPressureMPa > 1.2 ? ca(C.amber, 0.10) : ca(C.teal, 0.10)),
           padding: '2px 6px',
           borderRadius: '4px',
           display: 'inline-block',
         }}
       >
-        {isCritical ? '⚠️ RIESGO CRÍTICO DE HERNIA' : (totalPressureMPa > 1.2 ? '⚡ Carga Lumbar Elevada' : '🛡️ Zona Fisiológica Segura')}
+        {isCritical ? 'Carga muy alta (≥ 400 %)' : (totalPressureMPa > 1.2 ? 'Carga elevada' : 'Carga baja')}
       </div>
-      <div style={{ fontSize: '0.52rem', color: '#64748b', marginTop: '3px' }}>
+      <div style={{ fontSize: '0.62rem', color: C.ink3, marginTop: '3px' }}>
         Platillo L5-S1: <b>18,0 cm²</b> · Carga: <b>{loadKg} kg</b>
       </div>
     </div>
@@ -273,7 +273,7 @@ function discStats(posture: DiscPressureCanvasProps['posture'], loadKg: number) 
     totalPressureBar: totalPressureMPa * 10,
     compForceN,
     shearForceN,
-    isCritical: totalPressureMPa >= 2.5,
+    isCritical: totalPressureMPa >= 2.0,
   };
 }
 
@@ -290,7 +290,7 @@ function SpinalFunctionalUnit3D({
   const curPosture = POSTURES[posture] || POSTURES.bent_back;
   const loadFactor = loadKg / 20;
   const targetPressureMPa = curPosture.basePressureMPa + curPosture.compMultiplier * 0.65 * loadFactor;
-  const isCritical = targetPressureMPa >= 2.50;
+  const isCritical = targetPressureMPa >= 2.0;
 
   // Materiales anatómicos cálidos / calidad museo
   const boneIvoryMat = useMemo(
@@ -383,7 +383,7 @@ function SpinalFunctionalUnit3D({
   const totalPressureMPa = targetPressureMPa;
 
   // Mapa dinámico de color de estrés anular (Hoop Stress)
-  const hoopStressColor = totalPressureMPa < 1.2 ? '#0d6e64' : (totalPressureMPa < 2.4 ? '#d97706' : '#b02318');
+  const hoopStressColor = totalPressureMPa < 1.2 ? C.teal : (totalPressureMPa < 2.4 ? C.amber : C.blood);
 
   // Deformación física del disco intervertebral L5-S1
   // Altura del disco se reduce con compresión (de 0.38 a 0.24)
@@ -441,7 +441,7 @@ function SpinalFunctionalUnit3D({
           <primitive object={cartilagePlateMat} attach="material" />
         </mesh>
 
-        <DclTag position={[0, -0.38, 0.95]} color="#5d6b76" symbol="S1" />
+        <DclTag position={[0, -0.38, 0.95]} color={C.ink3} symbol="S1" />
       </group>
 
       {/* ── 2. DISCO INTERVERTEBRAL L5-S1 (Deformable, Laminar y Viscoelástico) ── */}
@@ -475,7 +475,7 @@ function SpinalFunctionalUnit3D({
           <mesh scale={[nucleusRadialScale, nucleusHeightScale * (discHeight / 0.40), nucleusRadialScale]}>
             <sphereGeometry args={[0.34, 24, 24]} />
             <meshStandardMaterial
-              color={isCritical ? '#ef4444' : '#68c5b8'}
+              color={isCritical ? C.blood : '#68c5b8'}
               roughness={0.18}
               metalness={0.15}
               transparent
@@ -491,7 +491,7 @@ function SpinalFunctionalUnit3D({
               <mesh scale={[1.0 + herniationBulge * 0.6, 0.85, 1.2 + herniationBulge * 0.8]}>
                 <sphereGeometry args={[0.18 + herniationBulge * 0.20, 20, 20]} />
                 <meshStandardMaterial
-                  color="#dc2626"
+                  color={C.blood}
                   roughness={0.25}
                   metalness={0.2}
                   emissive="#7f1d1d"
@@ -500,14 +500,14 @@ function SpinalFunctionalUnit3D({
               </mesh>
 
               {/* Rótulo de Hernia Discal */}
-              <DclTag position={[0.22, 0.15, -0.1]} color="#b02318" symbol="⚠ hernia" />
+              <DclTag position={[0.22, 0.15, -0.1]} color={C.blood} symbol="hernia" />
             </group>
           )}
         </group>
 
         {/* Vector de Esfuerzo de Cizallamiento Tangencial */}
         {curPosture.shearMultiplier > 0.25 && (
-          <ForceVector3D origin={[0, 0, 0.86]} vector={[0, 0, shearVecLen]} color="#d97706" label={lFt} sub="cizallamiento" emphasis="muted" isDashed />
+          <ForceVector3D origin={[0, 0, 0.86]} vector={[0, 0, shearVecLen]} color={C.amber} label={lFt} sub="cizallamiento" emphasis="muted" isDashed />
         )}
       </group>
 
@@ -552,14 +552,14 @@ function SpinalFunctionalUnit3D({
         <ForceVector3D
           origin={[0, 0.75 + compVecLen, 0]}
           vector={[0, -compVecLen, 0]}
-          color={isCritical ? '#b02318' : (totalPressureMPa > 1.2 ? '#d97706' : '#0d6e64')}
+          color={isCritical ? C.blood : (totalPressureMPa > 1.2 ? C.amber : C.teal)}
           label={lFn}
           sub="compresión axial"
           emphasis="strong"
         />
 
         {/* Badge Vértebra L5 (referencia anclada, se queda sobre el modelo) */}
-        <DclTag position={[0, 0.50, 0.95]} color="#5d6b76" symbol="L5" />
+        <DclTag position={[0, 0.50, 0.95]} color={C.ink3} symbol="L5" />
       </group>
 
       {/* ── 4. CANAL NEURAL, SACO TECAL Y RAÍCES NERVIOSAS L5-S1 (Posterior) ── */}
@@ -593,7 +593,7 @@ function SpinalFunctionalUnit3D({
               <sphereGeometry args={[0.11, 16, 16]} />
               <primitive object={painPulseMat} attach="material" />
             </mesh>
-            <DclTag position={[0.45, -0.05, 0.35]} color="#b02318" symbol="⚡ ciatalgia" />
+            <DclTag position={[0.45, -0.05, 0.35]} color={C.blood} symbol="ciatalgia" />
           </>
         )}
       </group>
@@ -635,20 +635,20 @@ export default function DiscPressureCanvas({
           top: '12px',
           right: '12px',
           zIndex: 10,
-          background: 'rgba(255, 255, 255, 0.94)',
-          border: '1px solid var(--line, #cbd5e1)',
+          background: ca(C.card, 0.94),
+          border: `1px solid var(--line, ${C.line})`,
           borderRadius: '6px',
           padding: '4px 10px',
           fontSize: '0.62rem',
           fontWeight: 700,
-          color: 'var(--ink, #232c36)',
+          color: `var(--ink, ${C.ink})`,
           cursor: 'pointer',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+          boxShadow: `0 2px 8px ${ca(C.ink, 0.08)}`,
           backdropFilter: 'blur(6px)',
           transition: 'all 0.15s ease',
         }}
       >
-        📷 Restablecer Cámara
+        Restablecer cámara
       </button>
 
       {/* Canvas 3D de React Three Fiber */}
@@ -690,7 +690,7 @@ export default function DiscPressureCanvas({
         side="left"
         note={
           d.isCritical
-            ? 'Presión intradiscal crítica (> 2,5 MPa): riesgo de extrusión del núcleo pulposo.'
+            ? 'Levantar 20 kg sin doblar las rodillas: 460 % de la presión de pie (Tabla 2.4).'
             : 'Presión sobre un área discal ≈ 18 cm²; la postura multiplica la carga axial.'
         }
       />
@@ -702,7 +702,6 @@ export default function DiscPressureCanvas({
           right: '10px',
           bottom: '10px',
           zIndex: 9,
-          transform: 'scale(0.78)',
           transformOrigin: 'bottom right',
           pointerEvents: 'none',
         }}

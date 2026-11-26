@@ -1,4 +1,5 @@
 import React from 'react';
+import { C, ca } from './palette';
 import { Html } from '@react-three/drei';
 import { useLabelsVisible } from '../cap1/three/Callouts';
 
@@ -33,18 +34,18 @@ export function DclTag({
       <span
         style={{
           display: 'inline-block',
-          background: 'rgba(255, 253, 248, 0.8)',
+          background: ca(C.card, 0.8),
           border: `1px solid ${color}`,
           borderRadius: 4,
           padding: '0 4px',
-          fontSize: '0.5rem',
+          fontSize: '0.62rem',
           fontWeight: 700,
           lineHeight: 1.55,
           color,
           fontFamily: 'JetBrains Mono, monospace',
           whiteSpace: 'nowrap',
           pointerEvents: 'none',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.12)',
+          boxShadow: `0 1px 3px ${ca(C.ink, 0.12)}`,
           transform:
             screenOffset[0] || screenOffset[1]
               ? `translate(${screenOffset[0]}px, ${screenOffset[1]}px)`

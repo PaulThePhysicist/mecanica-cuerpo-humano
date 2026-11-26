@@ -1,4 +1,6 @@
 import React, { Suspense, useMemo, useRef, useEffect } from 'react';
+import { C, ca } from './palette';
+import { fx } from './ab';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, ContactShadows, useGLTF } from '@react-three/drei';
 import { DclTag } from './DclReadout';
@@ -11,6 +13,7 @@ import {
 } from '../cap1/three/Callouts';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
+import { JAW_MA } from './staticsModels';
 import { SceneControlPad } from '../cap1/AccessibleOrbitControls';
 import { STUDIO_BG_DEEP } from '../cap1/three/materials';
 import { StudioLights } from '../cap1/three/StudioLights';
@@ -39,7 +42,7 @@ interface FractureParticle3D {
 function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [0, 1, 0] as [number, number, number],
-  color = '#0d6e64',
+  color = C.teal,
   label,
   sub,
   emphasis,
@@ -134,37 +137,37 @@ function BiteDynamometerGauge({
   const needleAngle = -135 + normVal * 270;
 
   const isCrushing = fBiteN > 600;
-  const statusColor = isCrushing ? '#ef4444' : (fBiteN > 300 ? '#f59e0b' : '#10b981');
+  const statusColor = isCrushing ? C.blood : (fBiteN > 300 ? C.amber : C.coronal);
 
   return (
     <div
       style={{
-        background: 'rgba(255, 255, 255, 0.96)',
+        background: ca(C.card, 0.96),
         backdropFilter: 'blur(10px)',
-        border: `1.5px solid ${isCrushing ? '#ef4444' : '#cbd5e1'}`,
+        border: `1.5px solid ${isCrushing ? '${C.blood}' : '${C.line}'}`,
         borderRadius: '12px',
         padding: '10px 14px',
-        boxShadow: isCrushing ? '0 8px 24px rgba(239, 68, 68, 0.25)' : '0 8px 24px rgba(35, 44, 54, 0.12)',
+        boxShadow: isCrushing ? `0 8px 24px ${ca(C.blood, 0.25)}` : `0 8px 24px ${ca(C.ink, 0.12)}`,
         minWidth: '175px',
         textAlign: 'center',
         pointerEvents: 'none',
         userSelect: 'none',
       }}
     >
-      <div style={{ fontSize: '0.60rem', fontWeight: 800, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.6px' }}>
+      <div style={{ fontSize: '0.62rem', fontWeight: 800, color: C.ink2, textTransform: 'uppercase', letterSpacing: '0.6px' }}>
         {biteMode === 'molar' ? 'Dinamometría Molar (Trituración)' : 'Dinamometría Incisiva (Corte)'}
       </div>
 
       {/* SVG Dial */}
       <svg width="130" height="78" viewBox="0 0 130 78" style={{ margin: '4px auto 0', display: 'block' }}>
-        <path d="M 18 68 A 47 47 0 0 1 112 68" fill="none" stroke="#e2e8f0" strokeWidth="8.5" strokeLinecap="round" />
+        <path d="M 18 68 A 47 47 0 0 1 112 68" fill="none" stroke={C.lineSoft} strokeWidth="8.5" strokeLinecap="round" />
 
         {/* Sector Verde (0 - 300 N) */}
-        <path d="M 18 68 A 47 47 0 0 1 48 27" fill="none" stroke="#10b981" strokeWidth="8.5" opacity={0.35} />
+        <path d="M 18 68 A 47 47 0 0 1 48 27" fill="none" stroke={C.coronal} strokeWidth="8.5" opacity={0.35} />
         {/* Sector Ámbar (300 - 600 N) */}
-        <path d="M 48 27 A 47 47 0 0 1 82 27" fill="none" stroke="#f59e0b" strokeWidth="8.5" opacity={0.35} />
+        <path d="M 48 27 A 47 47 0 0 1 82 27" fill="none" stroke={C.amber} strokeWidth="8.5" opacity={0.35} />
         {/* Sector Rojo (> 600 N Trituración Máxima) */}
-        <path d="M 82 27 A 47 47 0 0 1 112 68" fill="none" stroke="#ef4444" strokeWidth="8.5" opacity={0.35} />
+        <path d="M 82 27 A 47 47 0 0 1 112 68" fill="none" stroke={C.blood} strokeWidth="8.5" opacity={0.35} />
 
         {/* Arco dinámico */}
         <path
@@ -180,39 +183,39 @@ function BiteDynamometerGauge({
 
         {/* Aguja indicadora */}
         <g transform={`rotate(${needleAngle} 65 68)`} style={{ transition: 'transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)' }}>
-          <line x1="65" y1="68" x2="65" y2="26" stroke="#1e293b" strokeWidth="2.8" strokeLinecap="round" />
-          <circle cx="65" cy="68" r="5" fill="#1e293b" />
-          <circle cx="65" cy="68" r="2.2" fill="#ffffff" />
+          <line x1="65" y1="68" x2="65" y2="26" stroke={C.ink} strokeWidth="2.8" strokeLinecap="round" />
+          <circle cx="65" cy="68" r="5" fill={C.ink} />
+          <circle cx="65" cy="68" r="2.2" fill={C.card} />
         </g>
 
-        <text x="14" y="76" fontSize="7" fill="#64748b" fontFamily="JetBrains Mono, monospace" fontWeight="600">0</text>
-        <text x="56" y="16" fontSize="7" fill="#64748b" fontFamily="JetBrains Mono, monospace" fontWeight="600">600N</text>
-        <text x="96" y="76" fontSize="7" fill="#64748b" fontFamily="JetBrains Mono, monospace" fontWeight="600">1200N</text>
+        <text x="14" y="76" fontSize="12" fill={C.ink3} fontFamily="JetBrains Mono, monospace" fontWeight="600">0</text>
+        <text x="56" y="16" fontSize="12" fill={C.ink3} fontFamily="JetBrains Mono, monospace" fontWeight="600">600N</text>
+        <text x="96" y="76" fontSize="12" fill={C.ink3} fontFamily="JetBrains Mono, monospace" fontWeight="600">1200N</text>
       </svg>
 
       <div style={{ fontSize: '1.35rem', fontWeight: 800, color: statusColor, fontFamily: 'JetBrains Mono, monospace', margin: '2px 0 0' }}>
         {fBiteN.toFixed(0)} N
       </div>
       <div style={{ fontSize: '0.74rem', fontWeight: 700, color: statusColor, fontFamily: 'JetBrains Mono, monospace' }}>
-        ({fBiteKgf.toFixed(1)} kgf)
+        ({fx(fBiteKgf, 1)} kgf)
       </div>
 
       <div
         style={{
-          fontSize: '0.58rem',
+          fontSize: '0.62rem',
           fontWeight: 800,
           color: statusColor,
           marginTop: '4px',
-          background: isCrushing ? 'rgba(239,68,68,0.10)' : (fBiteN > 300 ? 'rgba(245,158,11,0.10)' : 'rgba(16,185,129,0.10)'),
+          background: isCrushing ? ca(C.blood, 0.10) : (fBiteN > 300 ? ca(C.amber, 0.10) : ca(C.coronal, 0.10)),
           padding: '2px 6px',
           borderRadius: '4px',
           display: 'inline-block',
         }}
       >
-        {isCrushing ? '💥 TRITURACIÓN MÁXIMA (>600 N)' : (fBiteN > 300 ? '⚡ Masticación Fuerte' : '🦷 Corte Fisiológico')}
+        {isCrushing ? 'Mordida > 600 N' : (fBiteN > 300 ? 'Mordida fuerte' : 'Mordida moderada')}
       </div>
-      <div style={{ fontSize: '0.52rem', color: '#64748b', marginTop: '3px' }}>
-        Fm: <b>{muscleForceN} N</b> · R_atm: <b>{rAtmN.toFixed(0)} N</b>
+      <div style={{ fontSize: '0.62rem', color: C.ink3, marginTop: '3px' }}>
+        M: <b>{muscleForceN} N</b> · R (ATM): <b>{rAtmN.toFixed(0)} N</b>
       </div>
     </div>
   );
@@ -308,7 +311,8 @@ function MasseterMuscle3D({
 /** Palanca mandibular (determinista). */
 function jawStats(biteMode: JawCanvasProps['biteMode'], muscleForceN: number) {
   const dMuscM = 0.050;
-  const dBiteM = biteMode === 'incisor' ? 0.075 : 0.035;
+  // Ventaja mecánica del masetero del libro: 0,50 (incisivo) y 0,76 (primer molar).
+  const dBiteM = dMuscM / (biteMode === 'incisor' ? JAW_MA.masseter.incisor : JAW_MA.masseter.molar);
   const fBiteN = (muscleForceN * dMuscM) / dBiteM;
   const rAtmN = Math.abs(muscleForceN - fBiteN);
   return { fBiteN, fBiteKgf: fBiteN / 9.81, rAtmN, rAtmKgf: rAtmN / 9.81 };
@@ -327,8 +331,9 @@ function Jaw3DScene({
 
   // Física del sistema de palanca mandibular
   const dMuscM = 0.050; // 5.0 cm inserción masetero respecto a ATM
-  const dBiteM = biteMode === 'incisor' ? 0.075 : 0.035; // 7.5 cm (incisivos) vs 3.5 cm (molares)
-  const mechAdv = dMuscM / dBiteM; // 0.667 vs 1.429
+  // VM del masetero (libro, ref. [34]): 0,50 incisivo, 0,76 primer molar.
+  const dBiteM = dMuscM / (biteMode === 'incisor' ? JAW_MA.masseter.incisor : JAW_MA.masseter.molar);
+  const mechAdv = dMuscM / dBiteM;
 
   // Equilibrio de momentos (Σ M_ATM = 0):
   const fBiteN = (muscleForceN * dMuscM) / dBiteM;
@@ -339,9 +344,9 @@ function Jaw3DScene({
   const rAtmKgf = rAtmN / 9.81;
 
   // Letreros del riel lateral (mismos valores que llenaban el DclReadout de esquina).
-  const lFm = `Fm = ${muscleForceN.toFixed(0)} N`;
-  const lFmord = `F_mord = ${fBiteN.toFixed(0)} N`;
-  const lRatm = `R_ATM = ${rAtmN.toFixed(0)} N`;
+  const lFm = `M = ${muscleForceN.toFixed(0)} N`;
+  const lFmord = `F mordida = ${fBiteN.toFixed(0)} N`;
+  const lRatm = `R (ATM) = ${rAtmN.toFixed(0)} N`;
 
   // Escala anatómica general
   const SKULL_SCALE = 16.0;
@@ -431,8 +436,8 @@ function Jaw3DScene({
       const spawnCount = biteMode === 'molar' && fBiteN > 600 ? 5 : 3;
       const palette =
         biteMode === 'incisor'
-          ? ['#86efac', '#bbf7d0', '#ffffff', '#4ade80', '#22c55e']
-          : ['#fed7aa', '#ffedd5', '#ea580c', '#fdba74', '#c2410c'];
+          ? ['#86efac', '#bbf7d0', C.card, '#4ade80', C.coronal]
+          : ['#fed7aa', '#ffedd5', C.amber, '#fdba74', C.amber];
 
       for (let i = 0; i < spawnCount; i++) {
         const pColor = new THREE.Color(palette[Math.floor(Math.random() * palette.length)]);
@@ -525,7 +530,7 @@ function Jaw3DScene({
             <cylinderGeometry args={[0.09, 0.09, 0.028, 20]} />
             <primitive object={cartilageAtmMat} attach="material" />
           </mesh>
-          <DclTag position={[0.22, 0.08, 0]} color="#047857" symbol="ATM · fulcro" />
+          <DclTag position={[0.22, 0.08, 0]} color={C.tealDeep} symbol="ATM · fulcro" />
         </group>
 
         {/* ATM Izquierda */}
@@ -583,7 +588,7 @@ function Jaw3DScene({
             <boxGeometry args={[0.11, 0.08, 0.11]} />
           )}
           <meshStandardMaterial
-            color={biteMode === 'incisor' ? '#22c55e' : '#f97316'}
+            color={biteMode === 'incisor' ? C.coronal : C.amber}
             roughness={0.45}
             metalness={0.05}
             emissive={biteMode === 'incisor' ? '#15803d' : '#c2410c'}
@@ -595,15 +600,15 @@ function Jaw3DScene({
         {fBiteN > 350 && (
           <mesh position={[0, 0, 0.045]}>
             <planeGeometry args={[0.09, 0.05]} />
-            <meshBasicMaterial color="#ffffff" transparent opacity={0.85} wireframe />
+            <meshBasicMaterial color={C.card} transparent opacity={0.85} wireframe />
           </mesh>
         )}
 
         {/* Punto de mordida · brazo de resistencia según el diente */}
         <DclTag
           position={[0, 0.14, 0]}
-          color={biteMode === 'incisor' ? '#16a34a' : '#ea580c'}
-          symbol={biteMode === 'incisor' ? '🥕 d 7,5 cm' : '🥜 d 3,5 cm'}
+          color={biteMode === 'incisor' ? C.coronal : C.amber}
+          symbol={biteMode === 'incisor' ? 'incisivo · VM 0,50' : 'primer molar · VM 0,76'}
         />
       </group>
 
@@ -623,9 +628,9 @@ function Jaw3DScene({
       </group>
 
       {/* ── 5. VECTORES BIOMECÁNICOS DCL (Fm, F_mord, R_ATM) ── */}
-      <ForceVector3D origin={gonionRightPos} vector={vFm} color="#b91c1c" label={lFm} sub="masetero" />
-      <ForceVector3D origin={[foodPos[0], foodPos[1] + 0.05, foodPos[2]]} vector={vBite} color="#0d6e64" label={lFmord} sub={`${fBiteKgf.toFixed(0)} kgf`} emphasis="strong" />
-      <ForceVector3D origin={[0.38, 0.02, 0.05]} vector={vRAtm} color="#43505c" label={lRatm} sub="reacción del cóndilo" />
+      <ForceVector3D origin={gonionRightPos} vector={vFm} color={C.bloodDeep} label={lFm} sub="masetero" />
+      <ForceVector3D origin={[foodPos[0], foodPos[1] + 0.05, foodPos[2]]} vector={vBite} color={C.teal} label={lFmord} sub={`${fBiteKgf.toFixed(0)} kgf`} emphasis="strong" />
+      <ForceVector3D origin={[0.38, 0.02, 0.05]} vector={vRAtm} color={C.ink2} label={lRatm} sub="reacción del cóndilo" />
 
       <CalloutSource />
 
@@ -663,20 +668,20 @@ export default function JawCanvas({
           top: '12px',
           right: '12px',
           zIndex: 10,
-          background: 'rgba(255, 255, 255, 0.94)',
-          border: '1px solid var(--line, #cbd5e1)',
+          background: ca(C.card, 0.94),
+          border: `1px solid var(--line, ${C.line})`,
           borderRadius: '6px',
           padding: '4px 10px',
           fontSize: '0.62rem',
           fontWeight: 700,
-          color: 'var(--ink, #232c36)',
+          color: `var(--ink, ${C.ink})`,
           cursor: 'pointer',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+          boxShadow: `0 2px 8px ${ca(C.ink, 0.08)}`,
           backdropFilter: 'blur(6px)',
           transition: 'all 0.15s ease',
         }}
       >
-        📷 Restablecer Cámara
+        Restablecer cámara
       </button>
 
       {/* Canvas 3D de React Three Fiber */}
@@ -730,7 +735,6 @@ export default function JawCanvas({
           right: '10px',
           bottom: '10px',
           zIndex: 9,
-          transform: 'scale(0.78)',
           transformOrigin: 'bottom right',
           pointerEvents: 'none',
         }}

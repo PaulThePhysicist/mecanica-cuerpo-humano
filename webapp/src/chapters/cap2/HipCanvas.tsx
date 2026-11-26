@@ -1,4 +1,5 @@
 import React, { Suspense, useMemo, useRef, useState, useEffect } from 'react';
+import { C, ca } from './palette';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, ContactShadows, Line, useGLTF } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
@@ -14,9 +15,11 @@ import {
   CalloutSource,
   useCalloutStore,
 } from '../cap1/three/Callouts';
+import { G, hipStatics } from './staticsModels';
+import { fx } from './ab';
 
 interface HipCanvasProps {
-  bodyMassKg: number;        // Masa total en kg (40 a 120, default 70)
+  bodyMassKg: number;        // Masa total en kg (40 a 120; el libro usa 90 kg)
   trendelenburg: boolean;    // Si es true, simula insuficiencia del glúteo medio (pelvis cae)
   showBreakdown: boolean;    // Si es true, desglosa componentes x e y de la fuerza articular
   /** Lo enciende la columna de teoría del slide, no un botón sobre el lienzo:
@@ -28,12 +31,12 @@ interface HipCanvasProps {
 const BONE_IVORY = '#ede5d0';
 const BONE_DEEP = '#c5b593';
 const CARTILAGE_ICE = '#68c5b8';
-const MUSCLE_CARMINE = '#a92a1e';
+const MUSCLE_CARMINE = C.blood;
 const MUSCLE_INACTIVE = '#e28880';
 const TENDON_PEARL = '#f5f0e6';
-const TEAL_ACCENT = '#0d6e64';
-const AMBER_ACCENT = '#d97706';
-const RED_ACCENT = '#b02318';
+const TEAL_ACCENT = C.teal;
+const AMBER_ACCENT = C.amber;
+const RED_ACCENT = C.blood;
 
 // Pivot anatómico de la cabeza femoral derecha en el espacio del modelo 3D
 const P_HIP_R = new THREE.Vector3(-0.039, 0.002, -0.003);
@@ -42,7 +45,7 @@ const P_HIP_R = new THREE.Vector3(-0.039, 0.002, -0.003);
 function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [1, 0, 0] as [number, number, number],
-  color = '#0d6e64',
+  color = C.teal,
   label,
   sub,
   emphasis,
@@ -142,12 +145,12 @@ function ForceVector3D({
 // ── 2. Dial Manométrico Analógico de Reacción Acetabular (SVG Gauge) ──
 function AcetabularGauge({
   rJointN,
-  rJointKgf,
+  wbN,
   trendelenburg,
   maxR = 3000,
 }: {
   rJointN: number;
-  rJointKgf: number;
+  wbN: number;
   trendelenburg: boolean;
   maxR?: number;
 }) {
@@ -158,18 +161,18 @@ function AcetabularGauge({
   return (
     <div
       style={{
-        background: 'rgba(255, 255, 255, 0.95)',
+        background: ca(C.card, 0.95),
         backdropFilter: 'blur(8px)',
-        border: `1.5px solid ${trendelenburg ? RED_ACCENT : '#cbd5e1'}`,
+        border: `1.5px solid ${trendelenburg ? RED_ACCENT : '${C.line}'}`,
         borderRadius: '10px',
         padding: '10px 14px',
-        boxShadow: '0 6px 20px rgba(35, 44, 54, 0.14)',
+        boxShadow: `0 6px 20px ${ca(C.ink, 0.14)}`,
         minWidth: '160px',
         textAlign: 'center',
         pointerEvents: 'none',
       }}
     >
-      <div style={{ fontSize: '0.60rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+      <div style={{ fontSize: '0.62rem', fontWeight: 700, color: C.ink3, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
         Reacción Acetabular (R)
       </div>
 
@@ -179,7 +182,7 @@ function AcetabularGauge({
         <path
           d="M 15 65 A 45 45 0 0 1 105 65"
           fill="none"
-          stroke="#e2e8f0"
+          stroke={C.lineSoft}
           strokeWidth="8"
           strokeLinecap="round"
         />
@@ -187,7 +190,7 @@ function AcetabularGauge({
         <path
           d="M 15 65 A 45 45 0 0 1 60 20"
           fill="none"
-          stroke="#0d6e64"
+          stroke={C.teal}
           strokeWidth="8"
           strokeDasharray="4 2"
           opacity={0.35}
@@ -196,7 +199,7 @@ function AcetabularGauge({
         <path
           d="M 60 20 A 45 45 0 0 1 95 38"
           fill="none"
-          stroke="#d97706"
+          stroke={C.amber}
           strokeWidth="8"
           strokeDasharray="4 2"
           opacity={0.35}
@@ -205,7 +208,7 @@ function AcetabularGauge({
         <path
           d="M 95 38 A 45 45 0 0 1 105 65"
           fill="none"
-          stroke="#b02318"
+          stroke={C.blood}
           strokeWidth="8"
           strokeDasharray="4 2"
           opacity={0.35}
@@ -215,7 +218,7 @@ function AcetabularGauge({
         <path
           d="M 15 65 A 45 45 0 0 1 105 65"
           fill="none"
-          stroke={trendelenburg ? RED_ACCENT : (rJointN > 2400 ? '#b02318' : (rJointN > 1500 ? '#0d6e64' : '#0d6e64'))}
+          stroke={trendelenburg ? RED_ACCENT : (rJointN > 2400 ? C.blood : (rJointN > 1500 ? C.teal : C.teal))}
           strokeWidth="8"
           strokeDasharray="141.37"
           strokeDashoffset={141.37 * (1 - normVal)}
@@ -225,26 +228,26 @@ function AcetabularGauge({
 
         {/* Aguja indicadora analógica */}
         <g transform={`rotate(${needleAngle} 60 65)`} style={{ transition: 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)' }}>
-          <line x1="60" y1="65" x2="60" y2="25" stroke="#1e293b" strokeWidth="2.5" strokeLinecap="round" />
-          <circle cx="60" cy="65" r="4.5" fill="#1e293b" />
-          <circle cx="60" cy="65" r="2" fill="#ffffff" />
+          <line x1="60" y1="65" x2="60" y2="25" stroke={C.ink} strokeWidth="2.5" strokeLinecap="round" />
+          <circle cx="60" cy="65" r="4.5" fill={C.ink} />
+          <circle cx="60" cy="65" r="2" fill={C.card} />
         </g>
 
         {/* Etiquetas de escala */}
-        <text x="12" y="72" fontSize="7" fill="#64748b" fontFamily="JetBrains Mono, monospace">0</text>
-        <text x="56" y="16" fontSize="7" fill="#64748b" fontFamily="JetBrains Mono, monospace">1.5k</text>
-        <text x="96" y="72" fontSize="7" fill="#64748b" fontFamily="JetBrains Mono, monospace">3kN</text>
+        <text x="12" y="72" fontSize="12" fill={C.ink3} fontFamily="JetBrains Mono, monospace">0</text>
+        <text x="56" y="16" fontSize="12" fill={C.ink3} fontFamily="JetBrains Mono, monospace">1,5k</text>
+        <text x="96" y="72" fontSize="12" fill={C.ink3} fontFamily="JetBrains Mono, monospace">3kN</text>
       </svg>
 
       {/* Lecturas numéricas digitales */}
       <div style={{ fontSize: '1.25rem', fontWeight: 800, color: trendelenburg ? RED_ACCENT : TEAL_ACCENT, fontFamily: 'JetBrains Mono, monospace', margin: '2px 0 0' }}>
-        {rJointN.toFixed(0)} N
+        {fx(rJointN)} N
       </div>
       <div style={{ fontSize: '0.64rem', fontWeight: 600, color: trendelenburg ? RED_ACCENT : TEAL_ACCENT }}>
-        {rJointKgf.toFixed(1)} kgf en cabeza femoral
+        {fx(rJointN / wbN, 2)} W<sub>b</sub> en la cabeza femoral
       </div>
-      <div style={{ fontSize: '0.54rem', color: '#64748b', marginTop: '4px' }}>
-        {trendelenburg ? '⚠️ Basculación activa (Caída contralateral)' : '✓ Equilibrio monopodal estable'}
+      <div style={{ fontSize: '0.62rem', color: C.ink3, marginTop: '4px' }}>
+        {trendelenburg ? 'Sin equilibrio: la pelvis bascula' : 'Equilibrio monopodal'}
       </div>
     </div>
   );
@@ -256,18 +259,18 @@ function VectorPolygonCard({ trendelenburg }: { trendelenburg: boolean }) {
   return (
     <div
       style={{
-        background: 'rgba(255, 255, 255, 0.95)',
+        background: ca(C.card, 0.95),
         backdropFilter: 'blur(8px)',
-        border: `1.5px solid ${trendelenburg ? RED_ACCENT : '#cbd5e1'}`,
+        border: `1.5px solid ${trendelenburg ? RED_ACCENT : '${C.line}'}`,
         borderRadius: '10px',
         padding: '10px 12px',
-        boxShadow: '0 6px 20px rgba(35, 44, 54, 0.14)',
+        boxShadow: `0 6px 20px ${ca(C.ink, 0.14)}`,
         minWidth: '160px',
         pointerEvents: 'none',
       }}
     >
-      <div style={{ fontSize: '0.64rem', fontWeight: 700, color: trendelenburg ? RED_ACCENT : '#232c36', marginBottom: '6px', textAlign: 'center' }}>
-        {trendelenburg ? '⚠️ POLÍGONO ABIERTO (ΣF ≠ 0)' : 'POLÍGONO VECTORIAL (ΣF = 0)'}
+      <div style={{ fontSize: '0.64rem', fontWeight: 700, color: trendelenburg ? RED_ACCENT : C.ink, marginBottom: '6px', textAlign: 'center' }}>
+        {trendelenburg ? 'POLÍGONO ABIERTO (ΣF ≠ 0)' : 'POLÍGONO DE LA PIERNA (ΣF = 0)'}
       </div>
 
       {/* Dibujo Vectorial SVG de Triángulo Cerrado */}
@@ -285,39 +288,22 @@ function VectorPolygonCard({ trendelenburg }: { trendelenburg: boolean }) {
           </marker>
         </defs>
 
+        {/* Polígono del DCL de la pierna (Fig. 2.17): (N − W_leg) hacia arriba,
+            M a 70° y R cierra. Escala ≈ 30 px por W_b. */}
+        <line x1="100" y1="84" x2="100" y2="59" stroke={AMBER_ACCENT} strokeWidth="2.5" markerEnd="url(#arrow-wb)" />
+        <text x="52" y="80" fontSize="12" fill={AMBER_ACCENT} fontWeight="bold" fontFamily="var(--mono)">N−W</text>
         {!trendelenburg ? (
-          // Polígono cerrado perfecto
           <g>
-            {/* Vector Wb (Hacia abajo) */}
-            <line x1="95" y1="12" x2="95" y2="78" stroke={AMBER_ACCENT} strokeWidth="2.5" markerEnd="url(#arrow-wb)" />
-            <text x="100" y="48" fontSize="8" fill={AMBER_ACCENT} fontWeight="bold" fontFamily="JetBrains Mono, monospace">Wb</text>
-
-            {/* Vector Fa (Hacia arriba-izquierda a 70°) */}
-            <line x1="95" y1="78" x2="32" y2="12" stroke={RED_ACCENT} strokeWidth="2.5" markerEnd="url(#arrow-fa)" />
-            <text x="48" y="58" fontSize="8" fill={RED_ACCENT} fontWeight="bold" fontFamily="JetBrains Mono, monospace">Fa (70°)</text>
-
-            {/* Vector R (Cierra hacia abajo-derecha) */}
-            <line x1="32" y1="12" x2="95" y2="12" stroke={TEAL_ACCENT} strokeWidth="2.5" markerEnd="url(#arrow-r)" />
-            <text x="60" y="9" fontSize="8" fill={TEAL_ACCENT} fontWeight="bold" fontFamily="JetBrains Mono, monospace">R</text>
-
-            <circle cx="95" cy="12" r="3" fill="#232c36" />
-            <circle cx="95" cy="78" r="3" fill={AMBER_ACCENT} />
-            <circle cx="32" cy="12" r="3" fill={TEAL_ACCENT} />
+            <line x1="100" y1="59" x2="84" y2="15" stroke={RED_ACCENT} strokeWidth="2.5" markerEnd="url(#arrow-fa)" />
+            <text x="58" y="30" fontSize="12" fill={RED_ACCENT} fontWeight="bold" fontFamily="var(--mono)">M</text>
+            <line x1="84" y1="15" x2="100" y2="84" stroke={TEAL_ACCENT} strokeWidth="2.5" markerEnd="url(#arrow-r)" />
+            <text x="112" y="40" fontSize="12" fill={TEAL_ACCENT} fontWeight="bold" fontFamily="var(--mono)">R</text>
           </g>
         ) : (
-          // Polígono abierto con brecha de momento no compensado
           <g>
-            {/* Vector Wb (Hacia abajo) */}
-            <line x1="95" y1="12" x2="95" y2="78" stroke={AMBER_ACCENT} strokeWidth="2.5" markerEnd="url(#arrow-wb)" />
-            <text x="100" y="48" fontSize="8" fill={AMBER_ACCENT} fontWeight="bold" fontFamily="JetBrains Mono, monospace">Wb</text>
-
-            {/* Vector Fa reducido/débil */}
-            <line x1="95" y1="78" x2="80" y2="60" stroke={RED_ACCENT} strokeWidth="2" strokeDasharray="3 2" markerEnd="url(#arrow-fa)" />
-            <text x="56" y="70" fontSize="7" fill={RED_ACCENT} fontFamily="JetBrains Mono, monospace">Fa (25%)</text>
-
-            {/* Brecha / Desbalance */}
-            <line x1="80" y1="60" x2="95" y2="12" stroke="#e11d48" strokeWidth="2" strokeDasharray="2 2" />
-            <text x="42" y="32" fontSize="7.5" fill="#e11d48" fontWeight="bold">Δτ ≠ 0 (Caída)</text>
+            <line x1="100" y1="59" x2="96" y2="48" stroke={RED_ACCENT} strokeWidth="2" strokeDasharray="3 2" markerEnd="url(#arrow-fa)" />
+            <text x="40" y="54" fontSize="12" fill={RED_ACCENT} fontFamily="var(--mono)">M 25 %</text>
+            <text x="8" y="20" fontSize="12" fill={RED_ACCENT} fontWeight="bold">{'Στ ≠ 0'}</text>
           </g>
         )}
       </svg>
@@ -405,27 +391,16 @@ function HipAnatomy3D({
     []
   );
 
-  // ── Cálculos Biomecánicos de Apoyo Monopodal (Pauwels) ──
-  const g = 9.81;
-  const totalWeightN = bodyMassKg * g;
-  // Peso suprayacente + pierna suspendida = Wb = (5/6) * W
-  const wbN = (5 / 6) * totalWeightN;
-
-  const bwM = 0.18; // 18 cm al centro de gravedad
-  const bmM = 0.07; // 7 cm al trocánter mayor
-  const thetaMRad = (70 * Math.PI) / 180;
-  const sin70 = Math.sin(thetaMRad);
-  const cos70 = Math.cos(thetaMRad);
-
-  // Fuerza de abductores Fa
-  const fAbductorN = trendelenburg
-    ? (wbN * bwM * 0.25) / (bmM * sin70)
-    : (wbN * bwM) / (bmM * sin70);
-
-  // Reacción acetabular R
-  const rxN = fAbductorN * cos70;
-  const ryN = fAbductorN * sin70 + wbN;
-  const rJointN = Math.hypot(rxN, ryN);
+  // ── Estática del apoyo monopodal: modelo del libro (Ecs. 2.25–2.28) ──
+  const totalWeightN = bodyMassKg * G; // W_b
+  const hip = hipStatics(totalWeightN, { abductorFraction: trendelenburg ? 0.25 : 1 });
+  const wbN = totalWeightN;
+  const sin70 = Math.sin((70 * Math.PI) / 180);
+  const cos70 = Math.cos((70 * Math.PI) / 180);
+  const fAbductorN = hip.M;
+  const rxN = hip.Rx;
+  const ryN = hip.Ry;
+  const rJointN = hip.R;
 
   // Animación suave del signo de Trendelenburg (LERP senoidal)
   useFrame((state, delta) => {
@@ -459,9 +434,9 @@ function HipAnatomy3D({
   ];
 
   // Letreros del riel lateral (símbolo = valor).
-  const lWb = `Wb = ${wbN.toFixed(0)} N`;
-  const lFa = `Fa = ${fAbductorN.toFixed(0)} N`;
-  const lR = `R = ${rJointN.toFixed(0)} N`;
+  const lWb = `Wb = ${fx(wbN)} N`;
+  const lFa = `M = ${fx(fAbductorN)} N`;
+  const lR = `R = ${fx(rJointN)} N`;
 
   const MODEL_SCALE = 4.7;
 
@@ -526,9 +501,9 @@ function HipAnatomy3D({
         </mesh>
 
         {/* Vector Peso del Cuerpo Wb */}
-        <ForceVector3D origin={wbOrigin3D} vector={wbVec3D} color={AMBER_ACCENT} label={lWb} sub="5/6 W · centro de gravedad" />
+        <ForceVector3D origin={wbOrigin3D} vector={wbVec3D} color={AMBER_ACCENT} label={lWb} sub="peso corporal · centro de masa" />
 
-        {/* Guía acotada del brazo de palanca bw = 18 cm */}
+        {/* Guía: línea media del cuerpo al centro de masa */}
         <Line
           points={[
             [0, 0.22, 0],
@@ -551,10 +526,10 @@ function HipAnatomy3D({
         vector={faVec3D}
         color={trendelenburg ? '#e28880' : RED_ACCENT}
         label={lFa}
-        sub={trendelenburg ? 'glúteo medio insuficiente ⚠' : 'glúteo medio'}
+        sub={trendelenburg ? 'abductores al 25 %: sin equilibrio' : 'abductores · 70°'}
       />
 
-      {/* Guía acotada del brazo bm = 7 cm */}
+      {/* Guía acotada del brazo de los abductores (7,0 cm) */}
       <Line
         points={[
           [0, 0, 0],
@@ -586,8 +561,8 @@ function HipAnatomy3D({
           <ForceVector3D
             origin={[0, 0, 0]}
             vector={[-rxN * vectorScale, 0, 0]}
-            color="#0284c7"
-            label={`Rx = ${rxN.toFixed(0)} N`}
+            color={C.series3}
+            label={`Rx = ${fx(rxN)} N`}
             sub="horizontal"
             emphasis="muted"
             isDashed
@@ -597,7 +572,7 @@ function HipAnatomy3D({
             origin={[-rxN * vectorScale, 0, 0]}
             vector={[0, -ryN * vectorScale, 0]}
             color={TEAL_ACCENT}
-            label={`Ry = ${ryN.toFixed(0)} N`}
+            label={`Ry = ${fx(ryN)} N`}
             sub="vertical"
             emphasis="muted"
             isDashed
@@ -611,31 +586,22 @@ function HipAnatomy3D({
   );
 }
 
-// Física de Pauwels (idéntica a la de HipAnatomy3D) para las tarjetas overlay.
-function hipStatics(bodyMassKg: number, trendelenburg: boolean) {
-  const g = 9.81;
-  const totalWeightN = bodyMassKg * g;
-  const wbN = (5 / 6) * totalWeightN;
-  const sin70 = Math.sin((70 * Math.PI) / 180);
-  const cos70 = Math.cos((70 * Math.PI) / 180);
-  const fAbductorN = trendelenburg
-    ? (wbN * 0.18 * 0.25) / (0.07 * sin70)
-    : (wbN * 0.18) / (0.07 * sin70);
-  const rxN = fAbductorN * cos70;
-  const ryN = fAbductorN * sin70 + wbN;
-  const rJointN = Math.hypot(rxN, ryN);
-  return { totalWeightN, wbN, fAbductorN, rJointN, rJointKgf: rJointN / g };
+// Misma física que HipAnatomy3D (modelo del libro) para las tarjetas overlay.
+function overlayStatics(bodyMassKg: number, trendelenburg: boolean) {
+  const totalWeightN = bodyMassKg * G;
+  const hip = hipStatics(totalWeightN, { abductorFraction: trendelenburg ? 0.25 : 1 });
+  return { totalWeightN, rJointN: hip.R, rJointKgf: hip.R / G };
 }
 
 // ── 5. Componente Principal HipCanvas con Escena 3D y Controles ──
 export default function HipCanvas({
   showLabels = false,
-  bodyMassKg = 70,
+  bodyMassKg = 90,
   trendelenburg = false,
   showBreakdown = true,
 }: HipCanvasProps) {
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
-  const { rJointN, rJointKgf } = hipStatics(bodyMassKg, trendelenburg);
+  const { rJointN, totalWeightN } = overlayStatics(bodyMassKg, trendelenburg);
   const callouts = useCalloutStore();
 
   const handleResetCamera = () => {
@@ -656,19 +622,19 @@ export default function HipCanvas({
           top: '12px',
           right: '12px',
           zIndex: 10,
-          background: 'rgba(255, 255, 255, 0.92)',
-          border: '1px solid var(--line, #cbd5e1)',
+          background: ca(C.card, 0.92),
+          border: `1px solid var(--line, ${C.line})`,
           borderRadius: '6px',
           padding: '4px 9px',
-          fontSize: '0.6rem',
+          fontSize: '0.62rem',
           fontWeight: 600,
-          color: 'var(--ink, #232c36)',
+          color: `var(--ink, ${C.ink})`,
           cursor: 'pointer',
-          boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
+          boxShadow: `0 2px 6px ${ca(C.ink, 0.06)}`,
           backdropFilter: 'blur(4px)',
         }}
       >
-        📷 Cámara
+        Restablecer cámara
       </button>
 
       {/* Canvas 3D de React Three Fiber */}
@@ -714,11 +680,11 @@ export default function HipCanvas({
       <CalloutRail store={callouts} side="left" reserveBottom={122} />
 
       {/* ── Esquemas anclados a las esquinas (fuera del 3D, sin recortes) ── */}
-      <div style={{ position: 'absolute', left: '10px', bottom: '10px', zIndex: 9, transform: 'scale(0.74)', transformOrigin: 'bottom left' }}>
+      <div style={{ position: 'absolute', left: '10px', bottom: '10px', zIndex: 9, transformOrigin: 'bottom left' }}>
         <VectorPolygonCard trendelenburg={trendelenburg} />
       </div>
-      <div style={{ position: 'absolute', right: '10px', bottom: '10px', zIndex: 9, transform: 'scale(0.74)', transformOrigin: 'bottom right' }}>
-        <AcetabularGauge rJointN={rJointN} rJointKgf={rJointKgf} trendelenburg={trendelenburg} maxR={3000} />
+      <div style={{ position: 'absolute', right: '10px', bottom: '10px', zIndex: 9, transformOrigin: 'bottom right' }}>
+        <AcetabularGauge rJointN={rJointN} wbN={totalWeightN} trendelenburg={trendelenburg} maxR={3000} />
       </div>
     </div>
     </CalloutProvider>

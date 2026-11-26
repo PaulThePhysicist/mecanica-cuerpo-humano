@@ -1,4 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
+import { C, ca } from './palette';
+import { fx, fexp } from './ab';
 import { readCap2Tokens, tokenRgba } from './designTokens';
 import CanvasReserveState from './CanvasReserveState';
 
@@ -17,23 +19,24 @@ interface BioReference {
   zone: 'normal' | 'caution' | 'danger';
 }
 
+// Referencias con las cifras del propio Capítulo 2 (kgf y lbf calculados).
 const REFERENCES: Record<string, BioReference[]> = {
   force: [
-    { name: 'Mordida con incisivos', siValue: 200, unitSi: 'N', altValue: '20,4 kgf · 45 lbf', note: 'Corte fino con palanca de 3ª clase', zone: 'normal' },
-    { name: 'Tensión bíceps sosteniendo 5 kg', siValue: 450, unitSi: 'N', altValue: '45,9 kgf · 101 lbf', note: 'Desventaja de palanca (35/4 cm)', zone: 'normal' },
-    { name: 'Carga acetabular al caminar', siValue: 1800, unitSi: 'N', altValue: '183,5 kgf · 405 lbf', note: '~2,7× peso corporal en cadera', zone: 'caution' },
-    { name: 'Tensión tendón de Aquiles (salto)', siValue: 4500, unitSi: 'N', altValue: '458,7 kgf · 1011 lbf', note: 'Cerca del límite de rotura tendinosa', zone: 'danger' },
+    { name: 'Bíceps con 100 N en la mano', siValue: 950, unitSi: 'N', altValue: '96,9 kgf · 214 lbf', note: 'Caso 2 del antebrazo (libro: 210 lb)', zone: 'normal' },
+    { name: 'Abductores de la cadera (90 kg)', siValue: 1400, unitSi: 'N', altValue: '142,8 kgf · 315 lbf', note: 'Apoyo monopodal: M ≈ 1,6 Wb', zone: 'caution' },
+    { name: 'Reacción en la cadera (90 kg)', siValue: 2100, unitSi: 'N', altValue: '214,1 kgf · 472 lbf', note: 'R ≈ 2,4 Wb (libro: 470 lb)', zone: 'caution' },
+    { name: 'Erector, θ = 30° y 0,2 Wb extra', siValue: 3300, unitSi: 'N', altValue: '336,5 kgf · 742 lbf', note: 'M = 3,74 Wb (libro: 740 lb)', zone: 'danger' },
   ],
   torque: [
-    { name: 'Torque flexión de codo (sostén)', siValue: 25, unitSi: 'N·m', altValue: '2,55 kgf·m · 18,4 lbf·ft', note: 'Brazo a 90° con 7 kg en mano', zone: 'normal' },
-    { name: 'Torque abductor de cadera', siValue: 110, unitSi: 'N·m', altValue: '11,2 kgf·m · 81,1 lbf·ft', note: 'Glúteo medio en apoyo monopodal', zone: 'caution' },
-    { name: 'Torque lumbar L5-S1 (Inclinado)', siValue: 220, unitSi: 'N·m', altValue: '22,4 kgf·m · 162,3 lbf·ft', note: 'Tronco a 60° con 15 kg en manos', zone: 'danger' },
+    { name: 'Tres flexores del codo (Caso 4)', siValue: 32, unitSi: 'N·m', altValue: '3,26 kgf·m · 23,6 lbf·ft', note: 'Torque que da 262 + 399 + 85 N', zone: 'normal' },
+    { name: 'Carga del antebrazo (Caso 2)', siValue: 38, unitSi: 'N·m', altValue: '3,87 kgf·m · 28,0 lbf·ft', note: '100 N a 36 cm + 15 N a 13 cm', zone: 'normal' },
+    { name: 'Torque de los abductores (90 kg)', siValue: 91, unitSi: 'N·m', altValue: '9,24 kgf·m · 66,8 lbf·ft', note: '(10,8 − 0,5) cm × 880 N', zone: 'caution' },
   ],
   pressure: [
-    { name: 'Presión arterial sistólica', siValue: 16000, unitSi: 'Pa (16 kPa)', altValue: '120 mmHg · 0,16 bar · 2,3 psi', note: 'Presión hidrostática de eyección', zone: 'normal' },
-    { name: 'Presión discal L5-S1 de pie', siValue: 500000, unitSi: 'Pa (0,50 MPa)', altValue: '5,0 bar · 3750 mmHg · 72,5 psi', note: 'Compresión fisiológica homogénea', zone: 'normal' },
-    { name: 'Presión discal sentado encorvado', siValue: 1100000, unitSi: 'Pa (1,10 MPa)', altValue: '11,0 bar · 8250 mmHg · 159,5 psi', note: 'Sobrecarga postural por pérdida de lordosis', zone: 'caution' },
-    { name: 'Presión discal levantando peso', siValue: 2800000, unitSi: 'Pa (2,80 MPa)', altValue: '28,0 bar · 21000 mmHg · 406 psi', note: 'Zona crítica de rotura de anillo fibroso', zone: 'danger' },
+    { name: 'Presión arterial sistólica', siValue: 16000, unitSi: 'Pa (16 kPa)', altValue: '120 mmHg · 0,16 bar · 2,3 psi', note: 'Manométrica: sobre la atmosférica', zone: 'normal' },
+    { name: 'Presión atmosférica (nivel del mar)', siValue: 101300, unitSi: 'Pa (101,3 kPa)', altValue: '760 mmHg · 1,013 bar · 14,7 psi', note: '1 atm = 1033 cmH₂O', zone: 'normal' },
+    { name: 'Disco lumbar de pie (ilustrativo)', siValue: 500000, unitSi: 'Pa (0,50 MPa)', altValue: '5,0 bar · 3750 mmHg · 72,5 psi', note: 'Tabla 2.4: 100 %', zone: 'caution' },
+    { name: 'Levantar 20 kg sin doblar rodillas', siValue: 2300000, unitSi: 'Pa (2,30 MPa)', altValue: '23,0 bar · 17 250 mmHg · 334 psi', note: 'Tabla 2.4: 460 % (ilustrativo)', zone: 'danger' },
   ],
 };
 
@@ -152,10 +155,10 @@ export default function UnitsConverterCanvas({
         const dynVal = nVal * 1e5;
 
         unitsTable = [
-          { unit: 'Newtons (N)', valStr: `${nVal.toFixed(1)} N`, factor: 'SI Base: 1 N = 1 kg·m/s²', ratio: curValNorm },
-          { unit: 'Kilogramos-fuerza (kgf / kp)', valStr: `${kgfVal.toFixed(2)} kgf`, factor: '1 kgf = 9,80665 N (Gravedad estándar)', ratio: curValNorm },
-          { unit: 'Libras-fuerza (lbf)', valStr: `${lbfVal.toFixed(2)} lbf`, factor: '1 lbf = 4,44822 N (Sistema anglosajón)', ratio: curValNorm },
-          { unit: 'Dinas (dyn)', valStr: `${dynVal.toExponential(2)} dyn`, factor: '1 dyn = 10⁻⁵ N (Sistema CGS)', ratio: curValNorm },
+          { unit: 'Newtons (N)', valStr: `${fx(nVal, 1)} N`, factor: 'SI Base: 1 N = 1 kg·m/s²', ratio: curValNorm },
+          { unit: 'Kilogramos-fuerza (kgf / kp)', valStr: `${fx(kgfVal, 2)} kgf`, factor: '1 kgf = 9,80665 N (Gravedad estándar)', ratio: curValNorm },
+          { unit: 'Libras-fuerza (lbf)', valStr: `${fx(lbfVal, 2)} lbf`, factor: '1 lbf = 4,44822 N (Sistema anglosajón)', ratio: curValNorm },
+          { unit: 'Dinas (dyn)', valStr: `${fexp(dynVal, 2)} dyn`, factor: '1 dyn = 10⁻⁵ N (Sistema CGS)', ratio: curValNorm },
         ];
       } else if (quantityType === 'torque') {
         maxRange = 250;
@@ -165,9 +168,9 @@ export default function UnitsConverterCanvas({
         const lbfftVal = nmVal * 0.737562;
 
         unitsTable = [
-          { unit: 'Newton·metro (N·m)', valStr: `${nmVal.toFixed(1)} N·m`, factor: 'SI Base: 1 N·m = 1 J/rad', ratio: curValNorm },
-          { unit: 'Kilogramo-fuerza·metro (kgf·m)', valStr: `${kgfmVal.toFixed(2)} kgf·m`, factor: '1 kgf·m = 9,80665 N·m', ratio: curValNorm },
-          { unit: 'Libra·pie (lbf·ft)', valStr: `${lbfftVal.toFixed(2)} lbf·ft`, factor: '1 lbf·ft = 1,35582 N·m', ratio: curValNorm },
+          { unit: 'Newton·metro (N·m)', valStr: `${fx(nmVal, 1)} N·m`, factor: 'SI Base: 1 N·m = 1 J/rad', ratio: curValNorm },
+          { unit: 'Kilogramo-fuerza·metro (kgf·m)', valStr: `${fx(kgfmVal, 2)} kgf·m`, factor: '1 kgf·m = 9,80665 N·m', ratio: curValNorm },
+          { unit: 'Libra·pie (lbf·ft)', valStr: `${fx(lbfftVal, 2)} lbf·ft`, factor: '1 lbf·ft = 1,35582 N·m', ratio: curValNorm },
         ];
       } else {
         maxRange = 3500000;
@@ -180,12 +183,12 @@ export default function UnitsConverterCanvas({
         const psiVal = paVal * 0.000145038;
 
         unitsTable = [
-          { unit: 'Pascales (Pa)', valStr: `${paVal >= 10000 ? paVal.toExponential(2) : paVal.toFixed(0)} Pa`, factor: 'SI Base: 1 Pa = 1 N/m²', ratio: curValNorm },
-          { unit: 'Kilopascales (kPa)', valStr: `${kpaVal.toFixed(1)} kPa`, factor: '1 kPa = 10³ Pa (Presión fisiológica)', ratio: curValNorm },
-          { unit: 'Megapascales (MPa)', valStr: `${mpaVal.toFixed(3)} MPa`, factor: '1 MPa = 10⁶ Pa (Esfuerzo mecánico tisular)', ratio: curValNorm },
-          { unit: 'Bares (bar)', valStr: `${barVal.toFixed(2)} bar`, factor: '1 bar = 100 kPa ≈ 1 atm física', ratio: curValNorm },
-          { unit: 'Milímetros de Mercurio (mmHg)', valStr: `${mmhgVal.toFixed(1)} mmHg`, factor: '1 mmHg = 133,322 Pa (Presión arterial)', ratio: curValNorm },
-          { unit: 'Libras/pulgada² (psi)', valStr: `${psiVal.toFixed(1)} psi`, factor: '1 psi = 6.894,76 Pa (Sistema técnico)', ratio: curValNorm },
+          { unit: 'Pascales (Pa)', valStr: `${paVal >= 10000 ? fexp(paVal, 2) : paVal.toFixed(0)} Pa`, factor: 'SI Base: 1 Pa = 1 N/m²', ratio: curValNorm },
+          { unit: 'Kilopascales (kPa)', valStr: `${fx(kpaVal, 1)} kPa`, factor: '1 kPa = 10³ Pa (Presión fisiológica)', ratio: curValNorm },
+          { unit: 'Megapascales (MPa)', valStr: `${fx(mpaVal, 3)} MPa`, factor: '1 MPa = 10⁶ Pa (Esfuerzo mecánico tisular)', ratio: curValNorm },
+          { unit: 'Bares (bar)', valStr: `${fx(barVal, 2)} bar`, factor: '1 bar = 100 kPa ≈ 1 atm física', ratio: curValNorm },
+          { unit: 'Milímetros de Mercurio (mmHg)', valStr: `${fx(mmhgVal, 1)} mmHg`, factor: '1 mmHg = 133,322 Pa (Presión arterial)', ratio: curValNorm },
+          { unit: 'Libras/pulgada² (psi)', valStr: `${fx(psiVal, 1)} psi`, factor: '1 psi = 6.894,76 Pa (Sistema técnico)', ratio: curValNorm },
         ];
       }
 
@@ -201,7 +204,7 @@ export default function UnitsConverterCanvas({
         const isPrimary = idx === 0;
 
         ctx.save();
-        ctx.fillStyle = isPrimary ? tokenRgba(T.teal, 0.09) : 'rgba(255, 255, 255, 0.94)';
+        ctx.fillStyle = isPrimary ? tokenRgba(T.teal, 0.09) : ca(C.card, 0.94);
         ctx.shadowColor = tokenRgba(T.ink, 0.07);
         ctx.shadowBlur = 6;
         // E5-02: sin beginPath() el path de cada fila se acumulaba sobre el de
@@ -221,26 +224,26 @@ export default function UnitsConverterCanvas({
         const barPad = 8;
         const bW = tableW - barPad * 2;
         const bH = 3.2;
-        ctx.fillStyle = 'rgba(203, 213, 225, 0.45)';
+        ctx.fillStyle = ca(C.line, 0.45);
         ctx.fillRect(tableX + barPad, iy + itemH - 6.0, bW, bH);
 
         const fillW = Math.max(2, item.ratio * bW);
-        ctx.fillStyle = isPrimary ? T.teal : (item.ratio > 0.75 ? '#b02318' : (item.ratio > 0.4 ? '#d97706' : '#2563eb'));
+        ctx.fillStyle = isPrimary ? T.teal : (item.ratio > 0.75 ? C.blood : (item.ratio > 0.4 ? C.amber : C.series3));
         ctx.fillRect(tableX + barPad, iy + itemH - 6.0, fillW, bH);
 
         // Nombre de unidad
-        ctx.fillStyle = isPrimary ? T.teal : '#1e293b';
+        ctx.fillStyle = isPrimary ? T.teal : C.ink;
         ctx.font = 'bold 8px Karla, system-ui, sans-serif';
         ctx.textAlign = 'left';
         ctx.fillText(item.unit, tableX + 10, iy + itemH * 0.42);
 
         // Factor de conversión
-        ctx.fillStyle = '#64748b';
+        ctx.fillStyle = C.ink3;
         ctx.font = '6.8px Karla, system-ui, sans-serif';
         ctx.fillText(item.factor, tableX + 10, iy + itemH * 0.72);
 
         // Valor numérico convertido
-        ctx.fillStyle = isPrimary ? T.teal : '#b02318';
+        ctx.fillStyle = isPrimary ? T.teal : C.blood;
         ctx.font = 'bold 10.5px JetBrains Mono, monospace';
         ctx.textAlign = 'right';
         ctx.fillText(item.valStr, tableX + tableW - 10, iy + itemH * 0.54);
@@ -254,14 +257,14 @@ export default function UnitsConverterCanvas({
 
       ctx.save();
       // Fondo del dial
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.96)';
+      ctx.fillStyle = ca(C.card, 0.96);
       ctx.shadowColor = tokenRgba(T.ink, 0.10);
       ctx.shadowBlur = 8;
       ctx.beginPath();
       ctx.arc(dialX, dialY, dialR + 11, 0, Math.PI * 2);
       ctx.fill();
       ctx.shadowBlur = 0;
-      ctx.strokeStyle = '#cbd5e1';
+      ctx.strokeStyle = C.line;
       ctx.lineWidth = 1.4;
       ctx.stroke();
 
@@ -271,20 +274,20 @@ export default function UnitsConverterCanvas({
       const totalAngle = endAngle - startAngle;
 
       // Sector Verde (Fisiológico 0 - 50%)
-      ctx.strokeStyle = '#10b981';
+      ctx.strokeStyle = C.coronal;
       ctx.lineWidth = 5.5;
       ctx.beginPath();
       ctx.arc(dialX, dialY, dialR, startAngle, startAngle + totalAngle * 0.50);
       ctx.stroke();
 
       // Sector Ámbar (Esfuerzo 50 - 80%)
-      ctx.strokeStyle = '#f59e0b';
+      ctx.strokeStyle = C.amber;
       ctx.beginPath();
       ctx.arc(dialX, dialY, dialR, startAngle + totalAngle * 0.50, startAngle + totalAngle * 0.80);
       ctx.stroke();
 
       // Sector Rojo (Fallo tisular 80 - 100%)
-      ctx.strokeStyle = '#ef4444';
+      ctx.strokeStyle = C.blood;
       ctx.beginPath();
       ctx.arc(dialX, dialY, dialR, startAngle + totalAngle * 0.80, endAngle);
       ctx.stroke();
@@ -295,7 +298,7 @@ export default function UnitsConverterCanvas({
         const isMajor = i % 2 === 0;
         const r1 = dialR - 5;
         const r2 = dialR - (isMajor ? 11 : 8);
-        ctx.strokeStyle = '#64748b';
+        ctx.strokeStyle = C.ink3;
         ctx.lineWidth = isMajor ? 1.3 : 0.7;
         ctx.beginPath();
         ctx.moveTo(dialX + Math.cos(a) * r1, dialY + Math.sin(a) * r1);
@@ -310,7 +313,7 @@ export default function UnitsConverterCanvas({
       ctx.rotate(needleAngle);
 
       // Sombra aguja
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.18)';
+      ctx.fillStyle = ca(C.ink, 0.18);
       ctx.beginPath();
       ctx.moveTo(-2.5, 2.5);
       ctx.lineTo(dialR - 7, 1.5);
@@ -318,7 +321,7 @@ export default function UnitsConverterCanvas({
       ctx.fill();
 
       // Aguja de precisión
-      ctx.fillStyle = '#b02318';
+      ctx.fillStyle = C.blood;
       ctx.beginPath();
       ctx.moveTo(-3.5, 0);
       ctx.lineTo(-1.8, 2.5);
@@ -328,18 +331,18 @@ export default function UnitsConverterCanvas({
       ctx.fill();
 
       // Centro pivote
-      ctx.fillStyle = '#0f172a';
+      ctx.fillStyle = C.ink;
       ctx.beginPath();
       ctx.arc(0, 0, 4.5, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = '#ffffff';
+      ctx.fillStyle = C.card;
       ctx.beginPath();
       ctx.arc(0, 0, 1.8, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
 
       // Rótulo central digital en el dial
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.96)';
+      ctx.fillStyle = ca(C.card, 0.96);
       ctx.strokeStyle = T.teal;
       ctx.lineWidth = 0.9;
       const dW = 76;
@@ -353,7 +356,7 @@ export default function UnitsConverterCanvas({
       ctx.textAlign = 'center';
       const readVal =
         quantityType === 'pressure'
-          ? `${(inputValue / 1e6).toFixed(2)} MPa`
+          ? `${fx((inputValue / 1e6), 2)} MPa`
           : quantityType === 'torque'
           ? `${inputValue} N·m`
           : `${inputValue} N`;
@@ -367,7 +370,7 @@ export default function UnitsConverterCanvas({
       const refH = H * 0.40;
 
       ctx.save();
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.96)';
+      ctx.fillStyle = ca(C.card, 0.96);
       ctx.shadowColor = tokenRgba(T.ink, 0.08);
       ctx.shadowBlur = 7;
       ctx.roundRect(refX, refY, refW, refH, 6);
@@ -397,12 +400,12 @@ export default function UnitsConverterCanvas({
         }
 
         // Punto de estado de zona
-        ctx.fillStyle = r.zone === 'danger' ? '#ef4444' : (r.zone === 'caution' ? '#f59e0b' : '#10b981');
+        ctx.fillStyle = r.zone === 'danger' ? C.blood : (r.zone === 'caution' ? C.amber : C.coronal);
         ctx.beginPath();
         ctx.arc(refX + 10, ry + 7, 3.2, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.fillStyle = '#1e293b';
+        ctx.fillStyle = C.ink;
         ctx.font = 'bold 7.2px Karla, system-ui, sans-serif';
         ctx.textAlign = 'left';
         ctx.fillText(r.name, refX + 18, ry + 6.5);
@@ -412,7 +415,7 @@ export default function UnitsConverterCanvas({
         ctx.textAlign = 'right';
         ctx.fillText(`${r.siValue} ${r.unitSi}`, refX + refW - 6, ry + 6.5);
 
-        ctx.fillStyle = '#64748b';
+        ctx.fillStyle = C.ink3;
         ctx.font = '6.2px Karla, system-ui, sans-serif';
         ctx.textAlign = 'left';
         ctx.fillText(`≈ ${r.altValue} · ${r.note}`, refX + 18, ry + 15);

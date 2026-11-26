@@ -1,4 +1,6 @@
 import React, { Suspense, useRef, useMemo } from 'react';
+import { C, ca } from './palette';
+import { fx } from './ab';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, ContactShadows, Html, Line, useGLTF } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
@@ -76,7 +78,7 @@ const P_ELBOW = new THREE.Vector3(-0.128, 0.142, -0.016);    // centro del codo
 function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [1, 0, 0] as [number, number, number],
-  color = '#0d6e64',
+  color = C.teal,
   label,
   sub,
   emphasis,
@@ -208,7 +210,7 @@ function GlenohumeralJointGLB({
         <mesh>
           <sphereGeometry args={[0.05, 24, 24]} />
           <meshStandardMaterial
-            color="#0d6e64"
+            color={C.teal}
             emissive="#0d6e64"
             emissiveIntensity={0.35}
             transparent
@@ -219,12 +221,12 @@ function GlenohumeralJointGLB({
           <Html position={[0.10, 0.09, 0.04]} center zIndexRange={[80, 0]} occlude="blending">
             <span
               style={{
-                background: 'rgba(255,255,255,0.92)',
-                border: '1px solid #0d6e64',
+                background: ca(C.card, 0.92),
+                border: `1px solid ${C.teal}`,
                 borderRadius: '4px',
                 padding: '2px 5px',
-                color: '#0a5a52',
-                fontSize: '0.52rem',
+                color: C.tealDeep,
+                fontSize: '0.62rem',
                 fontWeight: 700,
                 whiteSpace: 'nowrap',
                 pointerEvents: 'none',
@@ -336,9 +338,9 @@ function SceneContent({
   const sF1 = `${theta1}° · deltoides`;
   const lF2 = `F₂ = ${f2.toFixed(0)} N`;
   const sF2 = `${theta2}° · peso + carga`;
-  const lR = autoEquilibrium ? `R = ${rMag.toFixed(0)} N` : `ΣF = ${rMag.toFixed(1)} N`;
+  const lR = autoEquilibrium ? `R = ${rMag.toFixed(0)} N` : `ΣF = ${fx(rMag, 1)} N`;
   const sR = autoEquilibrium ? 'reacción glenoidea' : 'el húmero acelera (m·a)';
-  const cR = autoEquilibrium ? '#dc2626' : '#8b5cf6';
+  const cR = autoEquilibrium ? C.blood : C.sagittal;
 
   // N → unidades de mundo. Calibrado para que ~120 N ≈ la longitud del húmero
   // renderizado (≈ 0,63 u), de modo que las flechas acompañen a la anatomía en
@@ -444,10 +446,10 @@ function SceneContent({
       {/* Iluminación con más modelado: menos ambiente (antes 0.92 aplanaba la
           forma), luz principal más intensa y una luz de contra que perfila la
           silueta contra el fondo. */}
-      <ambientLight intensity={0.5} color="#fffcf5" />
+      <ambientLight intensity={0.5} color={C.card} />
       <directionalLight position={[3.5, 5, 3.5]} intensity={1.75} color="#fff6e6" castShadow />
       <directionalLight position={[-3, 2, -3]} intensity={0.5} color="#dcecf7" />
-      <directionalLight position={[-1.2, 1.6, -4]} intensity={1.0} color="#ffffff" />
+      <directionalLight position={[-1.2, 1.6, -4]} intensity={1.0} color={C.card} />
       <directionalLight position={[0, -3, 2]} intensity={0.18} color="#faf0e6" />
 
       <ContactShadows
@@ -479,15 +481,15 @@ function SceneContent({
       {showPolygon ? (
         <>
           {/* ── Polígono de fuerzas: punta con cola; si ΣF = 0 el triángulo cierra ── */}
-          <ForceVector3D origin={polyP} vector={F1p} color="#0d9488" label={lF1} sub={sF1} />
-          <ForceVector3D origin={polyF2Tail} vector={F2p} color="#d97706" label={lF2} sub={sF2} />
+          <ForceVector3D origin={polyP} vector={F1p} color={C.teal} label={lF1} sub={sF1} />
+          <ForceVector3D origin={polyF2Tail} vector={F2p} color={C.amber} label={lF2} sub={sF2} />
           {autoEquilibrium ? (
             <ForceVector3D origin={polyRTail} vector={Rp} color={cR} label={lR} sub={sR} emphasis="strong" />
           ) : (
             fNet > 1 && (
               <>
                 <ForceVector3D origin={polyRTail} vector={Fnetp} color={cR} label={lR} sub={sR} emphasis="strong" isDashed />
-                <Line points={[polyRTail, polyP]} color="#8b5cf6" lineWidth={1.4} dashed dashScale={22} dashSize={0.05} gapSize={0.04} />
+                <Line points={[polyRTail, polyP]} color={C.sagittal} lineWidth={1.4} dashed dashScale={22} dashSize={0.05} gapSize={0.04} />
               </>
             )
           )}
@@ -495,14 +497,14 @@ function SceneContent({
       ) : (
         <>
           {/* ── Vista anclada: cada fuerza en su punto de aplicación real ── */}
-          <Line points={deltLine} color="#0d9488" lineWidth={1} dashed dashScale={30} dashSize={0.04} gapSize={0.03} transparent opacity={0.55} />
+          <Line points={deltLine} color={C.teal} lineWidth={1} dashed dashScale={30} dashSize={0.04} gapSize={0.03} transparent opacity={0.55} />
           <Line points={gravLine} color="#b8860b" lineWidth={1} dashed dashScale={30} dashSize={0.04} gapSize={0.03} transparent opacity={0.45} />
 
           {/* F₁ · deltoides → desde la tuberosidad deltoidea */}
-          <ForceVector3D origin={deltInsW} vector={F1vec} color="#0d9488" label={lF1} sub={sF1} showComponents={showComponents} dim={dimF1} />
+          <ForceVector3D origin={deltInsW} vector={F1vec} color={C.teal} label={lF1} sub={sF1} showComponents={showComponents} dim={dimF1} />
 
           {/* F₂ · peso del brazo + carga → desde el centro de masa */}
-          <ForceVector3D origin={armComW} vector={F2vec} color="#d97706" label={lF2} sub={sF2} showComponents={showComponents} dim={dimF2} />
+          <ForceVector3D origin={armComW} vector={F2vec} color={C.amber} label={lF2} sub={sF2} showComponents={showComponents} dim={dimF2} />
 
           {/* R · reacción glenoidea → desde el centro de la cabeza humeral */}
           {autoEquilibrium && rMag > 1 && (
@@ -520,10 +522,10 @@ function SceneContent({
       {/* ── Frontera del DCL (sólo en la vista anclada) — fuera de fit-root ── */}
       {!showPolygon && (
         <>
-          <Line points={dclRing} color="#7a8a99" lineWidth={1.2} dashed dashScale={26} dashSize={0.05} gapSize={0.04} transparent opacity={0.68} />
+          <Line points={dclRing} color={C.ink3} lineWidth={1.2} dashed dashScale={26} dashSize={0.05} gapSize={0.04} transparent opacity={0.68} />
           {showLabels && (
             <Html position={[0.48, 0.42, 0]} center zIndexRange={[70, 0]} occlude="blending">
-              <span style={{ color: '#5d6b76', fontSize: '0.52rem', fontFamily: 'Karla, sans-serif', fontWeight: 700, whiteSpace: 'nowrap', pointerEvents: 'none', background: 'rgba(251,248,240,0.7)', padding: '1px 4px', borderRadius: 3 }}>
+              <span style={{ color: C.ink3, fontSize: '0.62rem', fontFamily: 'Karla, sans-serif', fontWeight: 700, whiteSpace: 'nowrap', pointerEvents: 'none', background: ca(C.card, 0.7), padding: '1px 4px', borderRadius: 3 }}>
                 DCL · húmero aislado
               </span>
             </Html>
@@ -608,14 +610,14 @@ export default function NewtonCanvas({
             top: '52px',
             zIndex: 10,
             padding: '5px 9px',
-            border: '1px solid rgba(13, 110, 100, 0.35)',
+            border: `1px solid ${ca(C.teal, 0.35)}`,
             borderRadius: '6px',
-            background: 'rgba(255, 255, 255, 0.88)',
-            color: '#0a5a52',
+            background: ca(C.card, 0.88),
+            color: C.tealDeep,
             fontSize: '0.66rem',
             fontFamily: 'Karla, sans-serif',
             fontWeight: 700,
-            boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
+            boxShadow: `0 2px 6px ${ca(C.ink, 0.08)}`,
           }}
         >
           Húmero · abducción {armAbductionDeg}°
@@ -631,9 +633,9 @@ export default function NewtonCanvas({
             zIndex: 10,
             padding: '4px 8px',
             borderRadius: '5px',
-            background: 'rgba(255, 255, 255, 0.82)',
-            color: '#55606d',
-            fontSize: '0.56rem',
+            background: ca(C.card, 0.82),
+            color: C.ink2,
+            fontSize: '0.62rem',
             fontFamily: 'Karla, sans-serif',
             pointerEvents: 'none',
           }}

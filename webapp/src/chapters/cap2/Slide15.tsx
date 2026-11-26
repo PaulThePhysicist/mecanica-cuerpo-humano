@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { C, ca } from './palette';
 import MechanoreceptorsCanvas from './MechanoreceptorsCanvas';
 import HudPanel from './HudPanel';
+import KatexHtml from './KatexHtml';
 import type { Engine } from './useEngine';
 
 interface ReceptorOpt {
@@ -19,41 +21,41 @@ const RECEPTOR_LIST: ReceptorOpt[] = [
     id: 'meissner',
     name: 'Meissner (RA1)',
     type: 'Adaptación Rápida 1',
-    best: '10–50 Hz',
+    best: '3–40 Hz (libro)',
     depth: '~0,5 mm (Dermis papilar)',
     field: '3–5 mm (Puntual / Neto)',
-    desc: '<b>Meissner (RA1):</b> Corpúsculos laminados en la cresta papilar superficial. Campos receptivos pequeños ($3\\text{--}5\\text{ mm}$). Esencial para detectar el deslizamiento inicial de objetos entre los dedos y reajustar instantáneamente la fuerza de prensión.',
-    color: '#0d8577',
+    desc: '<b>Meissner (RA1):</b> Más profundos que Merkel, en la dermis. Detectan golpecitos ligeros, variaciones de $3\\text{--}40\\text{ Hz}$ que se perciben como aleteo (<i>flutter</i>). Campo receptivo pequeño. Esencial para detectar el deslizamiento inicial de objetos entre los dedos y reajustar instantáneamente la fuerza de prensión.',
+    color: C.teal,
   },
   {
     id: 'pacini',
     name: 'Pacini (RA2)',
     type: 'Adaptación Ultra-Rápida 2',
-    best: '200–400 Hz',
+    best: '10–500 Hz (libro)',
     depth: '~2–3 mm (Hipodermis profunda)',
     field: 'Grande y difuso (Palma/Dedo entero)',
-    desc: '<b>Pacini (RA2):</b> Corpúsculos concéntricos gigantes en tejido subcutáneo profundo. Posee un filtro mecánico que atenúa presiones constantes y transmite vibraciones de alta frecuencia ($200\\text{--}400\\text{ Hz}$). Permite percibir texturas nanométricas transmitidas a través de herramientas.',
-    color: '#2563eb',
+    desc: '<b>Pacini (RA2):</b> Corpúsculos concéntricos gigantes en tejido subcutáneo profundo. Posee un filtro mecánico que atenúa presiones constantes y detecta un rango de vibraciones rápidas, de $10$ a $500\\text{ Hz}$. Permite percibir texturas nanométricas transmitidas a través de herramientas.',
+    color: C.series3,
   },
   {
     id: 'merkel',
     name: 'Merkel (SA1)',
     type: 'Adaptación Lenta 1',
-    best: '0,3–5 Hz',
+    best: '0,3–3 Hz (libro)',
     depth: '~0,2 mm (Estrato basal epidérmico)',
     field: '0,5–1 mm (Máxima agudeza)',
-    desc: '<b>Merkel (SA1):</b> Discos celulares en la base de la epidermis. Máxima resolución espacial táctil ($0{,}5\\text{ mm}$). Descargan de forma sostenida ante presión estática, esquinas, bordes y curvaturas de objetos (lectura en Braille).',
-    color: '#b02318',
+    desc: '<b>Merkel (SA1):</b> discos cerca de la frontera epidermis–dermis, los más sensibles a perturbaciones de presión de $0{,}3\\text{--}3\\text{ Hz}$. Máxima resolución espacial táctil ($0{,}5\\text{ mm}$). Descargan de forma sostenida ante presión estática, esquinas, bordes y curvaturas de objetos (lectura en Braille).',
+    color: C.blood,
   },
   {
     id: 'ruffini',
     name: 'Ruffini (SA2)',
     type: 'Adaptación Lenta 2',
-    best: 'Estiramiento sostenido',
+    best: '15–400 Hz (libro)',
     depth: '~1,5 mm (Dermis reticular)',
     field: 'Grande (Sensible a la dirección)',
-    desc: '<b>Ruffini (SA2):</b> Terminaciones fusiformes entrelazadas con las fibras de colágeno dérmicas. Sensibles a la deformación tangencial y al estiramiento de la piel durante los movimientos de los dedos y las articulaciones de la mano.',
-    color: '#d97706',
+    desc: '<b>Ruffini (SA2):</b> cilindros (terminaciones) en la dermis que detectan vibraciones de $15\\text{--}400\\text{ Hz}$, percibidas como zumbido. Sensibles a la deformación tangencial y al estiramiento de la piel durante los movimientos de los dedos y las articulaciones de la mano.',
+    color: C.amber,
   },
 ];
 
@@ -102,22 +104,12 @@ export default function Slide15({
       setStimulusDepthUm(80);
     }
 
-    const detail = RECEPTOR_LIST.find((r) => r.id === id);
-    const info = document.getElementById('info-text-15');
-    if (info && detail) {
-      info.innerHTML = detail.desc;
-    }
   };
 
   const handleApplyPreset = (p: Presets15) => {
     setSelectedReceptor(p.rec);
     setStimulusFreqHz(p.freq);
     setStimulusDepthUm(p.depth);
-    const detail = RECEPTOR_LIST.find((r) => r.id === p.rec);
-    const info = document.getElementById('info-text-15');
-    if (info && detail) {
-      info.innerHTML = detail.desc;
-    }
   };
 
   const handleReset = () => {
@@ -140,7 +132,7 @@ export default function Slide15({
       <div className="module-header">
         <span className="mnum">G1</span>
         <h2 className="mtitle">Mecanorreceptores táctiles</h2>
-        <span className="msub">Meissner, Pacini, Merkel y Ruffini · Histología cutánea 3D y osciloscopio neurofisiológico</span>
+        <span className="msub">§2.4 El sentido del tacto · Merkel, Meissner, Ruffini y Pacini</span>
         <span className="mslide-count">1 / 2</span>
       </div>
       <div className="content-grid">
@@ -151,38 +143,38 @@ export default function Slide15({
             </div>
             <div className="card-body">
               <p style={{ fontSize: '.7rem' }}>
-                La piel glabra de la mano procesa las deformaciones mecánicas mediante 4 clases de mecanorreceptores especializados:
+                Los sentidos somáticos incluyen el tacto (sensaciones cutáneas), la posición de las extremidades (propiocepción) y su movimiento (cinestesia). En la piel lampiña hay cuatro receptores táctiles, cada uno sensible a otra banda de frecuencias (Fig. 2.50):
               </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '.62rem', marginTop: '.25rem' }}>
-                <button type="button" className="pill" aria-pressed={selectedReceptor === 'meissner'} style={{ borderLeft: '3px solid #0d8577', cursor: 'pointer' }} onClick={() => handleSelect('meissner')}>
-                  <b>RA1 (Meissner):</b> {'Superficial, campo pequeño ($3\\text{--}5\\text{ mm}$), vibración baja ($10\\text{--}50\\text{ Hz}$).'}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '.62rem', marginTop: '0.62rem' }}>
+                <button type="button" className="pill" aria-pressed={selectedReceptor === 'meissner'} style={{ borderLeft: `3px solid ${C.teal}`, cursor: 'pointer' }} onClick={() => handleSelect('meissner')}>
+                  <b>RA1 (Meissner):</b> {'golpecitos ligeros, $3\\text{--}40\\text{ Hz}$: aleteo (flutter).'}
                 </button>
-                <button type="button" className="pill" aria-pressed={selectedReceptor === 'pacini'} style={{ borderLeft: '3px solid #2563eb', cursor: 'pointer' }} onClick={() => handleSelect('pacini')}>
-                  <b>RA2 (Pacini):</b> {'Profundo, campo amplio difuso, vibración alta ($200\\text{--}400\\text{ Hz}$).'}
+                <button type="button" className="pill" aria-pressed={selectedReceptor === 'pacini'} style={{ borderLeft: `3px solid ${C.series3}`, cursor: 'pointer' }} onClick={() => handleSelect('pacini')}>
+                  <b>RA2 (Pacini):</b> {'vibraciones rápidas, de $10$ a $500\\text{ Hz}$.'}
                 </button>
-                <button type="button" className="pill" aria-pressed={selectedReceptor === 'merkel'} style={{ borderLeft: '3px solid #b02318', cursor: 'pointer' }} onClick={() => handleSelect('merkel')}>
-                  <b>SA1 (Merkel):</b> {'Estrato basal, resolución ($0{,}5\\text{ mm}$), presión estática y relieve.'}
+                <button type="button" className="pill" aria-pressed={selectedReceptor === 'merkel'} style={{ borderLeft: `3px solid ${C.blood}`, cursor: 'pointer' }} onClick={() => handleSelect('merkel')}>
+                  <b>SA1 (Merkel):</b> {'frontera epidermis–dermis; presión de $0{,}3\\text{--}3\\text{ Hz}$.'}
                 </button>
-                <button type="button" className="pill" aria-pressed={selectedReceptor === 'ruffini'} style={{ borderLeft: '3px solid #d97706', cursor: 'pointer' }} onClick={() => handleSelect('ruffini')}>
-                  <b>SA2 (Ruffini):</b> {'Dermis reticular, tensión direccional y estiramiento tisular.'}
+                <button type="button" className="pill" aria-pressed={selectedReceptor === 'ruffini'} style={{ borderLeft: `3px solid ${C.amber}`, cursor: 'pointer' }} onClick={() => handleSelect('ruffini')}>
+                  <b>SA2 (Ruffini):</b> {'estiramiento de la piel, movimiento articular; $15\\text{--}400\\text{ Hz}$: zumbido.'}
                 </button>
               </div>
             </div>
           </div>
           <div className="card">
             <div className="card-hdr">
-              <span className="icon">⚡</span> Transducción mecanoeléctrica (PIEZO2)
+              <span className="icon">⚡</span> Densidad, temperatura y dolor
             </div>
             <div className="card-body">
               <p style={{ fontSize: '.64rem', color: 'var(--ink-3)' }}>
-                {'La indentación física deforma los canales iónicos mecanosensibles $\\text{PIEZO2}$, generando un potencial de receptor que despolariza el axón desde $-70\\text{ mV}$ hasta el umbral de disparo ($+30\\text{ mV}$) a través de fibras aferentes $A\\beta$.'}
+                {'La densidad de mecanorreceptores va de $25/\\text{cm}^2$ en la punta de la lengua a $0{,}02/\\text{cm}^2$ en la espalda; en la piel vellosa también cuenta el movimiento del pelo. Termorreceptores ($5\\text{--}10/\\text{cm}^2$): fibras cálidas de $30$ a $48^\\circ\\text{C}$ (mejor a $44^\\circ\\text{C}$) y frías de $20$ a $45^\\circ\\text{C}$ (mejor a $30^\\circ\\text{C}$). Nociceptores: presión excesiva, temperatura extrema y químicos corrosivos; por axones mielinizados hasta $30\\text{ m/s}$ o no mielinizados a $\\le 2\\text{ m/s}$ (dolor persistente). La conversión a señal eléctrica se ve en el Cap. 12.'}
               </p>
             </div>
           </div>
           <div className="apuntes">
             <div className="a-hdr"><span>✍️</span> Apunte de cátedra</div>
             <div className="a-text" id="info-text-15">
-              <span dangerouslySetInnerHTML={{ __html: curRec.desc }} />
+              <KatexHtml html={curRec.desc} />
             </div>
           </div>
         </div>
@@ -192,7 +184,6 @@ export default function Slide15({
           <HudPanel
             title="NEUROFISIOLOGÍA TÁCTIL"
             badge={`${curRec.name.split(' ')[0]} · ${curRec.type.split(' ')[0]}`}
-            icon="✋"
             footer="💡 Haz clic en los receptores del corte histológico 3D o usa los presets inferiores"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.62rem' }}>
@@ -210,15 +201,15 @@ export default function Slide15({
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Frecuencia Óptima:</span>
-                <b style={{ color: '#0d6e64', fontFamily: 'JetBrains Mono, monospace' }}>{curRec.best}</b>
+                <b style={{ color: C.teal, fontFamily: 'JetBrains Mono, monospace' }}>{curRec.best}</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Estímulo Actual:</span>
-                <b style={{ color: '#d97706', fontFamily: 'JetBrains Mono, monospace' }}>{stimulusFreqHz} Hz ({stimulusDepthUm} µm)</b>
+                <b style={{ color: C.amber, fontFamily: 'JetBrains Mono, monospace' }}>{stimulusFreqHz} Hz ({stimulusDepthUm} µm)</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Tasa de Disparo:</span>
-                <b style={{ color: '#10b981', fontFamily: 'JetBrains Mono, monospace' }}>{estimatedSpikes} espigas/s</b>
+                <b style={{ color: C.coronal, fontFamily: 'JetBrains Mono, monospace' }}>{estimatedSpikes} espigas/s</b>
               </div>
             </div>
           </HudPanel>
@@ -230,11 +221,11 @@ export default function Slide15({
             onSelectReceptor={handleSelect}
           />
           <div className="prof-controls">
-            <span className="badge">2.7 · Tacto</span>
+            <span className="badge">§2.4 · Tacto</span>
             <span>Canal: <b style={{ color: curRec.color }}>{curRec.name}</b> ({estimatedSpikes} Hz)</span>
 
-            <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto', flexWrap: 'wrap' }}>
-              <div style={{ display: 'inline-flex', gap: '2px', border: '1px solid var(--line)', borderRadius: '4px', padding: '1px', background: 'rgba(255,255,255,0.6)' }}>
+            <div style={{ display: 'flex', gap: '0.62rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto', flexWrap: 'wrap' }}>
+              <div style={{ display: 'inline-flex', gap: '2px', border: '1px solid var(--line)', borderRadius: '4px', padding: '1px', background: ca(C.card, 0.6) }}>
                 {PRESETS_15.map((p) => (
                   <button
                     key={p.name}
@@ -242,11 +233,11 @@ export default function Slide15({
                     onClick={() => handleApplyPreset(p)}
                     style={{
                       background: selectedReceptor === p.rec && stimulusFreqHz === p.freq ? RECEPTORS_MAP[p.rec] : 'transparent',
-                      color: selectedReceptor === p.rec && stimulusFreqHz === p.freq ? '#fff' : 'var(--ink)',
+                      color: selectedReceptor === p.rec && stimulusFreqHz === p.freq ? C.card : 'var(--ink)',
                       border: 'none',
                       borderRadius: '3px',
                       padding: '2px 5px',
-                      fontSize: '0.56rem',
+                      fontSize: '0.62rem',
                       fontWeight: selectedReceptor === p.rec && stimulusFreqHz === p.freq ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -308,8 +299,8 @@ export default function Slide15({
 }
 
 const RECEPTORS_MAP: Record<string, string> = {
-  meissner: '#0d8577',
-  pacini: '#2563eb',
-  merkel: '#b02318',
-  ruffini: '#d97706',
+  meissner: C.teal,
+  pacini: C.series3,
+  merkel: C.blood,
+  ruffini: C.amber,
 };

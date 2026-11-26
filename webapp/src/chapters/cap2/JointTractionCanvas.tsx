@@ -1,4 +1,6 @@
 import React, { Suspense, useMemo, useRef } from 'react';
+import { C, ca } from './palette';
+import { fx } from './ab';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, ContactShadows, useGLTF } from '@react-three/drei';
 import { DclTag } from './DclReadout';
@@ -28,14 +30,14 @@ interface JointTractionCanvasProps {
 // ── Paleta Anatómica y Materiales de Grado Médico ──
 const BONE_IVORY = '#ede5d0';
 const BONE_DEEP = '#ded3be';
-const BONE_ACCENT = '#7c6a4e';
+const BONE_ACCENT = C.amberDeep;
 const CARTILAGE_ICE = '#68c5b8';
-const TEAL_ACCENT = '#0d8577';
-const EMERALD_DECOMP = '#059669';
-const AMBER_ACCENT = '#d97706';
-const RED_OVERLOAD = '#b02318';
-const STEEL_CABLE = '#374151';
-const BRASS_RING = '#fbbf24';
+const TEAL_ACCENT = C.teal;
+const EMERALD_DECOMP = C.coronal;
+const AMBER_ACCENT = C.amber;
+const RED_OVERLOAD = C.blood;
+const STEEL_CABLE = C.ink2;
+const BRASS_RING = C.amber;
 
 // ── 1. Vector de Fuerza 3D con Vástago, Cono y Badge HTML Flotante ──
 function ForceVector3D({
@@ -140,36 +142,36 @@ function TractionDosimetryGauge({
   return (
     <div
       style={{
-        background: 'rgba(255, 255, 255, 0.96)',
+        background: ca(C.card, 0.96),
         backdropFilter: 'blur(8px)',
-        border: `1.5px solid ${isOverload ? RED_OVERLOAD : (isTherapeutic ? EMERALD_DECOMP : '#cbd5e1')}`,
+        border: `1.5px solid ${isOverload ? RED_OVERLOAD : (isTherapeutic ? EMERALD_DECOMP : '${C.line}')}`,
         borderRadius: '10px',
         padding: '8px 12px',
-        boxShadow: '0 6px 20px rgba(35, 44, 54, 0.12)',
+        boxShadow: `0 6px 20px ${ca(C.ink, 0.12)}`,
         width: '168px',
         textAlign: 'center',
         pointerEvents: 'none',
       }}
     >
-      <div style={{ fontSize: '0.58rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+      <div style={{ fontSize: '0.62rem', fontWeight: 700, color: C.ink3, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
         Dosimetría de Tracción
       </div>
 
       {/* SVG Dial */}
       <svg width="116" height="70" viewBox="0 0 120 74" style={{ margin: '2px auto 0', display: 'block' }}>
-        <path d="M 15 65 A 45 45 0 0 1 105 65" fill="none" stroke="#e2e8f0" strokeWidth="8" strokeLinecap="round" />
+        <path d="M 15 65 A 45 45 0 0 1 105 65" fill="none" stroke={C.lineSoft} strokeWidth="8" strokeLinecap="round" />
         {/* Sector Sub-terapéutico (0 - 4 kg) */}
-        <path d="M 15 65 A 45 45 0 0 1 45 28" fill="none" stroke="#94a3b8" strokeWidth="8" strokeDasharray="4 2" opacity={0.4} />
+        <path d="M 15 65 A 45 45 0 0 1 45 28" fill="none" stroke={C.ink3} strokeWidth="8" strokeDasharray="4 2" opacity={0.4} />
         {/* Sector Terapéutico Óptimo (5 - 8 kg) */}
-        <path d="M 45 28 A 45 45 0 0 1 80 28" fill="none" stroke="#10b981" strokeWidth="8" strokeDasharray="4 2" opacity={0.45} />
+        <path d="M 45 28 A 45 45 0 0 1 80 28" fill="none" stroke={C.coronal} strokeWidth="8" strokeDasharray="4 2" opacity={0.45} />
         {/* Sector Sobrecarga (> 8 kg) */}
-        <path d="M 80 28 A 45 45 0 0 1 105 65" fill="none" stroke="#ef4444" strokeWidth="8" strokeDasharray="4 2" opacity={0.45} />
+        <path d="M 80 28 A 45 45 0 0 1 105 65" fill="none" stroke={C.blood} strokeWidth="8" strokeDasharray="4 2" opacity={0.45} />
 
         {/* Arco dinámico */}
         <path
           d="M 15 65 A 45 45 0 0 1 105 65"
           fill="none"
-          stroke={isOverload ? RED_OVERLOAD : (isTherapeutic ? EMERALD_DECOMP : '#94a3b8')}
+          stroke={isOverload ? RED_OVERLOAD : (isTherapeutic ? EMERALD_DECOMP : C.ink3)}
           strokeWidth="8"
           strokeDasharray="141.37"
           strokeDashoffset={141.37 * (1 - normVal)}
@@ -179,29 +181,29 @@ function TractionDosimetryGauge({
 
         {/* Aguja indicadora analógica */}
         <g transform={`rotate(${needleAngle} 60 65)`} style={{ transition: 'transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)' }}>
-          <line x1="60" y1="65" x2="60" y2="26" stroke="#1e293b" strokeWidth="2.4" strokeLinecap="round" />
-          <circle cx="60" cy="65" r="4.2" fill="#1e293b" />
-          <circle cx="60" cy="65" r="1.8" fill="#ffffff" />
+          <line x1="60" y1="65" x2="60" y2="26" stroke={C.ink} strokeWidth="2.4" strokeLinecap="round" />
+          <circle cx="60" cy="65" r="4.2" fill={C.ink} />
+          <circle cx="60" cy="65" r="1.8" fill={C.card} />
         </g>
 
         {/* Marcas de escala */}
-        <text x="12" y="72" fontSize="6.5" fill="#64748b" fontFamily="JetBrains Mono, monospace">0</text>
-        <text x="54" y="16" fontSize="6.5" fill="#64748b" fontFamily="JetBrains Mono, monospace">6kg</text>
-        <text x="94" y="72" fontSize="6.5" fill="#64748b" fontFamily="JetBrains Mono, monospace">15kg</text>
+        <text x="12" y="72" fontSize="13" fill={C.ink3} fontFamily="JetBrains Mono, monospace">0</text>
+        <text x="54" y="16" fontSize="13" fill={C.ink3} fontFamily="JetBrains Mono, monospace">6kg</text>
+        <text x="94" y="72" fontSize="13" fill={C.ink3} fontFamily="JetBrains Mono, monospace">15kg</text>
       </svg>
 
       <div style={{ fontSize: '1.15rem', fontWeight: 800, color: isTherapeutic ? EMERALD_DECOMP : (isOverload ? RED_OVERLOAD : TEAL_ACCENT), fontFamily: 'JetBrains Mono, monospace', margin: '0' }}>
         {fAxialN.toFixed(0)} N
       </div>
-      <div style={{ fontSize: '0.62rem', fontWeight: 700, color: isTherapeutic ? EMERALD_DECOMP : (isOverload ? RED_OVERLOAD : '#64748b') }}>
-        {isTherapeutic ? '✓ Rango Terapéutico Óptimo' : (isOverload ? '⚠️ Sobrecarga Ligamentosa' : 'Fuerza Sub-terapéutica')}
+      <div style={{ fontSize: '0.62rem', fontWeight: 700, color: isTherapeutic ? EMERALD_DECOMP : (isOverload ? RED_OVERLOAD : C.ink3) }}>
+        {isTherapeutic ? 'Rango terapéutico (ilustrativo)' : (isOverload ? 'Sobrecarga ligamentosa' : 'Fuerza subterapéutica')}
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.52rem', color: '#475569', marginTop: '4px', borderTop: '1px solid #e2e8f0', paddingTop: '3px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.62rem', color: C.ink2, marginTop: '4px', borderTop: `1px solid ${C.lineSoft}`, paddingTop: '3px' }}>
         <span>Δh Foraminal:</span>
-        <b style={{ color: EMERALD_DECOMP, fontFamily: 'JetBrains Mono, monospace' }}>+{deltaH_mm.toFixed(2)} mm</b>
+        <b style={{ color: EMERALD_DECOMP, fontFamily: 'JetBrains Mono, monospace' }}>+{fx(deltaH_mm, 2)} mm</b>
       </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.52rem', color: '#475569', marginTop: '1px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.62rem', color: C.ink2, marginTop: '1px' }}>
         <span>Momento Flexor:</span>
         <b style={{ color: AMBER_ACCENT, fontFamily: 'JetBrains Mono, monospace' }}>{fTransN.toFixed(0)} N</b>
       </div>
@@ -235,8 +237,8 @@ function CervicalSpineRig3D({
 
   // Letreros del riel lateral (mismos valores que llenaban el DclReadout de esquina).
   const lT = `T = ${tN.toFixed(0)} N`;
-  const lFax = `F_ax = ${fAxialN.toFixed(0)} N`;
-  const lFtr = `F_tr = ${fTransN.toFixed(0)} N`;
+  const lFax = `F axial = ${fAxialN.toFixed(0)} N`;
+  const lFtr = `F transversal = ${fTransN.toFixed(0)} N`;
 
   // LERP suave y vibración de cable
   const cableVibeRef = useRef<number>(0);
@@ -690,7 +692,7 @@ function CervicalSpineRig3D({
         </mesh>
 
         {/* Etiqueta 3D en la pesa */}
-        <DclTag position={[0, -0.028 * Math.round(tractionKg / 2) - 0.05, 0.08]} color="#334155" symbol={`${tractionKg} kg`} />
+        <DclTag position={[0, -0.028 * Math.round(tractionKg / 2) - 0.05, 0.08]} color={C.ink} symbol={`${tractionKg} kg`} />
       </group>
 
       {/* ── H. DESCOMPOSICIÓN ORTOGONAL DE FUERZAS 3D (VECTORES CALIBRADOS) ── */}
@@ -715,7 +717,7 @@ function CervicalSpineRig3D({
             <ForceVector3D origin={[0, 0, 0]} vector={[tVecX, tVecY, tVecZ]} color={TEAL_ACCENT} label={lT} sub={`${tractionKg} kg · β ${angleDeg}°`} />
 
             {/* 2. Vector F_axial (Descompresión raquídea longitudinal) */}
-            <ForceVector3D origin={[0, 0, 0]} vector={[0, axVecY, 0]} color={EMERALD_DECOMP} label={lFax} sub={`Δh +${deltaH_mm.toFixed(2)} mm`} emphasis="strong" />
+            <ForceVector3D origin={[0, 0, 0]} vector={[0, axVecY, 0]} color={EMERALD_DECOMP} label={lFax} sub={`Δh +${fx(deltaH_mm, 2)} mm`} emphasis="strong" />
 
             {/* 3. Vector F_trans (Momento flexor anterior) */}
             <ForceVector3D origin={[0, axVecY, 0]} vector={[0, 0, trVecZ]} color={AMBER_ACCENT} label={lFtr} sub="flexión cefálica" emphasis="muted" />
@@ -723,23 +725,23 @@ function CervicalSpineRig3D({
             {/* Líneas de proyección ortogonal punteadas */}
             <mesh position={[0, axVecY / 2, trVecZ]}>
               <cylinderGeometry args={[0.002, 0.002, axVecY, 8]} />
-              <meshBasicMaterial color="#94a3b8" transparent opacity={0.6} />
+              <meshBasicMaterial color={C.ink3} transparent opacity={0.6} />
             </mesh>
             <mesh position={[0, 0, trVecZ / 2]} rotation={[Math.PI / 2, 0, 0]}>
               <cylinderGeometry args={[0.002, 0.002, trVecZ, 8]} />
-              <meshBasicMaterial color="#94a3b8" transparent opacity={0.6} />
+              <meshBasicMaterial color={C.ink3} transparent opacity={0.6} />
             </mesh>
 
             {/* Símbolo de ángulo recto en la esquina ortogonal */}
             <mesh position={[0, axVecY - 0.02, 0.02]} rotation={[Math.PI / 2, 0, 0]}>
               <planeGeometry args={[0.025, 0.025]} />
-              <meshBasicMaterial color="#64748b" transparent opacity={0.35} side={THREE.DoubleSide} />
+              <meshBasicMaterial color={C.ink3} transparent opacity={0.35} side={THREE.DoubleSide} />
             </mesh>
 
             {/* Arco indicador del ángulo beta */}
             <mesh position={[0, 0.12 * Math.cos(angleRad / 2), 0.12 * Math.sin(angleRad / 2)]}>
               <sphereGeometry args={[0.006, 12, 12]} />
-              <meshBasicMaterial color="#2563eb" />
+              <meshBasicMaterial color={C.series3} />
             </mesh>
           </group>
         );
@@ -817,7 +819,7 @@ export default function JointTractionCanvas({
         note={
           stats.isTherapeutic
             ? 'Rango terapéutico (5–8 kg): descompresión axial sin flexión cefálica excesiva.'
-            : 'Un ángulo β alto desvía tracción a F_trans (flexión) en vez de a la descompresión axial.'
+            : 'Un ángulo β alto desvía tracción a la componente transversal (flexión) en vez de a la descompresión axial.'
         }
       />
 
@@ -828,7 +830,6 @@ export default function JointTractionCanvas({
           right: '10px',
           bottom: '10px',
           zIndex: 9,
-          transform: 'scale(0.74)',
           transformOrigin: 'bottom right',
           pointerEvents: 'none',
         }}

@@ -1,4 +1,6 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
+import { C, ca } from './palette';
+import { fx } from './ab';
 import { readCap2Tokens, tokenRgba } from './designTokens';
 import CanvasReserveState from './CanvasReserveState';
 
@@ -227,7 +229,7 @@ export default function TorqueCanvas({
 
       // S4-01: tokens de :root leídos una vez por pasada de dibujo (no por trazo).
       const T = readCap2Tokens();
-      const tauColor = isCCW ? T.teal : (isCW ? '#b02318' : T.ink3);
+      const tauColor = isCCW ? T.teal : (isCW ? C.blood : T.ink3);
       // S4-02: mismo rótulo para todas las cifras de A2; solo F (la que se
       // arrastra) usa el borde de sentido — el resto lleva el neutro.
       const chipPaper = tokenRgba(T.paper, 0.94);
@@ -328,7 +330,7 @@ export default function TorqueCanvas({
       ctx.arc(pivotX, pivotY, 4.5, 0, Math.PI * 2);
       ctx.fillStyle = T.ink;
       ctx.fill();
-      ctx.strokeStyle = '#ffffff';
+      ctx.strokeStyle = C.card;
       ctx.lineWidth = 1.2;
       ctx.stroke();
       ctx.restore();
@@ -341,7 +343,7 @@ export default function TorqueCanvas({
       boneGrad.addColorStop(0.7, '#ede2ca');
       boneGrad.addColorStop(1, '#c5b593');
       ctx.fillStyle = boneGrad;
-      ctx.strokeStyle = '#7c6a4e';
+      ctx.strokeStyle = C.amberDeep;
       ctx.lineWidth = 1.8;
 
       ctx.beginPath();
@@ -364,7 +366,7 @@ export default function TorqueCanvas({
       ctx.arc(armEndX, armEndY, 6, 0, Math.PI * 2);
       ctx.fillStyle = '#f5f0e6';
       ctx.fill();
-      ctx.strokeStyle = '#7c6a4e';
+      ctx.strokeStyle = C.amberDeep;
       ctx.lineWidth = 1.6;
       ctx.stroke();
 
@@ -396,7 +398,7 @@ export default function TorqueCanvas({
       ctx.fill();
 
       // Badge con valor r
-      drawLabelChip(ctx, (pivotX + armEndX) / 2, pivotY + 41, `r = ${rCm} cm (${rM.toFixed(2)} m)`, {
+      drawLabelChip(ctx, (pivotX + armEndX) / 2, pivotY + 41, `r = ${rCm} cm (${fx(rM, 2)} m)`, {
         align: 'center', accent: neutralAccent, fontPx: chipFontPx, monoFont: T.mono,
         paperBg: chipPaper, inkText: T.ink, ink2Text: T.ink2, shadowTint: chipShadow,
       });
@@ -435,7 +437,7 @@ export default function TorqueCanvas({
         const footY = armEndY + proj * ufy;
 
         // Segmento r⊥ (eje → pie), naranja, grueso y punteado
-        ctx.strokeStyle = '#d97706';
+        ctx.strokeStyle = C.amber;
         ctx.lineWidth = 2;
         ctx.setLineDash([5, 3]);
         ctx.beginPath();
@@ -450,7 +452,7 @@ export default function TorqueCanvas({
         const pl = Math.hypot(px, py) || 1;
         const rx1 = px / pl, ry1 = py / pl;          // hacia el eje
         const dSign = proj >= 0 ? 1 : -1;
-        ctx.strokeStyle = '#d97706';
+        ctx.strokeStyle = C.amber;
         ctx.lineWidth = 1.1;
         ctx.beginPath();
         ctx.moveTo(footX + rx1 * s, footY + ry1 * s);
@@ -459,7 +461,7 @@ export default function TorqueCanvas({
         ctx.stroke();
 
         // Punto en el pie
-        ctx.fillStyle = '#d97706';
+        ctx.fillStyle = C.amber;
         ctx.beginPath();
         ctx.arc(footX, footY, 2.4, 0, Math.PI * 2);
         ctx.fill();
@@ -468,7 +470,7 @@ export default function TorqueCanvas({
         // no chocar con la cota "r = .. cm" que va bajo el hueso.
         const lx = pivotX + (footX - pivotX) * 0.66 - ry1 * 14 * dSign;
         const ly = pivotY + (footY - pivotY) * 0.66 + rx1 * 14 * dSign;
-        const rlTxt = `r⊥ = ${rPerp.toFixed(2)} m`;
+        const rlTxt = `r⊥ = ${fx(rPerp, 2)} m`;
         drawLabelChip(ctx, lx, ly, rlTxt, {
           align: 'center', accent: neutralAccent, fontPx: chipFontPx, monoFont: T.mono,
           paperBg: chipPaper, inkText: T.ink, ink2Text: T.ink2, shadowTint: chipShadow,
@@ -516,7 +518,7 @@ export default function TorqueCanvas({
       }
 
       // Badge F_parallel
-      const parLabel = fParallel >= 0 ? `F∥ = ${fParallel.toFixed(1)} N` : `F∥ = ${Math.abs(fParallel).toFixed(1)} N`;
+      const parLabel = fParallel >= 0 ? `F∥ = ${fx(fParallel, 1)} N` : `F∥ = ${fx(Math.abs(fParallel), 1)} N`;
       drawLabelChip(ctx, (armEndX + fParX) / 2, armEndY + (fEndY < armEndY ? 11 : -7), parLabel, {
         align: 'center', accent: neutralAccent, fontPx: chipFontPx, monoFont: T.mono,
         paperBg: chipPaper, inkText: T.ink, ink2Text: T.ink2, shadowTint: chipShadow,
@@ -543,7 +545,7 @@ export default function TorqueCanvas({
       }
 
       // Badge F_perp
-      drawLabelChip(ctx, armEndX - 6, (armEndY + fEndY) / 2, `F⊥ = ${Math.abs(fPerp).toFixed(1)} N`, {
+      drawLabelChip(ctx, armEndX - 6, (armEndY + fEndY) / 2, `F⊥ = ${fx(Math.abs(fPerp), 1)} N`, {
         align: 'right', accent: neutralAccent, fontPx: chipFontPx, monoFont: T.mono,
         paperBg: chipPaper, inkText: T.ink, ink2Text: T.ink2, shadowTint: chipShadow,
       });
@@ -578,7 +580,7 @@ export default function TorqueCanvas({
       // Mango interactivo esmerilado en la punta
       ctx.beginPath();
       ctx.arc(fEndX, fEndY, isDraggingForce ? 5 : (isHoveredForce ? 4 : 3), 0, Math.PI * 2);
-      ctx.fillStyle = '#ffffff';
+      ctx.fillStyle = C.card;
       ctx.fill();
       ctx.strokeStyle = tauColor;
       ctx.lineWidth = 1.6;
@@ -660,7 +662,7 @@ export default function TorqueCanvas({
       // Zonas de signo: horario (−) rojo tenue a la izq, antihorario (+) teal tenue a la der
       ctx.beginPath();
       ctx.arc(dialX, dialY, dialR, startAngle, zeroAngle);
-      ctx.strokeStyle = 'rgba(176, 35, 24, 0.16)';
+      ctx.strokeStyle = ca(C.blood, 0.16);
       ctx.lineWidth = 9;
       ctx.stroke();
       ctx.beginPath();
@@ -688,7 +690,7 @@ export default function TorqueCanvas({
       // Etiquetas de sentido en los extremos del arco
       ctx.font = `${6.5 * uiScale}px Karla, system-ui, sans-serif`;
       ctx.textAlign = 'center';
-      ctx.fillStyle = 'rgba(176, 35, 24, 0.75)';
+      ctx.fillStyle = ca(C.blood, 0.75);
       ctx.fillText('↻ −', dialX + Math.cos(startAngle) * (dialR + 12), dialY + Math.sin(startAngle) * (dialR + 12) + 3);
       ctx.fillStyle = tokenRgba(T.teal, 0.8);
       ctx.fillText('↺ +', dialX + Math.cos(endAngle) * (dialR + 12), dialY + Math.sin(endAngle) * (dialR + 12) + 3);
@@ -704,7 +706,7 @@ export default function TorqueCanvas({
       ctx.arc(dialX, dialY, 5, 0, Math.PI * 2);
       ctx.fillStyle = tauColor;
       ctx.fill();
-      ctx.strokeStyle = '#fff';
+      ctx.strokeStyle = C.card;
       ctx.lineWidth = 1.6;
       ctx.stroke();
 
@@ -713,7 +715,7 @@ export default function TorqueCanvas({
       ctx.fillStyle = tauColor;
       ctx.font = `bold ${17 * uiScale}px JetBrains Mono, monospace`;
       ctx.textAlign = 'center';
-      ctx.fillText(`${signStr}${Math.abs(tau).toFixed(1)}`, dialX, dialY + dialR * 0.42);
+      ctx.fillText(`${signStr}${fx(Math.abs(tau), 1)}`, dialX, dialY + dialR * 0.42);
       ctx.font = `bold ${8.5 * uiScale}px Karla, system-ui, sans-serif`;
       ctx.fillStyle = tokenRgba(T.ink2, 0.8);
       ctx.fillText('N·m', dialX, dialY + dialR * 0.42 + 13 * uiScale);

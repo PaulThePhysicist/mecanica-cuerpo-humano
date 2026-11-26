@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { C } from './palette';
+import { fx } from './ab';
 import TricepsCanvas from './TricepsCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
@@ -20,7 +22,7 @@ export default function Slide6({
 
   const g = 9.81;
   const wPushN = pushLoadKg * g;
-  const fTricepsN = wPushN * (0.35 / (insertCm / 100));
+  const fTricepsN = wPushN * (0.36 / (insertCm / 100)); // d_W = 36 cm (0,2 H, como en B2)
   const fTricepsKgf = fTricepsN / g;
   const rJointN = fTricepsN + wPushN;
 
@@ -47,7 +49,7 @@ export default function Slide6({
       <div className="module-header">
         <span className="mnum">B4</span>
         <h2 className="mtitle">Extensión del codo: el tríceps 3D</h2>
-        <span className="msub">Palanca de 1ª clase · Inserción en el olécranon y compresión articular aditiva</span>
+        <span className="msub">Palanca de 1ª clase (Fig. 2.6b) · el tríceps tira del cúbito alrededor del codo</span>
         <span className="mslide-count">4 / 4</span>
       </div>
       <div className="content-grid">
@@ -58,18 +60,18 @@ export default function Slide6({
             </div>
             <div className="card-body">
               <p style={{ fontSize: '.7rem' }}>
-                En la extensión activa del codo, el <strong>tríceps braquial</strong> tira hacia arriba del pico del <strong>olécranon</strong>, situado en el lado opuesto del fulcro troclear:
+                Con el brazo hacia abajo, el <strong>tríceps braquial</strong> tira del <strong>olécranon</strong> (cúbito), al otro lado del pivote del codo, y equilibra una fuerza que empuja la mano hacia arriba (Fig. 2.6b). Con el brazo hacia arriba también equilibra una mano que sostiene un peso:
               </p>
               <div className="eq-block">
-                {'\\[ F_t\\, d = W\\, D \\qquad\\Rightarrow\\qquad F_t = W \\left(\\frac{D}{d}\\right) \\]'}
+                {'\\[ M\\,d_M = W\\,d_W \\qquad\\Rightarrow\\qquad M = \\frac{d_W}{d_M}\\,W \\]'}
               </div>
               <p style={{ fontSize: '.64rem' }}>
-                {'Con $d \\approx 2{,}5\\text{ cm}$ y $D \\approx 35\\text{ cm}$, la relación de palanca es de $35 / 2{,}5 = \\mathbf{14\\times}$.'}
+                {'Como aquí $d_M \\ll d_W$, el tríceps hace mucha más fuerza que la mano. El libro no da cifras; el visor usa valores ilustrativos: $d_M \\approx 2{,}5\\text{ cm}$ y $d_W = 36\\text{ cm}$, es decir, $M \\approx 14\\,W$. Empujar hacia abajo con el tríceps es, en cambio, un ejemplo de palanca de 2ª clase.'}
               </p>
             
-              <div style={{ marginTop: '.4rem' }}>
+              <div style={{ marginTop: '0.62rem' }}>
                 <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
-                  <b>🏷️ Rotular F_t, W y R_j</b>
+                  <b>{'Rotular $M$, $W$ y $R$'}</b>
                 </TheoryToggle>
               </div>
               <TheoryCue>Etiqueta las tres fuerzas de la palanca: tracción del tríceps sobre el olécranon, carga de empuje y compresión articular resultante.</TheoryCue>
@@ -77,17 +79,17 @@ export default function Slide6({
           </div>
           <div className="card">
             <div className="card-hdr">
-              <span className="icon">⚡</span> Compresión articular aditiva máxima
+              <span className="icon">⚡</span> Compresión en el codo (derivada de ΣF = 0)
             </div>
             <div className="card-body">
               <p style={{ fontSize: '.64rem', color: 'var(--ink-3)' }}>
                 A diferencia de la flexión (donde el bíceps y la carga tiran en sentidos opuestos restando carga neta), en la extensión <strong>tanto el tríceps como la fuerza de empuje comprimen la articulación</strong> en la misma dirección hacia la tróclea:
               </p>
               <div className="eq-block">
-                {'\\[ R_j = F_t + W = W \\left(1 + \\frac{D}{d}\\right) = 15\\, W \\]'}
+                {'\\[ R = M + W = W\\left(1 + \\frac{d_W}{d_M}\\right) \\approx 15\\,W \\]'}
               </div>
               <p style={{ fontSize: '.62rem', color: 'var(--ink-3)' }}>
-                {'Empujar con solo $10\\text{ kg}$ somete al cartílago troclear a una compresión de $\\sim 150\\text{ kgf}$ ($1470\\text{ N}$).'}
+                {'Con los valores ilustrativos, un empuje de $100\\text{ N}$ exige $M \\approx 1400\\text{ N}$ y comprime el codo con $R \\approx 1500\\text{ N}$.'}
               </p>
             </div>
           </div>
@@ -103,30 +105,29 @@ export default function Slide6({
           {/* Panel HUD Colapsable */}
           <HudPanel
             title="MECÁNICA DEL TRÍCEPS"
-            badge={`Ft = ${fTricepsN.toFixed(0)} N (${fTricepsKgf.toFixed(1)} kgf)`}
-            icon="🥊"
+            badge={`M = ${fTricepsN.toFixed(0)} N (${fx(fTricepsKgf, 1)} kgf)`}
             footer="💡 Rota la escena 3D y ajusta la fuerza de empuje o el brazo del olécranon"
           >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '0.58rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '0.62rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
-                <span style={{ color: 'var(--ink-2)' }}>Tensión Tríceps (Ft):</span>
-                <b style={{ color: '#dc2626', fontFamily: 'JetBrains Mono, monospace' }}>{fTricepsN.toFixed(0)} N</b>
+                <span style={{ color: 'var(--ink-2)' }}>Tensión del tríceps (M):</span>
+                <b style={{ color: C.blood, fontFamily: 'JetBrains Mono, monospace' }}>{fTricepsN.toFixed(0)} N</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Fuerza de empuje:</span>
-                <b style={{ color: '#d97706', fontFamily: 'JetBrains Mono, monospace' }}>{pushLoadKg} kg ({wPushN.toFixed(0)} N)</b>
+                <b style={{ color: C.amber, fontFamily: 'JetBrains Mono, monospace' }}>{pushLoadKg} kg ({wPushN.toFixed(0)} N)</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Brazo olécranon (d):</span>
-                <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>{insertCm.toFixed(1)} cm</b>
+                <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>{fx(insertCm, 1)} cm</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Relación Ft / W:</span>
-                <b style={{ color: '#dc2626', fontFamily: 'JetBrains Mono, monospace' }}>{(0.35 / (insertCm / 100)).toFixed(1)}×</b>
+                <b style={{ color: C.blood, fontFamily: 'JetBrains Mono, monospace' }}>{fx((0.36 / (insertCm / 100)), 1)}×</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--ink-2)' }}>Compresión Articular (Rj):</span>
-                <b style={{ color: '#7c3aed', fontFamily: 'JetBrains Mono, monospace' }}>{rJointN.toFixed(0)} N ({(rJointN / 9.81).toFixed(1)} kgf)</b>
+                <span style={{ color: 'var(--ink-2)' }}>Compresión en el codo (R):</span>
+                <b style={{ color: C.sagittal, fontFamily: 'JetBrains Mono, monospace' }}>{rJointN.toFixed(0)} N ({fx((rJointN / 9.81), 1)} kgf)</b>
               </div>
             </div>
           </HudPanel>
@@ -136,7 +137,7 @@ export default function Slide6({
             insertCm={insertCm}
           />
           <div className="prof-controls">
-            <span className="badge">2.2 · Tríceps</span>
+            <span className="badge">§2.2 · Tríceps</span>
 
             {/* Presets */}
             {(() => {
@@ -151,11 +152,11 @@ export default function Slide6({
                     onClick={() => setPreset('light')}
                     style={{
                       background: isLight ? 'var(--teal)' : 'var(--paper-2)',
-                      color: isLight ? '#fff' : 'var(--ink)',
+                      color: isLight ? C.card : 'var(--ink)',
                       border: `1px solid ${isLight ? 'var(--teal)' : 'var(--line)'}`,
                       borderRadius: '3px',
                       padding: '2px 6px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: isLight ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -168,11 +169,11 @@ export default function Slide6({
                     onClick={() => setPreset('bench')}
                     style={{
                       background: isBench ? 'var(--teal)' : 'var(--paper-2)',
-                      color: isBench ? '#fff' : 'var(--ink)',
+                      color: isBench ? C.card : 'var(--ink)',
                       border: `1px solid ${isBench ? 'var(--teal)' : 'var(--line)'}`,
                       borderRadius: '3px',
                       padding: '2px 6px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: isBench ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -185,11 +186,11 @@ export default function Slide6({
                     onClick={() => setPreset('heavy')}
                     style={{
                       background: isHeavy ? 'var(--teal)' : 'var(--paper-2)',
-                      color: isHeavy ? '#fff' : 'var(--ink)',
+                      color: isHeavy ? C.card : 'var(--ink)',
                       border: `1px solid ${isHeavy ? 'var(--teal)' : 'var(--line)'}`,
                       borderRadius: '3px',
                       padding: '2px 6px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: isHeavy ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -201,7 +202,7 @@ export default function Slide6({
               );
             })()}
 
-            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', fontSize: '0.60rem', marginLeft: 'auto', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '0.62rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto', flexWrap: 'wrap' }}>
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
                 <span>Empuje:</span>
                 <input
@@ -226,7 +227,7 @@ export default function Slide6({
                   onChange={(e) => setInsertCm(parseFloat(e.target.value))}
                   style={{ width: '45px' }}
                 />
-                <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '28px' }}>{insertCm.toFixed(1)}cm</b>
+                <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '28px' }}>{fx(insertCm, 1)}cm</b>
               </label>
 
               <button
@@ -237,7 +238,7 @@ export default function Slide6({
                   border: '1px solid var(--line)',
                   borderRadius: '4px',
                   padding: '2px 7px',
-                  fontSize: '0.60rem',
+                  fontSize: '0.62rem',
                   cursor: 'pointer',
                   color: 'var(--ink)',
                 }}

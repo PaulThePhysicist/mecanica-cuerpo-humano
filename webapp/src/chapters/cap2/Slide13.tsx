@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { C } from './palette';
 import BodySegmentsCanvas from './BodySegmentsCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
+import KatexHtml from './KatexHtml';
 import type { Engine } from './useEngine';
 
 interface PostureOpt {
@@ -70,11 +72,24 @@ export default function Slide13({
       <div className="module-header">
         <span className="mnum">F1</span>
         <h2 className="mtitle">Método de segmentos corporales</h2>
-        <span className="msub">Cálculo del centro de gravedad (CG) total y polígono de sustentación</span>
+        <span className="msub">§2.3.6 Modelado multisegmento · centro de masa por segmentos y base de apoyo</span>
         <span className="mslide-count">1 / 2</span>
       </div>
       <div className="content-grid">
         <div className="theory">
+          <div className="card">
+            <div className="card-hdr">
+              <span className="icon">📐</span> Modelado multisegmento (Figs. 2.48–2.49)
+            </div>
+            <div className="card-body">
+              <p style={{ fontSize: '.66rem' }}>
+                {'La pierna se modela con tres segmentos (muslo, pantorrilla y pie), cada uno con su masa $m$, su centro de masa y su momento de inercia $I$, unidos por tres articulaciones (cadera, rodilla, tobillo) que giran libremente. Se pueden analizar las fuerzas y torques sobre el conjunto o sobre cada segmento por separado (como en la cadera: cuerpo entero y luego la pierna).'}
+              </p>
+              <p style={{ fontSize: '.64rem', color: 'var(--ink-3)' }}>
+                {'En el diagrama de cuerpo libre de cada segmento, las reacciones en cada articulación son iguales y opuestas (Tercera Ley de Newton, p. ej. $\\vec{R}_2$ en la rodilla), igual que las fuerzas de cada músculo en su origen e inserción; el torque total en cada articulación aparece como un momento $M$ (Problema 2.38). El Cap. 3 lo aplica al movimiento.'}
+              </p>
+            </div>
+          </div>
           <div className="card active">
             <div className="card-hdr">
               <span className="icon">🎯</span> Teorema de Varignon y Baricentro
@@ -90,9 +105,9 @@ export default function Slide13({
                 {'Donde $M = \\sum m_i$ es la masa corporal total y los coeficientes $m_i$ provienen de los estándares antropométricos cadavéricos de Dempster (7 segmentos principales).'}
               </p>
             
-              <div style={{ marginTop: '.4rem' }}>
+              <div style={{ marginTop: '0.62rem' }}>
                 <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
-                  <b>🏷️ Rotular el CG y la base de apoyo</b>
+                  <b>Rotular el CG y la base de apoyo</b>
                 </TheoryToggle>
               </div>
               <TheoryCue>Marca el centro de gravedad, la base de sustentación (<b>BoS</b>) y el margen de estabilidad que queda entre ambos.</TheoryCue>
@@ -111,7 +126,7 @@ export default function Slide13({
           <div className="apuntes">
             <div className="a-hdr"><span>✍️</span> Apunte de cátedra</div>
             <div className="a-text" id="info-text-13">
-              <span dangerouslySetInnerHTML={{ __html: curOpt.desc }} />
+              <KatexHtml html={curOpt.desc} />
             </div>
           </div>
         </div>
@@ -121,7 +136,6 @@ export default function Slide13({
           <HudPanel
             title="BARICENTRO SEGMENTARIO"
             badge={curOpt.badge}
-            icon="🎯"
             footer="💡 Selecciona una postura para ver cómo se traslada el CG global y la línea de plomada"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.62rem' }}>
@@ -139,11 +153,11 @@ export default function Slide13({
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Modelo Antropométrico:</span>
-                <b style={{ color: '#0d6e64' }}>Dempster (7 Segm.)</b>
+                <b style={{ color: C.teal }}>Dempster (7 Segm.)</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Estado de Estabilidad:</span>
-                <b style={{ color: posture === 'bent_forward' ? '#f59e0b' : '#0d6e64' }}>
+                <b style={{ color: posture === 'bent_forward' ? C.amber : C.teal }}>
                   {posture === 'bent_forward' ? 'Límite Anterior (Alerta)' : 'Equilibrio Estable'}
                 </b>
               </div>
@@ -156,10 +170,10 @@ export default function Slide13({
             bodyMassKg={bodyMassKg}
           />
           <div className="prof-controls">
-            <span className="badge">2.6 · Segmentos</span>
+            <span className="badge">§2.3.6 · Segmentos</span>
             <span>Postura: <b style={{ color: 'var(--teal-deep)' }}>{curOpt.name}</b></span>
 
-            <div style={{ display: 'flex', gap: '0.45rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>
+            <div style={{ display: 'flex', gap: '0.62rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>
               <div style={{ display: 'inline-flex', gap: '2px', border: '1px solid var(--line)', borderRadius: '4px', padding: '1px', background: 'var(--paper-2)' }}>
                 {POSTURES.map((p) => (
                   <button
@@ -168,11 +182,11 @@ export default function Slide13({
                     onClick={() => handleSelect(p.id)}
                     style={{
                       background: posture === p.id ? 'var(--teal)' : 'transparent',
-                      color: posture === p.id ? '#fff' : 'var(--ink)',
+                      color: posture === p.id ? C.card : 'var(--ink)',
                       border: 'none',
                       borderRadius: '3px',
                       padding: '3px 7px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: posture === p.id ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',

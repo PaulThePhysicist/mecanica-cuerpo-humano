@@ -1,4 +1,5 @@
 import React, { Suspense, useMemo, useRef, useState, useEffect } from 'react';
+import { C, ca } from './palette';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, ContactShadows, Html, Line, useGLTF } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
@@ -36,7 +37,6 @@ interface BiomechNodeInfo {
   pos3D: [number, number, number];
   camTarget: [number, number, number];
   camPos: [number, number, number];
-  icon: string;
   activeBoneNames: string[];
   activeMuscleNames: string[];
 }
@@ -45,126 +45,119 @@ const NODES_DATA: Record<BiomechNodeId, BiomechNodeInfo> = {
   jaw: {
     id: 'jaw',
     title: 'Mandíbula y ATM',
-    leverType: 'Palanca de 2ª / 3ª Clase Variable',
-    classTag: '2ª / 3ª CLASE',
-    equation: 'F_mordida · d = F_masetero · 5 cm',
-    keyRatio: 'Molares: > 600 N · Incisivos: ~200 N',
-    ratioLabel: 'Fuerza oclusal máxima',
-    vm: 'VM variable según diente (Fuerza en molares)',
+    leverType: 'Palanca de 3ª clase (VM < 1)',
+    classTag: '3ª CLASE',
+    equation: 'M · VM = F mordida',
+    keyRatio: 'Masetero: VM 0,50 (incisivo) · 0,76 (molar)',
+    ratioLabel: 'Ventaja mecánica del masetero',
+    vm: 'VM < 1 en todos los dientes',
     vmType: 'force',
-    clinical: 'Los molares están situados muy cerca del fulcro (ATM), logrando enorme ventaja mecánica para triturar alimentos.',
+    clinical: 'El alimento cerca de la ATM (molares) aprovecha mejor la fuerza del masetero que en los incisivos.',
     pos3D: [0.0, 1.62, 0.16],
     camTarget: [0.0, 1.62, 0.14],
     camPos: [0.18, 1.66, 0.88],
-    icon: '🦷',
     activeBoneNames: ['mandible', 'maxilla_R', 'maxilla_L', 'temporal_R', 'temporal_L'],
     activeMuscleNames: ['masseter_superficial_R', 'masseter_deep_R', 'masseter_superficial_L', 'masseter_deep_L'],
   },
   neck: {
     id: 'neck',
     title: 'Cabeza y Cuello (Atlas C1)',
-    leverType: 'Palanca de 1ª Clase (Interapoyo)',
+    leverType: 'Palanca de 1ª clase',
     classTag: '1ª CLASE',
-    equation: 'F_m · 5 cm = W_cabeza · 12 cm',
-    keyRatio: 'F_m ≈ 2,4 × W_cabeza (108 N)',
-    ratioLabel: 'Tensión muscular cervical',
-    vm: 'VM = 0,42 (Sacrificio de fuerza)',
+    equation: 'M · dM = W · dW',
+    keyRatio: 'Fulcro: W + M (ilustrativo M ≈ 2,4 W)',
+    ratioLabel: 'Músculos de la nuca',
+    vm: '1ª clase: la menos común',
     vmType: 'speed',
-    clinical: 'El centro de gravedad del cráneo cae por delante de C1. Los músculos trapecio y esplenio previenen constantemente la caída anterior.',
+    clinical: 'El peso de la cabeza cae por delante del apoyo y lo equilibran los músculos de la nuca (Fig. 2.6a).',
     pos3D: [0.0, 1.58, -0.06],
     camTarget: [0.0, 1.58, -0.05],
     camPos: [-0.48, 1.62, 0.68],
-    icon: '👤',
     activeBoneNames: ['occipital', 'cervical3', 'cervical4', 'cervical5', 'cervical6', 'cervical7'],
     activeMuscleNames: ['trapezius_descending_R', 'trapezius_descending_L', 'rectus_capitis_posterior_major_R', 'rectus_capitis_posterior_major_L'],
   },
   elbow: {
     id: 'elbow',
     title: 'Flexión de Codo (Bíceps)',
-    leverType: 'Palanca de 3ª Clase (Interpotencia)',
+    leverType: 'Palanca de 3ª clase',
     classTag: '3ª CLASE',
-    equation: 'F_m · 4 cm = W_mano · 35 cm',
-    keyRatio: 'F_m ≈ 8,75 × W_mano (450 N)',
+    equation: 'M · 4 cm = W · 36 cm',
+    keyRatio: 'M = 9 W (Caso 1) · 950 N para 100 N',
     ratioLabel: 'Multiplicador muscular',
-    vm: 'VM = 0,11 (Ganancia de velocidad y rango)',
+    vm: 'VM = 0,11',
     vmType: 'speed',
-    clinical: 'Un acortamiento de 1 cm en el bíceps desplaza la mano 9 cm, sacrificando fuerza por rango y velocidad distal.',
+    clinical: 'El desplazamiento de la mano se amplifica por dW/dM = 9: el bíceps se contrae 7–8 cm y la mano recorre mucho más.',
     pos3D: [-0.50, 0.58, -0.04],
     camTarget: [-0.50, 0.58, -0.04],
     camPos: [-0.96, 0.64, 0.72],
-    icon: '💪',
     activeBoneNames: ['humerus_R', 'radius_R', 'ulna_R'],
     activeMuscleNames: ['biceps_brachii_long_head_R', 'biceps_brachii_short_head_R', 'brachialis_R', 'triceps_brachii_long_head_R'],
   },
   spine: {
     id: 'spine',
     title: 'Columna Lumbar (L5-S1)',
-    leverType: 'Grúa Biomecánica Invertida',
-    classTag: 'GRÚA LUMBAR',
-    equation: 'F_erector · 5 cm · sin 12° = W · 50 cm',
-    keyRatio: 'F_m > 3500 N · P > 2,8 MPa',
-    ratioLabel: 'Carga compresiva discal',
-    vm: 'Desventaja de palanca 10:1',
+    leverType: 'Barra rígida a θ (Fig. 2.41)',
+    classTag: 'ESPALDA',
+    equation: 'M = 2,5 Wb · R = 2,74 Wb (θ = 30°)',
+    keyRatio: '+0,2 Wb ⇒ M = 3,74 Wb · R = 4,07 Wb',
+    ratioLabel: 'Reacción sobre la quinta lumbar',
+    vm: 'Erector a 12° de la columna',
     vmType: 'speed',
-    clinical: 'Levantar cargas con rodillas flexionadas reduce a la mitad el brazo de momento externo y protege el disco intervertebral.',
+    clinical: 'Nunca doblar la espalda para levantar: 180 N más exigen 1100 N más al erector.',
     pos3D: [0.0, 0.30, -0.08],
     camTarget: [0.0, 0.30, -0.06],
     camPos: [-0.78, 0.38, 0.82],
-    icon: '🦴',
     activeBoneNames: ['lumbar1', 'lumbar2', 'lumbar3', 'lumbar4', 'lumbar5', 'sacrum'],
     activeMuscleNames: ['rectus_abdominis_R', 'rectus_abdominis_L', 'latissimus_dorsi_R', 'latissimus_dorsi_L'],
   },
   hip: {
     id: 'hip',
     title: 'Cadera (Apoyo Monopodal)',
-    leverType: 'Palanca de 1ª Clase Pélvica',
-    classTag: '1ª CLASE',
-    equation: 'F_abd · 7 cm · sin 70° = W_b · 18 cm',
-    keyRatio: 'R_acetábulo ≈ 2,7 × Peso Total',
-    ratioLabel: 'Carga en cabeza femoral',
-    vm: 'VM = 0,39 (Estabilización pélvica)',
+    leverType: 'DCL de la pierna (Fig. 2.17)',
+    classTag: 'CADERA',
+    equation: 'M = 1,57 Wb · R = 2,37 Wb',
+    keyRatio: 'Con bastón (Wb/6): M = 0,61 Wb · R = 1,26 Wb',
+    ratioLabel: 'Carga en la cabeza femoral',
+    vm: 'Abductores a 70°',
     vmType: 'speed',
-    clinical: 'Llevar un bastón en la mano contralateral descarga la cadera lesionada hasta un 50% al aportar torque de soporte.',
+    clinical: 'El bastón contralateral desplaza el pie 6,1 cm y baja el brazo de la normal de 10,8 a 4,7 cm.',
     pos3D: [-0.17, 0.00, 0.00],
     camTarget: [-0.17, 0.00, 0.00],
     camPos: [-0.72, 0.08, 1.05],
-    icon: '🦿',
     activeBoneNames: ['hip_R', 'femur_R', 'sacrum'],
     activeMuscleNames: ['gluteus_medius_R', 'gluteus_minimus_R', 'gluteus_maximus_R', 'psoas_major_R'],
   },
   ankle: {
     id: 'ankle',
     title: 'Tobillo (Puntillas)',
-    leverType: 'Palanca de 2ª Clase (Interresistencia)',
-    classTag: '2ª CLASE',
-    equation: 'F_gemelos · b_p = W · b_r',
-    keyRatio: 'F_m < W (Ahorro muscular permanente)',
-    ratioLabel: 'Ventaja de fuerza neta',
-    vm: 'VM > 1,3 (Ventaja mecánica real)',
+    leverType: 'Sistema concurrente (Fig. 2.28)',
+    classTag: 'PUNTILLAS',
+    equation: 'M = Wb cos β / cos(θ+β)',
+    keyRatio: 'M = 1,93 Wb · R = 2,73 Wb',
+    ratioLabel: 'Fuerzas en el tobillo',
+    vm: 'θ = 45°, β = 60°',
     vmType: 'force',
-    clinical: 'El tendón de Aquiles se inserta en el calcáneo por detrás del eje de giro del tobillo, ahorrando esfuerzo al caminar.',
+    clinical: 'Ambas fuerzas superan con mucho el peso corporal aunque se apoye solo en los dedos.',
     pos3D: [-0.19, -1.86, -0.08],
     camTarget: [-0.19, -1.86, -0.08],
     camPos: [-0.68, -1.76, 0.72],
-    icon: '👟',
     activeBoneNames: ['tibia_R', 'fibula_R', 'talus_R', 'calcaneus_L'],
     activeMuscleNames: ['gastrocnemius_medial_head_R', 'gastrocnemius_lateral_head_R', 'soleus_R'],
   },
   foot: {
     id: 'foot',
     title: 'Plataforma de Marcha (GRF)',
-    leverType: 'Dinámica de Reacción del Suelo',
-    classTag: 'GRF VECTORIAL',
-    equation: 'GRF = √(F_z² + F_y² + F_x²)',
-    keyRatio: 'Pico F_z ≈ 1,2 × Peso Corporal',
-    ratioLabel: 'Fuerza de impacto vertical',
-    vm: 'Mecanismo de Windlass activo',
+    leverType: 'Complementario (no está en §2)',
+    classTag: 'GRF',
+    equation: 'GRF = √(Fx² + Fy² + Fz²)',
+    keyRatio: 'Pico vertical ≈ 1,2 Wb (marcha)',
+    ratioLabel: 'Fuerza vertical del suelo',
+    vm: 'Rodilla al caminar: 3–4 Wb (libro)',
     vmType: 'equilibrium',
-    clinical: 'El Centro de Presiones (COP) migra desde el talón al despegue de dedos, permitiendo propulsión elástica.',
+    clinical: 'El centro de presiones migra del talón a los dedos durante el apoyo.',
     pos3D: [-0.19, -1.98, 0.08],
     camTarget: [-0.19, -1.98, 0.08],
     camPos: [-0.58, -1.88, 0.75],
-    icon: '🦶',
     activeBoneNames: ['metatarsal1_R', 'metatarsal2_R', 'metatarsal3_R', 'metatarsal4_R', 'metatarsal5_R', 'navicular_R', 'cuneiform_med_R'],
     activeMuscleNames: ['tibialis_anterior_R', 'tibialis_posterior_R'],
   },
@@ -172,20 +165,20 @@ const NODES_DATA: Record<BiomechNodeId, BiomechNodeInfo> = {
 
 // ── Paleta de Colores ──
 const BONE_BASE = '#ede5d0';
-const BONE_HIGHLIGHT = '#0d6e64';
-const MUSCLE_ACTIVE = '#b02318';
-const MUSCLE_PASSIVE = '#94a3b8';
-const TEAL_DEEP = '#0d6e64';
-const GREEN_ACCENT = '#10b981';
-const AMBER_ACCENT = '#f59e0b';
-const BLUE_ACCENT = '#2563eb';
-const RED_ACCENT = '#ef4444';
+const BONE_HIGHLIGHT = C.teal;
+const MUSCLE_ACTIVE = C.blood;
+const MUSCLE_PASSIVE = C.ink3;
+const TEAL_DEEP = C.teal;
+const GREEN_ACCENT = C.coronal;
+const AMBER_ACCENT = C.amber;
+const BLUE_ACCENT = C.series3;
+const RED_ACCENT = C.blood;
 
 // ── 1. Vector de Fuerza 3D con Cono y Rótulo ──
 function ForceVector3D({
   origin = [0, 0, 0] as [number, number, number],
   vector = [0, 1, 0] as [number, number, number],
-  color = '#0d6e64',
+  color = C.teal,
   label,
   sub,
   emphasis,
@@ -368,7 +361,7 @@ function JointDCLVectors3D({ selectedNode }: { selectedNode: BiomechNodeId }) {
           origin={[0.04, 1.50, 0.12]}
           vector={[0, 0.24, 0]}
           color={RED_ACCENT}
-          label="F_mas"
+          label="M masetero"
           sub="masetero"
         />
         {/* Fmordida (Hacia abajo en molares) */}
@@ -376,7 +369,7 @@ function JointDCLVectors3D({ selectedNode }: { selectedNode: BiomechNodeId }) {
           origin={[0.02, 1.62, 0.19]}
           vector={[0, -0.22, 0]}
           color={BLUE_ACCENT}
-          label="F_mordida"
+          label="F mordida"
           sub="en el diente"
         />
         {/* R ATM (Reacción articular) */}
@@ -384,7 +377,7 @@ function JointDCLVectors3D({ selectedNode }: { selectedNode: BiomechNodeId }) {
           origin={[-0.04, 1.64, 0.08]}
           vector={[0, -0.16, -0.04]}
           color={TEAL_DEEP}
-          label="R_ATM"
+          label="R ATM"
           sub="reacción de la ATM"
           emphasis="strong"
         />
@@ -400,7 +393,7 @@ function JointDCLVectors3D({ selectedNode }: { selectedNode: BiomechNodeId }) {
           origin={[-0.02, 1.58, -0.09]}
           vector={[-0.02, -0.24, -0.10]}
           color={RED_ACCENT}
-          label="F_m"
+          label="M"
           sub="trapecio / esplenio"
         />
         {/* W Cabeza (Hacia abajo, anterior a C1) */}
@@ -416,7 +409,7 @@ function JointDCLVectors3D({ selectedNode }: { selectedNode: BiomechNodeId }) {
           origin={[0.0, 1.56, -0.03]}
           vector={[0.01, 0.30, 0.02]}
           color={TEAL_DEEP}
-          label="R_C1"
+          label="R C1"
           sub="reacción del atlas"
           emphasis="strong"
         />
@@ -432,15 +425,15 @@ function JointDCLVectors3D({ selectedNode }: { selectedNode: BiomechNodeId }) {
           origin={[-0.47, 0.56, 0.02]}
           vector={[0, 0.38, 0.05]}
           color={RED_ACCENT}
-          label="F_bíceps"
-          sub="×8,75 la carga"
+          label="M bíceps"
+          sub="×9 la carga"
         />
-        {/* W Mano (Hacia abajo en la palma a 35 cm) */}
+        {/* W mano (hacia abajo, a 36 cm) */}
         <ForceVector3D
           origin={[-0.38, 0.28, 0.06]}
           vector={[0, -0.24, 0]}
           color={BLUE_ACCENT}
-          label="W_mano"
+          label="W mano"
           sub="carga distal"
         />
         {/* R Articular (Compresión húmerocubital) */}
@@ -464,15 +457,15 @@ function JointDCLVectors3D({ selectedNode }: { selectedNode: BiomechNodeId }) {
           origin={[-0.02, 0.30, -0.12]}
           vector={[0, 0.44, -0.14]}
           color={RED_ACCENT}
-          label="F_erector"
-          sub="desventaja 10:1"
+          label="M erector"
+          sub="a 12° de la columna"
         />
         {/* W Tronco + Carga (Hacia abajo a 50 cm de momento) */}
         <ForceVector3D
           origin={[0.02, 0.48, 0.20]}
           vector={[0, -0.32, 0]}
           color={BLUE_ACCENT}
-          label="W_total"
+          label="W total"
           sub="tronco + carga"
         />
         {/* R L5-S1 (Compresión masiva) */}
@@ -481,7 +474,7 @@ function JointDCLVectors3D({ selectedNode }: { selectedNode: BiomechNodeId }) {
           vector={[0, -0.48, -0.06]}
           color={TEAL_DEEP}
           label="R"
-          sub="compresión L5-S1"
+          sub="reacción en la quinta lumbar"
           emphasis="strong"
         />
       </group>
@@ -496,7 +489,7 @@ function JointDCLVectors3D({ selectedNode }: { selectedNode: BiomechNodeId }) {
           origin={[-0.28, 0.08, 0.0]}
           vector={[-0.12, 0.36, 0]}
           color={RED_ACCENT}
-          label="F_abd"
+          label="M abductores"
           sub="glúteo medio"
         />
         {/* Wb Peso Corporal Suprayacente (Hacia abajo en CG) */}
@@ -504,8 +497,8 @@ function JointDCLVectors3D({ selectedNode }: { selectedNode: BiomechNodeId }) {
           origin={[0.18, 0.12, 0.0]}
           vector={[0, -0.32, 0]}
           color={AMBER_ACCENT}
-          label="W_b"
-          sub="peso suprayacente"
+          label="Wb"
+          sub="peso corporal"
         />
         {/* R Acetábulo (Reacción en cabeza femoral) */}
         <ForceVector3D
@@ -513,7 +506,7 @@ function JointDCLVectors3D({ selectedNode }: { selectedNode: BiomechNodeId }) {
           vector={[0.08, -0.44, 0]}
           color={TEAL_DEEP}
           label="R"
-          sub="reacción acetabular (~2,7·W)"
+          sub="reacción acetabular (2,37 Wb)"
           emphasis="strong"
         />
       </group>
@@ -528,7 +521,7 @@ function JointDCLVectors3D({ selectedNode }: { selectedNode: BiomechNodeId }) {
           origin={[-0.19, -1.84, -0.14]}
           vector={[0, 0.36, -0.05]}
           color={RED_ACCENT}
-          label="F_aquiles"
+          label="M Aquiles"
           sub="tríceps sural"
         />
         {/* W Peso Suelo (Hacia abajo en tibia) */}
@@ -560,7 +553,7 @@ function JointDCLVectors3D({ selectedNode }: { selectedNode: BiomechNodeId }) {
           origin={[-0.19, -1.98, 0.08]}
           vector={[0, 0.42, 0]}
           color={GREEN_ACCENT}
-          label="F_z"
+          label="Fz"
           sub="vertical (~1,2·W)"
           emphasis="muted"
         />
@@ -569,7 +562,7 @@ function JointDCLVectors3D({ selectedNode }: { selectedNode: BiomechNodeId }) {
           origin={[-0.19, -1.98, 0.08]}
           vector={[0, 0, 0.22]}
           color={AMBER_ACCENT}
-          label="F_y"
+          label="Fy"
           sub="propulsión anterior"
           emphasis="muted"
         />
@@ -633,7 +626,7 @@ function Interactive3DNodes({
             <mesh>
               <sphereGeometry args={[isSelected ? 0.042 : (isHovered ? 0.036 : 0.028), 24, 24]} />
               <meshStandardMaterial
-                color={isSelected ? '#10b981' : (isHovered ? '#0d8577' : TEAL_DEEP)}
+                color={isSelected ? C.coronal : (isHovered ? C.teal : TEAL_DEEP)}
                 emissive={isSelected ? '#10b981' : (isHovered ? '#0d8577' : TEAL_DEEP)}
                 emissiveIntensity={isSelected ? 0.9 : 0.5}
                 roughness={0.2}
@@ -646,7 +639,7 @@ function Interactive3DNodes({
               <mesh rotation={[Math.PI / 2, 0, 0]}>
                 <ringGeometry args={[0.055, 0.075, 32]} />
                 <meshBasicMaterial
-                  color="#10b981"
+                  color={C.coronal}
                   transparent
                   opacity={0.6 + 0.3 * Math.sin(pulseRef.current)}
                   side={THREE.DoubleSide}
@@ -660,22 +653,22 @@ function Interactive3DNodes({
               <Html position={[0.08, 0, 0]} center={false} zIndexRange={[100, 0]} occlude="blending">
                 <div
                   style={{
-                    background: isSelected ? 'rgba(13, 110, 100, 0.96)' : 'rgba(255, 255, 255, 0.92)',
-                    color: isSelected ? '#ffffff' : '#0f172a',
+                    background: isSelected ? ca(C.teal, 0.96) : ca(C.card, 0.92),
+                    color: isSelected ? C.card : C.ink,
                     backdropFilter: 'blur(6px)',
-                    border: `1.5px solid ${isSelected ? '#042f2c' : '#cbd5e1'}`,
+                    border: `1.5px solid ${isSelected ? '${C.tealDeep}' : '${C.line}'}`,
                     borderRadius: '4px',
                     padding: '2px 5px',
-                    fontSize: '0.52rem',
+                    fontSize: '0.62rem',
                     fontWeight: isSelected ? 700 : 600,
                     fontFamily: 'JetBrains Mono, monospace',
                     whiteSpace: 'nowrap',
                     pointerEvents: 'none',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+                    boxShadow: `0 2px 8px ${ca(C.ink, 0.12)}`,
                     transform: 'translateY(-50%)',
                   }}
                 >
-                  {item.icon} {item.classTag}
+                  {item.classTag}
                 </div>
               </Html>
             )}
@@ -754,12 +747,12 @@ function BiomechInspectorCard({
   return (
     <div
       style={{
-        background: 'rgba(255, 255, 255, 0.95)',
+        background: ca(C.card, 0.95),
         backdropFilter: 'blur(10px)',
-        border: '1.5px solid var(--line, #cbd5e1)',
+        border: `1.5px solid var(--line, ${C.line})`,
         borderRadius: '10px',
         padding: isOverview ? '10px 12px' : '12px 14px',
-        boxShadow: '0 8px 24px rgba(35, 44, 54, 0.15)',
+        boxShadow: `0 8px 24px ${ca(C.ink, 0.15)}`,
         width: isOverview ? '234px' : '280px',
         pointerEvents: 'auto',
       }}
@@ -767,13 +760,13 @@ function BiomechInspectorCard({
       {/* Cabecera */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
         <span style={{ fontSize: isOverview ? '0.72rem' : '0.80rem', fontWeight: 800, color: TEAL_DEEP }}>
-          {node.icon} {node.title.toUpperCase()}
+          {node.title.toUpperCase()}
         </span>
         <span
           style={{
-            background: node.vmType === 'force' ? '#dcfce7' : (node.vmType === 'speed' ? '#e0f2fe' : '#fef3c7'),
-            color: node.vmType === 'force' ? '#166534' : (node.vmType === 'speed' ? '#0369a1' : '#b45309'),
-            fontSize: '0.54rem',
+            background: node.vmType === 'force' ? ca(C.coronal, 0.12) : (node.vmType === 'speed' ? ca(C.series3, 0.10) : C.amberTint),
+            color: node.vmType === 'force' ? C.coronal : (node.vmType === 'speed' ? C.series3 : C.amber),
+            fontSize: '0.62rem',
             fontWeight: 800,
             padding: '2px 6px',
             borderRadius: '4px',
@@ -787,13 +780,13 @@ function BiomechInspectorCard({
       {/* Bloque de Ecuación de Equilibrio Estático */}
       <div
         style={{
-          background: 'rgba(13, 110, 100, 0.08)',
-          border: '1px solid rgba(13, 110, 100, 0.25)',
+          background: ca(C.teal, 0.08),
+          border: `1px solid ${ca(C.teal, 0.25)}`,
           borderRadius: '6px',
           padding: '6px 8px',
           textAlign: 'center',
           fontFamily: 'JetBrains Mono, monospace',
-          fontSize: isOverview ? '0.60rem' : '0.66rem',
+          fontSize: isOverview ? '0.62rem' : '0.66rem',
           fontWeight: 700,
           color: TEAL_DEEP,
           margin: '6px 0 8px',
@@ -804,13 +797,13 @@ function BiomechInspectorCard({
 
       {/* Relación Clave y Multiplicador */}
       <div style={{ marginBottom: '2px' }}>
-        <div style={{ fontSize: '0.56rem', fontWeight: 700, color: RED_ACCENT, textTransform: 'uppercase' }}>
+        <div style={{ fontSize: '0.62rem', fontWeight: 700, color: RED_ACCENT, textTransform: 'uppercase' }}>
           {node.ratioLabel}:
         </div>
-        <div style={{ fontSize: isOverview ? '0.80rem' : '0.90rem', fontWeight: 800, color: '#0f172a', fontFamily: 'JetBrains Mono, monospace' }}>
+        <div style={{ fontSize: isOverview ? '0.80rem' : '0.90rem', fontWeight: 800, color: C.ink, fontFamily: 'JetBrains Mono, monospace' }}>
           {node.keyRatio}
         </div>
-        <div style={{ fontSize: '0.58rem', color: '#64748b' }}>
+        <div style={{ fontSize: '0.62rem', color: C.ink3 }}>
           {node.vm}
         </div>
       </div>
@@ -818,14 +811,14 @@ function BiomechInspectorCard({
       {/* Bloques verbosos: sólo al enfocar una articulación concreta */}
       {!isOverview && (
         <>
-          <div style={{ fontSize: '0.62rem', color: '#64748b', margin: '6px 0 4px' }}>
+          <div style={{ fontSize: '0.62rem', color: C.ink3, margin: '6px 0 4px' }}>
             {node.leverType}
           </div>
-          <hr style={{ border: 'none', borderTop: '1px solid rgba(207, 195, 169, 0.5)', margin: '8px 0' }} />
-          <div style={{ fontSize: '0.56rem', fontWeight: 700, color: TEAL_DEEP, marginBottom: '3px' }}>
+          <hr style={{ border: 'none', borderTop: `1px solid ${ca(C.line, 0.5)}`, margin: '8px 0' }} />
+          <div style={{ fontSize: '0.62rem', fontWeight: 700, color: TEAL_DEEP, marginBottom: '3px' }}>
             IMPLICACIÓN CLÍNICA / ERGONÓMICA:
           </div>
-          <div style={{ fontSize: '0.60rem', color: '#334155', lineHeight: 1.35, marginBottom: '10px' }}>
+          <div style={{ fontSize: '0.62rem', color: C.ink, lineHeight: 1.35, marginBottom: '10px' }}>
             {node.clinical}
           </div>
         </>
@@ -838,18 +831,18 @@ function BiomechInspectorCard({
         style={{
           width: '100%',
           marginTop: isOverview ? '8px' : 0,
-          background: isOverview ? 'var(--teal, #0d6e64)' : 'var(--paper-2, #f1f5f9)',
-          color: isOverview ? '#ffffff' : 'var(--ink, #0f172a)',
-          border: '1px solid var(--line, #cbd5e1)',
+          background: isOverview ? `var(--teal, ${C.teal})` : `var(--paper-2, ${C.lineSoft})`,
+          color: isOverview ? C.card : `var(--ink, ${C.ink})`,
+          border: `1px solid var(--line, ${C.line})`,
           borderRadius: '5px',
           padding: '5px 8px',
-          fontSize: '0.58rem',
+          fontSize: '0.62rem',
           fontWeight: 700,
           cursor: 'pointer',
           transition: 'all 0.15s ease',
         }}
       >
-        {isOverview ? '✓ Vista General · elige articulación' : '🔍 Restablecer Vista Global'}
+        {isOverview ? 'Vista general · elige articulación' : 'Volver a la vista general'}
       </button>
     </div>
   );
@@ -896,7 +889,7 @@ export default function BiomechSummaryCanvas({
         {/* ── Iluminación de Estudio Anatómico ── */}
         <ambientLight intensity={0.55} />
         {/* Luz de contra que perfila la silueta contra el fondo */}
-        <directionalLight position={[-2, 4, -7]} intensity={0.9} color="#ffffff" />
+        <directionalLight position={[-2, 4, -7]} intensity={0.9} color={C.card} />
         <directionalLight
           position={[5, 10, 5]}
           intensity={1.3}
@@ -948,7 +941,6 @@ export default function BiomechSummaryCanvas({
           left: '8px',
           bottom: '8px',
           zIndex: 9,
-          transform: 'scale(0.66)',
           transformOrigin: 'bottom left',
         }}
       >

@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { C } from './palette';
+import { fx } from './ab';
 import TorqueCanvas from './TorqueCanvas';
 import HudPanel from './HudPanel';
 import ThreeForceDiagram from './ThreeForceDiagram';
@@ -22,7 +24,7 @@ export default function Slide2({
   // Barrido continuo de θ: la fuerza gira alrededor del eje y se ve el torque
   // pasar por su máximo (θ = 90°/270°) y anularse (θ = 0°/180°).
   useHarmonicClock({ playing: isAnimating }, (t) => {
-    setTheta((t * 42) % 360);
+    setTheta((Math.max(0, t) * 42) % 360);
   });
 
   const rM = rCm / 100;
@@ -34,7 +36,7 @@ export default function Slide2({
 
   const isCCW = tau > 0.05;
   const isCW = tau < -0.05;
-  const tauColor = isCCW ? '#0d6e64' : (isCW ? '#b02318' : '#6b7885');
+  const tauColor = isCCW ? C.teal : (isCW ? C.blood : C.ink3);
 
   const handleUpdate = (newTheta: number, newR: number, newF: number) => {
     setIsAnimating(false);
@@ -79,50 +81,50 @@ export default function Slide2({
       <div className="module-header">
         <span className="mnum">A2</span>
         <h2 className="mtitle">El torque vectorial</h2>
-        <span className="msub">{'$\\tau = \\vec{r} \\times \\vec{F}$ · Descomposición ortogonal y brazo de momento'}</span>
+        <span className="msub">{'$\\vec{\\tau} = \\vec{r} \\times \\vec{F}$ (Ecs. 2.3–2.5) · componentes normales y brazo de momento'}</span>
         <span className="mslide-count">2 / 2</span>
       </div>
       <div className="content-grid">
         <div className="theory">
           <div className="card active">
             <div className="card-hdr">
-              <span className="icon">🔄</span> Definición de torque o momento
+              <span className="icon">🔄</span> ¿Qué es un torque?
             </div>
             <div className="card-body">
               <p style={{ fontSize: '.7rem' }}>
-                {'Una fuerza $\\vec{F}$ aplicada a una distancia $\\vec{r}$ de un eje articular genera un '}<strong>torque</strong>{' (producto cruz vectorial):'}
+                {'Las fuerzas cambian el movimiento lineal; los torques, el angular. Una fuerza $\\vec{F}$ aplicada en el extremo de $\\vec{r}$ (desde el eje) produce el '}<strong>torque</strong>{' (Ec. 2.3):'}
               </p>
               <div className="eq-block">
                 {'\\[ \\vec{\\tau} = \\vec{r} \\times \\vec{F} \\]'}
               </div>
               <p style={{ fontSize: '.64rem' }}>
-                Su magnitud alrededor del eje perpendicular al plano es:
+                {'Con $\\theta$ el ángulo de $\\vec{r}$ a $\\vec{F}$, solo cuentan la componente de $\\vec{r}$ normal a $\\vec{F}$ ($r\'$) o la de $\\vec{F}$ normal a $\\vec{r}$ ($F\'$) (Fig. 2.3):'}
               </p>
               <div className="eq-block">
-                {'\\[ \\tau = r\\,F\\,\\sin\\theta = r_{\\perp}\\,F = r\\,F_{\\perp} \\]'}
+                {'\\[ \\tau_z = r\\,F\\,\\sin\\theta = r\'\\,F = r\\,F\' \\]'}
               </div>
               <p style={{ fontSize: '.62rem', color: 'var(--ink-3)' }}>
-                Fuerza hacia $+y$ a distancia $+r$ produce giro <strong>antihorario ($\tau &gt; 0$)</strong>. Fuerza hacia $-y$ produce giro <strong>horario ($\tau &lt; 0$)</strong>.
+                {'Para $0^\\circ < \\theta < 180^\\circ$ el torque es positivo (giro antihorario); para $180^\\circ < \\theta < 360^\\circ$, negativo (horario) (Fig. 2.2). El eje se elige con astucia para simplificar el problema. En el Cap. 4 estos torques se llamarán «momentos» al tratar la flexión de los objetos.'}
               </p>
             </div>
           </div>
           <div className="card">
             <div className="card-hdr">
-              <span className="icon">✂️</span> Desglose de componentes ortogonales
+              <span className="icon">✂️</span> Componentes normales (Fig. 2.3)
             </div>
             <div className="card-body">
               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '.64rem' }}>
                 <span className="pill">
-                  <b>{'F⊥ = F sinθ:'}</b> Componente tangencial útil (genera el 100% del torque angular).
+                  <b>{"F′ = F sen θ:"}</b> componente normal a r: genera todo el torque.
                 </span>
                 <span className="pill">
-                  <b>{'F∥ = F cosθ:'}</b> Componente radial que comprime o distrae la articulación (0 torque).
+                  <b>{'F∥ = F cos θ:'}</b> componente paralela a r: no da torque (comprime o separa la articulación).
                 </span>
                 <span className="pill">
-                  <b>{'r⊥ = r sinθ:'}</b> Brazo de palanca perpendicular a la línea de acción de la fuerza.
+                  <b>{"r′ = r sen θ:"}</b> brazo de momento, perpendicular a la línea de acción.
                 </span>
               </div>
-              <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '.3rem' }}>
+              <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '0.62rem' }}>
                 {'Cuando $\\theta = 90^\\circ$, $\\sin(90^\\circ) = 1$ y el torque es máximo ($\\tau = r F$). Cuando $\\theta = 0^\\circ$ o $180^\\circ$, el torque es nulo y la fuerza es puramente compresiva o distractiva.'}
               </p>
             </div>
@@ -133,10 +135,10 @@ export default function Slide2({
             </div>
             <div className="card-body">
               <p style={{ fontSize: '.64rem' }}>
-                {'Aplicación directa del torque: si un cuerpo está en equilibrio bajo '}<strong>tres fuerzas</strong>{' no paralelas ('}<span style={{ color: '#2d7d4f', fontWeight: 700 }}>N</span>{', '}<span style={{ color: '#0d6e64', fontWeight: 700 }}>M</span>{', '}<span style={{ color: '#a92a1e', fontWeight: 700 }}>R</span>{'), sus líneas de acción '}<strong>concurren en un punto P</strong>.
+                {'Aplicación directa del torque: si un cuerpo está en equilibrio bajo '}<strong>tres fuerzas</strong>{' no paralelas ('}<span style={{ color: C.coronal, fontWeight: 700 }}>N</span>{', '}<span style={{ color: C.teal, fontWeight: 700 }}>M</span>{', '}<span style={{ color: C.blood, fontWeight: 700 }}>R</span>{'), sus líneas de acción '}<strong>concurren en un punto P</strong>.
               </p>
               <ThreeForceDiagram step={4} />
-              <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '.3rem' }}>
+              <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '0.62rem' }}>
                 {'Eligiendo el eje de momentos en P, $N$ y $M$ dan $\\tau = 0$ porque su $\\vec{r}$ es (anti)paralelo a su $\\vec{F}$ — el mismo caso $\\theta = 0^\\circ/180^\\circ$ de este visor. Como $\\sum\\vec{\\tau} = 0$, la reacción $\\vec{R}$ también debe pasar por P. El triángulo de la derecha cierra ($\\sum\\vec{F} = 0$) y fija las magnitudes.'}
               </p>
             </div>
@@ -144,7 +146,7 @@ export default function Slide2({
           <div className="apuntes">
             <div className="a-hdr"><span>✍️</span> Apunte de cátedra</div>
             <div className="a-text" id="info-text-2">
-              {'En la anatomía humana, los tendones suelen insertarse con ángulos $\\theta$ pequeños (ej. bíceps a ~15° en extensión casi completa), lo que reduce la componente útil $F_\\perp$ a solo un ~26% de la fuerza total, disipando el resto en compresión articular protectora.'}
+              {"Si $\\vec{r}$ y $\\vec{F}$ son paralelos ($\\theta = 0^\\circ$) o antiparalelos ($180^\\circ$) el torque es nulo; con $\\theta = 90^\\circ$ es máximo, $rF$. Ejemplo ilustrativo: un tendón que tira a ~15° del hueso solo aprovecha $\\sin 15^\\circ \\approx 26\\,\\%$ de su fuerza; el resto comprime la articulación."}
             </div>
           </div>
         </div>
@@ -153,15 +155,14 @@ export default function Slide2({
           {/* Panel HUD Colapsable */}
           <HudPanel
             title="TORQUE VECTORIAL"
-            badge={`${tau >= 0 ? '+' : ''}${tau.toFixed(1)} N·m`}
-            icon="🔄"
+            badge={`${tau >= 0 ? '+' : ''}${fx(tau, 1)} N·m`}
             footer="💡 Arrastra la punta de la flecha o ajusta los controles inferiores"
           >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '0.58rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '0.62rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Torque Neto (τ):</span>
                 <b style={{ color: tauColor, fontFamily: 'JetBrains Mono, monospace' }}>
-                  {tau >= 0 ? '+' : ''}{tau.toFixed(2).replace('.', ',')} N·m
+                  {tau >= 0 ? '+' : ''}{fx(tau, 2)} N·m
                 </b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
@@ -172,15 +173,15 @@ export default function Slide2({
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Brazo Perpendicular (r⊥):</span>
-                <b style={{ fontFamily: 'JetBrains Mono, monospace', color: '#d97706' }}>{rPerp.toFixed(3)} m ({(rPerp * 100).toFixed(1)} cm)</b>
+                <b style={{ fontFamily: 'JetBrains Mono, monospace', color: C.amber }}>{fx(rPerp, 3)} m ({fx((rPerp * 100), 1)} cm)</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '2px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Fuerza Tangencial (F⊥):</span>
-                <b style={{ color: tauColor, fontFamily: 'JetBrains Mono, monospace' }}>{Math.abs(fPerp).toFixed(1)} N ({((Math.abs(fPerp) / Math.max(1, fN)) * 100).toFixed(0)}%)</b>
+                <b style={{ color: tauColor, fontFamily: 'JetBrains Mono, monospace' }}>{fx(Math.abs(fPerp), 1)} N ({((Math.abs(fPerp) / Math.max(1, fN)) * 100).toFixed(0)}%)</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Fuerza Radial (F∥):</span>
-                <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>{fParallel.toFixed(1)} N ({fParallel >= 0 ? 'Tracción' : 'Compresión'})</b>
+                <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>{fx(fParallel, 1)} N ({fParallel >= 0 ? 'Tracción' : 'Compresión'})</b>
               </div>
             </div>
           </HudPanel>
@@ -192,7 +193,7 @@ export default function Slide2({
             onUpdate={handleUpdate}
           />
           <div className="prof-controls">
-            <span className="badge">2.1 · Torque</span>
+            <span className="badge">§2.1 · Torque</span>
 
             {/* Botones de Presets */}
             {(() => {
@@ -209,11 +210,11 @@ export default function Slide2({
                     onClick={() => setPreset('optimal')}
                     style={{
                       background: isOptimal ? 'var(--teal)' : 'var(--paper-2)',
-                      color: isOptimal ? '#fff' : 'var(--ink)',
+                      color: isOptimal ? C.card : 'var(--ink)',
                       border: `1px solid ${isOptimal ? 'var(--teal)' : 'var(--line)'}`,
                       borderRadius: '3px',
                       padding: '2px 6px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: isOptimal ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -226,11 +227,11 @@ export default function Slide2({
                     onClick={() => setPreset('acute')}
                     style={{
                       background: isAcute ? 'var(--teal)' : 'var(--paper-2)',
-                      color: isAcute ? '#fff' : 'var(--ink)',
+                      color: isAcute ? C.card : 'var(--ink)',
                       border: `1px solid ${isAcute ? 'var(--teal)' : 'var(--line)'}`,
                       borderRadius: '3px',
                       padding: '2px 6px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: isAcute ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -243,11 +244,11 @@ export default function Slide2({
                     onClick={() => setPreset('biceps')}
                     style={{
                       background: isBiceps ? 'var(--teal)' : 'var(--paper-2)',
-                      color: isBiceps ? '#fff' : 'var(--ink)',
+                      color: isBiceps ? C.card : 'var(--ink)',
                       border: `1px solid ${isBiceps ? 'var(--teal)' : 'var(--line)'}`,
                       borderRadius: '3px',
                       padding: '2px 6px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: isBiceps ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -260,11 +261,11 @@ export default function Slide2({
                     onClick={() => setPreset('zero')}
                     style={{
                       background: isZero ? 'var(--teal)' : 'var(--paper-2)',
-                      color: isZero ? '#fff' : 'var(--ink)',
+                      color: isZero ? C.card : 'var(--ink)',
                       border: `1px solid ${isZero ? 'var(--teal)' : 'var(--line)'}`,
                       borderRadius: '3px',
                       padding: '2px 6px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: isZero ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -277,11 +278,11 @@ export default function Slide2({
                     onClick={() => setPreset('reverse')}
                     style={{
                       background: isReverse ? 'var(--teal)' : 'var(--paper-2)',
-                      color: isReverse ? '#fff' : 'var(--ink)',
+                      color: isReverse ? C.card : 'var(--ink)',
                       border: `1px solid ${isReverse ? 'var(--teal)' : 'var(--line)'}`,
                       borderRadius: '3px',
                       padding: '2px 6px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: isReverse ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -293,7 +294,7 @@ export default function Slide2({
               );
             })()}
 
-            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', fontSize: '0.60rem', marginLeft: 'auto', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '0.62rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto', flexWrap: 'wrap' }}>
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
                 <span>θ:</span>
                 <input
@@ -343,7 +344,7 @@ export default function Slide2({
                   border: '1px solid var(--line)',
                   borderRadius: '4px',
                   padding: '2px 7px',
-                  fontSize: '0.60rem',
+                  fontSize: '0.62rem',
                   cursor: 'pointer',
                   color: 'var(--ink)',
                 }}

@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
+import { C } from './palette';
 import SpineCanvas from './SpineCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
 import { AnimateButton } from './AnimateButton';
 import { useHarmonicClock } from '../cap1/three/useHarmonicClock';
 import type { Engine } from './useEngine';
+import { G, backStatics, TABLE_2_3 } from './staticsModels';
+import { fx } from './ab';
 
 export default function Slide9({
   isActive,
@@ -18,8 +21,8 @@ export default function Slide9({
   // Los letreros del visor los enciende el texto de abajo, no un botón
   // sobre el lienzo: el mando cuelga del párrafo que los explica.
   const [showLabels, setShowLabels] = useState<boolean>(false);
-  const [handLoadKg, setHandLoadKg] = useState<number>(15);
-  const [bodyMassKg, setBodyMassKg] = useState<number>(70);
+  const [handLoadKg, setHandLoadKg] = useState<number>(0);
+  const [bodyMassKg, setBodyMassKg] = useState<number>(90);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
 
   // Ciclo de levantamiento: el tronco se inclina (α≈78°) y se endereza (α≈8°).
@@ -29,27 +32,19 @@ export default function Slide9({
     setTrunkAngleDeg(8 + 70 * s);
   });
 
-  const g = 9.81;
-  const wTrunkN = 0.65 * bodyMassKg * g;
-  const wLoadN = handLoadKg * g;
-  const sinAlpha = Math.sin((trunkAngleDeg * Math.PI) / 180);
-  const cosAlpha = Math.cos((trunkAngleDeg * Math.PI) / 180);
-  const sinThetaM = Math.sin((12 * Math.PI) / 180);
-  const cosThetaM = Math.cos((12 * Math.PI) / 180);
-
-  const tauResNm = (wTrunkN * 0.38 + wLoadN * 0.50) * sinAlpha;
-  const fErectorN = Math.max(15, tauResNm / (0.05 * sinThetaM));
-  const fErectorKgf = fErectorN / g;
-
-  const rCompN = fErectorN * cosThetaM + (wTrunkN + wLoadN) * cosAlpha;
-  const rCompKgf = rCompN / g;
-  const rShearN = Math.abs((wTrunkN + wLoadN) * sinAlpha - fErectorN * sinThetaM);
+  // Modelo del libro (Ecs. 2.41–2.46): θ desde la horizontal = 90° − inclinación.
+  const thetaDeg = 90 - trunkAngleDeg;
+  const WbN = bodyMassKg * G;
+  const back = backStatics(thetaDeg, WbN, handLoadKg * G);
+  const fErectorN = back.M;
+  const rCompN = back.R;
+  const rShearN = back.shear;
 
   const handleReset = () => {
     setIsAnimating(false);
     setTrunkAngleDeg(60);
-    setHandLoadKg(15);
-    setBodyMassKg(70);
+    setHandLoadKg(0);
+    setBodyMassKg(90);
   };
 
   return (
@@ -57,7 +52,7 @@ export default function Slide9({
       <div className="module-header">
         <span className="mnum">D1</span>
         <h2 className="mtitle">La columna y el erector de la espina</h2>
-        <span className="msub">Inclinación del tronco · La gran desventaja mecánica lumbar</span>
+        <span className="msub">Flexión y levantamiento · fuerzas sobre la quinta vértebra lumbar (Ecs. 2.41–2.46)</span>
         <span className="mslide-count">1 / 2</span>
       </div>
       <div className="content-grid">
@@ -68,43 +63,49 @@ export default function Slide9({
             </div>
             <div className="card-body">
               <p style={{ fontSize: '.7rem' }}>
-                {'Al inclinar el tronco hacia adelante en un ángulo $\\alpha$, el peso del torso ($W_1 \\approx 0{,}65\\, W$) y cualquier carga en las manos ($W_2$) generan un gran torque flexor alrededor de L5-S1:'}
+                {'La columna tiene 33 vértebras (26 huesos): 7 cervicales, 12 torácicas, 5 lumbares, 5 fusionadas en el sacro y 4 en el coxis. Las curvas torácica y sacra son primarias (posición fetal); la cervical (a los tres meses) y la lumbar (al aprender a caminar) son secundarias. Desviaciones del ángulo lumbosacro de $\\sim 30^\\circ$ pueden doler.'}
               </p>
-              <div className="eq-block">
-                {'\\[ \\tau_{\\text{res}} = (W_1\\, d_1 + W_2\\, d_2)\\, \\sin\\alpha \\]'}
+              <p style={{ fontSize: '.66rem' }}>
+                {'Modelo (Fig. 2.41): la columna es una barra rígida a $\\theta$ de la horizontal, articulada en el disco lumbosacro. $W_1 = 0{,}4\\,W_b$ (tronco) actúa a $L/2$; $W_2 = 0{,}2\\,W_b$ (brazos y cabeza, más lo levantado) en $L$; el erector de la columna, a $2L/3$ y $12^\\circ$ de ella:'}
+              </p>
+              <div className="eq-block" style={{ fontSize: '.72rem' }}>
+                {'\\[ \\tau_z = \\frac{2L}{3}\\sin 12^\\circ\\,M - \\frac{L}{2}\\cos\\theta\\,(0{,}4\\,W_b) - L\\cos\\theta\\,(0{,}2\\,W_b) = 0 \\]'}
               </div>
-              <p style={{ fontSize: '.64rem' }}>
-                {'Donde $d_1 \\approx 38\\text{ cm}$ y $d_2 \\approx 50\\text{ cm}$.'}
-              </p>
-            
-              <div style={{ marginTop: '.4rem' }}>
+              <div style={{ marginTop: '0.62rem' }}>
                 <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
-                  <b>🏷️ Rotular F_m, W₁ y W₂</b>
+                  <b>Rotular M, W₁ y W₂</b>
                 </TheoryToggle>
               </div>
-              <TheoryCue>Etiqueta la fuerza del erector espinal frente a los dos pesos que debe equilibrar: tronco y carga en las manos.</TheoryCue>
+              <TheoryCue>Etiqueta la fuerza del erector de la columna frente a los dos pesos que debe equilibrar: tronco y brazos, cabeza y carga.</TheoryCue>
             </div>
           </div>
           <div className="card">
             <div className="card-hdr">
-              <span className="icon">⚡</span> La fuerza del músculo erector espinal
+              <span className="icon">📋</span> Tabla 2.3 · Fuerzas en unidades de W<sub>b</sub>
             </div>
             <div className="card-body">
               <p style={{ fontSize: '.64rem' }}>
-                {'El músculo erector de la espina actúa con un brazo de palanca minúsculo ($d_m \\approx 5\\text{ cm}$) y un ángulo muy cerrado ($\\theta_m \\approx 12^\\circ$):'}
+                {'Para $\\theta = 30^\\circ$ (flexión profunda): $M = 2{,}5\\,W_b$, $R_x = 2{,}38$, $R_y = 1{,}37$, $\\phi = 30^\\circ$ y $R = 2{,}74\\,W_b$; con $90\\text{ kg}$ ($880\\text{ N}$): $M \\approx 2200\\text{ N}$ y $R \\approx 2400\\text{ N}$. Levantando $0{,}2\\,W_b$ más ($180\\text{ N}$): $M = 3{,}74\\,W_b \\approx 3300\\text{ N}$ y $R = 4{,}07\\,W_b \\approx 3600\\text{ N}$.'}
               </p>
-              <div className="eq-block" style={{ fontSize: '.72rem' }}>
-                {'\\[ F_m = \\frac{\\tau_{\\text{res}}}{d_m\\, \\sin 12^\\circ} \\approx \\frac{\\tau_{\\text{res}}}{0{,}05 \\times 0{,}208} \\approx 96\\, \\tau_{\\text{res}} \\]'}
-              </div>
-              <p style={{ fontSize: '.62rem', color: 'var(--ink-3)' }}>
-                {'Levantar $20\\text{ kg}$ inclinado exige más de $\\mathbf{3500\\text{ N}}$ ($360\\text{ kgf}$) de tensión en los músculos lumbares.'}
+              <table className="data-mini">
+                <thead><tr><th>{'$\\theta$'}</th><th>M sin carga</th><th>{'M (+0,2 W'}<sub>b</sub>)</th><th>R sin carga</th><th>{'R (+0,2 W'}<sub>b</sub>)</th></tr></thead>
+                <tbody>
+                  {TABLE_2_3.map((r) => (
+                    <tr key={r.theta} aria-current={Math.round(thetaDeg) === r.theta ? 'true' : undefined} style={Math.round(thetaDeg) === r.theta ? { background: 'var(--teal-tint)' } : undefined}>
+                      <td>{r.theta}°</td><td>{fx(r.M0, 2)}</td><td>{fx(r.M1, 2)}</td><td>{fx(r.R0, 2)}</td><td>{fx(r.R1, 2)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '0.62rem' }}>
+                Multiplica por 880 N (90 kg). Los brazos de momento de los pesos y del músculo son parecidos, pero el músculo tira casi paralelo a la columna: a cualquier ángulo de flexión su torque es pequeño.
               </p>
             </div>
           </div>
           <div className="apuntes">
             <div className="a-hdr"><span>✍️</span> Apunte de cátedra</div>
             <div className="a-text" id="info-text-9">
-              La columna vertebral funciona como una grúa invertida: el brazo de palanca muscular de 5 cm frente al brazo de carga de 50 cm impone una relación de <b>10 a 1 en contra</b> de la musculatura de la espalda.
+              Los músculos deben ejercer <b>1100 N más</b> para equilibrar solo <b>180 N más</b>, y la reacción sobre la quinta lumbar crece 1200 N. Por eso nunca se debe doblar la espalda para levantar peso: se levanta con los músculos de las piernas.
             </div>
           </div>
         </div>
@@ -113,35 +114,34 @@ export default function Slide9({
           {/* Panel HUD Colapsable */}
           <HudPanel
             title="TENSIÓN LUMBAR"
-            badge={`Fm = ${fErectorN.toFixed(0)} N (${fErectorKgf.toFixed(0)} kgf)`}
-            icon="🏋️"
+            badge={`M = ${fx(fErectorN / WbN, 2)} Wb`}
             defaultCollapsed={true}
-            footer="💡 Usa los ajustes preestablecidos o desliza el ángulo de inclinación"
+            footer="💡 Los botones θ reproducen las filas de la Tabla 2.3; 18 kg de carga son 0,2 Wb para 90 kg"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.62rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
-                <span style={{ color: 'var(--ink-2)' }}>Tensión Erector (Fm):</span>
-                <b style={{ color: fErectorN > 2500 ? '#b02318' : '#0d6e64', fontFamily: 'JetBrains Mono, monospace' }}>
-                  {fErectorN.toFixed(0)} N ({fErectorKgf.toFixed(0)} kgf)
+                <span style={{ color: 'var(--ink-2)' }}>Erector de la columna (M):</span>
+                <b style={{ color: fErectorN > 2500 ? 'var(--blood)' : 'var(--teal)', fontFamily: 'var(--mono)' }}>
+                  {fx(fErectorN)} N ({fx(fErectorN / WbN, 2)} W<sub>b</sub>)
                 </b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
-                <span style={{ color: 'var(--ink-2)' }}>Compresión L5-S1:</span>
-                <b style={{ color: '#232c36', fontFamily: 'JetBrains Mono, monospace' }}>
-                  {rCompN.toFixed(0)} N ({rCompKgf.toFixed(0)} kgf)
+                <span style={{ color: 'var(--ink-2)' }}>Reacción en el sacro (R):</span>
+                <b style={{ color: 'var(--ink)', fontFamily: 'var(--mono)' }}>
+                  {fx(rCompN)} N ({fx(rCompN / WbN, 2)} W<sub>b</sub>)
                 </b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
-                <span style={{ color: 'var(--ink-2)' }}>Cizallamiento L5-S1:</span>
-                <b style={{ color: '#d97706', fontFamily: 'JetBrains Mono, monospace' }}>{rShearN.toFixed(0)} N</b>
+                <span style={{ color: 'var(--ink-2)' }}>Ángulo de R con la horizontal (φ):</span>
+                <b style={{ color: 'var(--amber)', fontFamily: 'var(--mono)' }}>{fx(back.phi)}°</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
-                <span style={{ color: 'var(--ink-2)' }}>Torque Flexor (τ_res):</span>
-                <b style={{ color: '#0d6e64', fontFamily: 'JetBrains Mono, monospace' }}>{tauResNm.toFixed(0)} N·m</b>
+                <span style={{ color: 'var(--ink-2)' }}>Pesos W₁ / W₂:</span>
+                <b style={{ color: 'var(--teal)', fontFamily: 'var(--mono)' }}>{fx(back.W1)} / {fx(back.W2)} N</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--ink-2)' }}>Desventaja mecánica:</span>
-                <b style={{ color: '#b02318', fontFamily: 'JetBrains Mono, monospace' }}>~10:1 (5 cm vs 50 cm)</b>
+                <span style={{ color: 'var(--ink-2)' }}>Ángulo de la columna (θ):</span>
+                <b style={{ color: 'var(--blood)', fontFamily: 'var(--mono)' }}>{fx(thetaDeg)}° de la horizontal</b>
               </div>
             </div>
           </HudPanel>
@@ -152,17 +152,17 @@ export default function Slide9({
             bodyMassKg={bodyMassKg}
           />
           <div className="prof-controls">
-            <span className="badge">2.4 · Columna</span>
-            <span>Fm = <b style={{ color: fErectorN > 2500 ? '#b02318' : '#0d6e64' }}>{fErectorN.toFixed(0)} N</b> ({fErectorKgf.toFixed(0)} kgf)</span>
+            <span className="badge">§2.3.4 · Espalda</span>
+            <span>M = <b style={{ color: fErectorN > 2500 ? 'var(--blood)' : 'var(--teal)' }}>{fx(fErectorN)} N</b> · R = {fx(rCompN)} N</span>
 
-            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>
+            <div style={{ display: 'flex', gap: '0.62rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>
               {/* Presets rápidos de postura */}
               <div style={{ display: 'inline-flex', gap: '1px', border: '1px solid var(--line)', borderRadius: '4px', padding: '1px', background: 'var(--paper-2)' }}>
                 {[
-                  { label: '0°', val: 0 },
-                  { label: '30°', val: 30 },
-                  { label: '60°', val: 60 },
-                  { label: '90°', val: 90 },
+                  { label: 'θ 90°', val: 0 },
+                  { label: 'θ 80°', val: 10 },
+                  { label: 'θ 60°', val: 30 },
+                  { label: 'θ 30°', val: 60 },
                 ].map((item) => (
                   <button
                     key={item.val}
@@ -170,11 +170,11 @@ export default function Slide9({
                     onClick={() => setTrunkAngleDeg(item.val)}
                     style={{
                       background: trunkAngleDeg === item.val ? 'var(--teal)' : 'transparent',
-                      color: trunkAngleDeg === item.val ? '#fff' : 'var(--ink)',
+                      color: trunkAngleDeg === item.val ? C.card : 'var(--ink)',
                       border: 'none',
                       borderRadius: '3px',
                       padding: '2px 5px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: trunkAngleDeg === item.val ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -186,16 +186,17 @@ export default function Slide9({
               </div>
 
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
-                <span>Ángulo:</span>
+                <span>θ:</span>
                 <input
                   type="range"
-                  min="0"
+                  min="20"
                   max="90"
-                  value={trunkAngleDeg}
-                  onChange={(e) => { setIsAnimating(false); setTrunkAngleDeg(parseFloat(e.target.value)); }}
+                  value={thetaDeg}
+                  aria-label="Ángulo de la columna con la horizontal"
+                  onChange={(e) => { setIsAnimating(false); setTrunkAngleDeg(90 - parseFloat(e.target.value)); }}
                   style={{ width: '50px' }}
                 />
-                <b style={{ fontFamily: 'JetBrains Mono, monospace', minWidth: '24px' }}>{trunkAngleDeg.toFixed(0)}°</b>
+                <b style={{ fontFamily: 'var(--mono)', minWidth: '24px' }}>{fx(thetaDeg)}°</b>
               </label>
 
               <AnimateButton playing={isAnimating} onToggle={() => setIsAnimating((a) => !a)} label="Levantar" />

@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
+import { C } from './palette';
+import { fx } from './ab';
 import JointTractionCanvas from './JointTractionCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
 import HudPanel from './HudPanel';
+import KatexHtml from './KatexHtml';
 import type { Engine } from './useEngine';
 
 interface TractionPreset {
@@ -89,7 +92,7 @@ export default function Slide12({
       <div className="module-header">
         <span className="mnum">E2</span>
         <h2 className="mtitle">Tracción articular y estática</h2>
-        <span className="msub">Aparatos de tracción cervical y descomposición ortogonal de fuerzas terapéuticas</span>
+        <span className="msub">Contenido complementario · descomposición de una fuerza de tracción (cf. Problema 2.14, tracción de Russell)</span>
         <span className="mslide-count">2 / 2</span>
       </div>
       <div className="content-grid">
@@ -112,9 +115,9 @@ export default function Slide12({
                 {'Un ángulo $\\beta \\approx 20^\\circ\\text{--}25^\\circ$ maximiza la separación de los agujeros de conjunción neurales ($\\Delta h \\approx 1\\text{--}2\\text{ mm}$) sin sobrecargar los ligamentos longitudinales.'}
               </p>
             
-              <div style={{ marginTop: '.4rem' }}>
+              <div style={{ marginTop: '0.62rem' }}>
                 <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
-                  <b>🏷️ Rotular T y sus componentes</b>
+                  <b>Rotular T y sus componentes</b>
                 </TheoryToggle>
               </div>
               <TheoryCue>Descompone la tracción sobre el modelo y etiqueta <b>F<sub>ax</sub></b> y <b>F<sub>tr</sub></b> junto a la fuerza aplicada.</TheoryCue>
@@ -130,10 +133,13 @@ export default function Slide12({
               </p>
             </div>
           </div>
+          <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', margin: '0 .2rem .5rem' }}>
+            El capítulo no trata la tracción cervical en el texto: es una aplicación de la descomposición de fuerzas de §2.1 (el libro propone la tracción de Russell en el Problema 2.14). Cargas, ángulos y aperturas de esta diapositiva son valores clínicos ilustrativos.
+          </p>
           <div className="apuntes">
             <div className="a-hdr"><span>✍️</span> Apunte de cátedra</div>
             <div className="a-text" id="info-text-12">
-              <span dangerouslySetInnerHTML={{ __html: curPreset.desc }} />
+              <KatexHtml html={curPreset.desc} />
             </div>
           </div>
         </div>
@@ -143,29 +149,28 @@ export default function Slide12({
           <HudPanel
             title="TRACCIÓN CERVICAL"
             badge={`T = ${tN.toFixed(0)} N (${tractionKg} kg)`}
-            icon="📐"
             footer="💡 Modifica el ángulo y la carga para observar la descompresión milimétrica del disco"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.62rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Tensión Cable (T):</span>
-                <b style={{ color: '#0d8577', fontFamily: 'JetBrains Mono, monospace' }}>{tN.toFixed(0)} N ({tractionKg} kg)</b>
+                <b style={{ color: C.teal, fontFamily: 'JetBrains Mono, monospace' }}>{tN.toFixed(0)} N ({tractionKg} kg)</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Descompresión Axial:</span>
-                <b style={{ color: '#059669', fontFamily: 'JetBrains Mono, monospace' }}>{fAxialN.toFixed(0)} N</b>
+                <b style={{ color: C.coronal, fontFamily: 'JetBrains Mono, monospace' }}>{fAxialN.toFixed(0)} N</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Flexión Transversal:</span>
-                <b style={{ color: '#d97706', fontFamily: 'JetBrains Mono, monospace' }}>{fTransN.toFixed(0)} N</b>
+                <b style={{ color: C.amber, fontFamily: 'JetBrains Mono, monospace' }}>{fTransN.toFixed(0)} N</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Apertura Discal (Δh):</span>
-                <b style={{ color: '#059669', fontFamily: 'JetBrains Mono, monospace' }}>+{deltaH_mm.toFixed(2)} mm</b>
+                <b style={{ color: C.coronal, fontFamily: 'JetBrains Mono, monospace' }}>+{fx(deltaH_mm, 2)} mm</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Ángulo de Tiro (β):</span>
-                <b style={{ color: '#2563eb', fontFamily: 'JetBrains Mono, monospace' }}>{angleDeg}°</b>
+                <b style={{ color: C.series3, fontFamily: 'JetBrains Mono, monospace' }}>{angleDeg}°</b>
               </div>
             </div>
           </HudPanel>
@@ -176,10 +181,10 @@ export default function Slide12({
             tractionType="cervical"
           />
           <div className="prof-controls">
-            <span className="badge">2.5 · Tracción</span>
-            <span>T = <b style={{ color: '#0d8577' }}>{tN.toFixed(0)} N</b> · F_axial = {fAxialN.toFixed(0)} N</span>
+            <span className="badge">Complementario · Tracción</span>
+            <span>T = <b style={{ color: C.teal }}>{tN.toFixed(0)} N</b> · F<sub>axial</sub> = {fAxialN.toFixed(0)} N</span>
 
-            <div style={{ display: 'flex', gap: '0.45rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>
+            <div style={{ display: 'flex', gap: '0.62rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto' }}>
               {/* Presets de dosimetría */}
               <div style={{ display: 'inline-flex', gap: '2px', border: '1px solid var(--line)', borderRadius: '4px', padding: '1px', background: 'var(--paper-2)' }}>
                 {TRACTION_PRESETS.map((p) => (
@@ -189,11 +194,11 @@ export default function Slide12({
                     onClick={() => handleSelectPreset(p)}
                     style={{
                       background: activePresetId === p.id ? 'var(--teal)' : 'transparent',
-                      color: activePresetId === p.id ? '#fff' : 'var(--ink)',
+                      color: activePresetId === p.id ? C.card : 'var(--ink)',
                       border: 'none',
                       borderRadius: '3px',
                       padding: '3px 6px',
-                      fontSize: '0.56rem',
+                      fontSize: '0.62rem',
                       fontWeight: activePresetId === p.id ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',

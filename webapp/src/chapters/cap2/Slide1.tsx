@@ -1,4 +1,6 @@
 import React, { useState, Suspense } from 'react';
+import { C } from './palette';
+import { fx } from './ab';
 import NewtonCanvas from './NewtonCanvas';
 import type { FocusForce } from './NewtonCanvas';
 import { TheoryToggle, TheoryCue } from './TheoryToggle';
@@ -151,6 +153,9 @@ export default function Slide1({
               <div className="eq-block">
                 {'\\[ \\sum \\vec{\\tau} = 0 \\quad\\iff\\quad \\sum \\tau_x = 0, \\; \\sum \\tau_y = 0, \\; \\sum \\tau_z = 0 \\]'}
               </div>
+              <p style={{ fontSize: '.64rem', color: 'var(--ink-2)' }}>
+                {'Si no se anulan, cambian el movimiento lineal y el angular (Ecs. 2.6–2.7): $\\vec{F} = m\\vec{a} = d\\vec{p}/dt$ y $\\vec{\\tau} = I\\,d\\vec{\\Omega}/dt = d\\vec{L}/dt$. En estática ambos lados valen cero; el movimiento muy lento se trata igual (cuasiestática).'}
+              </p>
               <p style={{ fontSize: '.64rem', color: 'var(--ink-3)' }}>
                 Que la suma se anule <em>eje a eje</em> es lo que permite resolver el problema: cada fuerza se parte en sus proyecciones ortogonales y se suman por separado.
               </p>
@@ -159,7 +164,7 @@ export default function Slide1({
                 onClick={() => setShowComponents((v) => !v)}
                 title="Proyecta cada fuerza sobre los ejes en el visor 3D"
               >
-                <b>⊹ Descomponer en Fx y Fy</b>
+                <b>Descomponer en F<sub>x</sub> y F<sub>y</sub></b>
               </TheoryToggle>
               <TheoryCue>
                 Dibuja en el modelo la proyección de cada fuerza sobre los ejes. El equilibrio rige
@@ -170,43 +175,43 @@ export default function Slide1({
           </div>
           <div className="card">
             <div className="card-hdr">
-              <span className="icon">🦴</span> DCL Articular: El Hombro como Ejemplo
+              <span className="icon">🦴</span> DCL articular: el hombro como ejemplo
             </div>
             <div className="card-body">
               <p style={{ fontSize: '.66rem', color: 'var(--ink-2)' }}>
                 En la abducción del brazo, interactúan tres fuerzas concurrentes fundamentales:
               </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '.62rem', marginTop: '.25rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '.62rem', marginTop: '0.62rem' }}>
                 <TheoryToggle
                   on={focusForce === 'F1'}
                   onClick={() => toggleForce('F1')}
-                  accent="#0d6e64"
+                  accent={C.teal}
                   title="Aísla F₁ en el visor 3D"
                 >
-                  <b>F₁ (Músculo Deltoides):</b>&nbsp;Tensión activa que eleva y sostiene el húmero.
+                  <b>F₁ (deltoides):</b>&nbsp;tensión que abduce y sostiene el húmero.
                 </TheoryToggle>
                 <TheoryToggle
                   on={focusForce === 'F2'}
                   onClick={() => toggleForce('F2')}
-                  accent="#d97706"
+                  accent={C.amber}
                   title="Aísla F₂ en el visor 3D"
                 >
-                  <b>F₂ (Gravedad / Carga):</b>&nbsp;Peso del miembro superior y objetos sostenidos.
+                  <b>F₂ (peso):</b>&nbsp;peso del brazo y de lo que sostiene la mano.
                 </TheoryToggle>
                 <TheoryToggle
                   on={focusForce === 'R'}
                   onClick={() => toggleForce('R')}
-                  accent="#b02318"
+                  accent={C.blood}
                   title="Aísla R en el visor 3D"
                 >
-                  <b>R (Reacción Glenoidea):</b>&nbsp;Compresión de la fosa glenoidea que evita la luxación.
+                  <b>R (reacción glenoidea):</b>&nbsp;fuerza de la cavidad glenoidea sobre la cabeza del húmero.
                 </TheoryToggle>
               </div>
               <TheoryCue>
                 Pincha una fuerza para aislarla en el modelo; vuelve a pincharla para ver las tres a
                 la vez. También puedes{' '}
                 <TheoryToggle on={showLabels} onClick={toggleLabels} title="Rotula las fuerzas sobre el modelo">
-                  <b>🏷️ rotularlas</b>
+                  <b>rotularlas</b>
                 </TheoryToggle>{' '}
                 o cambiar entre{' '}
                 <TheoryToggle
@@ -218,8 +223,8 @@ export default function Slide1({
                 </TheoryToggle>{' '}
                 y el hueso real: el DCL es precisamente esa abstracción.
               </TheoryCue>
-              <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '.35rem' }}>
-                Si <b>ΣF ≠ 0</b>, la fuerza neta resultante <b>F_net = m·a</b> acelera el segmento o provoca inestabilidad / subluxación articular.
+              <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '0.62rem' }}>
+                {'Sostener el brazo horizontal con un peso (Fig. 2.21): con parámetros razonables, la componente $x$ de la fuerza del deltoides es $\\approx 4$ veces la componente $y$, y por eso esa postura no es estable. La glenohumeral es poco profunda: gira $\\sim 249^\\circ$ en flexión/extensión, $\\sim 182^\\circ$ en abducción/aducción y $\\sim 131^\\circ$ en rotación (Tabla 1.10), a costa de luxarse con facilidad.'}
               </p>
             </div>
           </div>
@@ -232,7 +237,7 @@ export default function Slide1({
                 Si <strong>solo tres fuerzas</strong> no paralelas mantienen un cuerpo en equilibrio, sus <strong>líneas de acción concurren en un punto P</strong>. Tomando el eje de momentos en P, dos de ellas dan torque nulo (su <span className="tag">r ∥ F</span>); por <span className="tag">Στ = 0</span> la tercera también ⟹ su recta pasa por P.
               </p>
               <ThreeForceDiagram step={tfStep} />
-              <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginTop: '.3rem', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginTop: '0.62rem', flexWrap: 'wrap' }}>
                 <button
                   type="button"
                   onClick={() => setTfStep((s) => (s > 1 ? ((s - 1) as 1 | 2 | 3 | 4) : s))}
@@ -251,7 +256,7 @@ export default function Slide1({
                 >
                   ‹
                 </button>
-                <span style={{ fontSize: '.58rem', fontFamily: 'JetBrains Mono, monospace', color: 'var(--teal-deep)', fontWeight: 700 }}>
+                <span style={{ fontSize: '0.62rem', fontFamily: 'JetBrains Mono, monospace', color: 'var(--teal-deep)', fontWeight: 700 }}>
                   Paso {tfStep} / 4
                 </span>
                 <button
@@ -272,11 +277,11 @@ export default function Slide1({
                 >
                   ›
                 </button>
-                <span style={{ fontSize: '.58rem', color: 'var(--ink-3)', flex: 1, minWidth: '10ch' }}>
+                <span style={{ fontSize: '0.62rem', color: 'var(--ink-3)', flex: 1, minWidth: '10ch' }}>
                   {TF_STEP_LABELS[tfStep - 1]}
                 </span>
               </div>
-              <div style={{ marginTop: '.35rem' }}>
+              <div style={{ marginTop: '0.62rem' }}>
                 <TheoryToggle
                   on={showPolygon}
                   onClick={() => setShowPolygon((v) => !v)}
@@ -303,29 +308,28 @@ export default function Slide1({
           {/* Panel HUD Colapsable */}
           <HudPanel
             title="EQUILIBRIO ESTÁTICO"
-            badge={autoEquilibrium ? 'ΣF = 0 (ESTÁTICA)' : `${fNetMag.toFixed(1)} N (DINÁMICA)`}
-            icon="⚖️"
+            badge={autoEquilibrium ? 'ΣF = 0 (ESTÁTICA)' : `${fx(fNetMag, 1)} N (DINÁMICA)`}
             footer="💡 Arrastra el modelo para rotarlo; usa los presets o los controles inferiores para cambiar las fuerzas"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.62rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
-                <span style={{ color: '#0d6e64' }}>Músculo (F₁):</span>
+                <span style={{ color: C.teal }}>Músculo (F₁):</span>
                 <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>{f1} N @ {theta1}°</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
-                <span style={{ color: '#d97706' }}>Carga (F₂):</span>
+                <span style={{ color: C.amber }}>Carga (F₂):</span>
                 <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>{f2} N @ {theta2}°</b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '3px' }}>
-                <span style={{ color: '#b02318' }}>Reacción (R):</span>
+                <span style={{ color: C.blood }}>Reacción (R):</span>
                 <b style={{ fontFamily: 'JetBrains Mono, monospace' }}>
-                  {autoEquilibrium ? `${rMag.toFixed(1)} N @ ${rAngle.toFixed(0)}°` : 'Inactiva (Dinámica)'}
+                  {autoEquilibrium ? `${fx(rMag, 1)} N @ ${rAngle.toFixed(0)}°` : 'Inactiva (Dinámica)'}
                 </b>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Fuerza Neta:</span>
-                <b style={{ color: autoEquilibrium ? '#0d6e64' : '#b02318', fontFamily: 'JetBrains Mono, monospace' }}>
-                  {autoEquilibrium ? '0,0 N (Equilibrio)' : `${fNetMag.toFixed(1)} N (Acelera)`}
+                <b style={{ color: autoEquilibrium ? C.teal : C.blood, fontFamily: 'JetBrains Mono, monospace' }}>
+                  {autoEquilibrium ? '0,0 N (Equilibrio)' : `${fx(fNetMag, 1)} N (Acelera)`}
                 </b>
               </div>
             </div>
@@ -353,7 +357,7 @@ export default function Slide1({
             )}
           </Suspense>
           <div className="prof-controls">
-            <span className="badge">2.1 · Newton</span>
+            <span className="badge">§2.1 · Equilibrio</span>
 
             {/* Botones de Escenarios Preestablecidos */}
             {(() => {
@@ -371,11 +375,11 @@ export default function Slide1({
                     title="Escenario glenohumeral: húmero en abducción de 60°"
                     style={{
                       background: isGleno ? 'var(--teal)' : 'var(--paper-2)',
-                      color: isGleno ? '#ffffff' : 'var(--ink)',
+                      color: isGleno ? C.card : 'var(--ink)',
                       border: `1px solid ${isGleno ? 'var(--teal)' : 'var(--line)'}`,
                       borderRadius: '3px',
                       padding: '2px 6px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: isGleno ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -390,11 +394,11 @@ export default function Slide1({
                     title="Escenario con húmero en abducción de 90° y carga"
                     style={{
                       background: isOrtho ? 'var(--teal)' : 'var(--paper-2)',
-                      color: isOrtho ? '#ffffff' : 'var(--ink)',
+                      color: isOrtho ? C.card : 'var(--ink)',
                       border: `1px solid ${isOrtho ? 'var(--teal)' : 'var(--line)'}`,
                       borderRadius: '3px',
                       padding: '2px 6px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: isOrtho ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -409,11 +413,11 @@ export default function Slide1({
                     title="Equilibrio con fuerzas verticales y húmero en abducción de 90°"
                     style={{
                       background: isVertical ? 'var(--teal)' : 'var(--paper-2)',
-                      color: isVertical ? '#ffffff' : 'var(--ink)',
+                      color: isVertical ? C.card : 'var(--ink)',
                       border: `1px solid ${isVertical ? 'var(--teal)' : 'var(--line)'}`,
                       borderRadius: '3px',
                       padding: '2px 6px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: isVertical ? 700 : 500,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -427,26 +431,26 @@ export default function Slide1({
                     aria-pressed={isAsym}
                     title="Desequilibrio dinámico: húmero en abducción de 60° y subluxación anteroinferior"
                     style={{
-                      background: isAsym ? '#b02318' : 'var(--paper-2)',
-                      color: isAsym ? '#ffffff' : '#b02318',
-                      border: `1px solid ${isAsym ? '#b02318' : 'var(--line)'}`,
+                      background: isAsym ? C.blood : 'var(--paper-2)',
+                      color: isAsym ? C.card : C.blood,
+                      border: `1px solid ${isAsym ? '${C.blood}' : 'var(--line)'}`,
                       borderRadius: '3px',
                       padding: '2px 6px',
-                      fontSize: '0.58rem',
+                      fontSize: '0.62rem',
                       fontWeight: isAsym ? 700 : 600,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
                     }}
                   >
-                    ⚠️ Luxación
+                    Luxación
                   </button>
                 </div>
               );
             })()}
 
-            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', fontSize: '0.60rem', marginLeft: 'auto', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '0.62rem', alignItems: 'center', fontSize: '0.62rem', marginLeft: 'auto', flexWrap: 'wrap' }}>
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
-                <span style={{ color: '#0d6e64' }}>F₁:</span>
+                <span style={{ color: C.teal }}>F₁:</span>
                 <input
                   type="range"
                   min="10"
@@ -459,7 +463,7 @@ export default function Slide1({
               </label>
 
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
-                <span style={{ color: '#0d6e64' }}>θ₁:</span>
+                <span style={{ color: C.teal }}>θ₁:</span>
                 <input
                   type="range"
                   min="0"
@@ -472,7 +476,7 @@ export default function Slide1({
               </label>
 
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
-                <span style={{ color: '#d97706' }}>F₂:</span>
+                <span style={{ color: C.amber }}>F₂:</span>
                 <input
                   type="range"
                   min="10"
@@ -485,7 +489,7 @@ export default function Slide1({
               </label>
 
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
-                <span style={{ color: '#d97706' }}>θ₂:</span>
+                <span style={{ color: C.amber }}>θ₂:</span>
                 <input
                   type="range"
                   min="0"
@@ -530,7 +534,7 @@ export default function Slide1({
                   border: '1px solid var(--line)',
                   borderRadius: '4px',
                   padding: '2px 7px',
-                  fontSize: '0.60rem',
+                  fontSize: '0.62rem',
                   cursor: 'pointer',
                   color: 'var(--ink)',
                 }}
