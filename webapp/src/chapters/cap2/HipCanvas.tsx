@@ -633,7 +633,7 @@ export default function HipCanvas({
           backdropFilter: 'blur(4px)',
         }}
       >
-        📷 Cámara
+        Restablecer cámara
       </button>
 
       {/* Canvas 3D de React Three Fiber */}

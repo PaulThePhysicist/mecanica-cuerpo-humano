@@ -195,7 +195,7 @@ function TractionDosimetryGauge({
         {fAxialN.toFixed(0)} N
       </div>
       <div style={{ fontSize: '0.62rem', fontWeight: 700, color: isTherapeutic ? EMERALD_DECOMP : (isOverload ? RED_OVERLOAD : '#64748b') }}>
-        {isTherapeutic ? '✓ Rango Terapéutico Óptimo' : (isOverload ? '⚠️ Sobrecarga Ligamentosa' : 'Fuerza Sub-terapéutica')}
+        {isTherapeutic ? 'Rango terapéutico (ilustrativo)' : (isOverload ? 'Sobrecarga ligamentosa' : 'Fuerza subterapéutica')}
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.52rem', color: '#475569', marginTop: '4px', borderTop: '1px solid #e2e8f0', paddingTop: '3px' }}>

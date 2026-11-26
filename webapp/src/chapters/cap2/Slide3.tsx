@@ -170,7 +170,6 @@ export default function Slide3({
           <HudPanel
             title="PALANCAS ANATÓMICAS"
             badge={leverClass === 1 ? '1ª CLASE' : (leverClass === 2 ? '2ª CLASE (VM > 1)' : '3ª CLASE (VM < 1)')}
-            icon="⚖️"
             footer="💡 Selecciona la clase para comparar fulcro y brazos de palanca"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '0.58rem' }}>

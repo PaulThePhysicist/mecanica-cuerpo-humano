@@ -129,7 +129,6 @@ export default function Slide4({
           <HudPanel
             title="MECÁNICA DEL BÍCEPS"
             badge={`M = ${fMuscN.toFixed(0)} N (${fx(fMuscKgf, 1)} kgf)`}
-            icon="💪"
             footer="💡 Rota la escena 3D y ajusta la carga o la distancia de inserción"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '0.58rem' }}>

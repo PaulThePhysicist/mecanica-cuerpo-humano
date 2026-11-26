@@ -28,7 +28,6 @@ interface DiscPressureCanvasProps {
 interface PostureInfo {
   id: 'upright' | 'seated' | 'knees' | 'bent_back';
   name: string;
-  emoji: string;
   basePressureMPa: number;
   compMultiplier: number;
   shearMultiplier: number;
@@ -43,7 +42,6 @@ const POSTURES: Record<string, PostureInfo> = {
   upright: {
     id: 'upright',
     name: 'De pie erguido',
-    emoji: '🚶',
     basePressureMPa: 0.50, // Tabla 2.4: 100 %
     compMultiplier: 0,
     shearMultiplier: 0.2,
@@ -53,7 +51,6 @@ const POSTURES: Record<string, PostureInfo> = {
   seated: {
     id: 'seated',
     name: 'Sentado sin respaldo',
-    emoji: '🪑',
     basePressureMPa: 0.46, // Tabla 2.4: 92 %
     compMultiplier: 0,
     shearMultiplier: 0.5,
@@ -63,7 +60,6 @@ const POSTURES: Record<string, PostureInfo> = {
   knees: {
     id: 'knees',
     name: 'Levantar 20 kg con las rodillas dobladas',
-    emoji: '🏋️',
     basePressureMPa: 1.70, // Tabla 2.4: 340 % (20 kg, rodillas dobladas)
     compMultiplier: 0,
     shearMultiplier: 0.4,
@@ -73,7 +69,6 @@ const POSTURES: Record<string, PostureInfo> = {
   bent_back: {
     id: 'bent_back',
     name: 'Levantar 20 kg sin doblar las rodillas',
-    emoji: '⚠️',
     basePressureMPa: 2.30, // Tabla 2.4: 460 % (20 kg, sin doblar las rodillas)
     compMultiplier: 0,
     shearMultiplier: 1.9,
@@ -255,7 +250,7 @@ function PressureManometerGauge({
           display: 'inline-block',
         }}
       >
-        {isCritical ? '⚠️ RIESGO CRÍTICO DE HERNIA' : (totalPressureMPa > 1.2 ? '⚡ Carga Lumbar Elevada' : '🛡️ Zona Fisiológica Segura')}
+        {isCritical ? 'Carga muy alta (≥ 400 %)' : (totalPressureMPa > 1.2 ? 'Carga elevada' : 'Carga baja')}
       </div>
       <div style={{ fontSize: '0.52rem', color: '#64748b', marginTop: '3px' }}>
         Platillo L5-S1: <b>18,0 cm²</b> · Carga: <b>{loadKg} kg</b>
@@ -504,7 +499,7 @@ function SpinalFunctionalUnit3D({
               </mesh>
 
               {/* Rótulo de Hernia Discal */}
-              <DclTag position={[0.22, 0.15, -0.1]} color="#b02318" symbol="⚠ hernia" />
+              <DclTag position={[0.22, 0.15, -0.1]} color="#b02318" symbol="hernia" />
             </group>
           )}
         </group>
@@ -597,7 +592,7 @@ function SpinalFunctionalUnit3D({
               <sphereGeometry args={[0.11, 16, 16]} />
               <primitive object={painPulseMat} attach="material" />
             </mesh>
-            <DclTag position={[0.45, -0.05, 0.35]} color="#b02318" symbol="⚡ ciatalgia" />
+            <DclTag position={[0.45, -0.05, 0.35]} color="#b02318" symbol="ciatalgia" />
           </>
         )}
       </group>
@@ -652,7 +647,7 @@ export default function DiscPressureCanvas({
           transition: 'all 0.15s ease',
         }}
       >
-        📷 Restablecer Cámara
+        Restablecer cámara
       </button>
 
       {/* Canvas 3D de React Three Fiber */}

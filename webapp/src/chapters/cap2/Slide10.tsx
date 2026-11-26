@@ -204,7 +204,6 @@ export default function Slide10({
           <HudPanel
             title="PRESIÓN INTRADISCAL"
             badge={`${curDetail.mult} % · ≈ ${fx(totalP, 2)} MPa`}
-            icon="⚡"
             footer="💡 Elige una fila de la Tabla 2.4 para ver la deformación del núcleo pulposo"
             width="270px"
           >

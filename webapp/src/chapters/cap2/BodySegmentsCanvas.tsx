@@ -391,7 +391,7 @@ function StabilityGauge({
         {fx(cgHeightCm, 1)} cm
       </div>
       <div style={{ fontSize: '0.62rem', fontWeight: 700, color: statusColor }}>
-        {!isStable ? '⚠️ Fuera de Base (Caída)' : (isWarning ? '⚠️ Límite Anterior' : '✓ Equilibrio Estable')}
+        {!isStable ? 'Fuera de la base: caída' : (isWarning ? 'Cerca del límite anterior' : 'Equilibrio estable')}
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.52rem', color: '#475569', marginTop: '4px', borderTop: '1px solid #e2e8f0', paddingTop: '3px' }}>

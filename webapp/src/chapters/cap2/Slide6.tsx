@@ -105,7 +105,6 @@ export default function Slide6({
           <HudPanel
             title="MECÁNICA DEL TRÍCEPS"
             badge={`M = ${fTricepsN.toFixed(0)} N (${fx(fTricepsKgf, 1)} kgf)`}
-            icon="🥊"
             footer="💡 Rota la escena 3D y ajusta la fuerza de empuje o el brazo del olécranon"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '0.58rem' }}>

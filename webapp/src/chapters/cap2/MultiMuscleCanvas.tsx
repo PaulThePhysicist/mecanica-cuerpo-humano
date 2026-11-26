@@ -600,7 +600,7 @@ export default function MultiMuscleCanvas({
           boxShadow: '0 2px 8px rgba(35,44,54,.14)',
         }}
       >
-        {showTelemetry ? '× Ocultar información' : '☷ Información'}
+        {showTelemetry ? '× Ocultar información' : 'Información'}
       </button>
       <div
         id="b3-torque-hud"

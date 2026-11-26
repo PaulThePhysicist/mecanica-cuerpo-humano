@@ -183,7 +183,6 @@ export default function Slide15({
           <HudPanel
             title="NEUROFISIOLOGÍA TÁCTIL"
             badge={`${curRec.name.split(' ')[0]} · ${curRec.type.split(' ')[0]}`}
-            icon="✋"
             footer="💡 Haz clic en los receptores del corte histológico 3D o usa los presets inferiores"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.62rem' }}>

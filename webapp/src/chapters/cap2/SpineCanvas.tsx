@@ -548,7 +548,7 @@ export default function SpineCanvas({
           backdropFilter: 'blur(4px)',
         }}
       >
-        📷 Restablecer Cámara
+        Restablecer cámara
       </button>
 
       {/* Canvas 3D de React Three Fiber */}

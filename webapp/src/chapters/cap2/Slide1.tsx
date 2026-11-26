@@ -308,7 +308,6 @@ export default function Slide1({
           <HudPanel
             title="EQUILIBRIO ESTÁTICO"
             badge={autoEquilibrium ? 'ΣF = 0 (ESTÁTICA)' : `${fx(fNetMag, 1)} N (DINÁMICA)`}
-            icon="⚖️"
             footer="💡 Arrastra el modelo para rotarlo; usa los presets o los controles inferiores para cambiar las fuerzas"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.62rem' }}>
@@ -442,7 +441,7 @@ export default function Slide1({
                       transition: 'all 0.15s ease',
                     }}
                   >
-                    ⚠️ Luxación
+                    Luxación
                   </button>
                 </div>
               );

@@ -497,7 +497,7 @@ export default function TricepsCanvas({
           boxShadow: '0 3px 12px rgba(35, 44, 54, 0.12)',
         }}
       >
-        {showTelemetry ? '× Ocultar información' : '☷ Información'}
+        {showTelemetry ? '× Ocultar información' : 'Información'}
       </button>
       {showTelemetry && (
       <div

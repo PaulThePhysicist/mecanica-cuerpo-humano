@@ -119,7 +119,6 @@ export default function Slide7({
           <HudPanel
             title="BIOMECÁNICA CADERA"
             badge={trendelenburg ? 'SIN EQUILIBRIO' : `R = ${fx(rJointN / totalWeightN, 2)} Wb`}
-            icon="🦴"
             defaultCollapsed={true}
             footer="💡 «Trendelenburg» deja a los abductores con el 25 % de M: sin equilibrio, la pelvis cae"
           >

@@ -155,7 +155,6 @@ export default function Slide16({
           <HudPanel
             title="PSICOFÍSICA TÁCTIL"
             badge={`${freqHz} Hz · ${amplitudeUm < 0.1 ? `${(amplitudeUm * 1000).toFixed(0)} nm` : `${amplitudeUm < 1 ? fx(amplitudeUm, 2) : fx(amplitudeUm, 1)} µm`}`}
-            icon="📊"
             footer="💡 Haz clic y arrastra directamente sobre el gráfico logarítmico para explorar las curvas en U"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.62rem' }}>

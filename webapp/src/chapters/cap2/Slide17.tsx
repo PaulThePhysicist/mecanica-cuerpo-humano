@@ -110,7 +110,6 @@ export default function Slide17({
           <HudPanel
             title="CONVERSOR BIOMECÁNICO"
             badge={`${quantityType.toUpperCase()} · ${dimensionInfo.dim}`}
-            icon="🔄"
             footer="💡 Haz clic en los benchmarks anatómicos para cargar mediciones fisiológicas reales"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.62rem' }}>

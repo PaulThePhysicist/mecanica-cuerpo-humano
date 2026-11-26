@@ -116,7 +116,7 @@ export default function Slide12({
             
               <div style={{ marginTop: '.4rem' }}>
                 <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
-                  <b>🏷️ Rotular T y sus componentes</b>
+                  <b>Rotular T y sus componentes</b>
                 </TheoryToggle>
               </div>
               <TheoryCue>Descompone la tracción sobre el modelo y etiqueta <b>F<sub>ax</sub></b> y <b>F<sub>tr</sub></b> junto a la fuerza aplicada.</TheoryCue>
@@ -148,7 +148,6 @@ export default function Slide12({
           <HudPanel
             title="TRACCIÓN CERVICAL"
             badge={`T = ${tN.toFixed(0)} N (${tractionKg} kg)`}
-            icon="📐"
             footer="💡 Modifica el ángulo y la carga para observar la descompresión milimétrica del disco"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.62rem' }}>

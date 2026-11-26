@@ -76,7 +76,7 @@ export default function SlideAnkle({
             
               <div style={{ marginTop: '.4rem' }}>
                 <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
-                  <b>🏷️ Rotular M, N y R</b>
+                  <b>Rotular M, N y R</b>
                 </TheoryToggle>
               </div>
               <TheoryCue>Señala el fulcro metatarsiano y pone cifras a la tracción del Aquiles, la normal del suelo y la carga sobre el astrágalo.</TheoryCue>
@@ -104,7 +104,6 @@ export default function SlideAnkle({
           <HudPanel
             title="BIOMECÁNICA TOBILLO"
             badge={`R = ${fx((R / Wb), 2)}·Wb`}
-            icon="🦶"
             defaultCollapsed={true}
             footer="💡 Sube β para acercarte a la posición vertical del pie"
           >

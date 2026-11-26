@@ -13,7 +13,8 @@ interface HudPanelProps {
 export default function HudPanel({
   title,
   badge,
-  icon = '🧭',
+  // `icon` se ignora (regla D1: sin emoji en controles); se conserva en la API.
+  icon: _icon,
   defaultCollapsed = true,
   children,
   footer,
@@ -33,8 +34,9 @@ export default function HudPanel({
           top: '52px',
           right: '12px',
           zIndex: 10,
-          width: '30px',
+          minWidth: '30px',
           height: '30px',
+          paddingInline: '8px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -44,10 +46,10 @@ export default function HudPanel({
           borderRadius: '7px',
           boxShadow: '0 4px 14px rgba(0, 0, 0, 0.08)',
           cursor: 'pointer',
-          fontSize: '0.95rem',
-          color: 'var(--ink)',
+          fontSize: '0.64rem',
+          fontWeight: 700,
+          color: 'var(--teal-deep)',
           transition: 'all 0.15s ease',
-          padding: 0,
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.background = 'var(--paper-2)';
@@ -60,7 +62,7 @@ export default function HudPanel({
           e.currentTarget.style.transform = 'scale(1)';
         }}
       >
-        {icon}
+        Datos
       </button>
     );
   }

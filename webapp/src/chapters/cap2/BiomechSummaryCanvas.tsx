@@ -36,7 +36,6 @@ interface BiomechNodeInfo {
   pos3D: [number, number, number];
   camTarget: [number, number, number];
   camPos: [number, number, number];
-  icon: string;
   activeBoneNames: string[];
   activeMuscleNames: string[];
 }
@@ -56,7 +55,6 @@ const NODES_DATA: Record<BiomechNodeId, BiomechNodeInfo> = {
     pos3D: [0.0, 1.62, 0.16],
     camTarget: [0.0, 1.62, 0.14],
     camPos: [0.18, 1.66, 0.88],
-    icon: '🦷',
     activeBoneNames: ['mandible', 'maxilla_R', 'maxilla_L', 'temporal_R', 'temporal_L'],
     activeMuscleNames: ['masseter_superficial_R', 'masseter_deep_R', 'masseter_superficial_L', 'masseter_deep_L'],
   },
@@ -74,7 +72,6 @@ const NODES_DATA: Record<BiomechNodeId, BiomechNodeInfo> = {
     pos3D: [0.0, 1.58, -0.06],
     camTarget: [0.0, 1.58, -0.05],
     camPos: [-0.48, 1.62, 0.68],
-    icon: '👤',
     activeBoneNames: ['occipital', 'cervical3', 'cervical4', 'cervical5', 'cervical6', 'cervical7'],
     activeMuscleNames: ['trapezius_descending_R', 'trapezius_descending_L', 'rectus_capitis_posterior_major_R', 'rectus_capitis_posterior_major_L'],
   },
@@ -92,7 +89,6 @@ const NODES_DATA: Record<BiomechNodeId, BiomechNodeInfo> = {
     pos3D: [-0.50, 0.58, -0.04],
     camTarget: [-0.50, 0.58, -0.04],
     camPos: [-0.96, 0.64, 0.72],
-    icon: '💪',
     activeBoneNames: ['humerus_R', 'radius_R', 'ulna_R'],
     activeMuscleNames: ['biceps_brachii_long_head_R', 'biceps_brachii_short_head_R', 'brachialis_R', 'triceps_brachii_long_head_R'],
   },
@@ -110,7 +106,6 @@ const NODES_DATA: Record<BiomechNodeId, BiomechNodeInfo> = {
     pos3D: [0.0, 0.30, -0.08],
     camTarget: [0.0, 0.30, -0.06],
     camPos: [-0.78, 0.38, 0.82],
-    icon: '🦴',
     activeBoneNames: ['lumbar1', 'lumbar2', 'lumbar3', 'lumbar4', 'lumbar5', 'sacrum'],
     activeMuscleNames: ['rectus_abdominis_R', 'rectus_abdominis_L', 'latissimus_dorsi_R', 'latissimus_dorsi_L'],
   },
@@ -128,7 +123,6 @@ const NODES_DATA: Record<BiomechNodeId, BiomechNodeInfo> = {
     pos3D: [-0.17, 0.00, 0.00],
     camTarget: [-0.17, 0.00, 0.00],
     camPos: [-0.72, 0.08, 1.05],
-    icon: '🦿',
     activeBoneNames: ['hip_R', 'femur_R', 'sacrum'],
     activeMuscleNames: ['gluteus_medius_R', 'gluteus_minimus_R', 'gluteus_maximus_R', 'psoas_major_R'],
   },
@@ -146,7 +140,6 @@ const NODES_DATA: Record<BiomechNodeId, BiomechNodeInfo> = {
     pos3D: [-0.19, -1.86, -0.08],
     camTarget: [-0.19, -1.86, -0.08],
     camPos: [-0.68, -1.76, 0.72],
-    icon: '👟',
     activeBoneNames: ['tibia_R', 'fibula_R', 'talus_R', 'calcaneus_L'],
     activeMuscleNames: ['gastrocnemius_medial_head_R', 'gastrocnemius_lateral_head_R', 'soleus_R'],
   },
@@ -164,7 +157,6 @@ const NODES_DATA: Record<BiomechNodeId, BiomechNodeInfo> = {
     pos3D: [-0.19, -1.98, 0.08],
     camTarget: [-0.19, -1.98, 0.08],
     camPos: [-0.58, -1.88, 0.75],
-    icon: '🦶',
     activeBoneNames: ['metatarsal1_R', 'metatarsal2_R', 'metatarsal3_R', 'metatarsal4_R', 'metatarsal5_R', 'navicular_R', 'cuneiform_med_R'],
     activeMuscleNames: ['tibialis_anterior_R', 'tibialis_posterior_R'],
   },
@@ -675,7 +667,7 @@ function Interactive3DNodes({
                     transform: 'translateY(-50%)',
                   }}
                 >
-                  {item.icon} {item.classTag}
+                  {item.classTag}
                 </div>
               </Html>
             )}
@@ -767,7 +759,7 @@ function BiomechInspectorCard({
       {/* Cabecera */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
         <span style={{ fontSize: isOverview ? '0.72rem' : '0.80rem', fontWeight: 800, color: TEAL_DEEP }}>
-          {node.icon} {node.title.toUpperCase()}
+          {node.title.toUpperCase()}
         </span>
         <span
           style={{
@@ -849,7 +841,7 @@ function BiomechInspectorCard({
           transition: 'all 0.15s ease',
         }}
       >
-        {isOverview ? '✓ Vista General · elige articulación' : '🔍 Restablecer Vista Global'}
+        {isOverview ? 'Vista general · elige articulación' : 'Volver a la vista general'}
       </button>
     </div>
   );

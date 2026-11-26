@@ -799,7 +799,7 @@ export default function LeverCanvas({
       ctx.font = `bold ${7.5 * uiScale}px Karla, system-ui, sans-serif`;
       ctx.fillStyle = vm >= 1.0 ? '#2e8b57' : '#b02318';
       ctx.fillText(
-        vm >= 1.0 ? '✓ Multiplica fuerza · VM > 1' : '⚠ Menor fuerza · VM < 1',
+        vm >= 1.0 ? 'Multiplica la fuerza · VM > 1' : 'Exige más fuerza · VM < 1',
         cardX + cardW / 2,
         cardY + 80
       );
@@ -808,7 +808,7 @@ export default function LeverCanvas({
       ctx.fillStyle = T.ink2;
       ctx.fillText(`M/W = ${fmt(1 / vm, 2)}`, cardX + cardW / 2, cardY + 95);
       ctx.fillText(`dM ${bp} cm · dW ${br} cm`, cardX + cardW / 2, cardY + 108);
-      ctx.fillText(vm < 1.0 ? '⚡ Más velocidad distal' : '💪 Ahorro de fuerza', cardX + cardW / 2, cardY + 121);
+      ctx.fillText(vm < 1.0 ? 'Amplifica el desplazamiento' : 'Ahorra fuerza', cardX + cardW / 2, cardY + 121);
       ctx.fillText(`M ${fMuscNewtons.toFixed(0)} N`, cardX + cardW / 2, cardY + 136);
       ctx.restore();
       }

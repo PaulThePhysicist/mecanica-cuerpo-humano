@@ -116,7 +116,6 @@ export default function Slide9({
           <HudPanel
             title="TENSIÓN LUMBAR"
             badge={`M = ${fx(fErectorN / WbN, 2)} Wb`}
-            icon="🏋️"
             defaultCollapsed={true}
             footer="💡 Los botones θ reproducen las filas de la Tabla 2.3; 18 kg de carga son 0,2 Wb para 90 kg"
           >

@@ -164,7 +164,6 @@ export default function Slide11({
           <HudPanel
             title="BIOMECÁNICA ATM"
             badge={`Mordida = ${fx(fBiteN)} N`}
-            icon="🦷"
             footer="💡 Alterna entre incisivos y molares para ver la duplicación de fuerza trituradora"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.62rem' }}>

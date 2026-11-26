@@ -106,7 +106,7 @@ export default function Slide13({
             
               <div style={{ marginTop: '.4rem' }}>
                 <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
-                  <b>🏷️ Rotular el CG y la base de apoyo</b>
+                  <b>Rotular el CG y la base de apoyo</b>
                 </TheoryToggle>
               </div>
               <TheoryCue>Marca el centro de gravedad, la base de sustentación (<b>BoS</b>) y el margen de estabilidad que queda entre ambos.</TheoryCue>
@@ -135,7 +135,6 @@ export default function Slide13({
           <HudPanel
             title="BARICENTRO SEGMENTARIO"
             badge={curOpt.badge}
-            icon="🎯"
             footer="💡 Selecciona una postura para ver cómo se traslada el CG global y la línea de plomada"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.62rem' }}>

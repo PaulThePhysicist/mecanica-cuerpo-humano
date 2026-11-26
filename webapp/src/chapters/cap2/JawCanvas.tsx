@@ -211,7 +211,7 @@ function BiteDynamometerGauge({
           display: 'inline-block',
         }}
       >
-        {isCrushing ? '💥 TRITURACIÓN MÁXIMA (>600 N)' : (fBiteN > 300 ? '⚡ Masticación Fuerte' : '🦷 Corte Fisiológico')}
+        {isCrushing ? 'Mordida > 600 N' : (fBiteN > 300 ? 'Mordida fuerte' : 'Mordida moderada')}
       </div>
       <div style={{ fontSize: '0.52rem', color: '#64748b', marginTop: '3px' }}>
         M: <b>{muscleForceN} N</b> · R (ATM): <b>{rAtmN.toFixed(0)} N</b>
@@ -607,7 +607,7 @@ function Jaw3DScene({
         <DclTag
           position={[0, 0.14, 0]}
           color={biteMode === 'incisor' ? '#16a34a' : '#ea580c'}
-          symbol={biteMode === 'incisor' ? '🥕 d 7,5 cm' : '🥜 d 3,5 cm'}
+          symbol={biteMode === 'incisor' ? 'incisivo · VM 0,50' : 'primer molar · VM 0,76'}
         />
       </group>
 
@@ -680,7 +680,7 @@ export default function JawCanvas({
           transition: 'all 0.15s ease',
         }}
       >
-        📷 Restablecer Cámara
+        Restablecer cámara
       </button>
 
       {/* Canvas 3D de React Three Fiber */}

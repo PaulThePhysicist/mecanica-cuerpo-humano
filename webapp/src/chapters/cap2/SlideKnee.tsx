@@ -107,7 +107,6 @@ export default function SlideKnee({
           <HudPanel
             title="BIOMECÁNICA RODILLA"
             badge={`R = ${R.toFixed(0)} N`}
-            icon="🦵"
             defaultCollapsed={true}
             footer="💡 Quita la rótula para ver cuánto sube M con el mismo torque"
           >

@@ -155,7 +155,6 @@ export default function Slide2({
           <HudPanel
             title="TORQUE VECTORIAL"
             badge={`${tau >= 0 ? '+' : ''}${fx(tau, 1)} N·m`}
-            icon="🔄"
             footer="💡 Arrastra la punta de la flecha o ajusta los controles inferiores"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '0.58rem' }}>

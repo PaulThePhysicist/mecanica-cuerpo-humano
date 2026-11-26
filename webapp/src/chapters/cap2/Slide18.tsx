@@ -147,7 +147,7 @@ export default function Slide18({
             
               <div style={{ marginTop: '.4rem' }}>
                 <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
-                  <b>🏷️ Rotular la articulación elegida</b>
+                  <b>Rotular la articulación elegida</b>
                 </TheoryToggle>
               </div>
               <TheoryCue>Pone sobre el nodo seleccionado las fuerzas y el factor multiplicador que resume su mecánica.</TheoryCue>
@@ -166,7 +166,6 @@ export default function Slide18({
           <HudPanel
             title="SÍNTESIS BIOMECÁNICA"
             badge={`${selectedNode.toUpperCase()} · DCL ACTIVO`}
-            icon="🌟"
             footer="💡 Haz clic en los nódulos del maniquí para explorar las ecuaciones y multiplicadores de palanca"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.62rem' }}>

@@ -105,7 +105,6 @@ export default function Slide5({
           <HudPanel
             title="CODO MULTI-MÚSCULO"
             badge={activeMuscleCount === 3 ? '3 FLEXORES · MISMA k' : 'BÍCEPS SOLO'}
-            icon="🦾"
             footer="💡 Alterna entre bíceps solo y tres flexores: compara 696 N con 262 + 399 + 85 N"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '0.58rem' }}>

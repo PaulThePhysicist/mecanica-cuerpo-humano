@@ -111,7 +111,7 @@ export default function Slide14({
             
               <div style={{ marginTop: '.4rem' }}>
                 <TheoryToggle on={showLabels} onClick={() => setShowLabels((v) => !v)}>
-                  <b>🏷️ Rotular la GRF y el COP</b>
+                  <b>Rotular la GRF y el COP</b>
                 </TheoryToggle>
               </div>
               <TheoryCue>Etiqueta la resultante <b>GRF</b>, sus componentes <b>+F<sub>x</sub></b> y <b>+F<sub>y</sub></b>, y el centro de presiones.</TheoryCue>
@@ -143,7 +143,6 @@ export default function Slide14({
           <HudPanel
             title="DINAMOMETRÍA DE MARCHA"
             badge={curPhase.badge}
-            icon="👣"
             footer="💡 Selecciona la fase del paso para observar la migración del COP y el vector resultante GRF"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.62rem' }}>

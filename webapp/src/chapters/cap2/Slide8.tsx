@@ -102,7 +102,6 @@ export default function Slide8({
           <HudPanel
             title="DESCARGA CON BASTÓN"
             badge={caneHand === 'none' ? 'SIN BASTÓN' : `R ${reliefPct >= 0 ? '−' : '+'}${fx(Math.abs(reliefPct))} %`}
-            icon="🦯"
             defaultCollapsed={true}
             footer="💡 Con 15 kg sobre 90 kg (1/6 del peso) el visor reproduce el caso del libro"
           >
