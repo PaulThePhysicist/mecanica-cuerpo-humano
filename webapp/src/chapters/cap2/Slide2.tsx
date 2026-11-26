@@ -22,7 +22,7 @@ export default function Slide2({
   // Barrido continuo de θ: la fuerza gira alrededor del eje y se ve el torque
   // pasar por su máximo (θ = 90°/270°) y anularse (θ = 0°/180°).
   useHarmonicClock({ playing: isAnimating }, (t) => {
-    setTheta((t * 42) % 360);
+    setTheta((Math.max(0, t) * 42) % 360);
   });
 
   const rM = rCm / 100;

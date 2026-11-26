@@ -52,8 +52,11 @@ export default function Slide14({
   // Ciclo de la fase de apoyo de la marcha: contacto de talón → apoyo medio →
   // despegue de dedos, ~1,7 s por fase.
   useHarmonicClock({ playing: isAnimating }, (t) => {
+    // Índice blindado (como cap1/I6-01): t nunca negativo y respaldo si el
+    // índice cae fuera del array por cualquier motivo (NaN, Infinity).
     const order = ['heel_strike', 'mid_stance', 'toe_off'] as const;
-    setGaitPhase(order[Math.floor((t * 0.58) % 3)]);
+    const step = Math.floor(Math.max(0, t) * 0.58) % order.length;
+    setGaitPhase(order[step] ?? 'heel_strike');
   });
 
   const curPhase = PHASES.find((p) => p.id === gaitPhase) || PHASES[0];

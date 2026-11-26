@@ -41,6 +41,41 @@ function renderKatex() {
   });
 }
 
+/* Blindaje por diapositiva (equivalente a cap1/I6-03): un error de render en una
+   diapositiva ya no desmonta el capítulo entero. La barra de módulos, el riel de
+   navegación y las demás diapositivas siguen operativos. Se envuelve con key = índice
+   para que cada diapositiva tenga su propio estado de error. */
+class SlideErrorBoundary extends React.Component<
+  { index: number; children: React.ReactNode },
+  { hasError: boolean }
+> {
+  state = { hasError: false };
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  componentDidCatch(error: unknown) {
+    console.error(`[Capitulo2] Error al renderizar la diapositiva ${this.props.index}:`, error);
+  }
+  render() {
+    if (!this.state.hasError) return this.props.children;
+    return (
+      <div className="content-grid">
+        <div className="theory" role="alert">
+          <div className="card active">
+            <div className="card-hdr">Esta diapositiva no pudo mostrarse</div>
+            <div className="card-body">
+              <p>Ocurrió un error al cargar el contenido. Puedes seguir con otra diapositiva o volver a intentarlo.</p>
+              <button type="button" className="pill" onClick={() => this.setState({ hasError: false })}>
+                Reintentar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
 const SLIDES = [
   Slide0, Slide1, Slide2, Slide3, Slide4, Slide5, Slide6, Slide7, Slide8, SlideKnee,
   SlideAnkle, Slide9, Slide10, Slide11, Slide12, Slide13, Slide14, Slide15, Slide16, Slide17,
@@ -190,6 +225,9 @@ export default function Capitulo2({ onBack }: { onBack?: () => void }) {
     if (moduleTabsBuilt) return;
     const host = document.getElementById('moduleBar');
     if (!host) return;
+    // StrictMode ejecuta el efecto dos veces en desarrollo antes de que el estado
+    // se actualice: sin esta guarda la barra salía con 16 pestañas.
+    if (host.querySelector('.module-tab')) { setModuleTabsBuilt(true); return; }
     MODULES.forEach(m => {
       if (m.id === 0) return;
       const b = document.createElement('button');
@@ -304,6 +342,7 @@ export default function Capitulo2({ onBack }: { onBack?: () => void }) {
         const cls = isCover ? 'slide-full' : 'slide';
         return (
           <div key={i} className={`${cls} ${activeSlide === i ? 'active' : ''} ${activeSlide === i && isRevisit ? 'instant' : ''}`} data-slide={i} data-module={MODULES.find(m => m.slides.includes(i))?.id ?? 0}>
+            <SlideErrorBoundary index={i}>
             <Slide
               isActive={activeSlide === i}
               engine={engine}
@@ -323,6 +362,7 @@ export default function Capitulo2({ onBack }: { onBack?: () => void }) {
               convertPreset={convertPreset}
               onBack={onBack}
             />
+            </SlideErrorBoundary>
           </div>
         );
       })}
