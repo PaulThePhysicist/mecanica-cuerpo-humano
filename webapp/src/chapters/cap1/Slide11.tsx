@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import SomatotypeCanvas from './SomatotypeCanvas';
+import Tex from './Tex';
 
 type SomatotypeKey = 'ecto' | 'meso' | 'endo';
 
@@ -98,15 +99,15 @@ export default function Slide11({ slideCount }: { slideCount?: string }) {
                       <span style={{ fontSize: '1.2rem' }}>{item.emoji}</span>
                       <div style={{ flex: 1 }}>
                         <b style={{ color: isSel ? item.color : 'var(--ink)' }}>{item.name}</b>
-                        <span style={{ fontSize: '.54rem', color: 'var(--ink-3)', marginLeft: '6px', fontFamily: 'JetBrains Mono, monospace' }}>
+                        <span style={{ fontSize:  'max(12px, .54rem)', color: 'var(--ink-3)', marginLeft: '6px', fontFamily: 'JetBrains Mono, monospace' }}>
                           [{item.scores}]
                         </span>
                         <br />
-                        <span style={{ fontSize: '.55rem', color: 'var(--ink-2)' }}>{item.features}</span>
+                        <span style={{ fontSize:  'max(12px, .55rem)', color: 'var(--ink-2)' }}>{item.features}</span>
                       </div>
                       <span
                         style={{
-                          fontSize: '.52rem',
+                          fontSize:  'max(12px, .52rem)',
                           fontWeight: 'bold',
                           padding: '2px 6px',
                           borderRadius: '4px',
@@ -120,7 +121,7 @@ export default function Slide11({ slideCount }: { slideCount?: string }) {
                   );
                 })}
               </div>
-              <p style={{ fontSize: '.55rem', color: 'var(--ink-3)', marginTop: '.3rem' }}>
+              <p style={{ fontSize:  'max(12px, .55rem)', color: 'var(--ink-3)', marginTop: '.3rem' }}>
                 Terna ilustrativa (endo · meso · ecto), escala 1–7. De lanzadores a velocistas a fondistas, la mesomorfia baja y la ectomorfia sube.
               </p>
               <p style={{ fontSize: '.62rem', color: 'var(--ink-2)', marginTop: '.35rem' }}>
@@ -136,9 +137,18 @@ export default function Slide11({ slideCount }: { slideCount?: string }) {
               <span className="icon">🛰️</span> El cuerpo en el espacio (Microgravedad)
             </div>
             <div className="card-body">
-              <p style={{ fontSize: '.7rem' }}>
-                En ingravidez, los astronautas <strong>crecen ~2,5 cm</strong> por descompresión elástica de los discos intervertebrales y desarrollan el síndrome de «<strong>cara hinchada y piernas de pájaro</strong>» debido a la redistribución cefálica de los fluidos corporales.
+              <p style={{ marginBottom: '.3rem' }}>
+                En ingravidez (<Tex>{'g = 0'}</Tex>) el cuerpo cambia, y cada efecto es un capítulo del curso:
               </p>
+              <ul className="effect-list">
+                <li><b>+2,5 cm de estatura</b> sin compresión de los discos <span className="cap-ref">Cap. 2</span></li>
+                <li><b>Cara hinchada, piernas de pájaro</b> por los fluidos <span className="cap-ref">Cap. 8</span></li>
+                <li><b>Presión intracraneal</b> que deforma el ojo y afecta la visión <span className="cap-ref">Cap. 11</span></li>
+                <li><b>Menos volumen de sangre</b> <span className="cap-ref">Cap. 8</span></li>
+                <li><b>Mareo</b>: canales semicirculares <span className="cap-ref">Cap. 12</span></li>
+                <li><b>Se traga por peristalsis</b>, no por gravedad</li>
+                <li><b>Atrofia</b> de músculo, hueso y corazón <span className="cap-ref">Caps. 5, 4, 8</span></li>
+              </ul>
             </div>
           </div>
           <div className="apuntes">

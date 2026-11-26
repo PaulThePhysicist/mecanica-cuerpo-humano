@@ -19,19 +19,19 @@ export default function Slide14({ slideCount }: { slideCount?: string }) {
   const currentFat = gender === 'H' ? fatH : fatM;
 
   let cat = 'Normal';
-  let catColor = '#0d6e64';
+  let catColor = 'var(--teal)';
   if (bmi < 18.5) {
     cat = 'Bajo peso';
-    catColor = '#b86a1e';
+    catColor = 'var(--transverse)';
   } else if (bmi < 25) {
     cat = 'Normal';
-    catColor = '#0d6e64';
+    catColor = 'var(--teal)';
   } else if (bmi < 30) {
     cat = 'Sobrepeso';
-    catColor = '#9a5b00';
+    catColor = 'var(--amber)';
   } else {
     cat = 'Obesidad';
-    catColor = '#a92a1e';
+    catColor = 'var(--blood)';
   }
 
   const handleReset = () => {
@@ -67,6 +67,12 @@ export default function Slide14({ slideCount }: { slideCount?: string }) {
               <div className="eq-block" style={{ fontSize: '.72rem' }}>
                 {'\\[ \\text{H: } \\%\\text{grasa} = 1{,}28\\,\\text{IMC} - 10{,}1 \\qquad \\text{M: } 1{,}48\\,\\text{IMC} - 7{,}0 \\]'}
               </div>
+              <p style={{ fontSize: '.66rem' }}>
+                <strong>Familia {'$m_b/H^p$'}</strong> ({'$p = 1$'} a {'$3$'}): {'$p = 3$'} → índice ponderal {'$S$'}; {'$p = 2$'} → IMC o <strong>índice de Quételet</strong>, el preferido en epidemiología.
+              </p>
+              <p style={{ fontSize: '.66rem' }}>
+                <strong>Grasa normal:</strong> 14–20 % (hombres) · 21–27 % (mujeres). La mortalidad aumenta si el IMC se aleja mucho de los rangos normales.
+              </p>
               <p style={{ fontSize: '.62rem', color: 'var(--ink-3)' }}>
                 Rangos OMS: Bajo &lt; 18,5 · Normal 18,5–24,9 · Sobrepeso 25–29,9 · Obesidad &ge; 30.
               </p>
@@ -88,7 +94,10 @@ export default function Slide14({ slideCount }: { slideCount?: string }) {
           <div className="apuntes">
             <div className="a-hdr"><span>✍️</span> Apunte de cátedra</div>
             <div className="a-text" id="info-text-d3">
-              Con <b>{mass} kg</b> y <b>{heightCm} cm</b>: Tu IMC es de <b style={{ color: catColor }}>{fmt(bmi, 1)} ({cat})</b>, tu área Du Bois es de <b>{fmt(bsa, 2)} m²</b> y tu grasa corporal estimada por IMC ({gender === 'H' ? 'Varón' : 'Mujer'}) es de <b>{fmt(currentFat, 1)} %</b>.
+              Con <b>{mass} kg</b> y <b>{heightCm} cm</b>: Tu IMC es de <b style={{ color: catColor }}>{fmt(bmi, 1)} ({cat})</b>, tu área Du Bois es de <b>{fmt(bsa, 2)} m²</b> y tu grasa corporal estimada por IMC ({gender === 'H' ? 'Varón' : 'Mujer'}) es de <b>{fmt(currentFat, 1)} %</b>
+              {gender === 'H' && fmt(currentFat, 0) !== String(STANDARD_MAN.fatPercent) && (
+                <> (la Tabla 1.5 da {STANDARD_MAN.fatPercent} %: fuentes distintas)</>
+              )}.
             </div>
           </div>
         </div>
@@ -97,7 +106,6 @@ export default function Slide14({ slideCount }: { slideCount?: string }) {
           <HudPanel
             title="ÍNDICES BIOFÍSICOS"
             badge={`IMC ${fmt(bmi, 1)} · ${cat.toUpperCase()}`}
-            icon="📐"
             footer="💡 Ajusta masa y estatura para ver el cuadro de instrumentos biofísicos"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.62rem' }}>
@@ -123,7 +131,7 @@ export default function Slide14({ slideCount }: { slideCount?: string }) {
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--ink-2)' }}>Grasa Estimada por IMC ({gender === 'H' ? 'Varón' : 'Mujer'}):</span>
-                <b style={{ color: '#b86a1e', fontFamily: 'var(--mono)' }}>{fmt(currentFat, 1)} %</b>
+                <b style={{ color: 'var(--transverse)', fontFamily: 'var(--mono)' }}>{fmt(currentFat, 1)} %</b>
               </div>
             </div>
           </HudPanel>
@@ -175,7 +183,7 @@ export default function Slide14({ slideCount }: { slideCount?: string }) {
                     border: 'none',
                     borderRadius: '3px',
                     padding: '1px 5px',
-                    fontSize: '0.58rem',
+                    fontSize:  'max(12px, 0.58rem)',
                     cursor: 'pointer',
                   }}
                 >
@@ -190,7 +198,7 @@ export default function Slide14({ slideCount }: { slideCount?: string }) {
                     border: 'none',
                     borderRadius: '3px',
                     padding: '1px 5px',
-                    fontSize: '0.58rem',
+                    fontSize:  'max(12px, 0.58rem)',
                     cursor: 'pointer',
                   }}
                 >

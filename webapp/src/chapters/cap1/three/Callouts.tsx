@@ -187,7 +187,7 @@ export function Callout({
           }}
         >
           <div style={{ fontSize: '0.72rem' }}>{label}</div>
-          {sub && <div style={{ fontSize: '0.56rem', color }}>{sub}</div>}
+          {sub && <div style={{ fontSize:  'max(12px, 0.56rem)', color }}>{sub}</div>}
         </div>
       </Html>
     );
@@ -459,7 +459,7 @@ function CalloutRailInner({
                 {it.sub && (
                   <div
                     style={{
-                      fontSize: '0.6rem',
+                      fontSize:  'max(12px, 0.6rem)',
                       color: it.color,
                       fontWeight: 600,
                       whiteSpace: 'nowrap',
@@ -488,7 +488,7 @@ function CalloutRailInner({
               border: '1px solid rgba(35,44,54,0.10)',
               borderRadius: 5,
               fontFamily: 'var(--sans, system-ui, sans-serif)',
-              fontSize: '0.56rem',
+              fontSize:  'max(12px, 0.56rem)',
               lineHeight: 1.32,
               color: '#5b6672',
               textAlign: side === 'right' ? 'right' : 'left',
@@ -521,6 +521,10 @@ const ANCHOR_MAX_ITER = 6;
  * por rótulo y un `<CalloutSource>` dentro del Canvas, igual que para
  * `CalloutRail`; solo cambia este consumidor fuera del Canvas.
  */
+/** Halo claro (color de --card) alrededor del texto de los rótulos anclados. */
+const LABEL_HALO =
+  '0 0 2px var(--card), 0 0 2px var(--card), 0 0 4px var(--card), 0 0 6px var(--card)';
+
 export function AnchoredLabelOverlay({ store }: { store: CalloutStore }) {
   return useLabelsVisible() ? <AnchoredLabelOverlayInner store={store} /> : null;
 }
@@ -685,8 +689,14 @@ function AnchoredLabelOverlayInner({ store }: { store: CalloutStore }) {
             fontFamily: 'var(--sans, system-ui, sans-serif)',
           }}
         >
-          <div style={{ fontWeight: 700, fontSize: '0.85rem' }}>{it.label}</div>
-          {it.sub && <div style={{ fontSize: '0.56rem', opacity: 0.85, marginTop: 1 }}>{it.sub}</div>}
+          {/* A6-03: el término (sub) es lo que la diapositiva enseña: ≥ 13 px,
+              tinta principal y halo claro para leerse sobre el modelo. */}
+          <div style={{ fontWeight: 700, fontSize: '0.85rem', textShadow: LABEL_HALO }}>{it.label}</div>
+          {it.sub && (
+            <div style={{ fontSize: 'max(13px, 0.66rem)', fontWeight: 600, color: 'var(--ink)', marginTop: 1, textShadow: LABEL_HALO }}>
+              {it.sub}
+            </div>
+          )}
         </div>
       ))}
     </div>

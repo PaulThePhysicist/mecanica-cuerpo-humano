@@ -150,6 +150,19 @@
 }
 .slide-full .start-btn:active{transform:scale(.97)}
 .slide-full .book-ref{margin-top:2.2rem;font-size:.66rem;color:var(--ink-3);font-style:italic}
+.slide-full .cover-actions{display:flex;gap:.8rem;justify-content:center;margin-top:1.9rem;flex-wrap:wrap}
+/* V6-09: a 1280×720 (proyector) la portada no cabía y el pie con la
+   referencia del libro quedaba cortado. Con poco alto se compactan los
+   espacios verticales entre bloques; a 900 px de alto no cambia nada. */
+@media(min-width:821px) and (max-height:760px){
+  .slide-full{padding-top:3.6rem}
+  .slide-full h1{margin:.6rem auto .7rem;font-size:clamp(2rem,4.2vw,3.3rem)}
+  .slide-full h1 .chapno{margin-bottom:.7rem}
+  .slide-full .rule{margin:1rem auto}
+  .slide-full .cover-actions{margin-top:.3rem}
+  .slide-full .cover-actions .start-btn{margin-top:.9rem}
+  .slide-full .book-ref{margin-top:1.1rem}
+}
 
 /* ─── MODULE HEADER ─── */
 .module-header{
@@ -166,7 +179,7 @@
 }
 .module-header .msub{font-size:.68rem;color:var(--ink-3);margin-left:auto;font-style:italic}
 .module-header .mslide-count{
-  font-size:.6rem;color:var(--ink-3);font-family:var(--mono);background:var(--paper-2);
+  font-size:max(12px,.6rem);color:var(--ink-3);font-family:var(--mono);background:var(--paper-2);
   padding:.16rem .5rem;border-radius:4px;border:1px solid var(--line-soft);
 }
 
@@ -275,6 +288,19 @@
 }
 .apuntes .a-text{color:#5d460f}
 .apuntes .a-text strong{color:#4a3709}
+/* A6-01: a 1280×720 la columna de teoría desborda y el apunte (último bloque)
+   quedaba fuera de pantalla, actualizándose sin que nadie lo viera. Se fija al
+   borde inferior de la columna con sticky: si la teoría cabe, queda en su
+   sitio; si no, flota sobre las tarjetas con fondo opaco y una sombra superior.
+   Tope de ~35 % del alto de la columna con scroll interno. Solo escritorio: en
+   móvil la diapositiva entera scrollea y el apunte sigue en su sitio. */
+@media(min-width:821px){
+  .cap1-presentation .theory > .apuntes{
+    position:sticky;bottom:0;z-index:4;
+    max-height:35%;overflow-y:auto;
+    box-shadow:0 -8px 14px -8px rgba(35,44,54,.28),inset 0 0 0 1px rgba(255,255,255,.4);
+  }
+}
 
 /* ─── PANEL DE SIMULACIÓN ─── */
 .sim-area{
@@ -321,9 +347,9 @@
   position:absolute;top:.65rem;right:.7rem;z-index:3;display:flex;align-items:center;gap:.45rem;
   padding:.28rem .48rem;border:1px solid rgba(207,195,169,.9);border-radius:6px;
   background:rgba(251,248,240,.88);box-shadow:0 3px 10px rgba(35,44,54,.08);pointer-events:none;
-  font-size:.54rem;line-height:1.15;color:var(--ink-3);backdrop-filter:blur(2px);
+  font-size:max(12px,.54rem);line-height:1.15;color:var(--ink-3);backdrop-filter:blur(2px);
 }
-.stage-hud .stage-kicker{font-family:var(--mono);font-size:.48rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--teal-deep)}
+.stage-hud .stage-kicker{font-family:var(--mono);font-size:max(12px,.48rem);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--teal-deep)}
 .stage-hud .stage-value{font-weight:700;color:var(--ink-2);white-space:nowrap}
 .c3-mobility-area .stage-hud{display:none}
 .c4-somatotype-area .stage-hud{display:none}
@@ -338,7 +364,7 @@
 .stage-legend{
   position:absolute;left:.7rem;bottom:.65rem;z-index:3;display:flex;gap:.55rem;flex-wrap:wrap;
   padding:.28rem .45rem;border:1px solid rgba(207,195,169,.8);border-radius:5px;
-  background:rgba(251,248,240,.86);font-size:.5rem;color:var(--ink-3);pointer-events:none;
+  background:rgba(251,248,240,.86);font-size:max(12px,.5rem);color:var(--ink-3);pointer-events:none;
 }
 .stage-legend span{display:inline-flex;align-items:center;gap:.22rem;white-space:nowrap}
 .stage-legend i{width:.42rem;height:.42rem;border-radius:50%;display:inline-block;background:var(--teal)}
@@ -362,7 +388,7 @@
 }
 .cap1-presentation .a2-plane-motion-rail button{
   min-width:76px;padding:.22rem .3rem;border:1px solid var(--line);border-radius:5px;
-  background:var(--paper);color:var(--ink-2);font-size:.58rem;font-weight:600;cursor:pointer
+  background:var(--paper);color:var(--ink-2);font-size:max(12px,.58rem);font-weight:600;cursor:pointer
 }
 .cap1-presentation .a2-plane-motion-rail button[aria-pressed="true"]{background:var(--teal-tint);border-color:var(--teal);color:var(--teal-deep)}
 .cap1-presentation .prof-controls button[title*="Mover plano"]{display:none}
@@ -384,7 +410,7 @@
 #three-container,#three-container-planes,#three-container-regions{width:100%;height:100%;position:relative;overflow:hidden;border-radius:var(--radius-sm)}
 
 /* Controles 3D accesibles: no dependen de rueda, botón central ni trackpad. */
-.scene-control-pad{position:absolute;left:10px;top:10px;z-index:12;width:max-content;max-width:calc(100% - 20px);padding:4px;border:1px solid var(--line);border-radius:8px;background:rgba(255,253,248,.94);box-shadow:0 4px 14px rgba(0,0,0,.10);backdrop-filter:blur(4px);color:var(--ink-2);font-size:.58rem}
+.scene-control-pad{position:absolute;left:10px;top:10px;z-index:12;width:max-content;max-width:calc(100% - 20px);padding:4px;border:1px solid var(--line);border-radius:8px;background:rgba(255,253,248,.94);box-shadow:0 4px 14px rgba(0,0,0,.10);backdrop-filter:blur(4px);color:var(--ink-2);font-size:max(12px,.58rem)}
 .scene-control-pad.is-expanded{width:178px;padding:6px 7px}
 .scene-control-title{font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--teal-deep);margin-bottom:4px}
 .scene-control-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-bottom:3px}
@@ -453,6 +479,9 @@
 .prof-controls label{display:flex;align-items:center;gap:.3rem;cursor:pointer;flex-shrink:0;font-size:.64rem}
 .prof-controls input[type="range"]{width:74px;accent-color:var(--teal);}
 .prof-controls input[type="checkbox"]{accent-color:var(--teal);}
+/* V6-05: los deslizadores y casillas fuera del panel (p. ej. «Pos.» de cada
+   plano en A2) salían en el azul nativo del navegador. */
+.cap1-presentation input[type="range"],.cap1-presentation input[type="checkbox"]{accent-color:var(--teal)}
 .prof-controls select{
   background:var(--card);color:var(--ink);border:1px solid var(--line);
   border-radius:6px;padding:.18rem .4rem;font-size:.64rem;cursor:pointer;
@@ -465,21 +494,72 @@
 .prof-controls button:active{transform:scale(.96)}
 
 /* ─── TABLAS MINI ─── */
-.data-mini{font-size:.66rem;width:100%;border-collapse:collapse}
+.data-mini{font-size:max(13px,.66rem);width:100%;border-collapse:collapse}
 .data-mini th{
   color:var(--teal-deep);font-weight:700;text-align:left;padding:.18rem .3rem;
-  border-bottom:1px solid var(--line);text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;
+  border-bottom:1px solid var(--line);text-transform:uppercase;letter-spacing:.05em;font-size:max(12px,.6rem);
 }
 .data-mini td{padding:.16rem .3rem;border-bottom:1px solid var(--line-soft);color:var(--ink-2)}
-.data-mini td:last-child{font-family:var(--mono);color:var(--ink);font-size:.62rem}
+.data-mini td:last-child{font-family:var(--mono);color:var(--ink);font-size:max(13px,.62rem)}
 /* S4-04: en las tablas de vocabulario (A3, B2) la última columna es prosa,
    no una cifra — la regla de arriba está pensada para tablas de datos
    (C3, D1, D4) y no puede distinguir el contenido, así que aquí se anula
    explícitamente en vez de tocar la regla general. */
-.data-mini.data-terms td:last-child{font-family:var(--sans);color:var(--ink-2);font-size:.66rem}
-.data-mini tr{cursor:pointer}
-.data-mini .table-caption{font-size:.56rem;color:var(--ink-3);padding:.14rem .3rem;font-style:italic}
+.data-mini.data-terms td:last-child{font-family:var(--sans);color:var(--ink-2);font-size:max(13px,.66rem)}
+.data-mini .table-caption{font-size:max(12px,.56rem);color:var(--ink-3);padding:.14rem .3rem;font-style:italic}
 .data-mini td b{color:var(--ink)}
+
+/* ─── PESTAÑAS DENTRO DE TARJETAS (D3, patrón de P6-25) ───
+   Mismo conmutador segmentado que «3D Cinemático | 2D Atlas» de B1, como
+   clase en vez de estilos en línea porque lo reutilizan varias tarjetas.
+   Estado local con useState en cada diapositiva; sin componente compartido. */
+.card-tabs{
+  display:inline-flex;flex-wrap:wrap;gap:2px;padding:2px;margin:0 0 .45rem;
+  background:var(--paper-2);border:1px solid var(--line);border-radius:6px;
+}
+.card-tabs button{
+  border:none;background:transparent;color:var(--ink);font:inherit;
+  font-size:max(12px,.66rem);font-weight:700;padding:.16rem .55rem;border-radius:4px;
+  cursor:pointer;white-space:nowrap;line-height:1.35;
+  transition:background-color var(--fade),color var(--fade);
+}
+.card-tabs button[aria-selected="true"]{background:var(--teal);color:var(--card)}
+.card-tabs button:focus-visible{outline:2px solid var(--teal);outline-offset:1px}
+/* Nota al pie de una tabla o pestaña (fuente, regla, advertencia). */
+.table-note{font-size:max(12px,.64rem);color:var(--ink-3);font-style:italic;margin-top:.3rem;line-height:1.45}
+/* Dato memorable en una línea (cifra en mono + texto), no pulsable. */
+.fact-chip{
+  display:inline-flex;align-items:baseline;gap:.35rem;font-size:max(12px,.68rem);
+  padding:.2rem .55rem;border-radius:6px;background:var(--paper);border:1px solid var(--line);
+  color:var(--ink-2);line-height:1.4;cursor:default;
+}
+.fact-chip b{font-family:var(--mono);color:var(--teal-deep);white-space:nowrap}
+/* Lista de consulta en dos columnas (vocabulario sin interacción). */
+.term-grid{display:grid;grid-template-columns:1fr 1fr;gap:.12rem .8rem;font-size:max(12px,.68rem);color:var(--ink-2);line-height:1.45}
+.term-grid b{color:var(--ink);margin-right:.25rem}
+/* Fórmula o unidad dentro de una cabecera de tabla: sin versalitas. */
+.data-mini th .nt{text-transform:none;letter-spacing:0}
+/* Celda numérica que no es la última de la fila (la última ya es mono). */
+.data-mini td.num{font-family:var(--mono);color:var(--ink);font-size:max(13px,.62rem);white-space:nowrap}
+/* Filete que separa filas interactivas de filas de consulta en una tabla. */
+.data-mini tr.table-divider td{
+  font-family:var(--sans);font-size:max(12px,.6rem);font-style:italic;color:var(--ink-3);
+  border-top:1px solid var(--line);padding-top:.3rem;cursor:default;
+}
+/* Lista corta de efectos con su capítulo de referencia (C4). */
+.effect-list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:.18rem .8rem;font-size:max(12px,.68rem);line-height:1.4}
+.effect-list li{position:relative;padding-left:.7rem}
+.effect-list li::before{content:"";position:absolute;left:0;top:.5em;width:.32rem;height:.32rem;border-radius:50%;background:var(--teal)}
+.effect-list b{color:var(--ink)}
+.effect-list .cap-ref{font-family:var(--mono);font-size:.9em;color:var(--teal-deep);white-space:nowrap}
+/* Resumen (P6-37): cuatro tarjetas alineadas arriba, tres viñetas cada una. */
+.theory.summary-grid{display:grid;grid-template-columns:1fr 1fr;align-content:start;gap:.6rem;overflow-y:auto}
+.summary-card:focus-visible{outline:2px solid var(--teal);outline-offset:2px;border-color:var(--teal)}
+.summary-list{list-style:none;display:flex;flex-direction:column;gap:.35rem}
+.summary-list li{line-height:1.5}
+.summary-list b{color:var(--teal-deep);margin-right:.15rem}
+/* Filas que responden al clic (resaltan algo en el lienzo o el 3D). */
+.data-mini tr.row-link{cursor:pointer}
 
 /* ─── ANIMACIÓN (un solo momento autorizado) ─── */
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
@@ -530,8 +610,8 @@
    controles sueltos en vez de un solo par «anterior/siguiente». Ahora
    viven juntas en `.nav-arrows`. */
 .nav-arrows{display:flex;gap:.4rem}
-.slide-counter{font-size:.58rem;font-family:var(--mono);color:var(--ink-3);letter-spacing:.06em}
-.nav-module-label{font-size:.58rem;color:var(--teal-deep);background:var(--card);border:1px solid var(--line);padding:.14rem .55rem;border-radius:6px;font-weight:600}
+.slide-counter{font-size:max(12px,.58rem);font-family:var(--mono);color:var(--ink-3);letter-spacing:.06em}
+.nav-module-label{font-size:max(12px,.58rem);color:var(--teal-deep);background:var(--card);border:1px solid var(--line);padding:.14rem .55rem;border-radius:6px;font-weight:600}
 
 /* En escritorio la navegación vive en el margen izquierdo para liberar el
    área inferior de lectura. En pantallas estrechas conserva el formato
@@ -574,22 +654,27 @@
 .canvas-tooltip b{color:var(--teal-deep)}
 
 /* ─── TABLA INTERACTIVA ─── */
-.interactive-table{width:100%;border-collapse:collapse;font-size:.66rem}
+.interactive-table{width:100%;border-collapse:collapse;font-size:max(13px,.66rem)}
 .interactive-table th{
   color:var(--teal-deep);font-weight:700;text-align:left;
   padding:.22rem .4rem;border-bottom:1px solid var(--line);
   position:sticky;top:0;background:var(--card);z-index:1;
-  text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;
+  text-transform:uppercase;letter-spacing:.05em;font-size:max(12px,.6rem);
 }
 .interactive-table td{
   padding:.18rem .4rem;border-bottom:1px solid var(--line-soft);
   color:var(--ink-2);transition:background-color var(--fade),color var(--fade);
 }
-.interactive-table td:last-child{font-family:var(--mono);color:var(--ink);font-size:.62rem}
-.interactive-table tr{cursor:pointer;transition:background-color var(--fade),color var(--fade)}
+.interactive-table td:last-child{font-family:var(--mono);color:var(--ink);font-size:max(13px,.62rem)}
+.interactive-table tr{transition:background-color var(--fade),color var(--fade)}
+/* I6-05: la mano solo sobre filas que responden al clic (clase row-link);
+   las tablas de consulta ya no prometen una interacción que no existe. */
+.interactive-table tr.row-link{cursor:pointer}
 .interactive-table tr.highlight td{background:var(--teal-tint);color:var(--teal-deep)}
 .interactive-table tr[aria-selected="true"] td,.data-mini tr[aria-selected="true"] td{background:var(--teal-tint);color:var(--teal-deep);box-shadow:inset 3px 0 0 var(--teal)}
-.interactive-table .table-caption{font-size:.56rem;color:var(--ink-3);padding:.14rem .4rem;font-style:italic}
+/* La marca lateral de la fila seleccionada va solo en la primera celda. */
+.interactive-table tr[aria-selected="true"] td+td,.data-mini tr[aria-selected="true"] td+td{box-shadow:none}
+.interactive-table .table-caption{font-size:max(12px,.56rem);color:var(--ink-3);padding:.14rem .4rem;font-style:italic}
 /* E3-02: aviso de foco por teclado en filas y tarjetas pulsables (mismas que ya
    responden a onClick); sin esto, tabular hasta una fila no mostraba ninguna
    diferencia visible. */
@@ -605,9 +690,9 @@
   border-radius:var(--radius-sm);padding:.4rem;min-width:0;
 }
 .figure-pair figure img{max-width:100%;max-height:66%;object-fit:contain;border-radius:4px}
-.figure-pair figcaption{font-size:.56rem;color:var(--ink-3);text-align:center;line-height:1.4;font-style:italic}
+.figure-pair figcaption{font-size:max(12px,.56rem);color:var(--ink-3);text-align:center;line-height:1.4;font-style:italic}
 .figure-pair figure .fig-num{
-  font-family:var(--mono);font-size:.54rem;font-weight:700;color:var(--teal-deep);
+  font-family:var(--mono);font-size:max(12px,.54rem);font-weight:700;color:var(--teal-deep);
   letter-spacing:.1em;
 }
 .figure-pair .zoomable-figure{cursor:zoom-in;transition:transform var(--fade),border-color var(--fade),box-shadow var(--fade)}
@@ -628,8 +713,8 @@
   .concept-flow .step:hover{border-color:var(--teal);color:var(--teal-deep)}
   .slide-full .start-btn:hover{background:var(--teal-deep);box-shadow:0 8px 20px rgba(35,44,54,.22)}
   .prof-controls button:hover{border-color:var(--teal);color:var(--teal-deep)}
-  .interactive-table tr:hover td{background:var(--teal-tint);color:var(--ink)}
-  .data-mini tr:hover td{background:var(--teal-tint);color:var(--ink)}
+  .interactive-table tr.row-link:hover td{background:var(--teal-tint);color:var(--ink)}
+  .data-mini tr.row-link:hover td{background:var(--teal-tint);color:var(--ink)}
   .theory .card:hover{border-color:#bdb09a}
   .nav-dot:hover{background:var(--ink-3)}
 }

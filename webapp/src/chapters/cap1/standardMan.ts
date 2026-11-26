@@ -34,6 +34,30 @@ export const STANDARD_MAN = {
   bloodVolumeL: 5.2,     // Tabla 1.5: «Volumen sanguíneo — 5,2 L»
   restingRR: 15,         // Tabla 1.5: «Frecuencia respiratoria — 15/min»
   lungCapacityTotalL: 6.0, // Tabla 1.5: «Capacidad pulmonar total — 6,0 L»
+  // P6-25: resto de la Tabla 1.5 (líneas 320-347 del .tex), literal.
+  weightLb: 154,         // Tabla 1.5: «Peso — 690 N (154 lb)»
+  coreTempC: 37.0,       // Tabla 1.5: «Temperatura corporal central — 37,0 °C»
+  skinTempC: 34.0,       // Tabla 1.5: «Temperatura de la piel corporal — 34,0 °C»
+  heatCapacityKcal: 0.83, // Tabla 1.5: «Capacidad calorífica — 0,83 kcal/kg·°C ...»
+  heatCapacityKJ: 3.5,   // Tabla 1.5: «... (3,5 kJ/kg·°C)»
+  bmrKcalM2H: 38,        // Tabla 1.5: TMB «... 38 kcal/m²·h ...»
+  bmrWM2: 44,            // Tabla 1.5: TMB «... 44 W/m²»
+  subcutaneousFatMm: 5,  // Tabla 1.5: «Capa de grasa subcutánea — 5 mm»
+  bodyFluidsInterstitialPercent: 40, // Tabla 1.5: «40 % intersticial, linfa»
+  bodyFluidsPlasmaPercent: 7,        // Tabla 1.5: «7 % plasma»
+  hematocrit: 0.43,      // Tabla 1.5: «Hematocrito de la sangre — 0,43»
+  cardiacOutputRestLMin: 5.0, // Tabla 1.5: «Gasto cardíaco (en reposo) — 5,0 L/min»
+  systolicMmHg: 120,     // Tabla 1.5: «Presión arterial sistólica — 120 mmHg (16,0 kPa)»
+  systolicKPa: 16.0,
+  diastolicMmHg: 80,     // Tabla 1.5: «Presión arterial diastólica — 80 mmHg (10,7 kPa)»
+  diastolicKPa: 10.7,
+  o2ConsumptionLMin: 0.26, // Tabla 1.5: «Consumo de O₂ — 0,26 L/min»
+  co2ProductionLMin: 0.21, // Tabla 1.5: «Producción de CO₂ — 0,21 L/min»
+  vitalCapacityL: 4.8,   // Tabla 1.5: «Capacidad vital — 4,8 L»
+  tidalVolumeL: 0.5,     // Tabla 1.5: «Volumen corriente — 0,5 L»
+  deadSpaceL: 0.15,      // Tabla 1.5: «Espacio muerto pulmonar — 0,15 L»
+  lungAreaM2: 90,        // Tabla 1.5: «Área de transferencia de masa pulmonar — 90 m²»
+  efficiencyMaxPercent: 25, // Tabla 1.5: «Eficiencia del trabajo mecánico — 0–25 %»
 } as const;
 
 /** g estándar (m/s²) usado por los paneles que calculan W = mg en vivo para

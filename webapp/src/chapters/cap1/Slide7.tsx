@@ -70,11 +70,31 @@ const EYE_GAZE_PRESETS: Record<EyeGaze, { x: number; y: number; label: string; a
   },
 };
 
+/* P6-24 · Tabla 1.3 (acción primaria y secundaria) y Tabla 1.4 (pares por
+   dirección de la mirada), literales del .tex (líneas 272–277 y 293–298). */
+const TABLE_13: { id: string; name: string; primary: string; secondary: string }[] = [
+  { id: 'lateral', name: 'Recto lateral (RL)', primary: 'Abducción', secondary: 'Ninguna' },
+  { id: 'medial', name: 'Recto medial (RM)', primary: 'Aducción', secondary: 'Ninguna' },
+  { id: 'superior', name: 'Recto superior (RS)', primary: 'Elevación', secondary: 'Aducción, intorsión' },
+  { id: 'inferior', name: 'Recto inferior (RI)', primary: 'Depresión', secondary: 'Abducción, extorsión' },
+  { id: 'osuperior', name: 'Oblicuo superior (OS)', primary: 'Depresión', secondary: 'Intorsión, abducción' },
+  { id: 'oinferior', name: 'Oblicuo inferior (OI)', primary: 'Elevación', secondary: 'Extorsión, abducción' },
+];
+const TABLE_14: [string, string, string][] = [
+  ['Arriba y derecha', 'Recto superior', 'Oblicuo inferior'],
+  ['Derecha', 'Recto lateral', 'Recto medial'],
+  ['Abajo y derecha', 'Recto inferior', 'Oblicuo superior'],
+  ['Abajo e izquierda', 'Oblicuo superior', 'Recto inferior'],
+  ['Izquierda', 'Recto medial', 'Recto lateral'],
+  ['Arriba e izquierda', 'Oblicuo inferior', 'Recto superior'],
+];
+
 export default function Slide7({ slideCount }: { slideCount?: string }) {
   const [mode, setMode] = useState<AntagonistMode>('eye');
   const [selectedGaze, setSelectedGaze] = useState<EyeGaze>('center');
   const [gaze, setGaze] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [selectedMuscle, setSelectedMuscle] = useState<string | null>(null);
+  const [eyeTab, setEyeTab] = useState<'muscle' | 'gaze'>('muscle');
   const [armFlexion, setArmFlexion] = useState<number>(0.4);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
   const [resetSignal, setResetSignal] = useState<number>(0);
@@ -143,6 +163,13 @@ export default function Slide7({ slideCount }: { slideCount?: string }) {
               <span className="icon">🔄</span> Principio antagonista
             </div>
             <div className="card-body">
+              <p style={{ marginBottom: '.25rem' }}>Cuatro componentes del movimiento:</p>
+              <div className="term-grid" style={{ marginBottom: '.4rem' }}>
+                <span><b>Huesos</b> la estructura; cartílago hialino en las sinoviales</span>
+                <span><b>Ligamentos</b> unen hueso con hueso</span>
+                <span><b>Músculos</b> los motores (esquelético; también cardíaco y liso)</span>
+                <span><b>Tendones</b> unen músculo con hueso (origen e inserción)</span>
+              </div>
               <p>
                 Los músculos <strong>solo se contraen</strong> (acortan bajo tensión); nunca empujan. Cada movimiento necesita su <strong>antagonista</strong> para relajar y permitir el retorno.
               </p>
@@ -158,6 +185,9 @@ export default function Slide7({ slideCount }: { slideCount?: string }) {
               <p style={{ fontSize: '.64rem', color: 'var(--ink-3)', marginTop: '.2rem' }}>
                 El par bíceps/tríceps conforma una <strong>palanca de tercer género</strong> (fulcro en codo, esfuerzo en el radio).
               </p>
+              <p style={{ marginTop: '.2rem' }}>
+                <strong>Regla del destornillador:</strong> supinar = atornillar con la mano derecha; pronar = desatornillar.
+              </p>
             </div>
           </div>
           <div className="card">
@@ -165,59 +195,69 @@ export default function Slide7({ slideCount }: { slideCount?: string }) {
               <span className="icon">👁️</span> Músculos del ojo (Tablas 1.3–1.4)
             </div>
             <div className="card-body">
-              <table className="interactive-table">
-                <tbody>
-                  <tr><th>Músculo</th><th>Acción Principal</th></tr>
-                  <tr
-                    onClick={() => { setMode('eye'); handleSelectMuscle('lateral'); }}
-                    style={{ cursor: 'pointer', background: selectedMuscle === 'lateral' ? 'var(--teal-tint)' : 'transparent' }}
-                  >
-                    <td><b>Recto lateral (RL)</b></td><td>Abducción (hacia afuera)</td>
-                  </tr>
-                  <tr
-                    onClick={() => { setMode('eye'); handleSelectMuscle('medial'); }}
-                    style={{ cursor: 'pointer', background: selectedMuscle === 'medial' ? 'var(--teal-tint)' : 'transparent' }}
-                  >
-                    <td><b>Recto medial (RM)</b></td><td>Aducción (hacia la nariz)</td>
-                  </tr>
-                  <tr
-                    onClick={() => { setMode('eye'); handleSelectMuscle('superior'); }}
-                    style={{ cursor: 'pointer', background: selectedMuscle === 'superior' ? 'var(--teal-tint)' : 'transparent' }}
-                  >
-                    <td><b>Recto superior (RS)</b></td><td>Elevación</td>
-                  </tr>
-                  <tr
-                    onClick={() => { setMode('eye'); handleSelectMuscle('inferior'); }}
-                    style={{ cursor: 'pointer', background: selectedMuscle === 'inferior' ? 'var(--teal-tint)' : 'transparent' }}
-                  >
-                    <td><b>Recto inferior (RI)</b></td><td>Depresión</td>
-                  </tr>
-                  <tr
-                    onClick={() => { setMode('eye'); handleSelectMuscle('osuperior'); }}
-                    style={{ cursor: 'pointer', background: selectedMuscle === 'osuperior' ? 'var(--teal-tint)' : 'transparent' }}
-                  >
-                    <td><b>Oblicuo superior (OS)</b></td><td>Depresión (en aducción) + tróclea</td>
-                  </tr>
-                  <tr
-                    onClick={() => { setMode('eye'); handleSelectMuscle('oinferior'); }}
-                    style={{ cursor: 'pointer', background: selectedMuscle === 'oinferior' ? 'var(--teal-tint)' : 'transparent' }}
-                  >
-                    <td><b>Oblicuo inferior (OI)</b></td><td>Elevación (en aducción)</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div className="card-tabs" role="tablist" aria-label="Tablas de los músculos del ojo">
+                <button type="button" role="tab" aria-selected={eyeTab === 'muscle'} onClick={() => setEyeTab('muscle')}>
+                  Por músculo (Tabla 1.3)
+                </button>
+                <button type="button" role="tab" aria-selected={eyeTab === 'gaze'} onClick={() => setEyeTab('gaze')}>
+                  Por mirada (Tabla 1.4)
+                </button>
+              </div>
+              {eyeTab === 'muscle' ? (
+                <table className="data-mini data-terms" role="tabpanel">
+                  <tbody>
+                    <tr><th>Músculo</th><th>Acción primaria</th><th>Acción secundaria</th></tr>
+                    {TABLE_13.map((m) => (
+                      <tr
+                        key={m.id}
+                        className="row-link"
+                        onClick={() => { setMode('eye'); handleSelectMuscle(m.id); }}
+                        onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); setMode('eye'); handleSelectMuscle(m.id); } }}
+                        tabIndex={0}
+                        aria-selected={selectedMuscle === m.id}
+                      >
+                        <td><b>{m.name}</b></td><td>{m.primary}</td><td>{m.secondary}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <table className="data-mini data-terms" role="tabpanel">
+                  <tbody>
+                    <tr><th>Mirada (ambos ojos)</th><th>Ojo derecho</th><th>Ojo izquierdo</th></tr>
+                    {TABLE_14.map(([dir, right, left]) => (
+                      <tr key={dir}>
+                        <td><b>{dir}</b></td><td>{right}</td><td>{left}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+              <p className="table-note">
+                Solo el par recto medial/lateral va limpio con un movimiento; la torsión (intorsión/extorsión) es acción secundaria.
+              </p>
             </div>
           </div>
           <div className="card">
             <div className="card-hdr">
-              <span className="icon">🖼️</span> Referencias (Figs. 1.12–1.14)
+              <span className="icon">🖼️</span> Referencias (Figs. 1.8 y 1.12–1.14)
             </div>
             <div className="card-body">
               <div className="figure-pair" style={{ height: '120px' }}>
+                <ChapterImageLightbox src="/assets/cap1/18.png" alt="Músculos y tendones principales del cuerpo" label="FIG 1.8 · Músculos y tendones">
+                  <span className="fig-num">FIG 1.8</span>
+                  <img src="/assets/cap1/18.png" alt="Músculos y tendones principales del cuerpo" />
+                  <figcaption>Músculos y tendones</figcaption>
+                </ChapterImageLightbox>
                 <ChapterImageLightbox src="/assets/cap1/112.png" alt="Flexión y extensión del antebrazo" label="FIG 1.12 · Palanca: bíceps vs. tríceps">
                   <span className="fig-num">FIG 1.12</span>
                   <img src="/assets/cap1/112.png" alt="Flexión y extensión del antebrazo" />
                   <figcaption>Palanca: bíceps vs. tríceps</figcaption>
+                </ChapterImageLightbox>
+                <ChapterImageLightbox src="/assets/cap1/113.png" alt="Rotaciones del ojo derecho" label="FIG 1.13 · Rotaciones del ojo derecho">
+                  <span className="fig-num">FIG 1.13</span>
+                  <img src="/assets/cap1/113.png" alt="Rotaciones del ojo derecho" />
+                  <figcaption>Rotaciones del ojo</figcaption>
                 </ChapterImageLightbox>
                 <ChapterImageLightbox src="/assets/cap1/114.png" alt="Músculos oculares" label="FIG 1.14 · Los 6 músculos del ojo">
                   <span className="fig-num">FIG 1.14</span>
@@ -248,13 +288,12 @@ export default function Slide7({ slideCount }: { slideCount?: string }) {
           <HudPanel
             title={mode === 'eye' ? 'MOTOR OCULAR 3D' : 'PALANCA 3.ER GÉNERO'}
             badge={mode === 'eye' ? '6 MÚSCULOS' : 'BÍCEPS / TRÍCEPS'}
-            icon="👁️"
             footer={mode === 'eye' ? '💡 Músculos rojos = contraídos activamente' : '💡 Desliza la contracción del bíceps'}
           >
             {mode === 'eye' ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 {/* 3 Pares de Antagonistas */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', fontSize: '0.58rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', fontSize:  'max(12px, 0.58rem)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', padding: '2px 4px', background: gaze.x !== 0 ? 'var(--teal-tint)' : 'transparent', borderRadius: '3px' }}>
                     <span style={{ color: 'var(--ink)' }}>↔ Horizontal:</span>
                     <span style={{ fontWeight: 'bold', color: 'var(--teal-deep)' }}>RL ↔ RM</span>
@@ -264,14 +303,14 @@ export default function Slide7({ slideCount }: { slideCount?: string }) {
                     <span style={{ fontWeight: 'bold', color: 'var(--teal-deep)' }}>RS ↔ RI</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', padding: '2px 4px', background: (gaze.x !== 0 && gaze.y !== 0) ? 'var(--teal-tint)' : 'transparent', borderRadius: '3px' }}>
-                    <span style={{ color: 'var(--ink)' }}>🔀 Oblicuo:</span>
+                    <span style={{ color: 'var(--ink)' }}>Oblicuo:</span>
                     <span style={{ fontWeight: 'bold', color: 'var(--teal-deep)' }}>OS (Tróclea) ↔ OI</span>
                   </div>
                 </div>
 
                 {/* Brújula / Matriz de 9 miradas cardinales */}
                 <div style={{ marginTop: '4px', borderTop: '1px solid var(--line)', paddingTop: '4px' }}>
-                  <span style={{ fontSize: '0.52rem', textTransform: 'uppercase', color: 'var(--ink-3)', fontWeight: 'bold' }}>
+                  <span style={{ fontSize:  'max(12px, 0.52rem)', textTransform: 'uppercase', color: 'var(--ink-3)', fontWeight: 'bold' }}>
                     Miradas Cardinales (Test en H):
                   </span>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '2px', marginTop: '3px' }}>
@@ -319,8 +358,8 @@ export default function Slide7({ slideCount }: { slideCount?: string }) {
                     {armFlexion < 0.45 ? 'ACTIVO (Tensión)' : 'Relajado'}
                   </span>
                 </div>
-                <div style={{ marginTop: '4px', borderTop: '1px dashed var(--line)', paddingTop: '4px', fontSize: '0.54rem', color: 'var(--ink-3)' }}>
-                  📐 <b>Palanca de 3.er Género:</b> Fulcro en el codo, Esfuerzo en el bíceps, Carga en la mano.
+                <div style={{ marginTop: '4px', borderTop: '1px dashed var(--line)', paddingTop: '4px', fontSize:  'max(12px, 0.54rem)', color: 'var(--ink-3)' }}>
+                  <b>Palanca de 3.er género:</b> Fulcro en el codo, Esfuerzo en el bíceps, Carga en la mano.
                 </div>
               </div>
             )}
@@ -360,7 +399,7 @@ export default function Slide7({ slideCount }: { slideCount?: string }) {
                   cursor: 'pointer',
                 }}
               >
-                👁️ Ojo 3D (6 Músculos)
+                Ojo 3D (6 músculos)
               </button>
               <button
                 type="button"
@@ -376,7 +415,7 @@ export default function Slide7({ slideCount }: { slideCount?: string }) {
                   cursor: 'pointer',
                 }}
               >
-                🦾 Brazo y Palanca
+                Brazo y palanca
               </button>
             </div>
 
@@ -398,7 +437,7 @@ export default function Slide7({ slideCount }: { slideCount?: string }) {
                   }}
                   style={{ width: '65px' }}
                 />
-                <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.60rem' }}>
+                <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize:  'max(12px, 0.60rem)' }}>
                   {Math.round(armFlexion * 100)}%
                 </span>
               </div>
@@ -424,7 +463,7 @@ export default function Slide7({ slideCount }: { slideCount?: string }) {
 
               {/* Controles de Zoom integrados */}
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', background: 'var(--paper-2)', border: '1px solid var(--line)', borderRadius: '4px', padding: '1px 4px' }}>
-                <span style={{ fontSize: '0.58rem', color: 'var(--ink-3)' }}>Zoom</span>
+                <span style={{ fontSize:  'max(12px, 0.58rem)', color: 'var(--ink-3)' }}>Zoom</span>
                 <button
                   type="button"
                   onClick={handleZoomOut}
@@ -433,7 +472,7 @@ export default function Slide7({ slideCount }: { slideCount?: string }) {
                 >
                   −
                 </button>
-                <span style={{ color: 'var(--line)', fontSize: '0.60rem' }}>|</span>
+                <span style={{ color: 'var(--line)', fontSize:  'max(12px, 0.60rem)' }}>|</span>
                 <button
                   type="button"
                   onClick={handleZoomIn}

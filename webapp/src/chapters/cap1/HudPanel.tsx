@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 interface HudPanelProps {
   title: string;
   badge?: string;
-  icon?: string;
   defaultCollapsed?: boolean;
   children: React.ReactNode;
   footer?: React.ReactNode;
@@ -13,7 +12,6 @@ interface HudPanelProps {
 export default function HudPanel({
   title,
   badge,
-  icon = '🧭',
   defaultCollapsed = true,
   children,
   footer,
@@ -62,7 +60,10 @@ export default function HudPanel({
           e.currentTarget.style.transform = 'scale(1)';
         }}
       >
-        {icon}
+        {/* S6-01c: un control se identifica por su texto, no por un emoji
+            (regla D1); el botón plegado lleva el signo tipográfico de
+            información y el título completo en su etiqueta accesible. */}
+        <span aria-hidden="true" style={{ fontFamily: 'var(--serif)', fontWeight: 700 }}>ⓘ</span>
       </button>
     );
   }
@@ -96,7 +97,7 @@ export default function HudPanel({
       >
         <span
           style={{
-            fontSize: '0.56rem',
+            fontSize:  'max(12px, 0.56rem)',
             textTransform: 'uppercase',
             letterSpacing: '0.05em',
             fontWeight: 'bold',
@@ -109,7 +110,7 @@ export default function HudPanel({
           {badge && (
             <span
               style={{
-                fontSize: '0.60rem',
+                fontSize:  'max(12px, 0.60rem)',
                 fontFamily: 'JetBrains Mono, monospace',
                 fontWeight: 'bold',
                 color: 'var(--teal-deep)',
@@ -161,7 +162,7 @@ export default function HudPanel({
             marginTop: '5px',
             paddingTop: '3px',
             borderTop: '1px dashed var(--line)',
-            fontSize: '0.52rem',
+            fontSize:  'max(12px, 0.52rem)',
             color: 'var(--ink-3)',
             textAlign: 'center',
           }}

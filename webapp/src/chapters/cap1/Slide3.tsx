@@ -44,6 +44,33 @@ const REGIONS_LIST = [
   { id: 'region-tarsus', name: 'Tarsiana', trans: 'Tobillo' },
 ];
 
+/* P6-20 · Términos de las Tablas 1.1–1.2 (.tex líneas 77–121) que no tienen
+   chip 3D arriba. Forma D4: adjetivo en español + término común. */
+const MORE_TERMS_ANTERIOR: [string, string][] = [
+  ['Abdominal', 'Abdomen'],
+  ['Axilar', 'Axila'],
+  ['Bucal', 'Mejilla'],
+  ['Frontal', 'Frente'],
+  ['Inguinal', 'Ingle'],
+  ['Lingual', 'Lengua'],
+  ['Mamaria', 'Mama'],
+  ['Mentoniana', 'Barbilla'],
+  ['Nasal', 'Nariz'],
+  ['Oral', 'Boca'],
+  ['Palmar', 'Palma'],
+  ['Pedia', 'Pie'],
+  ['Esternal', 'Esternón'],
+  ['Umbilical', 'Ombligo'],
+];
+const MORE_TERMS_POSTERIOR: [string, string][] = [
+  ['Occipital', 'Parte posterior de la cabeza'],
+  ['Sacra', 'Entre las caderas'],
+  ['Sural', 'Parte posterior de la pierna'],
+];
+
+const DEFAULT_APUNTE =
+  'Pasa el cursor o haz clic sobre cada región para verla en el modelo 3D. Todo término se dice desde el <b>paciente</b>: su ojo derecho es el que el médico ve a su izquierda. Lo mismo con superior/inferior: las venas <b>cavas superior e inferior</b> recogen la sangre por encima y por debajo del corazón.';
+
 export default function Slide3({ regionSel: parentRegionSel, slideCount }: Slide3Props) {
   const [localRegion, setLocalRegion] = useState<string | null>(null);
   const [hoverRegion, setHoverRegion] = useState<string | null>(null);
@@ -62,7 +89,7 @@ export default function Slide3({ regionSel: parentRegionSel, slideCount }: Slide
     () => ({
       __html:
         (shownRegion && REGION_DESCRIPTIONS[shownRegion]) ||
-        'Pasa el cursor o haz clic sobre cada región para verla en el modelo 3D y su relevancia clínica.',
+        DEFAULT_APUNTE,
     }),
     [shownRegion],
   );
@@ -104,23 +131,33 @@ export default function Slide3({ regionSel: parentRegionSel, slideCount }: Slide
                   </span>
                 ))}
               </div>
-              <p style={{ fontSize: '.6rem', color: 'var(--ink-3)', marginTop: '.3rem' }}>
+              <p style={{ fontSize:  'max(12px, .6rem)', color: 'var(--ink-3)', marginTop: '.3rem' }}>
                 💡 El nombre <em>braquial</em> viene de <strong>brachium</strong> (brazo): bíceps braquial, tríceps braquial.
+                <em> Bíceps</em> y <em>tríceps</em> nombran cualquier músculo con dos o tres orígenes, no solo los del brazo.
               </p>
             </div>
           </div>
           <div className="card">
             <div className="card-hdr">
-              <span className="icon">📖</span> Términos regionales adicionales
+              <span className="icon">📖</span> Más términos (Tablas 1.1–1.2)
             </div>
             <div className="card-body">
-              <table className="data-mini data-terms">
-                <tbody>
-                  <tr><th>Sin chip 3D equivalente arriba</th></tr>
-                  <tr><td><b>Occipital</b>: parte posterior de la cabeza</td></tr>
-                  <tr><td><b>Sural</b>: parte posterior de la pierna (pantorrilla)</td></tr>
-                </tbody>
-              </table>
+              <p className="table-note" style={{ marginTop: 0, marginBottom: '.25rem' }}>
+                Regiones anteriores (Tabla 1.1)
+              </p>
+              <div className="term-grid">
+                {MORE_TERMS_ANTERIOR.map(([term, common]) => (
+                  <span key={term}><b>{term}</b> {common}</span>
+                ))}
+              </div>
+              <p className="table-note" style={{ marginBottom: '.25rem' }}>
+                Regiones posteriores (Tabla 1.2)
+              </p>
+              <div className="term-grid">
+                {MORE_TERMS_POSTERIOR.map(([term, common]) => (
+                  <span key={term}><b>{term}</b> {common}</span>
+                ))}
+              </div>
             </div>
           </div>
           <div className="apuntes">
@@ -144,7 +181,7 @@ export default function Slide3({ regionSel: parentRegionSel, slideCount }: Slide
             <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.85rem', alignItems: 'center' }}>
               {/* Controles de Zoom integrados */}
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', background: 'var(--paper-2)', border: '1px solid var(--line)', borderRadius: '4px', padding: '1px 5px' }}>
-                <span style={{ fontSize: '0.60rem', color: 'var(--ink-3)', marginRight: '2px' }}>Zoom</span>
+                <span style={{ fontSize:  'max(12px, 0.60rem)', color: 'var(--ink-3)', marginRight: '2px' }}>Zoom</span>
                 <button
                   type="button"
                   onClick={handleZoomOut}

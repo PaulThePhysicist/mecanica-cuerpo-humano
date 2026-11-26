@@ -146,6 +146,8 @@ function DoubleArrow({
   // El eje anterior/posterior apunta casi hacia la cámara: sus etiquetas caían
   // sobre el torso. Con un offset hacia abajo quedan bajo la figura, legibles.
   labelOffset = [0, 0, 0],
+  // A6-03: desplazamiento propio del rótulo negativo (por defecto, el mismo).
+  labelOffsetNeg,
   // V2-03: prioridad de anti-colisión (`Callout`/`AnchoredLabelOverlay`) —
   // el store se toma del `CalloutProvider` que `Axes` monta alrededor, no
   // hace falta pasarlo aquí.
@@ -162,7 +164,10 @@ function DoubleArrow({
   const headOffset = D.clone().multiplyScalar(shaftLength / 2 + headLength / 2);
   const lo = new THREE.Vector3(labelOffset[0], labelOffset[1], labelOffset[2]);
   const pPos = D.clone().multiplyScalar(length / 2 + 0.3).add(lo);
-  const pNeg = D.clone().multiplyScalar(-(length / 2 + 0.3)).add(lo);
+  const loNeg = labelOffsetNeg
+    ? new THREE.Vector3(labelOffsetNeg[0], labelOffsetNeg[1], labelOffsetNeg[2])
+    : lo;
+  const pNeg = D.clone().multiplyScalar(-(length / 2 + 0.3)).add(loNeg);
 
   const mat = <meshStandardMaterial color={color} transparent opacity={opacity} depthTest={false} />;
 
@@ -180,8 +185,9 @@ function DoubleArrow({
         {mat}
       </mesh>
 
-      {/* Punta Negativa */}
-      <mesh position={[pNeg.x, pNeg.y, pNeg.z]} quaternion={qFlip}>
+      {/* Punta Negativa (simétrica de la positiva; antes heredaba el
+          desplazamiento del rótulo y la punta flotaba lejos del eje). */}
+      <mesh position={[-headOffset.x, -headOffset.y, -headOffset.z]} quaternion={qFlip}>
         <coneGeometry args={[headRadius, headLength, 16]} />
         {mat}
       </mesh>
@@ -197,7 +203,7 @@ function DoubleArrow({
             label={labelPos}
             sub={subPos}
             color={color}
-            opacity={Math.max(opacity, 0.82)}
+            opacity={Math.max(opacity, 0.92)}
             priority={priority}
           />
           <Callout
@@ -205,7 +211,7 @@ function DoubleArrow({
             label={labelNeg}
             sub={subNeg}
             color={color}
-            opacity={Math.max(opacity, 0.82)}
+            opacity={Math.max(opacity, 0.92)}
             priority={priority}
           />
         </>
@@ -667,7 +673,8 @@ export function Axes({
         labelNeg="-x" subNeg="Posterior / Dorsal"
         opacity={opX}
         showLabels={showLabels}
-        labelOffset={[0, -1.7, 0]}
+        labelOffset={[-1.55, -1.1, 0]}
+        labelOffsetNeg={[1.55, -0.5, 0]}
         priority={2}
       />
     </group>

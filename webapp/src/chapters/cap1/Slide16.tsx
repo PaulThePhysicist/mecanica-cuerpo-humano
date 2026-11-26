@@ -8,6 +8,46 @@ interface Slide16Props {
   slideCount?: string;
 }
 
+const SM = STANDARD_MAN;
+
+/* P6-37 · Cada pilar del §1.5 en tres viñetas: una idea, una cifra y una
+   pregunta de repaso. Las fórmulas van entre $…$ y las renderiza KaTeX
+   (auto-render del capítulo). */
+const PILLARS: { module: number; icon: string; title: string; idea: string; figure: string; question: string }[] = [
+  {
+    module: 1,
+    icon: '🧭',
+    title: 'Terminología anatómica',
+    idea: 'Toda dirección se dice desde el paciente: $x$ anteroposterior, $y$ mediolateral (derecha $y < 0$), $z$ longitudinal; $\\rho$ mide la profundidad.',
+    figure: '33 términos regionales (Tablas 1.1–1.2) y 3 planos de corte: transverso ($z$ fija), sagital ($y$ fija) y coronal ($x$ fija).',
+    question: '¿El corazón es superior o inferior al intestino grueso?',
+  },
+  {
+    module: 2,
+    icon: '🦾',
+    title: 'El movimiento de la máquina',
+    idea: 'Los huesos giran en las articulaciones y los músculos solo tiran: por eso trabajan en pares antagonistas (bíceps/tríceps, tres pares por ojo).',
+    figure: 'Pierna $3 + 1 + 2 = 6$ GL; brazo $3 + 1 + 2 + 1 = 7$ GL: un grado redundante.',
+    question: '¿Por qué la mano puede quedar en el mismo sitio con el codo en posturas distintas?',
+  },
+  {
+    module: 3,
+    icon: '📐',
+    title: 'El humano estándar',
+    idea: `Un varón de ${SM.massKg} kg y ${fmt(SM.heightM, 2)} m es la referencia; las tablas dan longitud, masa, centro de masa y radio de giro de cada segmento.`,
+    figure: `${fmt(SM.coreTempC, 1)} °C · ${SM.systolicMmHg}/${SM.diastolicMmHg} mmHg · ${fmt(SM.cardiacOutputRestLMin, 1)} L/min · TMB ${SM.bmrKcalH} kcal/h · ${SM.fatPercent} % de grasa.`,
+    question: '¿Qué fracción de la masa corporal es el tronco? ¿Y la pierna entera?',
+  },
+  {
+    module: 4,
+    icon: '📈',
+    title: 'Relaciones de escala',
+    idea: 'Muchas propiedades siguen $f = a\\,m_b^{\\alpha}$; los huesos engrosan como $w \\propto L^{3/2}$ y la percepción sigue $P = K\\,(S - S_0)^n$.',
+    figure: 'Kleiber: $\\alpha = 0{,}75$. Cualquier mamífero late $\\sim 1{,}5 \\times 10^{9}$ veces en su vida.',
+    question: '¿Por qué duplicar el exceso de corriente sobre el umbral se siente unas 11 veces más fuerte?',
+  },
+];
+
 export default function Slide16({ go, goModule, slideCount }: Slide16Props) {
   return (
     <>
@@ -18,43 +58,39 @@ export default function Slide16({ go, goModule, slideCount }: Slide16Props) {
         <span className="mslide-count">{slideCount ?? '·'}</span>
       </div>
       <div className="content-grid single-col">
-        <div className="theory" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', alignContent: 'center', gap: '.4rem', overflow: 'visible' }}>
-          <div className="card" style={{ cursor: 'pointer' }} onClick={() => goModule?.(1)}>
-            <div className="card-hdr">
-              <span className="icon">🧭</span> Terminología anatómica
+        <div className="theory summary-grid">
+          {PILLARS.map((p) => (
+            <div
+              key={p.module}
+              className="card summary-card"
+              role="button"
+              tabIndex={0}
+              aria-label={`Repasar el módulo: ${p.title}`}
+              style={{ cursor: 'pointer' }}
+              onClick={() => goModule?.(p.module)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  goModule?.(p.module);
+                }
+              }}
+            >
+              <div className="card-hdr">
+                <span className="icon">{p.icon}</span> {p.title}
+              </div>
+              <div className="card-body">
+                <ul className="summary-list">
+                  <li><b>Idea.</b> {p.idea}</li>
+                  <li><b>Cifra.</b> {p.figure}</li>
+                  <li><b>Repaso.</b> {p.question}</li>
+                </ul>
+              </div>
             </div>
-            <div className="card-body" style={{ fontSize: '.68rem' }}>
-              Coordenadas (x, y, z, r, ρ), direcciones opuestas y 3 planos de sección. Toda posición se describe desde la perspectiva del paciente.
-            </div>
-          </div>
-          <div className="card" style={{ cursor: 'pointer' }} onClick={() => goModule?.(2)}>
-            <div className="card-hdr">
-              <span className="icon">🦾</span> El movimiento de la máquina
-            </div>
-            <div className="card-body" style={{ fontSize: '.68rem' }}>
-              6 GL (3 traslacionales + 3 rotacionales). Articulaciones sinoviales de 1–3 GL. El brazo suma 7 con el pivote radiocubital.
-            </div>
-          </div>
-          <div className="card" style={{ cursor: 'pointer' }} onClick={() => goModule?.(3)}>
-            <div className="card-hdr">
-              <span className="icon">📐</span> El Humano Estándar
-            </div>
-            <div className="card-body" style={{ fontSize: '.68rem' }}>
-              {STANDARD_MAN.massKg} kg, {fmt(STANDARD_MAN.heightM, 2)} m, {fmt(STANDARD_MAN.bsaM2, 2)} m², TMB {STANDARD_MAN.bmrKcalH} kcal/h, {STANDARD_MAN.fatPercent} % grasa. Proporciones segmentarias fijas L/H. Somatotipos y Heath-Carter.
-            </div>
-          </div>
-          <div className="card" style={{ cursor: 'pointer' }} onClick={() => goModule?.(4)}>
-            <div className="card-hdr">
-              <span className="icon">📈</span> Relaciones de escala
-            </div>
-            <div className="card-body" style={{ fontSize: '.68rem' }}>
-              {'Alometría $f = a \\cdot m_b^{\\alpha}$, huesos $w \\propto L^{3/2}$, índices S e IMC, Du Bois (A), y la Ley de Stevens $P = K\\,(S - S_0)^n$.'}
-            </div>
-          </div>
+          ))}
         </div>
         <div className="prof-controls" style={{ justifyContent: 'center' }}>
           <span>¿Puedes explicar los 4 pilares? Haz clic en cada tarjeta para repasar</span>
-          <button onClick={() => go?.(0)}>← Volver al inicio</button>
+          <button type="button" onClick={() => go?.(0)}>← Volver al inicio</button>
         </div>
       </div>
     </>

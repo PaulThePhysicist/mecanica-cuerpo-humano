@@ -53,7 +53,7 @@ export default function Slide2({ planeSel: parentPlaneSel, slideCount }: Slide2P
   };
 
   const offsetSlider = (planeId: string, label: string) => (
-    <label onClick={(event) => event.stopPropagation()} style={{ display: 'inline-flex', alignItems: 'center', gap: '.25rem', marginLeft: 'auto', fontSize: '.56rem', color: 'var(--ink-3)', cursor: 'ew-resize' }}>
+    <label onClick={(event) => event.stopPropagation()} style={{ display: 'inline-flex', alignItems: 'center', gap: '.25rem', marginLeft: 'auto', fontSize:  'max(12px, .56rem)', color: 'var(--ink-3)', cursor: 'ew-resize' }}>
       <span>Pos.</span>
       <input aria-label={`Posición del plano ${label}`} type="range" min="-0.42" max="0.42" step="0.01" value={planeOffsets[planeId] ?? 0} onChange={(event) => setPlaneOffsets((current) => ({ ...current, [planeId]: Number(event.target.value) }))} style={{ width: '76px' }} />
     </label>
@@ -84,7 +84,7 @@ export default function Slide2({ planeSel: parentPlaneSel, slideCount }: Slide2P
                   <span style={{ fontWeight: 700, fontSize: '.7rem', color: 'var(--sagittal)' }}>Sagital</span>
                   <span className="tag">y = cte</span>
                   <span style={{ fontSize: '.62rem', color: 'var(--ink-3)' }}>derecha / izquierda</span>
-                  <span className="tag" style={{ fontSize: '.52rem' }}>midsagital: y = 0</span>
+                  <span className="tag" style={{ fontSize:  'max(12px, .52rem)' }}>midsagital: y = 0</span>
                   {offsetSlider('plane-sagittal', 'sagital')}
                 </div>
                 <div
@@ -96,7 +96,7 @@ export default function Slide2({ planeSel: parentPlaneSel, slideCount }: Slide2P
                   <span style={{ fontWeight: 700, fontSize: '.7rem', color: 'var(--coronal)' }}>Coronal</span>
                   <span className="tag">x = cte</span>
                   <span style={{ fontSize: '.62rem', color: 'var(--ink-3)' }}>anterior / posterior</span>
-                  <span style={{ fontSize: '.58rem', color: 'var(--ink-3)' }}>(frontal)</span>
+                  <span style={{ fontSize:  'max(12px, .58rem)', color: 'var(--ink-3)' }}>(frontal)</span>
                   {offsetSlider('plane-coronal', 'coronal')}
                 </div>
                 <div
@@ -108,7 +108,7 @@ export default function Slide2({ planeSel: parentPlaneSel, slideCount }: Slide2P
                   <span style={{ fontWeight: 700, fontSize: '.7rem', color: 'var(--transverse)' }}>Transverso</span>
                   <span className="tag">z = cte</span>
                   <span style={{ fontSize: '.62rem', color: 'var(--ink-3)' }}>superior / inferior</span>
-                  <span style={{ fontSize: '.58rem', color: 'var(--ink-3)' }}>(horizontal)</span>
+                  <span style={{ fontSize:  'max(12px, .58rem)', color: 'var(--ink-3)' }}>(horizontal)</span>
                   {offsetSlider('plane-transverse', 'transverso')}
                 </div>
               </div>
@@ -178,13 +178,13 @@ export default function Slide2({ planeSel: parentPlaneSel, slideCount }: Slide2P
                     border: `1px solid ${movingPlanes[id] ? 'var(--teal)' : 'var(--line)'}`,
                     background: movingPlanes[id] ? 'var(--teal-tint)' : 'var(--paper-2)',
                     color: 'var(--ink)', borderRadius: '4px', padding: '2px 5px',
-                    fontSize: '0.58rem', cursor: 'pointer',
+                    fontSize:  'max(12px, 0.58rem)', cursor: 'pointer',
                   }}
                 >
                   {movingPlanes[id] ? '⏸' : '▶'} {label}
                 </button>
               ))}
-              <label style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', fontSize: '0.58rem', color: 'var(--ink-2)' }}>
+              <label style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', fontSize:  'max(12px, 0.58rem)', color: 'var(--ink-2)' }}>
                 Vel.
                 <input
                   aria-label="Velocidad de desplazamiento de planos"
@@ -208,7 +208,7 @@ export default function Slide2({ planeSel: parentPlaneSel, slideCount }: Slide2P
             <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.85rem', alignItems: 'center' }}>
               {/* Controles de Zoom integrados */}
               <div style={{ display: 'none' }}>
-                <span style={{ fontSize: '0.60rem', color: 'var(--ink-3)', marginRight: '2px' }}>Zoom</span>
+                <span style={{ fontSize:  'max(12px, 0.60rem)', color: 'var(--ink-3)', marginRight: '2px' }}>Zoom</span>
                 <button
                   type="button"
                   onClick={handleZoomOut}

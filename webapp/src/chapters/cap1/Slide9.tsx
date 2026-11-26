@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import ProportionsCanvas from './ProportionsCanvas';
 import ChapterImageLightbox from './ChapterImageLightbox';
 import { fmt } from './format';
+import { TABLE_17, TABLE_18, TABLE_19 } from './segmentTables';
+import Tex from './Tex';
 import { AMBER, BODY_SEGMENT_SHADES } from './colorTokens';
 // @ts-ignore - katex auto-render no incluye tipos
 import renderMathInElement from 'katex/contrib/auto-render';
@@ -94,10 +96,28 @@ const SEGMENTS_DATA: Record<string, SegmentDetail> = {
   },
 };
 
+/* P6-27 · Filas de la Tabla 1.6 sin cota en el lienzo (.tex líneas 375–388):
+   de consulta, sin resaltado ni cursor de mano. */
+const TABLE_16_EXTRA: [string, number][] = [
+  ['Ancho del pecho', 0.174],
+  ['Ancho de caderas / separación de piernas', 0.191],
+  ['Del tobillo a la planta del pie', 0.039],
+  ['Ancho del pie', 0.055],
+];
+
+type SegTab = 'len' | 'mass' | 'com' | 'gyr';
+const SEG_TABS: { id: SegTab; label: string }[] = [
+  { id: 'len', label: 'Longitud (1.6)' },
+  { id: 'mass', label: 'Masa y densidad (1.7)' },
+  { id: 'com', label: 'Centro de masa (1.8)' },
+  { id: 'gyr', label: 'Radio de giro (1.9)' },
+];
+
 export default function Slide9({ slideCount }: { slideCount?: string }) {
   const [height, setHeight] = useState<number>(172);
   const [selectedSegment, setSelectedSegment] = useState<string | null>(null);
   const [hoveredSegment, setHoveredSegment] = useState<string | null>(null);
+  const [segTab, setSegTab] = useState<SegTab>('len');
 
   const currentDetail = selectedSegment ? SEGMENTS_DATA[selectedSegment] : null;
 
@@ -147,10 +167,18 @@ export default function Slide9({ slideCount }: { slideCount?: string }) {
         <div className="theory">
           <div className="card active">
             <div className="card-hdr">
-              <span className="icon">📏</span> Longitudes relativas (Tabla 1.6)
+              <span className="icon">📏</span> Segmentos corporales (Tablas 1.6–1.9)
             </div>
             <div className="card-body">
-              <table className="data-mini">
+              <div className="card-tabs" role="tablist" aria-label="Tablas de los segmentos">
+                {SEG_TABS.map((t) => (
+                  <button key={t.id} type="button" role="tab" aria-selected={segTab === t.id} onClick={() => setSegTab(t.id)}>
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+              {segTab === 'len' && (<>
+              <table className="data-mini" role="tabpanel">
                 <tbody>
                   <tr><th>Segmento</th><th>L / H</th><th>L calculada</th></tr>
                   {Object.values(SEGMENTS_DATA).map((s) => {
@@ -159,6 +187,7 @@ export default function Slide9({ slideCount }: { slideCount?: string }) {
                     return (
                       <tr
                         key={s.id}
+                        className="row-link"
                         onClick={() => handleSelectSegment(s.id)}
                         onMouseEnter={() => setHoveredSegment(s.id)}
                         onMouseLeave={() => setHoveredSegment(null)}
@@ -173,12 +202,20 @@ export default function Slide9({ slideCount }: { slideCount?: string }) {
                           <b>{s.name}</b>
                         </td>
                         <td>{fmt(s.frac, 3)}</td>
-                        <td style={{ fontFamily: 'JetBrains Mono, monospace', color: isSel ? 'var(--teal-deep)' : 'var(--ink-2)' }}>
+                        <td style={{ fontFamily: 'var(--mono)', color: isSel ? 'var(--teal-deep)' : 'var(--ink-2)' }}>
                           {lenCm} cm
                         </td>
                       </tr>
                     );
                   })}
+                  <tr className="table-divider"><td colSpan={3}>Sin cota en la figura</td></tr>
+                  {TABLE_16_EXTRA.map(([name, frac]) => (
+                    <tr key={name}>
+                      <td><span style={{ display: 'inline-block', width: '8px', marginRight: '6px' }} />{name}</td>
+                      <td>{fmt(frac, 3)}</td>
+                      <td style={{ fontFamily: 'var(--mono)', color: 'var(--ink-2)' }}>{fmt(frac * height, 1)} cm</td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
               <div className="eq-block">
@@ -187,6 +224,57 @@ export default function Slide9({ slideCount }: { slideCount?: string }) {
               <p style={{ fontSize: '.62rem', color: 'var(--ink-3)' }}>
                 Las proporciones <strong>no dependen de la estatura</strong>: una persona de 1,50 m y otra de 1,90 m comparten las mismas fracciones invariantes.
               </p>
+              </>)}
+              {segTab === 'mass' && (<>
+                <table className="data-mini" role="tabpanel">
+                  <tbody>
+                    <tr><th>Segmento</th><th><span className="nt"><Tex>{'m/m_b'}</Tex></span></th><th>Masa <span className="nt">(70 kg)</span></th><th>Densidad <span className="nt">(g/cm³)</span></th></tr>
+                    {TABLE_17.map((r) => (
+                      <tr key={r.segment}>
+                        <td>{r.segment}</td>
+                        <td className="num">{fmt(r.massFrac, r.fracDigits)}</td>
+                        <td className="num">{fmt(r.massFrac * 70, 1)} kg</td>
+                        <td>{fmt(r.density, 2)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <p className="table-note">
+                  Tronco + cabeza y cuello + 2 brazos + 2 piernas:{' '}
+                  <Tex>{'0{,}497 + 0{,}081 + 2 \\times 0{,}050 + 2 \\times 0{,}161 = 1{,}000'}</Tex>.<br />
+                  Medidas en cadáveres: masa por pesada, volumen por agua desplazada (Arquímedes, Cap. 7).
+                </p>
+              </>)}
+              {segTab === 'com' && (<>
+                <table className="data-mini" role="tabpanel">
+                  <tbody>
+                    <tr><th>Segmento</th><th>Desde proximal</th><th>Desde distal</th></tr>
+                    {TABLE_18.map((r) => (
+                      <tr key={r.segment}>
+                        <td>{r.segment}</td><td className="num">{r.proximal}</td><td>{r.distal ?? '--'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <p className="table-note">
+                  Dónde se equilibra el segmento, como fracción de su longitud. Las tablas proceden de fuentes distintas y no siempre son coherentes entre sí.
+                </p>
+              </>)}
+              {segTab === 'gyr' && (<>
+                <table className="data-mini" role="tabpanel">
+                  <tbody>
+                    <tr><th>Segmento</th><th>Alrededor del <span className="nt">CdM</span></th><th>Del proximal</th><th>Del distal</th></tr>
+                    {TABLE_19.map((r) => (
+                      <tr key={r.segment}>
+                        <td>{r.segment}</td><td className="num">{r.com}</td><td className="num">{r.proximal}</td><td>{r.distal ?? '--'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <p className="table-note">
+                  Cuánto cuesta hacerlo girar: mide cómo se reparte la masa alrededor del eje (Cap. 3). Normalizado por la longitud del segmento.
+                </p>
+              </>)}
             </div>
           </div>
           <div className="card">
@@ -243,7 +331,7 @@ export default function Slide9({ slideCount }: { slideCount?: string }) {
 
             <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.65rem', alignItems: 'center' }}>
               {selectedSegment && (
-                <span style={{ fontSize: '0.60rem', color: 'var(--teal-deep)', fontWeight: 'bold' }}>
+                <span style={{ fontSize:  'max(12px, 0.60rem)', color: 'var(--teal-deep)', fontWeight: 'bold' }}>
                   {SEGMENTS_DATA[selectedSegment]?.name}: {fmt((SEGMENTS_DATA[selectedSegment]?.frac || 0) * height, 1)} cm
                 </span>
               )}

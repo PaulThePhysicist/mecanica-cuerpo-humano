@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import StandardHumanCanvas from './StandardHumanCanvas';
 import { STANDARD_MAN } from './standardMan';
 import { fmt } from './format';
+import Tex from './Tex';
 // @ts-ignore - katex auto-render no incluye tipos
 import renderMathInElement from 'katex/contrib/auto-render';
 
@@ -53,6 +54,90 @@ const PARAMS_DATA: Record<string, ParamDetail> = {
   },
 };
 
+/* P6-25 · Tabla 1.5 completa (29 parámetros, .tex líneas 320-347) en cuatro
+   pestañas. Las filas con `param` responden al clic igual que antes (apunte y
+   lienzo); las demás son de consulta. */
+const SM = STANDARD_MAN;
+type TabId = 'general' | 'heat' | 'cardio' | 'resp';
+interface Row { label: React.ReactNode; value: React.ReactNode; param?: string }
+
+const TABLE_15: { id: TabId; label: string; rows: Row[] }[] = [
+  {
+    id: 'general',
+    label: 'General',
+    rows: [
+      { label: 'Edad', value: `${SM.ageYears} años`, param: 'mass' },
+      { label: 'Altura', value: `${SM_HEIGHT} m (5 pies 8 pulgadas)`, param: 'mass' },
+      { label: 'Masa', value: `${SM.massKg} kg`, param: 'mass' },
+      { label: 'Peso', value: `${SM.weightN} N (${SM.weightLb} lb)`, param: 'mass' },
+      { label: 'Área de superficie', value: `${fmt(SM.bsaM2, 2)} m²`, param: 'area' },
+      { label: 'Grasa corporal', value: `${SM.fatPercent} %`, param: 'composition' },
+      { label: 'Capa de grasa subcutánea', value: `${SM.subcutaneousFatMm} mm` },
+      { label: 'Volumen de fluidos corporales', value: `${SM.bodyFluidsL} L`, param: 'composition' },
+      {
+        label: 'Composición de fluidos (intracelular · intersticial y linfa · plasma)',
+        value: `${SM.bodyFluidsIntracellularPercent} % · ${SM.bodyFluidsInterstitialPercent} % · ${SM.bodyFluidsPlasmaPercent} %`,
+        param: 'composition',
+      },
+    ],
+  },
+  {
+    id: 'heat',
+    label: 'Calor y energía',
+    rows: [
+      { label: 'Temperatura corporal central', value: `${fmt(SM.coreTempC, 1)} °C` },
+      { label: 'Temperatura de la piel', value: `${fmt(SM.skinTempC, 1)} °C` },
+      { label: 'Capacidad calorífica', value: `${fmt(SM.heatCapacityKcal, 2)} kcal/kg·°C (${fmt(SM.heatCapacityKJ, 1)} kJ/kg·°C)` },
+      {
+        label: 'Tasa metabólica basal',
+        value: `${SM.bmrKcalH} kcal/h (${SM.bmrKcalDay} kcal/día · ${SM.bmrKcalM2H} kcal/m²·h · ${SM.bmrWM2} W/m²)`,
+        param: 'bmr',
+      },
+      { label: 'Eficiencia del trabajo mecánico', value: `0–${SM.efficiencyMaxPercent} %` },
+    ],
+  },
+  {
+    id: 'cardio',
+    label: 'Corazón y sangre',
+    rows: [
+      { label: 'Frecuencia cardíaca', value: `${SM.restingHR} latidos/min`, param: 'cardio' },
+      { label: 'Volumen sanguíneo', value: `${fmt(SM.bloodVolumeL, 1)} L`, param: 'cardio' },
+      { label: 'Hematocrito de la sangre', value: fmt(SM.hematocrit, 2) },
+      { label: 'Gasto cardíaco (en reposo)', value: `${fmt(SM.cardiacOutputRestLMin, 1)} L/min` },
+      {
+        label: 'Gasto cardíaco (en general)',
+        value: <><Tex>{'3{,}0 + 8 \\times (\\text{consumo de O}_2)'}</Tex> L/min</>,
+      },
+      { label: 'Presión arterial sistólica', value: `${SM.systolicMmHg} mmHg (${fmt(SM.systolicKPa, 1)} kPa)`, param: 'cardio' },
+      { label: 'Presión arterial diastólica', value: `${SM.diastolicMmHg} mmHg (${fmt(SM.diastolicKPa, 1)} kPa)`, param: 'cardio' },
+    ],
+  },
+  {
+    id: 'resp',
+    label: 'Respiración',
+    rows: [
+      { label: 'Frecuencia respiratoria', value: `${SM.restingRR}/min`, param: 'pulmonary' },
+      { label: 'Consumo de O₂', value: `${fmt(SM.o2ConsumptionLMin, 2)} L/min` },
+      { label: 'Producción de CO₂', value: `${fmt(SM.co2ProductionLMin, 2)} L/min` },
+      { label: 'Capacidad pulmonar total', value: `${fmt(SM.lungCapacityTotalL, 1)} L`, param: 'pulmonary' },
+      { label: 'Capacidad vital', value: `${fmt(SM.vitalCapacityL, 1)} L` },
+      { label: 'Volumen corriente', value: `${fmt(SM.tidalVolumeL, 1)} L`, param: 'pulmonary' },
+      { label: 'Espacio muerto pulmonar', value: `${fmt(SM.deadSpaceL, 2)} L` },
+      { label: 'Área de transferencia de masa pulmonar', value: `${SM.lungAreaM2} m²` },
+    ],
+  },
+];
+
+/** Pestaña que contiene cada fila interactiva (para seguir al lienzo). */
+const PARAM_TAB: Record<string, TabId> = {
+  mass: 'general',
+  area: 'general',
+  composition: 'general',
+  bmr: 'heat',
+  cardio: 'cardio',
+  pulmonary: 'resp',
+};
+
 function renderC1Math() {
   const info = document.getElementById('info-text-c1');
   if (!info) return;
@@ -71,6 +156,7 @@ export default function Slide8({ slideCount }: { slideCount?: string }) {
   const [mass, setMass] = useState<number>(STANDARD_MAN.massKg);
   const [height, setHeight] = useState<number>(STANDARD_MAN.heightM * 100);
   const [selectedParam, setSelectedParam] = useState<string>('mass');
+  const [tab, setTab] = useState<TabId>('general');
 
   const currentDetail = PARAMS_DATA[selectedParam] || PARAMS_DATA.mass;
   // El apunte tiene un único dueño: el estado `selectedParam`. El objeto se
@@ -99,12 +185,16 @@ export default function Slide8({ slideCount }: { slideCount?: string }) {
 
   const handleSelectParam = (pId: string) => {
     setSelectedParam(pId);
+    // Si la selección llega desde el lienzo, la tabla abre la pestaña que la contiene.
+    const owner = PARAM_TAB[pId];
+    if (owner) setTab(owner);
   };
 
   const handleReset = () => {
     setMass(STANDARD_MAN.massKg);
     setHeight(STANDARD_MAN.heightM * 100);
     setSelectedParam('mass');
+    setTab('general');
   };
 
   // Cálculos reactivos
@@ -129,57 +219,68 @@ export default function Slide8({ slideCount }: { slideCount?: string }) {
               <span className="icon">📊</span> Parámetros del Hombre Estándar (Tabla 1.5)
             </div>
             <div className="card-body">
-              <table className="data-mini">
+              <div className="card-tabs" role="tablist" aria-label="Grupos de la Tabla 1.5">
+                {TABLE_15.map((t) => (
+                  <button
+                    key={t.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={tab === t.id}
+                    onClick={() => setTab(t.id)}
+                  >
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+              <table className="data-mini" role="tabpanel">
                 <tbody>
-                  <tr><th>Parámetro</th><th>Valor de Referencia</th></tr>
-                  <tr
-                    onClick={() => handleSelectParam('mass')}
-                    style={{ cursor: 'pointer', background: selectedParam === 'mass' ? 'var(--teal-tint)' : 'transparent' }}
-                  >
-                    <td><b>Altura · masa</b></td><td>{SM_HEIGHT} m · {STANDARD_MAN.massKg} kg ({STANDARD_MAN.weightN} N)</td>
-                  </tr>
-                  <tr
-                    onClick={() => handleSelectParam('area')}
-                    style={{ cursor: 'pointer', background: selectedParam === 'area' ? 'var(--teal-tint)' : 'transparent' }}
-                  >
-                    <td><b>Área de superficie</b></td><td>{fmt(STANDARD_MAN.bsaM2, 2)} m²</td>
-                  </tr>
-                  <tr
-                    onClick={() => handleSelectParam('bmr')}
-                    style={{ cursor: 'pointer', background: selectedParam === 'bmr' ? 'var(--teal-tint)' : 'transparent' }}
-                  >
-                    <td><b>Tasa metabólica basal</b></td><td>{STANDARD_MAN.bmrKcalH} kcal/h ({STANDARD_MAN.bmrKcalDay} kcal/día)</td>
-                  </tr>
-                  <tr
-                    onClick={() => handleSelectParam('cardio')}
-                    style={{ cursor: 'pointer', background: selectedParam === 'cardio' ? 'var(--teal-tint)' : 'transparent' }}
-                  >
-                    <td><b>Frecuencia cardíaca</b></td><td>{STANDARD_MAN.restingHR} latidos/min · {fmt(STANDARD_MAN.bloodVolumeL, 1)} L de sangre</td>
-                  </tr>
-                  <tr
-                    onClick={() => handleSelectParam('pulmonary')}
-                    style={{ cursor: 'pointer', background: selectedParam === 'pulmonary' ? 'var(--teal-tint)' : 'transparent' }}
-                  >
-                    <td><b>Capacidad pulmonar</b></td><td>{fmt(STANDARD_MAN.lungCapacityTotalL, 1)} L total · {STANDARD_MAN.restingRR} resp/min</td>
-                  </tr>
-                  <tr
-                    onClick={() => handleSelectParam('composition')}
-                    style={{ cursor: 'pointer', background: selectedParam === 'composition' ? 'var(--teal-tint)' : 'transparent' }}
-                  >
-                    <td><b>Composición y fluidos</b></td><td>{STANDARD_MAN.fatPercent} % grasa · {STANDARD_MAN.bodyFluidsL} L fluidos</td>
-                  </tr>
+                  <tr><th>Parámetro</th><th>Valor</th></tr>
+                  {TABLE_15.find((t) => t.id === tab)?.rows.map((row, i) => {
+                    if (!row.param) {
+                      return (
+                        <tr key={i}>
+                          <td>{row.label}</td><td>{row.value}</td>
+                        </tr>
+                      );
+                    }
+                    const pId = row.param;
+                    const isSel = selectedParam === pId;
+                    return (
+                      <tr
+                        key={i}
+                        className="row-link"
+                        onClick={() => handleSelectParam(pId)}
+                        onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); handleSelectParam(pId); } }}
+                        tabIndex={0}
+                        aria-selected={isSel}
+                      >
+                        <td><b>{row.label}</b></td><td>{row.value}</td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
+              <p className="table-note">En negrita, las filas que se señalan en el lienzo y cambian el apunte.</p>
             </div>
           </div>
           <div className="card">
             <div className="card-hdr">
-              <span className="icon">🧭</span> ¿Para qué sirve el estándar?
+              <span className="icon">🧭</span> Nota de la Tabla 1.5 y escalas de tiempo
             </div>
             <div className="card-body">
-              <p style={{ fontSize: '.7rem' }}>
-                El <strong>Hombre Estándar</strong> es el punto de partida universal de los modelos biomecánicos y fisiológicos en medicina e ingeniería biomédica. Permite contrastar valores clínicos e identificar desviaciones anatómicas o metabólicas.
+              <p>
+                Son valores <strong>típicos</strong>, con amplias variaciones entre personas: tipifican a los
+                <strong> varones estadounidenses de mediados de la década de 1970</strong>. En las mujeres son distintos
+                (estatura y peso menores, mayor porcentaje de grasa) y cambian con la región y con el tiempo: la estatura
+                de los hombres de Europa occidental subió <span className="tag">8–17 cm</span> en dos siglos, a un ritmo
+                reciente de <span className="tag">1–2 cm/década</span>.
               </p>
+              <p style={{ marginTop: '.45rem' }}><strong>Tiempos característicos del cuerpo</strong></p>
+              <div className="row">
+                <span className="fact-chip"><b>~1 s</b> un latido, una respiración</span>
+                <span className="fact-chip"><b>~1 min</b> la sangre da una vuelta al cuerpo</span>
+                <span className="fact-chip"><b>~2 min</b> cada ATP se gasta y se regenera</span>
+              </div>
             </div>
           </div>
           <div className="apuntes">
@@ -211,7 +312,7 @@ export default function Slide8({ slideCount }: { slideCount?: string }) {
                   onChange={(e) => setMass(parseFloat(e.target.value))}
                   style={{ width: '65px' }}
                 />
-                <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.60rem', fontWeight: 'bold' }}>
+                <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize:  'max(12px, 0.60rem)', fontWeight: 'bold' }}>
                   {mass} kg
                 </span>
               </label>
@@ -226,14 +327,14 @@ export default function Slide8({ slideCount }: { slideCount?: string }) {
                   onChange={(e) => setHeight(parseFloat(e.target.value))}
                   style={{ width: '65px' }}
                 />
-                <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.60rem', fontWeight: 'bold' }}>
+                <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize:  'max(12px, 0.60rem)', fontWeight: 'bold' }}>
                   {height} cm
                 </span>
               </label>
             </div>
 
             <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.65rem', alignItems: 'center' }}>
-              <span style={{ fontSize: '0.60rem', color: 'var(--ink-2)' }}>
+              <span style={{ fontSize:  'max(12px, 0.60rem)', color: 'var(--ink-2)' }}>
                 IMC: <b>{fmt(bmi, 1)}</b> · Área: <b>{fmt(bsa, 2)} m²</b>
               </span>
 

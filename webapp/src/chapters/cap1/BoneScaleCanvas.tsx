@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { fmt } from './format';
 import { CFX } from './sims';
+import { panelOverlap } from './safeArea';
 
 interface BoneScaleCanvasProps {
   selectedAnimal?: string | null;
@@ -11,7 +12,6 @@ interface BoneScaleCanvasProps {
 interface BoneSpec {
   id: string;
   name: string;
-  emoji: string;
   massKg: number;
   lengthMm: number;
   wlRatio: number;
@@ -19,9 +19,9 @@ interface BoneSpec {
 }
 
 const BONE_SPECS: Record<string, BoneSpec> = {
-  rat: { id: 'rat', name: 'Rata', emoji: '🐀', massKg: 0.25, lengthMm: 35, wlRatio: 1.0, color: '#2e8b57' },
-  horse: { id: 'horse', name: 'Caballo', emoji: '🐎', massKg: 500, lengthMm: 450, wlRatio: 1.7, color: '#a35c00' },
-  elephant: { id: 'elephant', name: 'Elefante', emoji: '🐘', massKg: 5000, lengthMm: 1100, wlRatio: 4.0, color: '#6d5fbf' },
+  rat: { id: 'rat', name: 'Rata', massKg: 0.25, lengthMm: 35, wlRatio: 1.0, color: '#2e8b57' },
+  horse: { id: 'horse', name: 'Caballo', massKg: 500, lengthMm: 450, wlRatio: 1.7, color: '#a35c00' },
+  elephant: { id: 'elephant', name: 'Elefante', massKg: 5000, lengthMm: 1100, wlRatio: 4.0, color: '#6d5fbf' },
 };
 
 export default function BoneScaleCanvas({
@@ -80,7 +80,9 @@ export default function BoneScaleCanvas({
       // Reservamos una franja inferior para las métricas y los controles del visor.
       // En la vista estrecha esto evita que las etiquetas queden bajo el panel HUD.
       const compact = W < 390;
-      const floorY = H * (compact ? 0.69 : 0.75);
+      // V6-02: el suelo y la tarjeta de cada especie (≈ 52 px bajo el suelo)
+      // se componen por encima del panel de controles abierto.
+      const floorY = Math.min(H * (compact ? 0.69 : 0.75), H - panelOverlap(canvas) - 56);
       ctx.strokeStyle = 'rgba(207, 195, 169, 0.7)';
       ctx.lineWidth = 1;
       ctx.beginPath();
@@ -105,7 +107,10 @@ export default function BoneScaleCanvas({
         const cx = colW * (i + 0.5);
 
         // Longitudes normalizadas para visualización comparativa
-        const boneH = H * (compact ? (0.22 + i * 0.12) : (0.25 + i * 0.14));
+        // Alto relativo de cada fémur, limitado al espacio entre la cabecera
+        // (≈ 100 px con la flecha de carga) y el suelo.
+        const boneFrac = compact ? (0.22 + i * 0.12) : (0.25 + i * 0.14);
+        const boneH = Math.min(H * boneFrac, Math.max(40, floorY - 100) * boneFrac / (compact ? 0.46 : 0.53));
         const topY = floorY - boneH;
 
         // Grosor diafisario base
@@ -187,16 +192,22 @@ export default function BoneScaleCanvas({
           // Badge de Advertencia de Fractura
           ctx.save();
           const pulse = 0.5 + 0.5 * Math.sin(t * 6);
+          // V6-07: la banda se dimensiona al ancho real del texto (antes
+          // era fija, 104 px, y «FRACTURA: 215 MPa» se salía por la derecha).
+          const fractureLabel = `FRACTURA: ${stressMPa} MPa`;
+          ctx.font = (compact ? 'bold 11px' : 'bold 12px') + ' Karla, system-ui, sans-serif';
+          const bandW = ctx.measureText(fractureLabel).width + 16;
+          const bandX = Math.max(4, Math.min(W - bandW - 4, cx - bandW / 2));
           ctx.fillStyle = `rgba(176, 35, 24, ${0.85 + pulse * 0.15})`;
-          ctx.fillRect(cx - 52, midY - 14, 104, 18);
+          ctx.fillRect(bandX, midY - 14, bandW, 18);
           ctx.strokeStyle = '#ffffff';
           ctx.lineWidth = 1;
-          ctx.strokeRect(cx - 52, midY - 14, 104, 18);
+          ctx.strokeRect(bandX, midY - 14, bandW, 18);
 
           ctx.fillStyle = '#ffffff';
           ctx.font = (compact ? 'bold 11px' : 'bold 12px') + ' Karla, system-ui, sans-serif';
           ctx.textAlign = 'center';
-          ctx.fillText(`⚠️ FRACTURA: ${stressMPa} MPa`, cx, midY - 2);
+          ctx.fillText(fractureLabel, bandX + bandW / 2, midY - 1);
           ctx.restore();
         }
 
@@ -225,7 +236,7 @@ export default function BoneScaleCanvas({
         ctx.font = `${isSel ? 'bold ' : ''}${scaled(isSel ? 14 : 13)}px Karla, system-ui, sans-serif`;
         ctx.fillStyle = isSel ? spec.color : '#232c36';
         ctx.textAlign = 'center';
-        ctx.fillText(`${spec.emoji} ${spec.name}`, cx, floorY + 22);
+        ctx.fillText(spec.name, cx, floorY + 22);
 
         ctx.font = `bold ${scaled(11)}px JetBrains Mono, monospace`;
         ctx.fillStyle = isFractured ? '#b02318' : (stressMPa < 50 ? '#0d6e64' : '#a35c00');
@@ -244,7 +255,7 @@ export default function BoneScaleCanvas({
       ctx.fillText(
         isAllometric
           ? 'ESCALA ALOMÉTRICA (w ∝ L³ᐟ²)'
-          : '⚠️ ESCALA ISOMÉTRICA: FRACTURA DEL ELEFANTE',
+          : 'ESCALA ISOMÉTRICA: FRACTURA DEL ELEFANTE',
         W * 0.05,
         22
       );

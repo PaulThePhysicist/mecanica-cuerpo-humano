@@ -3,6 +3,7 @@ import KinematicsCanvas from './KinematicsCanvas';
 import type { KinematicAngles } from './KinematicsCanvas';
 import KinematicsAtlas2D from './KinematicsAtlas2D';
 import HudPanel from './HudPanel';
+import ChapterImageLightbox from './ChapterImageLightbox';
 import { useHarmonicClock } from './three/useHarmonicClock';
 
 interface Slide4Props {
@@ -38,7 +39,7 @@ function AngleSlider({
         onChange={(e) => onSet(k, parseFloat(e.target.value))}
         style={{ width: '42px' }}
       />
-      <span style={{ fontFamily: 'monospace', fontSize: '0.55rem', width: '22px' }}>{Math.round(value)}°</span>
+      <span style={{ fontFamily: 'monospace', fontSize:  'max(12px, 0.55rem)', width: '22px' }}>{Math.round(value)}°</span>
     </label>
   );
 }
@@ -52,13 +53,13 @@ const DOF_GROUP_STYLE: React.CSSProperties = {
   borderRadius: '4px',
   background: 'var(--paper-2)',
 };
-const DOF_GROUP_LABEL: React.CSSProperties = { fontWeight: 700, color: 'var(--ink-2)', fontSize: '0.55rem' };
+const DOF_GROUP_LABEL: React.CSSProperties = { fontWeight: 700, color: 'var(--ink-2)', fontSize:  'max(12px, 0.55rem)' };
 
 const JOINT_DESCRIPTIONS: Record<string, string> = {
   shoulder: '<b>Articulación proximal (Esferoidal · 3 GL):</b> Hombro (glenohumeral) o cadera (coxofemoral). Permite flexión/extensión (pitch), abducción/aducción (yaw) y rotación axial interna/externa (roll).',
   elbow: '<b>Articulación intermedia (Bisagra · 1 GL):</b> Codo (húmerocubital) o rodilla (femorotibial). Permite 1 coordenada de flexión/extensión pura.',
   pivot: '<b>Pivote radiocubital (Trocoide · 1 GL):</b> Exclusivo del antebrazo. Permite pronación y supinación axial (el radio gira sobre la cabeza del cúbito).',
-  wrist: '<b>Articulación distal (Condílea · 2 GL):</b> Muñeca (radiocarpiana) o tobillo (talocrural). Permite flexión/extensión y desviación lateral / inversión.',
+  wrist: '<b>Articulación distal (2 GL):</b> Muñeca (radiocarpiana, elipsoidal o condílea) o tobillo (en silla de montar). Permite flexión/extensión y desviación lateral / inversión.',
 };
 
 export default function Slide4({ setGLMode: parentSetGLMode, slideCount }: Slide4Props) {
@@ -222,12 +223,30 @@ export default function Slide4({ setGLMode: parentSetGLMode, slideCount }: Slide
 
           <div className="card">
             <div className="card-hdr">
-              <span className="icon">✋</span> Mano y Pie: Articulaciones Distales
+              <span className="icon">✋</span> Mano y pie (Figs. 1.5–1.7)
             </div>
             <div className="card-body">
               <p style={{ fontSize: '.7rem' }}>
-                La muñeca condílea (2 GL) permite flexión/extensión y desviación radial/cubital. En la pierna, el tobillo (2 GL) combina flexión dorsal/plantar con inversión/eversión subastragalina para adaptarse al terreno.
+                La muñeca condílea (2 GL) permite flexión/extensión y desviación radial/cubital. En la pierna, el tobillo (2 GL, en silla de montar) combina flexión dorsal/plantar con inversión/eversión subastragalina para adaptarse al terreno.
+                La <strong>mano</strong> tiene muchos más GL: cada dedo suma articulaciones de 1 y 2 GL. Y no es casual que <strong>codo y rodilla</strong> partan el miembro en dos tramos casi iguales.
               </p>
+              <div className="figure-pair" style={{ height: '122px', marginTop: '.35rem' }}>
+                <ChapterImageLightbox src="/assets/cap1/16.png" alt="Misma posición de la mano con dos posturas del brazo" label="FIG 1.5 · Brazo redundante">
+                  <span className="fig-num">FIG 1.5</span>
+                  <img src="/assets/cap1/16.png" alt="Misma posición de la mano con dos posturas del brazo" />
+                  <figcaption>7 GL para 6 coordenadas: muchas posturas, una misma mano</figcaption>
+                </ChapterImageLightbox>
+                <ChapterImageLightbox src="/assets/cap1/15.png" alt="Huesos de la mano y esquema de sus grados de libertad" label="FIG 1.6 · GL de la mano">
+                  <span className="fig-num">FIG 1.6</span>
+                  <img src="/assets/cap1/15.png" alt="Huesos de la mano y esquema de sus grados de libertad" />
+                  <figcaption>Cada dedo suma articulaciones de 1 y 2 GL</figcaption>
+                </ChapterImageLightbox>
+                <ChapterImageLightbox src="/assets/cap1/17.png" alt="Alcance de un miembro de dos tramos según su proporción" label="FIG 1.7 · Tramos iguales">
+                  <span className="fig-num">FIG 1.7</span>
+                  <img src="/assets/cap1/17.png" alt="Alcance de un miembro de dos tramos según su proporción" />
+                  <figcaption>Dos tramos iguales barren el área máxima</figcaption>
+                </ChapterImageLightbox>
+              </div>
             </div>
           </div>
 
@@ -265,7 +284,7 @@ export default function Slide4({ setGLMode: parentSetGLMode, slideCount }: Slide
                   background: layer2D === 'atlas' ? 'var(--teal)' : 'transparent',
                   color: layer2D === 'atlas' ? '#fff' : 'var(--ink-2)',
                   fontWeight: 600,
-                  fontSize: '0.60rem',
+                  fontSize:  'max(12px, 0.60rem)',
                   padding: '3px 8px',
                   borderRadius: '4px',
                   cursor: 'pointer',
@@ -281,7 +300,7 @@ export default function Slide4({ setGLMode: parentSetGLMode, slideCount }: Slide
                   background: layer2D === 'skeleton' ? 'var(--teal)' : 'transparent',
                   color: layer2D === 'skeleton' ? '#fff' : 'var(--ink-2)',
                   fontWeight: 600,
-                  fontSize: '0.60rem',
+                  fontSize:  'max(12px, 0.60rem)',
                   padding: '3px 8px',
                   borderRadius: '4px',
                   cursor: 'pointer',
@@ -297,7 +316,7 @@ export default function Slide4({ setGLMode: parentSetGLMode, slideCount }: Slide
                   background: layer2D === 'muscles' ? 'var(--teal)' : 'transparent',
                   color: layer2D === 'muscles' ? '#fff' : 'var(--ink-2)',
                   fontWeight: 600,
-                  fontSize: '0.60rem',
+                  fontSize:  'max(12px, 0.60rem)',
                   padding: '3px 8px',
                   borderRadius: '4px',
                   cursor: 'pointer',
@@ -312,7 +331,6 @@ export default function Slide4({ setGLMode: parentSetGLMode, slideCount }: Slide
           <HudPanel
             title={mode === 6 ? 'Cadena Pierna' : 'Cadena Brazo'}
             badge={mode === 6 ? '6 GL (Determinada)' : '7 GL (Redundante)'}
-            icon="🦾"
             footer="💡 Haz clic en cada articulación para inspeccionar sus GL"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
@@ -336,7 +354,7 @@ export default function Slide4({ setGLMode: parentSetGLMode, slideCount }: Slide
                       <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#b02318' }} />
                       <span style={{ fontSize: '0.66rem', fontWeight: 600, color: 'var(--ink)' }}>Cadera (Coxofemoral)</span>
                     </div>
-                    <span style={{ fontSize: '0.58rem', color: 'var(--ink-2)' }}>3 GL · Esferoidal</span>
+                    <span style={{ fontSize:  'max(12px, 0.58rem)', color: 'var(--ink-2)' }}>3 GL · Esferoidal</span>
                   </div>
 
                   <div
@@ -357,7 +375,7 @@ export default function Slide4({ setGLMode: parentSetGLMode, slideCount }: Slide
                       <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#0d6e64' }} />
                       <span style={{ fontSize: '0.66rem', fontWeight: 600, color: 'var(--ink)' }}>Rodilla (Femorotibial)</span>
                     </div>
-                    <span style={{ fontSize: '0.58rem', color: 'var(--ink-2)' }}>1 GL · Bisagra</span>
+                    <span style={{ fontSize:  'max(12px, 0.58rem)', color: 'var(--ink-2)' }}>1 GL · Bisagra</span>
                   </div>
 
                   <div
@@ -378,7 +396,7 @@ export default function Slide4({ setGLMode: parentSetGLMode, slideCount }: Slide
                       <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#5c6bc0' }} />
                       <span style={{ fontSize: '0.66rem', fontWeight: 600, color: 'var(--ink)' }}>Tobillo (Talocrural)</span>
                     </div>
-                    <span style={{ fontSize: '0.58rem', color: 'var(--ink-2)' }}>2 GL · Condílea</span>
+                    <span style={{ fontSize:  'max(12px, 0.58rem)', color: 'var(--ink-2)' }}>2 GL · Condílea</span>
                   </div>
                 </>
               ) : (
@@ -401,7 +419,7 @@ export default function Slide4({ setGLMode: parentSetGLMode, slideCount }: Slide
                       <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#b02318' }} />
                       <span style={{ fontSize: '0.66rem', fontWeight: 600, color: 'var(--ink)' }}>Hombro (Glenohumeral)</span>
                     </div>
-                    <span style={{ fontSize: '0.58rem', color: 'var(--ink-2)' }}>3 GL · Esferoidal</span>
+                    <span style={{ fontSize:  'max(12px, 0.58rem)', color: 'var(--ink-2)' }}>3 GL · Esferoidal</span>
                   </div>
 
                   <div
@@ -422,7 +440,7 @@ export default function Slide4({ setGLMode: parentSetGLMode, slideCount }: Slide
                       <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#0d6e64' }} />
                       <span style={{ fontSize: '0.66rem', fontWeight: 600, color: 'var(--ink)' }}>Codo (Húmerocubital)</span>
                     </div>
-                    <span style={{ fontSize: '0.58rem', color: 'var(--ink-2)' }}>1 GL · Bisagra</span>
+                    <span style={{ fontSize:  'max(12px, 0.58rem)', color: 'var(--ink-2)' }}>1 GL · Bisagra</span>
                   </div>
 
                   <div
@@ -443,7 +461,7 @@ export default function Slide4({ setGLMode: parentSetGLMode, slideCount }: Slide
                       <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#9c27b0' }} />
                       <span style={{ fontSize: '0.66rem', fontWeight: 600, color: 'var(--ink)' }}>Pivote Radiocubital</span>
                     </div>
-                    <span style={{ fontSize: '0.58rem', color: 'var(--ink-2)' }}>1 GL · Pron/Sup</span>
+                    <span style={{ fontSize:  'max(12px, 0.58rem)', color: 'var(--ink-2)' }}>1 GL · Pron/Sup</span>
                   </div>
 
                   <div
@@ -464,7 +482,7 @@ export default function Slide4({ setGLMode: parentSetGLMode, slideCount }: Slide
                       <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#5c6bc0' }} />
                       <span style={{ fontSize: '0.66rem', fontWeight: 600, color: 'var(--ink)' }}>Muñeca (Radiocarpiana)</span>
                     </div>
-                    <span style={{ fontSize: '0.58rem', color: 'var(--ink-2)' }}>2 GL · Condílea</span>
+                    <span style={{ fontSize:  'max(12px, 0.58rem)', color: 'var(--ink-2)' }}>2 GL · Condílea</span>
                   </div>
                 </>
               )}
@@ -542,7 +560,7 @@ export default function Slide4({ setGLMode: parentSetGLMode, slideCount }: Slide
             </span>
 
             {/* Sliders de control angular — TODOS los GL, agrupados por articulación */}
-            <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', fontSize: '0.6rem', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', fontSize:  'max(12px, 0.6rem)', flexWrap: 'wrap' }}>
               <div style={DOF_GROUP_STYLE}>
                 <span style={DOF_GROUP_LABEL}>{mode === 6 ? 'Cadera' : 'Hombro'}</span>
                 <AngleSlider label="Flex" k="joint1" value={angles.joint1} min={mode === 6 ? -30 : -50} max={mode === 6 ? 90 : 100} onSet={setAngle} />
@@ -584,7 +602,7 @@ export default function Slide4({ setGLMode: parentSetGLMode, slideCount }: Slide
               {/* Controles de Zoom (solo en 3D) */}
               {viewMode === '3D' && (
                 <div style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', background: 'var(--paper-2)', border: '1px solid var(--line)', borderRadius: '4px', padding: '1px 4px' }}>
-                  <span style={{ fontSize: '0.58rem', color: 'var(--ink-3)' }}>Zoom</span>
+                  <span style={{ fontSize:  'max(12px, 0.58rem)', color: 'var(--ink-3)' }}>Zoom</span>
                   <button
                     type="button"
                     onClick={handleZoomOut}
@@ -593,7 +611,7 @@ export default function Slide4({ setGLMode: parentSetGLMode, slideCount }: Slide
                   >
                     −
                   </button>
-                  <span style={{ color: 'var(--line)', fontSize: '0.60rem' }}>|</span>
+                  <span style={{ color: 'var(--line)', fontSize:  'max(12px, 0.60rem)' }}>|</span>
                   <button
                     type="button"
                     onClick={handleZoomIn}

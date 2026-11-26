@@ -2,8 +2,21 @@ import React, { useEffect, useState } from 'react';
 import BoneScaleCanvas from './BoneScaleCanvas';
 import HudPanel from './HudPanel';
 import { fmt } from './format';
+import Tex from './Tex';
 // @ts-ignore - katex auto-render no incluye tipos
 import renderMathInElement from 'katex/contrib/auto-render';
+
+/* P6-34 · Tabla 1.14: grupos adimensionales independientes del tamaño en
+   mamíferos (.tex líneas 687–693), literales; a y α en TeX. */
+const TABLE_114: [string, string, string][] = [
+  ['Flujo respiratorio / flujo sanguíneo', '2{,}0', '0{,}00'],
+  ['Masa de sangre / masa del corazón', '8{,}3', '0{,}01'],
+  ['Tiempo para el 50 % del crecimiento / esperanza de vida en cautiverio', '0{,}03', '0{,}05'],
+  ['Período de gestación / esperanza de vida en cautiverio', '0{,}015', '0{,}05'],
+  ['Ciclo respiratorio / esperanza de vida en cautiverio', '3 \\times 10^{-9}', '0{,}06'],
+  ['Ciclo cardíaco / esperanza de vida en cautiverio', '6{,}8 \\times 10^{-10}', '0{,}05'],
+  ['Vida media de un fármaco (metotrexato) / esperanza de vida en cautiverio', '0{,}95 \\times 10^{-5}', '0{,}01'],
+];
 
 interface AnimalDetail {
   id: string;
@@ -151,6 +164,31 @@ export default function Slide13({ slideCount }: { slideCount?: string }) {
           </div>
           <div className="card">
             <div className="card-hdr">
+              <span className="icon">⚖️</span> Cocientes que no dependen del tamaño (Tabla 1.14)
+            </div>
+            <div className="card-body">
+              <p style={{ marginBottom: '.3rem' }}>
+                Con <Tex>{'\\alpha \\approx 0'}</Tex>, el cociente vale lo mismo en un ratón y en un elefante:
+                <strong> <Tex>{'\\sim 1{,}5 \\times 10^{9}'}</Tex> latidos</strong> y <strong><Tex>{'\\sim 3 \\times 10^{8}'}</Tex> respiraciones</strong> en una vida, sea cual sea el tamaño
+                (<Tex>{'1/(6{,}8 \\times 10^{-10})'}</Tex> y <Tex>{'1/(3 \\times 10^{-9})'}</Tex>).
+              </p>
+              <table className="data-mini">
+                <tbody>
+                  <tr><th>Cociente</th><th><span className="nt"><Tex>{'a'}</Tex></span></th><th><span className="nt"><Tex>{'\\alpha'}</Tex></span></th></tr>
+                  {TABLE_114.map(([name, a, alpha]) => (
+                    <tr key={name}>
+                      <td>{name}</td><td className="num"><Tex>{a}</Tex></td><td><Tex>{alpha}</Tex></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <p className="table-note">
+                <Tex>{'a'}</Tex> corresponde a un mamífero de 1 kg. Flujo respiratorio: volumen corriente / tiempo de respiración; flujo sanguíneo: volumen sistólico / tiempo de pulso.
+              </p>
+            </div>
+          </div>
+          <div className="card">
+            <div className="card-hdr">
               <span className="icon">🖼️</span> Comparativa: Rata vs. Elefante
             </div>
             <div className="card-body">
@@ -195,7 +233,6 @@ export default function Slide13({ slideCount }: { slideCount?: string }) {
           <HudPanel
             title="ESCALADO ESTRUCTURAL"
             badge={isAllometric ? 'ALOMÉTRICO' : 'ISOMÉTRICO'}
-            icon="🦴"
             footer="💡 Haz clic en los fémures para inspeccionar su esfuerzo en MPa"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
@@ -218,15 +255,15 @@ export default function Slide13({ slideCount }: { slideCount?: string }) {
                     }}
                   >
                     <span style={{ fontSize: '0.62rem', fontWeight: 600, color: 'var(--ink)' }}>{a.name.split('(')[0].trim()}</span>
-                    <span style={{ fontSize: '0.58rem', fontFamily: 'JetBrains Mono, monospace', color: a.color, fontWeight: 'bold' }}>
+                    <span style={{ fontSize:  'max(12px, 0.58rem)', fontFamily: 'JetBrains Mono, monospace', color: a.color, fontWeight: 'bold' }}>
                       w/L = {fmt(a.wl, 1)}
                     </span>
                   </div>
                 );
               })}
 
-              <div style={{ marginTop: '4px', borderTop: '1px dashed var(--line)', paddingTop: '4px', fontSize: '0.54rem', color: 'var(--ink-3)' }}>
-                📐 <b>Tensión límite (ilustrativa):</b> σ_rotura ≈ 150 MPa
+              <div style={{ marginTop: '4px', borderTop: '1px dashed var(--line)', paddingTop: '4px', fontSize:  'max(12px, 0.54rem)', color: 'var(--ink-3)' }}>
+                <b>Tensión límite (ilustrativa):</b> σ_rotura ≈ 150 MPa
               </div>
             </div>
           </HudPanel>
@@ -247,7 +284,7 @@ export default function Slide13({ slideCount }: { slideCount?: string }) {
                 checked={isAllometric}
                 onChange={(e) => setIsAllometric(e.target.checked)}
               />
-              <b>{isAllometric ? 'Alométrico Real ($w \\propto L^{3/2}$)' : '⚠️ Modo Isométrico (Fractura)'}</b>
+              <b>{isAllometric ? 'Alométrico Real ($w \\propto L^{3/2}$)' : 'Modo isométrico (fractura)'}</b>
             </label>
 
             <button

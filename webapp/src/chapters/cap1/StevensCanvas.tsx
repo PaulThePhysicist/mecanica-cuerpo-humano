@@ -1,7 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { fmt } from './format';
-import { SERIES_COLORS } from './colorTokens';
+import { SERIES_COLORS, INK, BLOOD } from './colorTokens';
 import { CFX } from './sims';
+import { panelOverlap } from './safeArea';
 
 interface StevensCanvasProps {
   n: number;
@@ -12,7 +13,6 @@ interface StevensCanvasProps {
 interface SensationInfo {
   id: string;
   name: string;
-  emoji: string;
   n: number;
   color: string;
   unit: string;
@@ -20,13 +20,15 @@ interface SensationInfo {
 }
 
 const SENSATIONS: Record<string, SensationInfo> = {
-  brillo: { id: 'brillo', name: 'Brillo visual', emoji: '💡', n: 0.33, color: SERIES_COLORS[0], unit: 'Luminancia (cd/m²)', desc: 'Compresión óptica retiniana' },
-  sonoridad: { id: 'sonoridad', name: 'Sonoridad (monoaural)', emoji: '🔊', n: 0.54, color: SERIES_COLORS[1], unit: 'Nivel sonoro (dB)', desc: 'Compresión logarítmica coclear' },
-  olor: { id: 'olor', name: 'Olor (café)', emoji: '👃', n: 0.55, color: SERIES_COLORS[2], unit: 'Concentración (ppm)', desc: 'Saturación de quimiorreceptores' },
-  vibracion: { id: 'vibracion', name: 'Vibración (250 Hz, en el dedo)', emoji: '📳', n: 0.60, color: SERIES_COLORS[3], unit: 'Amplitud 250 Hz (μm)', desc: 'Corpúsculos de Pacini/Meissner' },
-  presion: { id: 'presion', name: 'Presión en la palma', emoji: '✋', n: 1.10, color: SERIES_COLORS[4], unit: 'Fuerza aplicada (N)', desc: 'Detección proporcional de agarre' },
-  pesadez: { id: 'pesadez', name: 'Pesadez (Levantar pesos)', emoji: '🏋️', n: 1.45, color: SERIES_COLORS[5], unit: 'Masa levantada (kg)', desc: 'Fatiga neuromuscular progresiva' },
-  descarga: { id: 'descarga', name: 'Descarga eléctrica (60 Hz)', emoji: '⚡', n: 3.50, color: SERIES_COLORS[6], unit: 'Corriente 60 Hz (mA)', desc: 'Alarma nociceptiva superlineal extrema' },
+  brillo: { id: 'brillo', name: 'Brillo visual', n: 0.33, color: SERIES_COLORS[0], unit: 'Luminancia (cd/m²)', desc: 'Compresión óptica retiniana' },
+  sonoridad: { id: 'sonoridad', name: 'Sonoridad (monoaural)', n: 0.54, color: SERIES_COLORS[1], unit: 'Nivel sonoro (dB)', desc: 'Compresión logarítmica coclear' },
+  olor: { id: 'olor', name: 'Olor (café)', n: 0.55, color: SERIES_COLORS[2], unit: 'Concentración (ppm)', desc: 'Saturación de quimiorreceptores' },
+  vibracion: { id: 'vibracion', name: 'Vibración (250 Hz, en el dedo)', n: 0.60, color: SERIES_COLORS[3], unit: 'Amplitud 250 Hz (μm)', desc: 'Corpúsculos de Pacini/Meissner' },
+  gusto: { id: 'gusto', name: 'Gusto (sal)', n: 1.30, color: INK, unit: 'Concentración (mol/L)', desc: 'Quimiorreceptores gustativos' },
+  temperatura: { id: 'temperatura', name: 'Temperatura (calor, en el brazo)', n: 1.60, color: BLOOD, unit: 'Temperatura sobre la piel (°C)', desc: 'Termorreceptores de calor' },
+  presion: { id: 'presion', name: 'Presión en la palma', n: 1.10, color: SERIES_COLORS[4], unit: 'Fuerza aplicada (N)', desc: 'Detección proporcional de agarre' },
+  pesadez: { id: 'pesadez', name: 'Pesadez (Levantar pesos)', n: 1.45, color: SERIES_COLORS[5], unit: 'Masa levantada (kg)', desc: 'Fatiga neuromuscular progresiva' },
+  descarga: { id: 'descarga', name: 'Descarga eléctrica (60 Hz)', n: 3.50, color: SERIES_COLORS[6], unit: 'Corriente 60 Hz (mA)', desc: 'Alarma nociceptiva superlineal extrema' },
 };
 
 const SUPERSCRIPT: Record<string, string> = {
@@ -116,7 +118,8 @@ export default function StevensCanvas({
       CFX.scene(ctx, W, H, { spotX: W * 0.4 });
 
       // ─── 2. Dimensiones del Gráfico Psicofísico ───
-      const pad = { top: 46, bottom: 42, left: 52, right: 180 };
+      // V6-02: el eje x y su título se componen por encima del panel abierto.
+      const pad = { top: 46, bottom: 42 + panelOverlap(canvas), left: 52, right: 180 };
       const plotW = W - pad.left - pad.right;
       const plotH = H - pad.top - pad.bottom;
 
@@ -218,24 +221,36 @@ export default function StevensCanvas({
       // Leyenda de series: misma franja vacía a la izquierda del umbral S₀
       // (ninguna curva tiene valor ahí, P=0 hasta S₀) y mismo orden que la
       // tabla de la izquierda (Object.values conserva el orden de SENSATIONS).
+      // A6-04: ≥ 12 px, color pleno de cada serie y la activa en negrita,
+      // sobre un fondo claro para que las curvas de detrás no la ensucien.
       if (showAllCurves) {
         ctx.save();
-        ctx.font = `${scaled(8.5)}px Karla, system-ui, sans-serif`;
+        const legendSize = Math.max(12, scaled(9));
+        const rowH = legendSize + 3;
+        const list = Object.values(SENSATIONS);
+        ctx.font = `bold ${legendSize}px Karla, system-ui, sans-serif`;
+        const textW = Math.max(...list.map((sens) => ctx.measureText(sens.name).width));
+        const boxX = pad.left + 2;
+        const boxY = pad.top + 22;
+        ctx.fillStyle = 'rgba(251, 248, 240, 0.9)';
+        ctx.strokeStyle = 'rgba(207, 195, 169, 0.9)';
+        ctx.lineWidth = 1;
+        ctx.fillRect(boxX, boxY, textW + 28, list.length * rowH + 6);
+        ctx.strokeRect(boxX, boxY, textW + 28, list.length * rowH + 6);
         ctx.textAlign = 'left';
-        let legendY = pad.top + 24;
-        Object.values(SENSATIONS).forEach((sens) => {
+        let legendY = boxY + rowH;
+        list.forEach((sens) => {
           const isActive = sens.id === selectedSensation;
-          ctx.globalAlpha = isActive ? 1 : 0.55;
           ctx.strokeStyle = sens.color;
-          ctx.lineWidth = isActive ? 2.4 : 1.6;
+          ctx.lineWidth = isActive ? 3 : 2;
           ctx.beginPath();
-          ctx.moveTo(pad.left + 4, legendY - 3);
-          ctx.lineTo(pad.left + 16, legendY - 3);
+          ctx.moveTo(boxX + 5, legendY - legendSize / 3);
+          ctx.lineTo(boxX + 18, legendY - legendSize / 3);
           ctx.stroke();
-          ctx.fillStyle = isActive ? sens.color : '#43505c';
-          ctx.font = `${isActive ? 'bold ' : ''}${scaled(8.5)}px Karla, system-ui, sans-serif`;
-          ctx.fillText(sens.name, pad.left + 20, legendY);
-          legendY += 12;
+          ctx.fillStyle = sens.color;
+          ctx.font = `${isActive ? 'bold ' : ''}${legendSize}px Karla, system-ui, sans-serif`;
+          ctx.fillText(sens.name, boxX + 22, legendY);
+          legendY += rowH;
         });
         ctx.restore();
       }
@@ -254,8 +269,8 @@ export default function StevensCanvas({
           if (sens.id === selectedSensation) return; // Se dibuja después resaltada
           ctx.save();
           ctx.strokeStyle = sens.color;
-          ctx.lineWidth = 1.2;
-          ctx.globalAlpha = 0.35;
+          ctx.lineWidth = 1.4;
+          ctx.globalAlpha = 0.5;
           ctx.beginPath();
           for (let step = 0; step <= 80; step++) {
             const sVal = s0 + (step / 80) * (sMax - s0);
@@ -325,7 +340,8 @@ export default function StevensCanvas({
       ctx.lineWidth = 1.5;
       ctx.stroke();
 
-      CFX.chip(ctx, refX, refY + 14, 'S − S₀', { color: CFX.PAL.ink2, size: scaled(10), align: 'center', W });
+      // Encima y a la izquierda del punto: debajo pisaba la marca «1» del eje x.
+      CFX.chip(ctx, refX - 24, refY - 14, 'S − S₀', { color: CFX.PAL.ink2, size: scaled(10), align: 'center', W });
       CFX.chip(ctx, dblX, dblY - 8, `2·(S − S₀) (×${fmt(ratioPerceived, 2)})`, { color: CFX.PAL.ink2, size: scaled(10), align: 'center', W });
       ctx.restore();
 
@@ -348,7 +364,7 @@ export default function StevensCanvas({
       // Cabecera del widget: encoge en vez de salirse de la tarjeta.
       ctx.fillStyle = nColor;
       ctx.textAlign = 'center';
-      const headerLabel = fitText(ctx, `${activeSens.emoji} ${activeSens.name}`, widgetW - 10, scaled(12), scaled(8), 'bold ');
+      const headerLabel = fitText(ctx, activeSens.name, widgetW - 10, scaled(12), scaled(8), 'bold ');
       ctx.fillText(headerLabel, widgetX + widgetW / 2, widgetY + 16);
 
       ctx.fillStyle = '#43505c';
