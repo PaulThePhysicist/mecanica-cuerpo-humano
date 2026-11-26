@@ -2,8 +2,21 @@ import React, { useEffect, useState } from 'react';
 import BoneScaleCanvas from './BoneScaleCanvas';
 import HudPanel from './HudPanel';
 import { fmt } from './format';
+import Tex from './Tex';
 // @ts-ignore - katex auto-render no incluye tipos
 import renderMathInElement from 'katex/contrib/auto-render';
+
+/* P6-34 · Tabla 1.14: grupos adimensionales independientes del tamaño en
+   mamíferos (.tex líneas 687–693), literales; a y α en TeX. */
+const TABLE_114: [string, string, string][] = [
+  ['Flujo respiratorio / flujo sanguíneo', '2{,}0', '0{,}00'],
+  ['Masa de sangre / masa del corazón', '8{,}3', '0{,}01'],
+  ['Tiempo para el 50 % del crecimiento / esperanza de vida en cautiverio', '0{,}03', '0{,}05'],
+  ['Período de gestación / esperanza de vida en cautiverio', '0{,}015', '0{,}05'],
+  ['Ciclo respiratorio / esperanza de vida en cautiverio', '3 \\times 10^{-9}', '0{,}06'],
+  ['Ciclo cardíaco / esperanza de vida en cautiverio', '6{,}8 \\times 10^{-10}', '0{,}05'],
+  ['Vida media de un fármaco (metotrexato) / esperanza de vida en cautiverio', '0{,}95 \\times 10^{-5}', '0{,}01'],
+];
 
 interface AnimalDetail {
   id: string;
@@ -146,6 +159,31 @@ export default function Slide13({ slideCount }: { slideCount?: string }) {
               </div>
               <p style={{ fontSize: '.62rem', color: 'var(--ink-3)', marginTop: '.25rem' }}>
                 Del ratón al elefante (masa ×10 000): la fuerza muscular $\propto H^2$, mientras el peso $\propto H^3$. La energía de salto por unidad de masa se mantiene constante.
+              </p>
+            </div>
+          </div>
+          <div className="card">
+            <div className="card-hdr">
+              <span className="icon">⚖️</span> Cocientes que no dependen del tamaño (Tabla 1.14)
+            </div>
+            <div className="card-body">
+              <p style={{ marginBottom: '.3rem' }}>
+                Con <Tex>{'\\alpha \\approx 0'}</Tex>, el cociente vale lo mismo en un ratón y en un elefante:
+                <strong> <Tex>{'\\sim 1{,}5 \\times 10^{9}'}</Tex> latidos</strong> y <strong><Tex>{'\\sim 3 \\times 10^{8}'}</Tex> respiraciones</strong> en una vida, sea cual sea el tamaño
+                (<Tex>{'1/(6{,}8 \\times 10^{-10})'}</Tex> y <Tex>{'1/(3 \\times 10^{-9})'}</Tex>).
+              </p>
+              <table className="data-mini">
+                <tbody>
+                  <tr><th>Cociente</th><th><span className="nt"><Tex>{'a'}</Tex></span></th><th><span className="nt"><Tex>{'\\alpha'}</Tex></span></th></tr>
+                  {TABLE_114.map(([name, a, alpha]) => (
+                    <tr key={name}>
+                      <td>{name}</td><td className="num"><Tex>{a}</Tex></td><td><Tex>{alpha}</Tex></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <p className="table-note">
+                <Tex>{'a'}</Tex> corresponde a un mamífero de 1 kg. Flujo respiratorio: volumen corriente / tiempo de respiración; flujo sanguíneo: volumen sistólico / tiempo de pulso.
               </p>
             </div>
           </div>
