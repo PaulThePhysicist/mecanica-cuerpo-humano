@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import MobilityCanvas from './MobilityCanvas';
 import BodyScene from './BodyScene';
-import { romReadout } from './romTable';
+import { romReadout, TABLE_110 } from './romTable';
+import ChapterImageLightbox from './ChapterImageLightbox';
+import Tex from './Tex';
 import type { MobilityRange } from './romTable';
 import { useHarmonicClock } from './three/useHarmonicClock';
 import { fmt } from './format';
@@ -170,44 +172,50 @@ export default function Slide10({ slideCount }: { slideCount?: string }) {
         <div className="theory">
           <div className="card active">
             <div className="card-hdr">
-              <span className="icon">🏹</span> Rango de movilidad articular (Tabla 1.10)
+              <span className="icon">🏹</span> Rango de movilidad articular (Tabla 1.10 · Fig. 1.16)
             </div>
             <div className="card-body">
-              <table className="interactive-table" id="mobilityTable">
+              <table className="data-mini" id="mobilityTable">
                 <tbody>
-                  <tr><th>Articulación / Movimiento</th><th>Media (ROM)</th></tr>
-                  {Object.values(JOINTS_DATA).map((j) => {
-                    const isSel = selectedJoint === j.id;
+                  <tr><th>Movimientos opuestos</th><th>Media <span className="nt">(°)</span></th><th><span className="nt">SD (°)</span></th></tr>
+                  {TABLE_110.map((r) => {
+                    const jId = r.joint;
+                    if (!jId) {
+                      return (
+                        <tr key={r.motion}>
+                          <td>{r.motion}</td><td className="num">{r.mean}</td><td>{r.sd}</td>
+                        </tr>
+                      );
+                    }
+                    const isSel = selectedJoint === jId;
                     return (
                       <tr
-                        key={j.id}
-                        onClick={() => handleSelectJoint(j.id)}
-                        onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); handleSelectJoint(j.id); } }}
+                        key={r.motion}
+                        className="row-link"
+                        onClick={() => handleSelectJoint(jId)}
+                        onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); handleSelectJoint(jId); } }}
                         tabIndex={0}
                         aria-selected={isSel}
-                        style={{
-                          cursor: 'pointer',
-                          background: isSel ? 'var(--teal-tint)' : 'transparent',
-                          fontWeight: isSel ? 700 : 'normal',
-                        }}
                       >
-                        <td>
-                          <b>{j.name}</b>
-                        </td>
-                        <td style={{ fontFamily: 'var(--mono)', color: isSel ? '#b02318' : 'var(--teal-deep)' }}>
-                          {j.rom}
-                        </td>
+                        <td><b>{r.motion}</b></td><td className="num">{r.mean}</td><td>{r.sd}</td>
                       </tr>
                     );
                   })}
                 </tbody>
               </table>
-              <p style={{ fontSize: '.6rem', color: 'var(--ink-3)', marginTop: '.2rem' }}>
-                Varones universitarios · media en grados (ver Fig. 1.16).
-              </p>
-              <p style={{ fontSize: '.6rem', color: 'var(--ink-3)', marginTop: '.1rem' }}>
-                Pasa el cursor o haz clic sobre cada fila para ver el rango en el esqueleto 3D.
-              </p>
+              <div style={{ display: 'flex', gap: '.6rem', alignItems: 'center', marginTop: '.35rem' }}>
+                <div className="figure-pair" style={{ height: '96px', flex: '0 0 150px' }}>
+                  <ChapterImageLightbox src="/assets/cap1/116.png" alt="Posturas de los rangos de movilidad de la Tabla 1.10" label="FIG 1.16 · Posturas de la Tabla 1.10">
+                    <span className="fig-num">FIG 1.16</span>
+                    <img src="/assets/cap1/116.png" alt="Posturas de los rangos de movilidad de la Tabla 1.10" />
+                  </ChapterImageLightbox>
+                </div>
+                <p className="table-note" style={{ marginTop: 0 }}>
+                  Varones en edad universitaria, grados. Con media <Tex>{'A'}</Tex> y desviación estándar SD,
+                  ≈ 68 % de las personas cae entre <Tex>{'A - \\mathrm{SD}'}</Tex> y <Tex>{'A + \\mathrm{SD}'}</Tex>.
+                  En negrita, las filas con arco en el esqueleto 3D.
+                </p>
+              </div>
             </div>
           </div>
           <div className="card">
@@ -245,7 +253,7 @@ export default function Slide10({ slideCount }: { slideCount?: string }) {
           )}
           <div className="prof-controls">
             <span className="badge">C3 · Rangos</span>
-            <span>{currentDetail.name}: <b style={{ color: '#b02318' }}>{currentDetail.rom}</b></span>
+            <span>{currentDetail.name}: <b style={{ color: 'var(--blood)' }}>{currentDetail.rom}</b></span>
 
             {/* Lectura en vivo: qué movimiento se está ejecutando y cuántos grados
                 lleva recorridos. Es el puente entre la Tabla 1.10 y el esqueleto. */}

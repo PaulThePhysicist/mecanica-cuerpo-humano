@@ -75,3 +75,27 @@ export function romReadout(range: MobilityRange, progress: number): { deg: numbe
     label: towardsPrimary ? range.primaryLabel : (range.secondaryLabel ?? range.primaryLabel),
   };
 }
+
+/**
+ * P6-30 · Tabla 1.10 completa (16 filas, .tex líneas 495–510), media y SD en
+ * grados tal como las da el libro. `joint` enlaza con ROM_MOTIONS cuando la
+ * fila tiene arco 3D; las demás son de consulta.
+ */
+export const TABLE_110: { motion: string; mean: string; sd: string; joint?: string }[] = [
+  { motion: 'Flexión/extensión del hombro', mean: '188/61', sd: '12/14', joint: 'hombro-flex' },
+  { motion: 'Abducción/aducción del hombro', mean: '134/48', sd: '17/9', joint: 'hombro-abd' },
+  { motion: 'Rotación medial/lateral del hombro', mean: '97/34', sd: '22/13', joint: 'hombro-rot' },
+  { motion: 'Flexión del codo', mean: '142', sd: '10', joint: 'codo' },
+  { motion: 'Supinación/pronación del antebrazo', mean: '113/77', sd: '22/24', joint: 'antebrazo' },
+  { motion: 'Flexión/extensión de la muñeca', mean: '90/99', sd: '12/13', joint: 'muneca' },
+  { motion: 'Abducción/aducción de la muñeca', mean: '27/47', sd: '9/7' },
+  { motion: 'Flexión de la cadera', mean: '113', sd: '13', joint: 'cadera' },
+  { motion: 'Abducción/aducción de la cadera', mean: '53/31', sd: '12/12' },
+  { motion: 'Rotación medial/lateral de la cadera (prono)', mean: '39/34', sd: '10/10' },
+  { motion: 'Rotación medial/lateral de la cadera (sentado)', mean: '31/30', sd: '9/9' },
+  { motion: 'Flexión de la rodilla (prono): voluntaria, con ayuda del brazo', mean: '125, 144', sd: '10, 9', joint: 'rodilla' },
+  { motion: 'Flexión de la rodilla: voluntaria (de pie), forzada (de rodillas)', mean: '113, 159', sd: '13, 9' },
+  { motion: 'Rotación medial/lateral de la rodilla (sentado)', mean: '35/43', sd: '12/12' },
+  { motion: 'Flexión/extensión del tobillo', mean: '35/38', sd: '7/12', joint: 'tobillo' },
+  { motion: 'Inversión/eversión del pie', mean: '24/23', sd: '9/7' },
+];
