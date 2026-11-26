@@ -499,6 +499,13 @@
 .card-tabs button:focus-visible{outline:2px solid var(--teal);outline-offset:1px}
 /* Nota al pie de una tabla o pestaña (fuente, regla, advertencia). */
 .table-note{font-size:max(12px,.64rem);color:var(--ink-3);font-style:italic;margin-top:.3rem;line-height:1.45}
+/* Dato memorable en una línea (cifra en mono + texto), no pulsable. */
+.fact-chip{
+  display:inline-flex;align-items:baseline;gap:.35rem;font-size:max(12px,.68rem);
+  padding:.2rem .55rem;border-radius:6px;background:var(--paper);border:1px solid var(--line);
+  color:var(--ink-2);line-height:1.4;cursor:default;
+}
+.fact-chip b{font-family:var(--mono);color:var(--teal-deep);white-space:nowrap}
 /* Filas que responden al clic (resaltan algo en el lienzo o el 3D). */
 .data-mini tr.row-link{cursor:pointer}
 

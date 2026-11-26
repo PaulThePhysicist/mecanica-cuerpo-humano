@@ -265,7 +265,7 @@ export default function Slide8({ slideCount }: { slideCount?: string }) {
           </div>
           <div className="card">
             <div className="card-hdr">
-              <span className="icon">🧭</span> Nota de la Tabla 1.5
+              <span className="icon">🧭</span> Nota de la Tabla 1.5 y escalas de tiempo
             </div>
             <div className="card-body">
               <p>
@@ -275,6 +275,12 @@ export default function Slide8({ slideCount }: { slideCount?: string }) {
                 de los hombres de Europa occidental subió <span className="tag">8–17 cm</span> en dos siglos, a un ritmo
                 reciente de <span className="tag">1–2 cm/década</span>.
               </p>
+              <p style={{ marginTop: '.45rem' }}><strong>Tiempos característicos del cuerpo</strong></p>
+              <div className="row">
+                <span className="fact-chip"><b>~1 s</b> un latido, una respiración</span>
+                <span className="fact-chip"><b>~1 min</b> la sangre da una vuelta al cuerpo</span>
+                <span className="fact-chip"><b>~2 min</b> cada ATP se gasta y se regenera</span>
+              </div>
             </div>
           </div>
           <div className="apuntes">
