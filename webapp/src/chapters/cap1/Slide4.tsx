@@ -3,6 +3,7 @@ import KinematicsCanvas from './KinematicsCanvas';
 import type { KinematicAngles } from './KinematicsCanvas';
 import KinematicsAtlas2D from './KinematicsAtlas2D';
 import HudPanel from './HudPanel';
+import ChapterImageLightbox from './ChapterImageLightbox';
 import { useHarmonicClock } from './three/useHarmonicClock';
 
 interface Slide4Props {
@@ -58,7 +59,7 @@ const JOINT_DESCRIPTIONS: Record<string, string> = {
   shoulder: '<b>Articulación proximal (Esferoidal · 3 GL):</b> Hombro (glenohumeral) o cadera (coxofemoral). Permite flexión/extensión (pitch), abducción/aducción (yaw) y rotación axial interna/externa (roll).',
   elbow: '<b>Articulación intermedia (Bisagra · 1 GL):</b> Codo (húmerocubital) o rodilla (femorotibial). Permite 1 coordenada de flexión/extensión pura.',
   pivot: '<b>Pivote radiocubital (Trocoide · 1 GL):</b> Exclusivo del antebrazo. Permite pronación y supinación axial (el radio gira sobre la cabeza del cúbito).',
-  wrist: '<b>Articulación distal (Condílea · 2 GL):</b> Muñeca (radiocarpiana) o tobillo (talocrural). Permite flexión/extensión y desviación lateral / inversión.',
+  wrist: '<b>Articulación distal (2 GL):</b> Muñeca (radiocarpiana, elipsoidal o condílea) o tobillo (en silla de montar). Permite flexión/extensión y desviación lateral / inversión.',
 };
 
 export default function Slide4({ setGLMode: parentSetGLMode, slideCount }: Slide4Props) {
@@ -222,12 +223,30 @@ export default function Slide4({ setGLMode: parentSetGLMode, slideCount }: Slide
 
           <div className="card">
             <div className="card-hdr">
-              <span className="icon">✋</span> Mano y Pie: Articulaciones Distales
+              <span className="icon">✋</span> Mano y pie (Figs. 1.5–1.7)
             </div>
             <div className="card-body">
               <p style={{ fontSize: '.7rem' }}>
-                La muñeca condílea (2 GL) permite flexión/extensión y desviación radial/cubital. En la pierna, el tobillo (2 GL) combina flexión dorsal/plantar con inversión/eversión subastragalina para adaptarse al terreno.
+                La muñeca condílea (2 GL) permite flexión/extensión y desviación radial/cubital. En la pierna, el tobillo (2 GL, en silla de montar) combina flexión dorsal/plantar con inversión/eversión subastragalina para adaptarse al terreno.
+                La <strong>mano</strong> tiene muchos más GL: cada dedo suma articulaciones de 1 y 2 GL. Y no es casual que <strong>codo y rodilla</strong> partan el miembro en dos tramos casi iguales.
               </p>
+              <div className="figure-pair" style={{ height: '122px', marginTop: '.35rem' }}>
+                <ChapterImageLightbox src="/assets/cap1/16.png" alt="Misma posición de la mano con dos posturas del brazo" label="FIG 1.5 · Brazo redundante">
+                  <span className="fig-num">FIG 1.5</span>
+                  <img src="/assets/cap1/16.png" alt="Misma posición de la mano con dos posturas del brazo" />
+                  <figcaption>7 GL para 6 coordenadas: muchas posturas, una misma mano</figcaption>
+                </ChapterImageLightbox>
+                <ChapterImageLightbox src="/assets/cap1/15.png" alt="Huesos de la mano y esquema de sus grados de libertad" label="FIG 1.6 · GL de la mano">
+                  <span className="fig-num">FIG 1.6</span>
+                  <img src="/assets/cap1/15.png" alt="Huesos de la mano y esquema de sus grados de libertad" />
+                  <figcaption>Cada dedo suma articulaciones de 1 y 2 GL</figcaption>
+                </ChapterImageLightbox>
+                <ChapterImageLightbox src="/assets/cap1/17.png" alt="Alcance de un miembro de dos tramos según su proporción" label="FIG 1.7 · Tramos iguales">
+                  <span className="fig-num">FIG 1.7</span>
+                  <img src="/assets/cap1/17.png" alt="Alcance de un miembro de dos tramos según su proporción" />
+                  <figcaption>Dos tramos iguales barren el área máxima</figcaption>
+                </ChapterImageLightbox>
+              </div>
             </div>
           </div>
 
