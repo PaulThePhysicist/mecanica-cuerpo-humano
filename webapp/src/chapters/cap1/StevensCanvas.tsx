@@ -13,7 +13,6 @@ interface StevensCanvasProps {
 interface SensationInfo {
   id: string;
   name: string;
-  emoji: string;
   n: number;
   color: string;
   unit: string;
@@ -21,15 +20,15 @@ interface SensationInfo {
 }
 
 const SENSATIONS: Record<string, SensationInfo> = {
-  brillo: { id: 'brillo', name: 'Brillo visual', emoji: '💡', n: 0.33, color: SERIES_COLORS[0], unit: 'Luminancia (cd/m²)', desc: 'Compresión óptica retiniana' },
-  sonoridad: { id: 'sonoridad', name: 'Sonoridad (monoaural)', emoji: '🔊', n: 0.54, color: SERIES_COLORS[1], unit: 'Nivel sonoro (dB)', desc: 'Compresión logarítmica coclear' },
-  olor: { id: 'olor', name: 'Olor (café)', emoji: '👃', n: 0.55, color: SERIES_COLORS[2], unit: 'Concentración (ppm)', desc: 'Saturación de quimiorreceptores' },
-  vibracion: { id: 'vibracion', name: 'Vibración (250 Hz, en el dedo)', emoji: '📳', n: 0.60, color: SERIES_COLORS[3], unit: 'Amplitud 250 Hz (μm)', desc: 'Corpúsculos de Pacini/Meissner' },
-  gusto: { id: 'gusto', name: 'Gusto (sal)', emoji: '🧂', n: 1.30, color: INK, unit: 'Concentración (mol/L)', desc: 'Quimiorreceptores gustativos' },
-  temperatura: { id: 'temperatura', name: 'Temperatura (calor, en el brazo)', emoji: '🌡️', n: 1.60, color: BLOOD, unit: 'Temperatura sobre la piel (°C)', desc: 'Termorreceptores de calor' },
-  presion: { id: 'presion', name: 'Presión en la palma', emoji: '✋', n: 1.10, color: SERIES_COLORS[4], unit: 'Fuerza aplicada (N)', desc: 'Detección proporcional de agarre' },
-  pesadez: { id: 'pesadez', name: 'Pesadez (Levantar pesos)', emoji: '🏋️', n: 1.45, color: SERIES_COLORS[5], unit: 'Masa levantada (kg)', desc: 'Fatiga neuromuscular progresiva' },
-  descarga: { id: 'descarga', name: 'Descarga eléctrica (60 Hz)', emoji: '⚡', n: 3.50, color: SERIES_COLORS[6], unit: 'Corriente 60 Hz (mA)', desc: 'Alarma nociceptiva superlineal extrema' },
+  brillo: { id: 'brillo', name: 'Brillo visual', n: 0.33, color: SERIES_COLORS[0], unit: 'Luminancia (cd/m²)', desc: 'Compresión óptica retiniana' },
+  sonoridad: { id: 'sonoridad', name: 'Sonoridad (monoaural)', n: 0.54, color: SERIES_COLORS[1], unit: 'Nivel sonoro (dB)', desc: 'Compresión logarítmica coclear' },
+  olor: { id: 'olor', name: 'Olor (café)', n: 0.55, color: SERIES_COLORS[2], unit: 'Concentración (ppm)', desc: 'Saturación de quimiorreceptores' },
+  vibracion: { id: 'vibracion', name: 'Vibración (250 Hz, en el dedo)', n: 0.60, color: SERIES_COLORS[3], unit: 'Amplitud 250 Hz (μm)', desc: 'Corpúsculos de Pacini/Meissner' },
+  gusto: { id: 'gusto', name: 'Gusto (sal)', n: 1.30, color: INK, unit: 'Concentración (mol/L)', desc: 'Quimiorreceptores gustativos' },
+  temperatura: { id: 'temperatura', name: 'Temperatura (calor, en el brazo)', n: 1.60, color: BLOOD, unit: 'Temperatura sobre la piel (°C)', desc: 'Termorreceptores de calor' },
+  presion: { id: 'presion', name: 'Presión en la palma', n: 1.10, color: SERIES_COLORS[4], unit: 'Fuerza aplicada (N)', desc: 'Detección proporcional de agarre' },
+  pesadez: { id: 'pesadez', name: 'Pesadez (Levantar pesos)', n: 1.45, color: SERIES_COLORS[5], unit: 'Masa levantada (kg)', desc: 'Fatiga neuromuscular progresiva' },
+  descarga: { id: 'descarga', name: 'Descarga eléctrica (60 Hz)', n: 3.50, color: SERIES_COLORS[6], unit: 'Corriente 60 Hz (mA)', desc: 'Alarma nociceptiva superlineal extrema' },
 };
 
 const SUPERSCRIPT: Record<string, string> = {
@@ -365,7 +364,7 @@ export default function StevensCanvas({
       // Cabecera del widget: encoge en vez de salirse de la tarjeta.
       ctx.fillStyle = nColor;
       ctx.textAlign = 'center';
-      const headerLabel = fitText(ctx, `${activeSens.emoji} ${activeSens.name}`, widgetW - 10, scaled(12), scaled(8), 'bold ');
+      const headerLabel = fitText(ctx, activeSens.name, widgetW - 10, scaled(12), scaled(8), 'bold ');
       ctx.fillText(headerLabel, widgetX + widgetW / 2, widgetY + 16);
 
       ctx.fillStyle = '#43505c';

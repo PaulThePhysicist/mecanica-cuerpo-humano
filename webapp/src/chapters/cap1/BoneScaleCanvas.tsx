@@ -12,7 +12,6 @@ interface BoneScaleCanvasProps {
 interface BoneSpec {
   id: string;
   name: string;
-  emoji: string;
   massKg: number;
   lengthMm: number;
   wlRatio: number;
@@ -20,9 +19,9 @@ interface BoneSpec {
 }
 
 const BONE_SPECS: Record<string, BoneSpec> = {
-  rat: { id: 'rat', name: 'Rata', emoji: '🐀', massKg: 0.25, lengthMm: 35, wlRatio: 1.0, color: '#2e8b57' },
-  horse: { id: 'horse', name: 'Caballo', emoji: '🐎', massKg: 500, lengthMm: 450, wlRatio: 1.7, color: '#a35c00' },
-  elephant: { id: 'elephant', name: 'Elefante', emoji: '🐘', massKg: 5000, lengthMm: 1100, wlRatio: 4.0, color: '#6d5fbf' },
+  rat: { id: 'rat', name: 'Rata', massKg: 0.25, lengthMm: 35, wlRatio: 1.0, color: '#2e8b57' },
+  horse: { id: 'horse', name: 'Caballo', massKg: 500, lengthMm: 450, wlRatio: 1.7, color: '#a35c00' },
+  elephant: { id: 'elephant', name: 'Elefante', massKg: 5000, lengthMm: 1100, wlRatio: 4.0, color: '#6d5fbf' },
 };
 
 export default function BoneScaleCanvas({
@@ -195,7 +194,7 @@ export default function BoneScaleCanvas({
           const pulse = 0.5 + 0.5 * Math.sin(t * 6);
           // V6-07: la banda se dimensiona al ancho real del texto (antes
           // era fija, 104 px, y «FRACTURA: 215 MPa» se salía por la derecha).
-          const fractureLabel = `⚠️ FRACTURA: ${stressMPa} MPa`;
+          const fractureLabel = `FRACTURA: ${stressMPa} MPa`;
           ctx.font = (compact ? 'bold 11px' : 'bold 12px') + ' Karla, system-ui, sans-serif';
           const bandW = ctx.measureText(fractureLabel).width + 16;
           const bandX = Math.max(4, Math.min(W - bandW - 4, cx - bandW / 2));
@@ -237,7 +236,7 @@ export default function BoneScaleCanvas({
         ctx.font = `${isSel ? 'bold ' : ''}${scaled(isSel ? 14 : 13)}px Karla, system-ui, sans-serif`;
         ctx.fillStyle = isSel ? spec.color : '#232c36';
         ctx.textAlign = 'center';
-        ctx.fillText(`${spec.emoji} ${spec.name}`, cx, floorY + 22);
+        ctx.fillText(spec.name, cx, floorY + 22);
 
         ctx.font = `bold ${scaled(11)}px JetBrains Mono, monospace`;
         ctx.fillStyle = isFractured ? '#b02318' : (stressMPa < 50 ? '#0d6e64' : '#a35c00');
@@ -256,7 +255,7 @@ export default function BoneScaleCanvas({
       ctx.fillText(
         isAllometric
           ? 'ESCALA ALOMÉTRICA (w ∝ L³ᐟ²)'
-          : '⚠️ ESCALA ISOMÉTRICA: FRACTURA DEL ELEFANTE',
+          : 'ESCALA ISOMÉTRICA: FRACTURA DEL ELEFANTE',
         W * 0.05,
         22
       );

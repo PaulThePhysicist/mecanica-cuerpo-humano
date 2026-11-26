@@ -29,13 +29,13 @@ const ALLO_DATA: Record<string, AlloCurve> = {
 };
 
 const ANIMALS = [
-  { id: 'mouse', name: 'Ratón', emoji: '🐁', mass: 0.025, hr: 600, color: '#2e8b57' },
-  { id: 'rabbit', name: 'Conejo', emoji: '🐇', mass: 2.5, hr: 220, color: '#3e9d6b' },
-  { id: 'dog', name: 'Perro', emoji: '🐕', mass: 25, hr: 110, color: '#5a9a3a' },
-  { id: 'human', name: 'Humano', emoji: '🚶', mass: 70, hr: 68, color: '#0d6e64' },
-  { id: 'horse', name: 'Caballo', emoji: '🐎', mass: 550, hr: 38, color: '#a35c00' },
-  { id: 'elephant', name: 'Elefante', emoji: '🐘', mass: 5000, hr: 28, color: '#6d5fbf' },
-  { id: 'whale', name: 'Ballena Azul', emoji: '🐋', mass: 120000, hr: 8, color: '#3d4f8a' },
+  { id: 'mouse', name: 'Ratón', mass: 0.025, hr: 600, color: '#2e8b57' },
+  { id: 'rabbit', name: 'Conejo', mass: 2.5, hr: 220, color: '#3e9d6b' },
+  { id: 'dog', name: 'Perro', mass: 25, hr: 110, color: '#5a9a3a' },
+  { id: 'human', name: 'Humano', mass: 70, hr: 68, color: '#0d6e64' },
+  { id: 'horse', name: 'Caballo', mass: 550, hr: 38, color: '#a35c00' },
+  { id: 'elephant', name: 'Elefante', mass: 5000, hr: 28, color: '#6d5fbf' },
+  { id: 'whale', name: 'Ballena Azul', mass: 120000, hr: 8, color: '#3d4f8a' },
 ];
 
 const SUPERSCRIPT: Record<string, string> = {
@@ -359,7 +359,7 @@ export default function AllometryCanvas({
         ctx.save();
         ctx.font = isHuman ? `bold ${scaled(12)}px Karla, system-ui, sans-serif` : `${scaled(11)}px Karla, system-ui, sans-serif`;
         ctx.fillStyle = isHover ? '#b02318' : (isHuman ? '#0d6e64' : '#232c36');
-        const label = `${a.emoji} ${a.name}`;
+        const label = a.name;
         const labelW = ctx.measureText(label).width;
         let above = idx % 2 === 0;
         const rising = activeCurve.alpha >= 0;
