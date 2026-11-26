@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ProportionsCanvas from './ProportionsCanvas';
 import ChapterImageLightbox from './ChapterImageLightbox';
 import { fmt } from './format';
-import { TABLE_17 } from './segmentTables';
+import { TABLE_17, TABLE_18, TABLE_19 } from './segmentTables';
 import Tex from './Tex';
 import { AMBER, BODY_SEGMENT_SHADES } from './colorTokens';
 // @ts-ignore - katex auto-render no incluye tipos
@@ -105,10 +105,12 @@ const TABLE_16_EXTRA: [string, number][] = [
   ['Ancho del pie', 0.055],
 ];
 
-type SegTab = 'len' | 'mass';
+type SegTab = 'len' | 'mass' | 'com' | 'gyr';
 const SEG_TABS: { id: SegTab; label: string }[] = [
   { id: 'len', label: 'Longitud (1.6)' },
   { id: 'mass', label: 'Masa y densidad (1.7)' },
+  { id: 'com', label: 'Centro de masa (1.8)' },
+  { id: 'gyr', label: 'Radio de giro (1.9)' },
 ];
 
 export default function Slide9({ slideCount }: { slideCount?: string }) {
@@ -165,7 +167,7 @@ export default function Slide9({ slideCount }: { slideCount?: string }) {
         <div className="theory">
           <div className="card active">
             <div className="card-hdr">
-              <span className="icon">📏</span> Segmentos corporales (Tablas 1.6–1.7)
+              <span className="icon">📏</span> Segmentos corporales (Tablas 1.6–1.9)
             </div>
             <div className="card-body">
               <div className="card-tabs" role="tablist" aria-label="Tablas de los segmentos">
@@ -241,6 +243,36 @@ export default function Slide9({ slideCount }: { slideCount?: string }) {
                   Tronco + cabeza y cuello + 2 brazos + 2 piernas:{' '}
                   <Tex>{'0{,}497 + 0{,}081 + 2 \\times 0{,}050 + 2 \\times 0{,}161 = 1{,}000'}</Tex>.<br />
                   Medidas en cadáveres: masa por pesada, volumen por agua desplazada (Arquímedes, Cap. 7).
+                </p>
+              </>)}
+              {segTab === 'com' && (<>
+                <table className="data-mini" role="tabpanel">
+                  <tbody>
+                    <tr><th>Segmento</th><th>Desde proximal</th><th>Desde distal</th></tr>
+                    {TABLE_18.map((r) => (
+                      <tr key={r.segment}>
+                        <td>{r.segment}</td><td className="num">{r.proximal}</td><td>{r.distal ?? '--'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <p className="table-note">
+                  Dónde se equilibra el segmento, como fracción de su longitud. Las tablas proceden de fuentes distintas y no siempre son coherentes entre sí.
+                </p>
+              </>)}
+              {segTab === 'gyr' && (<>
+                <table className="data-mini" role="tabpanel">
+                  <tbody>
+                    <tr><th>Segmento</th><th>Alrededor del <span className="nt">CdM</span></th><th>Del proximal</th><th>Del distal</th></tr>
+                    {TABLE_19.map((r) => (
+                      <tr key={r.segment}>
+                        <td>{r.segment}</td><td className="num">{r.com}</td><td className="num">{r.proximal}</td><td>{r.distal ?? '--'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <p className="table-note">
+                  Cuánto cuesta hacerlo girar: mide cómo se reparte la masa alrededor del eje (Cap. 3). Normalizado por la longitud del segmento.
                 </p>
               </>)}
             </div>
