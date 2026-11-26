@@ -331,7 +331,6 @@ export default function Slide4({ setGLMode: parentSetGLMode, slideCount }: Slide
           <HudPanel
             title={mode === 6 ? 'Cadena Pierna' : 'Cadena Brazo'}
             badge={mode === 6 ? '6 GL (Determinada)' : '7 GL (Redundante)'}
-            icon="🦾"
             footer="💡 Haz clic en cada articulación para inspeccionar sus GL"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>

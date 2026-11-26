@@ -352,7 +352,6 @@ export default function Slide6({ toggleMovementAnimation, slideCount }: Slide6Pr
           <HudPanel
             title="PARES ANTAGÓNICOS"
             badge={currentMeta.name.toUpperCase()}
-            icon="↔️"
             footer="💡 Huesos BodyParts3D con vientres musculares estriados"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
@@ -564,7 +563,7 @@ export default function Slide6({ toggleMovementAnimation, slideCount }: Slide6Pr
                       fontWeight: 600,
                     }}
                   >
-                    💪 Músculos {showMuscles ? '✓' : ''}
+                    Músculos {showMuscles ? '✓' : ''}
                   </button>
                   <button
                     type="button"
@@ -581,7 +580,7 @@ export default function Slide6({ toggleMovementAnimation, slideCount }: Slide6Pr
                       fontWeight: 600,
                     }}
                   >
-                    📐 Planos {showPlanes ? '✓' : ''}
+                    Planos {showPlanes ? '✓' : ''}
                   </button>
                   <button
                     type="button"
@@ -598,7 +597,7 @@ export default function Slide6({ toggleMovementAnimation, slideCount }: Slide6Pr
                       fontWeight: 600,
                     }}
                   >
-                    🏷️ Rótulos {showLabels ? '✓' : ''}
+                    Rótulos {showLabels ? '✓' : ''}
                   </button>
                 </div>
               </div>

@@ -288,7 +288,6 @@ export default function Slide7({ slideCount }: { slideCount?: string }) {
           <HudPanel
             title={mode === 'eye' ? 'MOTOR OCULAR 3D' : 'PALANCA 3.ER GÉNERO'}
             badge={mode === 'eye' ? '6 MÚSCULOS' : 'BÍCEPS / TRÍCEPS'}
-            icon="👁️"
             footer={mode === 'eye' ? '💡 Músculos rojos = contraídos activamente' : '💡 Desliza la contracción del bíceps'}
           >
             {mode === 'eye' ? (
@@ -304,7 +303,7 @@ export default function Slide7({ slideCount }: { slideCount?: string }) {
                     <span style={{ fontWeight: 'bold', color: 'var(--teal-deep)' }}>RS ↔ RI</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', padding: '2px 4px', background: (gaze.x !== 0 && gaze.y !== 0) ? 'var(--teal-tint)' : 'transparent', borderRadius: '3px' }}>
-                    <span style={{ color: 'var(--ink)' }}>🔀 Oblicuo:</span>
+                    <span style={{ color: 'var(--ink)' }}>Oblicuo:</span>
                     <span style={{ fontWeight: 'bold', color: 'var(--teal-deep)' }}>OS (Tróclea) ↔ OI</span>
                   </div>
                 </div>
@@ -360,7 +359,7 @@ export default function Slide7({ slideCount }: { slideCount?: string }) {
                   </span>
                 </div>
                 <div style={{ marginTop: '4px', borderTop: '1px dashed var(--line)', paddingTop: '4px', fontSize:  'max(12px, 0.54rem)', color: 'var(--ink-3)' }}>
-                  📐 <b>Palanca de 3.er Género:</b> Fulcro en el codo, Esfuerzo en el bíceps, Carga en la mano.
+                  <b>Palanca de 3.er género:</b> Fulcro en el codo, Esfuerzo en el bíceps, Carga en la mano.
                 </div>
               </div>
             )}
@@ -400,7 +399,7 @@ export default function Slide7({ slideCount }: { slideCount?: string }) {
                   cursor: 'pointer',
                 }}
               >
-                👁️ Ojo 3D (6 Músculos)
+                Ojo 3D (6 músculos)
               </button>
               <button
                 type="button"
@@ -416,7 +415,7 @@ export default function Slide7({ slideCount }: { slideCount?: string }) {
                   cursor: 'pointer',
                 }}
               >
-                🦾 Brazo y Palanca
+                Brazo y palanca
               </button>
             </div>
 

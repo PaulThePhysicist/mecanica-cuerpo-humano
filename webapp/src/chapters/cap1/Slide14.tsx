@@ -106,7 +106,6 @@ export default function Slide14({ slideCount }: { slideCount?: string }) {
           <HudPanel
             title="ÍNDICES BIOFÍSICOS"
             badge={`IMC ${fmt(bmi, 1)} · ${cat.toUpperCase()}`}
-            icon="📐"
             footer="💡 Ajusta masa y estatura para ver el cuadro de instrumentos biofísicos"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.62rem' }}>

@@ -233,7 +233,6 @@ export default function Slide13({ slideCount }: { slideCount?: string }) {
           <HudPanel
             title="ESCALADO ESTRUCTURAL"
             badge={isAllometric ? 'ALOMÉTRICO' : 'ISOMÉTRICO'}
-            icon="🦴"
             footer="💡 Haz clic en los fémures para inspeccionar su esfuerzo en MPa"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
@@ -264,7 +263,7 @@ export default function Slide13({ slideCount }: { slideCount?: string }) {
               })}
 
               <div style={{ marginTop: '4px', borderTop: '1px dashed var(--line)', paddingTop: '4px', fontSize:  'max(12px, 0.54rem)', color: 'var(--ink-3)' }}>
-                📐 <b>Tensión límite (ilustrativa):</b> σ_rotura ≈ 150 MPa
+                <b>Tensión límite (ilustrativa):</b> σ_rotura ≈ 150 MPa
               </div>
             </div>
           </HudPanel>
@@ -285,7 +284,7 @@ export default function Slide13({ slideCount }: { slideCount?: string }) {
                 checked={isAllometric}
                 onChange={(e) => setIsAllometric(e.target.checked)}
               />
-              <b>{isAllometric ? 'Alométrico Real ($w \\propto L^{3/2}$)' : '⚠️ Modo Isométrico (Fractura)'}</b>
+              <b>{isAllometric ? 'Alométrico Real ($w \\propto L^{3/2}$)' : 'Modo isométrico (fractura)'}</b>
             </label>
 
             <button

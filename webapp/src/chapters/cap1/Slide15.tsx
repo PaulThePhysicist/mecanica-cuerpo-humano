@@ -219,7 +219,6 @@ export default function Slide15({ slideCount }: { slideCount?: string }) {
           <HudPanel
             title="LEY DE STEVENS"
             badge={`n = ${fmt(n, 2)} · ${nType.toUpperCase()}`}
-            icon="🧠"
             footer="💡 P = K · (S − S₀)ⁿ · Compara sublineal vs superlineal"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
@@ -250,7 +249,7 @@ export default function Slide15({ slideCount }: { slideCount?: string }) {
               })}
 
               <div style={{ marginTop: '4px', borderTop: '1px dashed var(--line)', paddingTop: '4px', fontSize:  'max(12px, 0.54rem)', color: 'var(--ink-3)' }}>
-                ⚡ <b>Duplicación:</b> 2ⁿ = {fmt(Math.pow(2, n), 2)}×
+                <b>Duplicación:</b> 2ⁿ = {fmt(Math.pow(2, n), 2)}×
               </div>
             </div>
           </HudPanel>
