@@ -273,6 +273,9 @@ export default function Slide5({ toggleJointsAnimation, slideCount }: Slide5Prop
                   })}
                 </tbody>
               </table>
+              <p style={{ marginTop: '.3rem' }}>
+                <strong>Análogos cotidianos:</strong> bisagra de puerta (1 GL) · junta universal de un coche (2 GL) · grifo de ducha (rótula, 3 GL).
+              </p>
               <p style={{ fontSize: '.6rem', color: 'var(--ink-3)', marginTop: '.2rem' }}>
                 Pasa el cursor o haz clic sobre cada tipo para verlo animado en el modelo 3D.
               </p>
