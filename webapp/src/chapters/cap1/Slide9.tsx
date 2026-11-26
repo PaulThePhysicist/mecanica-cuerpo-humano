@@ -94,6 +94,15 @@ const SEGMENTS_DATA: Record<string, SegmentDetail> = {
   },
 };
 
+/* P6-27 · Filas de la Tabla 1.6 sin cota en el lienzo (.tex líneas 375–388):
+   de consulta, sin resaltado ni cursor de mano. */
+const TABLE_16_EXTRA: [string, number][] = [
+  ['Ancho del pecho', 0.174],
+  ['Ancho de caderas / separación de piernas', 0.191],
+  ['Del tobillo a la planta del pie', 0.039],
+  ['Ancho del pie', 0.055],
+];
+
 export default function Slide9({ slideCount }: { slideCount?: string }) {
   const [height, setHeight] = useState<number>(172);
   const [selectedSegment, setSelectedSegment] = useState<string | null>(null);
@@ -159,6 +168,7 @@ export default function Slide9({ slideCount }: { slideCount?: string }) {
                     return (
                       <tr
                         key={s.id}
+                        className="row-link"
                         onClick={() => handleSelectSegment(s.id)}
                         onMouseEnter={() => setHoveredSegment(s.id)}
                         onMouseLeave={() => setHoveredSegment(null)}
@@ -173,12 +183,20 @@ export default function Slide9({ slideCount }: { slideCount?: string }) {
                           <b>{s.name}</b>
                         </td>
                         <td>{fmt(s.frac, 3)}</td>
-                        <td style={{ fontFamily: 'JetBrains Mono, monospace', color: isSel ? 'var(--teal-deep)' : 'var(--ink-2)' }}>
+                        <td style={{ fontFamily: 'var(--mono)', color: isSel ? 'var(--teal-deep)' : 'var(--ink-2)' }}>
                           {lenCm} cm
                         </td>
                       </tr>
                     );
                   })}
+                  <tr className="table-divider"><td colSpan={3}>Sin cota en la figura</td></tr>
+                  {TABLE_16_EXTRA.map(([name, frac]) => (
+                    <tr key={name}>
+                      <td><span style={{ display: 'inline-block', width: '8px', marginRight: '6px' }} />{name}</td>
+                      <td>{fmt(frac, 3)}</td>
+                      <td style={{ fontFamily: 'var(--mono)', color: 'var(--ink-2)' }}>{fmt(frac * height, 1)} cm</td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
               <div className="eq-block">
