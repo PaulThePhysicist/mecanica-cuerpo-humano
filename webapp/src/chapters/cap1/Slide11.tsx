@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import SomatotypeCanvas from './SomatotypeCanvas';
+import Tex from './Tex';
 
 type SomatotypeKey = 'ecto' | 'meso' | 'endo';
 
@@ -136,9 +137,18 @@ export default function Slide11({ slideCount }: { slideCount?: string }) {
               <span className="icon">🛰️</span> El cuerpo en el espacio (Microgravedad)
             </div>
             <div className="card-body">
-              <p style={{ fontSize: '.7rem' }}>
-                En ingravidez, los astronautas <strong>crecen ~2,5 cm</strong> por descompresión elástica de los discos intervertebrales y desarrollan el síndrome de «<strong>cara hinchada y piernas de pájaro</strong>» debido a la redistribución cefálica de los fluidos corporales.
+              <p style={{ marginBottom: '.3rem' }}>
+                En ingravidez (<Tex>{'g = 0'}</Tex>) el cuerpo cambia, y cada efecto es un capítulo del curso:
               </p>
+              <ul className="effect-list">
+                <li><b>+2,5 cm de estatura</b> sin compresión de los discos <span className="cap-ref">Cap. 2</span></li>
+                <li><b>Cara hinchada, piernas de pájaro</b> por los fluidos <span className="cap-ref">Cap. 8</span></li>
+                <li><b>Presión intracraneal</b> que deforma el ojo y afecta la visión <span className="cap-ref">Cap. 11</span></li>
+                <li><b>Menos volumen de sangre</b> <span className="cap-ref">Cap. 8</span></li>
+                <li><b>Mareo</b>: canales semicirculares <span className="cap-ref">Cap. 12</span></li>
+                <li><b>Se traga por peristalsis</b>, no por gravedad</li>
+                <li><b>Atrofia</b> de músculo, hueso y corazón <span className="cap-ref">Caps. 5, 4, 8</span></li>
+              </ul>
             </div>
           </div>
           <div className="apuntes">
