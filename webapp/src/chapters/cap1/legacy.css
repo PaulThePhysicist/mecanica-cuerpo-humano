@@ -506,6 +506,9 @@
   color:var(--ink-2);line-height:1.4;cursor:default;
 }
 .fact-chip b{font-family:var(--mono);color:var(--teal-deep);white-space:nowrap}
+/* Lista de consulta en dos columnas (vocabulario sin interacción). */
+.term-grid{display:grid;grid-template-columns:1fr 1fr;gap:.12rem .8rem;font-size:max(12px,.68rem);color:var(--ink-2);line-height:1.45}
+.term-grid b{color:var(--ink);margin-right:.25rem}
 /* Filas que responden al clic (resaltan algo en el lienzo o el 3D). */
 .data-mini tr.row-link{cursor:pointer}
 
