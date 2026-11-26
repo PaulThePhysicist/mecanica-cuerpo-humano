@@ -6,7 +6,7 @@ import ChapterImageLightbox from './ChapterImageLightbox';
 import Tex from './Tex';
 import type { MobilityRange } from './romTable';
 import { useHarmonicClock } from './three/useHarmonicClock';
-import { fmt } from './format';
+import { fmt, fmtMil } from './format';
 // @ts-ignore - katex auto-render no incluye tipos
 import renderMathInElement from 'katex/contrib/auto-render';
 
@@ -96,6 +96,33 @@ const MOBILITY_3D_DATA: Record<string, MobilityRange> = {
   tobillo: { joint: 'tobillo', label: 'Tobillo · flexión', primary: 35, secondary: 38, primaryLabel: 'Dorsiflexión', secondaryLabel: 'Plantar', plane: 'sagittal', position: [-0.039, -0.460, -0.020] },
 };
 
+/* P6-31 · Tabla 1.11 (selección de 12 de 29, masa y volumen) y Tabla 1.12
+   (célula de 20 µm, 7 filas), literales del .tex (líneas 543–571 y 589–595). */
+const BODY_MASS_G = 70000;
+const TABLE_111: [string, number, number][] = [
+  ['Músculo', 30000, 23000],
+  ['Grasa', 10500, 12000],
+  ['Esqueleto', 10000, 6875],
+  ['Sangre (contenido de los vasos)', 5600, 5400],
+  ['Piel', 2000, 1800],
+  ['Tracto gastrointestinal', 2000, 1800],
+  ['Hígado', 1650, 1470],
+  ['Cerebro', 1400, 1350],
+  ['Pulmones (2)', 825, 775],
+  ['Corazón', 330, 300],
+  ['Riñones (2)', 300, 270],
+  ['Vejiga urinaria', 150, 140],
+];
+const TABLE_112: { molecule: string; massPct: string; mw: string; count: string; kinds: string }[] = [
+  { molecule: 'Agua', massPct: '65', mw: '18', count: '1{,}74 \\times 10^{14}', kinds: '1' },
+  { molecule: 'Otros inorgánicos', massPct: '1,5', mw: '55', count: '1{,}31 \\times 10^{12}', kinds: '20' },
+  { molecule: 'Lípidos (grasas)', massPct: '12', mw: '700', count: '8{,}4 \\times 10^{11}', kinds: '50' },
+  { molecule: 'Otros orgánicos', massPct: '0,4', mw: '250', count: '7{,}7 \\times 10^{10}', kinds: '~200' },
+  { molecule: 'Proteínas', massPct: '20', mw: '50 000', count: '1{,}9 \\times 10^{10}', kinds: '~5 000' },
+  { molecule: 'ARN', massPct: '1,0', mw: '1 \\times 10^{6}', count: '5 \\times 10^{7}', kinds: '--' },
+  { molecule: 'ADN', massPct: '0,1', mw: '1 \\times 10^{11}', count: '46', kinds: '--' },
+];
+
 function renderC3Math() {
   const info = document.getElementById('info-text-c3');
   if (!info) return;
@@ -112,6 +139,7 @@ function renderC3Math() {
 
 export default function Slide10({ slideCount }: { slideCount?: string }) {
   const [selectedJoint, setSelectedJoint] = useState<string>('hombro-flex');
+  const [massTab, setMassTab] = useState<'organs' | 'cell'>('organs');
   const [show3D, setShow3D] = useState(true);
   const [sceneReset, setSceneReset] = useState(0);
   // Fase 0..1 del recorrido: 0 = tope secundario (p. ej. extensión), 1 = tope
@@ -165,7 +193,7 @@ export default function Slide10({ slideCount }: { slideCount?: string }) {
       <div className="module-header">
         <span className="mnum">C3</span>
         <span className="mtitle">Movilidad y masa de órganos</span>
-        <span className="msub">Rangos de movimiento articular (ROM) · Tablas 1.10–1.11</span>
+        <span className="msub">Rangos de movimiento articular (ROM) · Tablas 1.10–1.12</span>
         <span className="mslide-count">{slideCount ?? '3 / 4'}</span>
       </div>
       <div className="content-grid">
@@ -220,22 +248,53 @@ export default function Slide10({ slideCount }: { slideCount?: string }) {
           </div>
           <div className="card">
             <div className="card-hdr">
-              <span className="icon">🫀</span> Masa de los órganos (Tabla 1.11)
+              <span className="icon">🫀</span> Órganos y célula (Tablas 1.11–1.12)
             </div>
             <div className="card-body">
-              <table className="data-mini">
-                <tbody>
-                  <tr><th>Órgano / Tejido</th><th>Masa (g)</th><th>% del total</th></tr>
-                  <tr><td><b>Músculo esquelético</b></td><td>30 000 g</td><td>42,9 %</td></tr>
-                  <tr><td><b>Tejido adiposo (grasa)</b></td><td>10 500 g</td><td>15,0 %</td></tr>
-                  <tr><td><b>Esqueleto óseo</b></td><td>10 000 g</td><td>14,3 %</td></tr>
-                  <tr><td><b>Hígado</b></td><td>1 650 g</td><td>2,4 %</td></tr>
-                  <tr><td><b>Cerebro</b></td><td>1 400 g</td><td>2,0 %</td></tr>
-                  <tr><td><b>Pulmones (2)</b></td><td>825 g</td><td>1,2 %</td></tr>
-                  <tr><td><b>Corazón</b></td><td>330 g</td><td>0,5 %</td></tr>
-                  <tr><td><b>Riñones (2)</b></td><td>300 g</td><td>0,4 %</td></tr>
-                </tbody>
-              </table>
+              <div className="card-tabs" role="tablist" aria-label="Tablas de órganos y célula">
+                <button type="button" role="tab" aria-selected={massTab === 'organs'} onClick={() => setMassTab('organs')}>
+                  Órganos (1.11)
+                </button>
+                <button type="button" role="tab" aria-selected={massTab === 'cell'} onClick={() => setMassTab('cell')}>
+                  Célula (1.12)
+                </button>
+              </div>
+              {massTab === 'organs' ? (
+                <>
+                  <table className="data-mini" role="tabpanel">
+                    <tbody>
+                      <tr><th>Tejido u órgano</th><th>Masa <span className="nt">(g)</span></th><th>Volumen <span className="nt">(cm³)</span></th><th>% de la masa</th></tr>
+                      {TABLE_111.map(([name, mass, vol]) => (
+                        <tr key={name}>
+                          <td>{name}</td>
+                          <td className="num">{fmtMil(mass)}</td>
+                          <td className="num">{fmtMil(vol)}</td>
+                          <td>{fmt((mass / BODY_MASS_G) * 100, 1)} %</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <p className="table-note">Selección de 12 de 29 filas. Varón adulto: 70 000 g y 60 000 cm³.</p>
+                </>
+              ) : (
+                <>
+                  <table className="data-mini" role="tabpanel">
+                    <tbody>
+                      <tr><th>Molécula</th><th>Masa <span className="nt">(%)</span></th><th>Peso molecular <span className="nt">(uma)</span></th><th>Moléculas</th><th>Tipos distintos</th></tr>
+                      {TABLE_112.map((r) => (
+                        <tr key={r.molecule}>
+                          <td>{r.molecule}</td>
+                          <td className="num">{r.massPct}</td>
+                          <td className="num">{r.mw.includes('times') ? <Tex>{r.mw}</Tex> : r.mw}</td>
+                          <td className="num"><Tex>{r.count}</Tex></td>
+                          <td>{r.kinds}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <p className="table-note">Contenido molecular bruto estimado de una célula humana típica de 20 µm.</p>
+                </>
+              )}
             </div>
           </div>
           <div className="apuntes">
