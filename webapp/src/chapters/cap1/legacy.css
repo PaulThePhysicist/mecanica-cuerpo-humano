@@ -509,6 +509,10 @@
 /* Lista de consulta en dos columnas (vocabulario sin interacción). */
 .term-grid{display:grid;grid-template-columns:1fr 1fr;gap:.12rem .8rem;font-size:max(12px,.68rem);color:var(--ink-2);line-height:1.45}
 .term-grid b{color:var(--ink);margin-right:.25rem}
+/* Fórmula o unidad dentro de una cabecera de tabla: sin versalitas. */
+.data-mini th .nt{text-transform:none;letter-spacing:0}
+/* Celda numérica que no es la última de la fila (la última ya es mono). */
+.data-mini td.num{font-family:var(--mono);color:var(--ink);font-size:.62rem;white-space:nowrap}
 /* Filete que separa filas interactivas de filas de consulta en una tabla. */
 .data-mini tr.table-divider td{
   font-family:var(--sans);font-size:max(12px,.6rem);font-style:italic;color:var(--ink-3);
