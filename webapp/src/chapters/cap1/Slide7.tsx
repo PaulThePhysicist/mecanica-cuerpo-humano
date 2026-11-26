@@ -70,11 +70,31 @@ const EYE_GAZE_PRESETS: Record<EyeGaze, { x: number; y: number; label: string; a
   },
 };
 
+/* P6-24 · Tabla 1.3 (acción primaria y secundaria) y Tabla 1.4 (pares por
+   dirección de la mirada), literales del .tex (líneas 272–277 y 293–298). */
+const TABLE_13: { id: string; name: string; primary: string; secondary: string }[] = [
+  { id: 'lateral', name: 'Recto lateral (RL)', primary: 'Abducción', secondary: 'Ninguna' },
+  { id: 'medial', name: 'Recto medial (RM)', primary: 'Aducción', secondary: 'Ninguna' },
+  { id: 'superior', name: 'Recto superior (RS)', primary: 'Elevación', secondary: 'Aducción, intorsión' },
+  { id: 'inferior', name: 'Recto inferior (RI)', primary: 'Depresión', secondary: 'Abducción, extorsión' },
+  { id: 'osuperior', name: 'Oblicuo superior (OS)', primary: 'Depresión', secondary: 'Intorsión, abducción' },
+  { id: 'oinferior', name: 'Oblicuo inferior (OI)', primary: 'Elevación', secondary: 'Extorsión, abducción' },
+];
+const TABLE_14: [string, string, string][] = [
+  ['Arriba y derecha', 'Recto superior', 'Oblicuo inferior'],
+  ['Derecha', 'Recto lateral', 'Recto medial'],
+  ['Abajo y derecha', 'Recto inferior', 'Oblicuo superior'],
+  ['Abajo e izquierda', 'Oblicuo superior', 'Recto inferior'],
+  ['Izquierda', 'Recto medial', 'Recto lateral'],
+  ['Arriba e izquierda', 'Oblicuo inferior', 'Recto superior'],
+];
+
 export default function Slide7({ slideCount }: { slideCount?: string }) {
   const [mode, setMode] = useState<AntagonistMode>('eye');
   const [selectedGaze, setSelectedGaze] = useState<EyeGaze>('center');
   const [gaze, setGaze] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [selectedMuscle, setSelectedMuscle] = useState<string | null>(null);
+  const [eyeTab, setEyeTab] = useState<'muscle' | 'gaze'>('muscle');
   const [armFlexion, setArmFlexion] = useState<number>(0.4);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
   const [resetSignal, setResetSignal] = useState<number>(0);
@@ -175,52 +195,52 @@ export default function Slide7({ slideCount }: { slideCount?: string }) {
               <span className="icon">👁️</span> Músculos del ojo (Tablas 1.3–1.4)
             </div>
             <div className="card-body">
-              <table className="interactive-table">
-                <tbody>
-                  <tr><th>Músculo</th><th>Acción Principal</th></tr>
-                  <tr
-                    onClick={() => { setMode('eye'); handleSelectMuscle('lateral'); }}
-                    style={{ cursor: 'pointer', background: selectedMuscle === 'lateral' ? 'var(--teal-tint)' : 'transparent' }}
-                  >
-                    <td><b>Recto lateral (RL)</b></td><td>Abducción (hacia afuera)</td>
-                  </tr>
-                  <tr
-                    onClick={() => { setMode('eye'); handleSelectMuscle('medial'); }}
-                    style={{ cursor: 'pointer', background: selectedMuscle === 'medial' ? 'var(--teal-tint)' : 'transparent' }}
-                  >
-                    <td><b>Recto medial (RM)</b></td><td>Aducción (hacia la nariz)</td>
-                  </tr>
-                  <tr
-                    onClick={() => { setMode('eye'); handleSelectMuscle('superior'); }}
-                    style={{ cursor: 'pointer', background: selectedMuscle === 'superior' ? 'var(--teal-tint)' : 'transparent' }}
-                  >
-                    <td><b>Recto superior (RS)</b></td><td>Elevación</td>
-                  </tr>
-                  <tr
-                    onClick={() => { setMode('eye'); handleSelectMuscle('inferior'); }}
-                    style={{ cursor: 'pointer', background: selectedMuscle === 'inferior' ? 'var(--teal-tint)' : 'transparent' }}
-                  >
-                    <td><b>Recto inferior (RI)</b></td><td>Depresión</td>
-                  </tr>
-                  <tr
-                    onClick={() => { setMode('eye'); handleSelectMuscle('osuperior'); }}
-                    style={{ cursor: 'pointer', background: selectedMuscle === 'osuperior' ? 'var(--teal-tint)' : 'transparent' }}
-                  >
-                    <td><b>Oblicuo superior (OS)</b></td><td>Depresión (en aducción) + tróclea</td>
-                  </tr>
-                  <tr
-                    onClick={() => { setMode('eye'); handleSelectMuscle('oinferior'); }}
-                    style={{ cursor: 'pointer', background: selectedMuscle === 'oinferior' ? 'var(--teal-tint)' : 'transparent' }}
-                  >
-                    <td><b>Oblicuo inferior (OI)</b></td><td>Elevación (en aducción)</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div className="card-tabs" role="tablist" aria-label="Tablas de los músculos del ojo">
+                <button type="button" role="tab" aria-selected={eyeTab === 'muscle'} onClick={() => setEyeTab('muscle')}>
+                  Por músculo (Tabla 1.3)
+                </button>
+                <button type="button" role="tab" aria-selected={eyeTab === 'gaze'} onClick={() => setEyeTab('gaze')}>
+                  Por mirada (Tabla 1.4)
+                </button>
+              </div>
+              {eyeTab === 'muscle' ? (
+                <table className="data-mini data-terms" role="tabpanel">
+                  <tbody>
+                    <tr><th>Músculo</th><th>Acción primaria</th><th>Acción secundaria</th></tr>
+                    {TABLE_13.map((m) => (
+                      <tr
+                        key={m.id}
+                        className="row-link"
+                        onClick={() => { setMode('eye'); handleSelectMuscle(m.id); }}
+                        onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); setMode('eye'); handleSelectMuscle(m.id); } }}
+                        tabIndex={0}
+                        aria-selected={selectedMuscle === m.id}
+                      >
+                        <td><b>{m.name}</b></td><td>{m.primary}</td><td>{m.secondary}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <table className="data-mini data-terms" role="tabpanel">
+                  <tbody>
+                    <tr><th>Mirada (ambos ojos)</th><th>Ojo derecho</th><th>Ojo izquierdo</th></tr>
+                    {TABLE_14.map(([dir, right, left]) => (
+                      <tr key={dir}>
+                        <td><b>{dir}</b></td><td>{right}</td><td>{left}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+              <p className="table-note">
+                Solo el par recto medial/lateral va limpio con un movimiento; la torsión (intorsión/extorsión) es acción secundaria.
+              </p>
             </div>
           </div>
           <div className="card">
             <div className="card-hdr">
-              <span className="icon">🖼️</span> Referencias (Figs. 1.8, 1.12–1.14)
+              <span className="icon">🖼️</span> Referencias (Figs. 1.8 y 1.12–1.14)
             </div>
             <div className="card-body">
               <div className="figure-pair" style={{ height: '120px' }}>
@@ -233,6 +253,11 @@ export default function Slide7({ slideCount }: { slideCount?: string }) {
                   <span className="fig-num">FIG 1.12</span>
                   <img src="/assets/cap1/112.png" alt="Flexión y extensión del antebrazo" />
                   <figcaption>Palanca: bíceps vs. tríceps</figcaption>
+                </ChapterImageLightbox>
+                <ChapterImageLightbox src="/assets/cap1/113.png" alt="Rotaciones del ojo derecho" label="FIG 1.13 · Rotaciones del ojo derecho">
+                  <span className="fig-num">FIG 1.13</span>
+                  <img src="/assets/cap1/113.png" alt="Rotaciones del ojo derecho" />
+                  <figcaption>Rotaciones del ojo</figcaption>
                 </ChapterImageLightbox>
                 <ChapterImageLightbox src="/assets/cap1/114.png" alt="Músculos oculares" label="FIG 1.14 · Los 6 músculos del ojo">
                   <span className="fig-num">FIG 1.14</span>
